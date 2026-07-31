@@ -1,0 +1,4746 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-31T07:17:09.210Z",
+  "policy": {
+    "licenses": [
+      "Public domain",
+      "CC0",
+      "CC BY",
+      "CC BY-SA"
+    ],
+    "rejected": [
+      "NC",
+      "ND",
+      "all-rights-reserved",
+      "unknown"
+    ],
+    "maximumDurationSeconds": 20,
+    "format": "Ogg Opus, mono, 48 kHz, 48 kbps"
+  },
+  "summary": {
+    "total": 300,
+    "ready": 117,
+    "notFound": 183,
+    "errors": 0,
+    "sources": {
+      "Wikimedia Commons": 55,
+      "iNaturalist": 52,
+      "Wikimedia Commons search": 10
+    }
+  },
+  "items": {
+    "animal:lion": {
+      "itemId": "animal:lion",
+      "scientificName": "Panthera leo",
+      "status": "ready",
+      "assetUrl": "/audio/animals/acb21d9e9f1e993820f86121.ogg",
+      "soundType": "roar",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg",
+      "author": "த*உழவன்",
+      "credit": "Own work",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 9.14,
+        "outputBytes": 51710
+      },
+      "metadataStripped": true
+    },
+    "animal:canis-lupus": {
+      "itemId": "animal:canis-lupus",
+      "scientificName": "Canis lupus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/2b713eac92028c7538879cbb.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/87/Wolf_howls.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Wolf_howls.ogg",
+      "author": "",
+      "credit": "",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 136662
+      },
+      "metadataStripped": true
+    },
+    "animal:sus-scrofa": {
+      "itemId": "animal:sus-scrofa",
+      "scientificName": "Sus scrofa",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e596934942052d5741b2997a.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Boar.Grwls%281%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Boar.Grwls(1).ogg",
+      "author": "GrWolf1129",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 118574
+      },
+      "metadataStripped": true
+    },
+    "animal:felis-catus": {
+      "itemId": "animal:felis-catus",
+      "scientificName": "Felis catus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/c6549e8719bd6251137c5c5c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Meow.ogg",
+      "author": "The original uploader was Dcrosby at English Wikipedia .",
+      "credit": "Transferred from en.wikipedia to Commons by FSII using CommonsHelper .",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 0.785,
+        "outputBytes": 5039
+      },
+      "metadataStripped": true
+    },
+    "animal:giraffa-camelopardalis": {
+      "itemId": "animal:giraffa-camelopardalis",
+      "scientificName": "Giraffa camelopardalis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/5abf5820781e952624b4747b.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Giraffe_Hum.oga",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga",
+      "author": "Anton Baotic, Florian Sicks and Angela S. Stoeger",
+      "credit": "Nocturnal “humming” vocalizations (2015) Original file name: \" Additional file 5 / 13104_2015_1394_MOESM5_ESM.mov \"",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 12.409,
+        "outputBytes": 68582
+      },
+      "metadataStripped": true
+    },
+    "animal:bos-taurus": {
+      "itemId": "animal:bos-taurus",
+      "scientificName": "Bos taurus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/f95c3a3136507c52a0f5b067.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/48/Mudchute_cow_1.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Mudchute_cow_1.ogg",
+      "author": "Secretlondon",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 2.201,
+        "outputBytes": 14144
+      },
+      "metadataStripped": true
+    },
+    "animal:orcinus-orca": {
+      "itemId": "animal:orcinus-orca",
+      "scientificName": "Orcinus orca",
+      "status": "ready",
+      "assetUrl": "/audio/animals/a278f7178871c6bf0864aa02.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/79/Killer_whale.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Killer_whale.ogg",
+      "author": "",
+      "credit": "",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 117610
+      },
+      "metadataStripped": true
+    },
+    "animal:ursus-arctos": {
+      "itemId": "animal:ursus-arctos",
+      "scientificName": "Ursus arctos",
+      "status": "ready",
+      "assetUrl": "/audio/animals/577b4767dde2e79c4f19e0d8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_002.mp3",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_002.mp3",
+      "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+      "credit": "https://www.nps.gov/yell/learn/photosmultimedia/grizzlysounds.htm",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 114429
+      },
+      "metadataStripped": true
+    },
+    "animal:bison-bison": {
+      "itemId": "animal:bison-bison",
+      "scientificName": "Bison bison",
+      "status": "ready",
+      "assetUrl": "/audio/animals/82940d46966babc1a9e104e6.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Bison.wav",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bison.wav",
+      "author": "National Park Service",
+      "credit": "https://web.archive.org/web/20070206031350/http://www.nps.gov/archive/wica/bison.htm",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 3.906,
+        "outputBytes": 23916
+      },
+      "metadataStripped": true
+    },
+    "animal:meles-meles": {
+      "itemId": "animal:meles-meles",
+      "scientificName": "Meles meles",
+      "status": "ready",
+      "assetUrl": "/audio/animals/65ee05a32ba414082ff782a7.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/93/European_Badger_%28Meles_meles%29_%28W1CDR0001490_BD4%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:European_Badger_(Meles_meles)_(W1CDR0001490_BD4).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 12.507,
+        "outputBytes": 68760
+      },
+      "metadataStripped": true
+    },
+    "animal:cavia-porcellus": {
+      "itemId": "animal:cavia-porcellus",
+      "scientificName": "Cavia porcellus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/24a9a564190cded6104980fb.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Guinea_Pig_Feeding_Wheek.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Guinea_Pig_Feeding_Wheek.ogg",
+      "author": "myself",
+      "credit": "Own work",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 8.207,
+        "outputBytes": 57259
+      },
+      "metadataStripped": true
+    },
+    "animal:acinonyx-jubatus": {
+      "itemId": "animal:acinonyx-jubatus",
+      "scientificName": "Acinonyx jubatus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/a1ab2a5347258482e7d58b22.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Acoustic-Structure-and-Contextual-Use-of-Calls-by-Captive-Male-and-Female-Cheetahs-%28Acinonyx-pone.0158546.s001.oga",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Acoustic-Structure-and-Contextual-Use-of-Calls-by-Captive-Male-and-Female-Cheetahs-(Acinonyx-pone.0158546.s001.oga",
+      "author": "Smirnova D, Volodin I, Demina T, Volodina E",
+      "credit": "S1 Audio from Smirnova D, Volodin I, Demina T, Volodina E (2016). \" Acoustic Structure and Contextual Use of Calls by Captive Male and Female Cheetahs (Acinonyx jubatus) \". PLOS ONE . DOI : 10.1371/journal.pone.0158546 . PMID 27362643 . PMC : 4928801 .",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 124175
+      },
+      "metadataStripped": true
+    },
+    "animal:ornithorhynchus-anatinus": {
+      "itemId": "animal:ornithorhynchus-anatinus",
+      "scientificName": "Ornithorhynchus anatinus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:vulpes-vulpes": {
+      "itemId": "animal:vulpes-vulpes",
+      "scientificName": "Vulpes vulpes",
+      "status": "ready",
+      "assetUrl": "/audio/animals/7d44ce938afc72275f2fcfed.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/79/Red_Fox_%28Vulpes_vulpes%29_%28W1CDR0001529_BD12%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Red_Fox_(Vulpes_vulpes)_(W1CDR0001529_BD12).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 105537
+      },
+      "metadataStripped": true
+    },
+    "animal:megaptera-novaeangliae": {
+      "itemId": "animal:megaptera-novaeangliae",
+      "scientificName": "Megaptera novaeangliae",
+      "status": "ready",
+      "assetUrl": "/audio/animals/9379fdde54a158e5038057cb.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Humpback-Whale-Song-on-the-Southern-Ocean-Feeding-Grounds-Implications-for-Cultural-Transmission-pone.0079422.s003.oga",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Humpback-Whale-Song-on-the-Southern-Ocean-Feeding-Grounds-Implications-for-Cultural-Transmission-pone.0079422.s003.oga",
+      "author": "Garland E, Gedamke J, Rekdahl M, Noad M, Garrigue C, Gales N",
+      "credit": "Acoustic File S3 from Garland E, Gedamke J, Rekdahl M, Noad M, Garrigue C, Gales N (2013). \" Humpback Whale Song on the Southern Ocean Feeding Grounds: Implications for Cultural Transmission \". PLOS ONE . DOI : 10.1371/journal.pone.0079422 . PMID 24278134 . PMC : 3835899 .",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 117203
+      },
+      "metadataStripped": true
+    },
+    "animal:hippopotamus-amphibius": {
+      "itemId": "animal:hippopotamus-amphibius",
+      "scientificName": "Hippopotamus amphibius",
+      "status": "ready",
+      "assetUrl": "/audio/animals/046fa3382a3f8bc28f03ca2d.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/96727.mp3?1590508788",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/47189274",
+      "author": "Tuoichen",
+      "credit": "(c) Tuoichen, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 47189274,
+      "observedScientificName": "Hippopotamus amphibius",
+      "metrics": {
+        "durationSeconds": 9.306,
+        "outputBytes": 52769
+      },
+      "metadataStripped": true
+    },
+    "animal:elephas-maximus": {
+      "itemId": "animal:elephas-maximus",
+      "scientificName": "Elephas maximus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/6dde3fdf81f3d07ac1de4ee8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg",
+      "author": "தகவலுழவன்",
+      "credit": "Own work",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 1.372,
+        "outputBytes": 8732
+      },
+      "metadataStripped": true
+    },
+    "animal:hydrochoerus-hydrochaeris": {
+      "itemId": "animal:hydrochoerus-hydrochaeris",
+      "scientificName": "Hydrochoerus hydrochaeris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/126d041b5fbd406a7d4a807c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/288393.mp3?1628283217",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/90187694",
+      "author": "Stan Rullman",
+      "credit": "(c) Stan Rullman, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 90187694,
+      "observedScientificName": "Hydrochoerus hydrochaeris",
+      "metrics": {
+        "durationSeconds": 14.806,
+        "outputBytes": 86820
+      },
+      "metadataStripped": true
+    },
+    "animal:pan-troglodytes": {
+      "itemId": "animal:pan-troglodytes",
+      "scientificName": "Pan troglodytes",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e1810443886273d3b4c41bf2.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Chimpanzee-Alarm-Call-Production-Meets-Key-Criteria-for-Intentionality-pone.0076674.s005.oga",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Chimpanzee-Alarm-Call-Production-Meets-Key-Criteria-for-Intentionality-pone.0076674.s005.oga",
+      "author": "Schel A, Townsend S, Machanda Z, Zuberbuhler K, Slocombe K",
+      "credit": "Audio S2 from Schel A, Townsend S, Machanda Z, Zuberbuhler K, Slocombe K (2013). \" Chimpanzee Alarm Call Production Meets Key Criteria for Intentionality \". PLOS ONE . DOI : 10.1371/journal.pone.0076674 . PMID 24146908 . PMC : 3797826 .",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 1.211,
+        "outputBytes": 7425
+      },
+      "metadataStripped": true
+    },
+    "animal:phoca-vitulina": {
+      "itemId": "animal:phoca-vitulina",
+      "scientificName": "Phoca vitulina",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e2c3995d777e5c6cc5c20b93.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Artis%2C_keffen_van_een_zeehond_-_SoundCloud_-_Beeld_en_Geluid.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Artis,_keffen_van_een_zeehond_-_SoundCloud_-_Beeld_en_Geluid.ogg",
+      "author": "Beeld en Geluid",
+      "credit": "Soundcloud: 9632342",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 107582
+      },
+      "metadataStripped": true
+    },
+    "animal:ovis-aries": {
+      "itemId": "animal:ovis-aries",
+      "scientificName": "Ovis aries",
+      "status": "ready",
+      "assetUrl": "/audio/animals/2655358773f4252954fcbc99.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/Sheep_bleating.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sheep_bleating.ogg",
+      "author": "earthcalling",
+      "credit": "Clipped from File:Corner_of_a_sheep_field_in_summer.ogg , originally from http://www.pdsounds.org/audio/download/341/sheepfield.mp3 PDSounds description: http://www.pdsounds.org/sounds/corner_of_a_sheep_field_in_summer Transferred by Fæ , clipped by Dcoetzee",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 8.207,
+        "outputBytes": 48563
+      },
+      "metadataStripped": true
+    },
+    "animal:crocuta-crocuta": {
+      "itemId": "animal:crocuta-crocuta",
+      "scientificName": "Crocuta crocuta",
+      "status": "ready",
+      "assetUrl": "/audio/animals/13e8b6ca6cf438ba3e8613f5.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Giggling_call_of_a_spotted_hyena_%28Crocuta_crocuta%29_-_1472-6785-10-9-S3.oga",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Giggling_call_of_a_spotted_hyena_(Crocuta_crocuta)_-_1472-6785-10-9-S3.oga",
+      "author": "Mathevon N, Koralek A, Weldele M, Glickman S, Theunissen F",
+      "credit": "Mathevon N, Koralek A, Weldele M, Glickman S, Theunissen F (2010). \" What the hyena's laugh tells: Sex, age, dominance and individual signature in the giggling call of Crocuta crocuta \". BMC Ecology . DOI : 10.1186/1472-6785-10-9 . PMID 20353550 . PMC : 2859383 . YouTube : صوت الضبع – View/save archived versions on archive.org",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 1.03,
+        "outputBytes": 7172
+      },
+      "metadataStripped": true
+    },
+    "animal:cervus-elaphus": {
+      "itemId": "animal:cervus-elaphus",
+      "scientificName": "Cervus elaphus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/736594459236883c3484c707.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Red_Deer_%28Cervus_elaphus%29_%28W1CDR0001424_BD3%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Red_Deer_(Cervus_elaphus)_(W1CDR0001424_BD3).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 116614
+      },
+      "metadataStripped": true
+    },
+    "animal:castor-fiber": {
+      "itemId": "animal:castor-fiber",
+      "scientificName": "Castor fiber",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e0f09b727aaf9aaf44ac0de7.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/210634.wav?1620146044",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/76242751",
+      "author": "Nicolás Tamargo",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 76242751,
+      "observedScientificName": "Castor fiber",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 109112
+      },
+      "metadataStripped": true
+    },
+    "animal:procyon-lotor": {
+      "itemId": "animal:procyon-lotor",
+      "scientificName": "Procyon lotor",
+      "status": "ready",
+      "assetUrl": "/audio/animals/772ecdda9a5fd39086a8cd4f.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/74306.wav?1587761314",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/43169951",
+      "author": "Thomas Koffel",
+      "credit": "(c) Thomas Koffel, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 43169951,
+      "observedScientificName": "Procyon lotor",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 111350
+      },
+      "metadataStripped": true
+    },
+    "animal:phascolarctos-cinereus": {
+      "itemId": "animal:phascolarctos-cinereus",
+      "scientificName": "Phascolarctos cinereus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/a5bd03e793f80d01a4f23d39.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1255660.m4a?1732349531",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/252689328",
+      "author": "Cobi Calyx",
+      "credit": "(c) Cobi Calyx, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 252689328,
+      "observedScientificName": "Phascolarctos cinereus",
+      "metrics": {
+        "durationSeconds": 11.607,
+        "outputBytes": 63244
+      },
+      "metadataStripped": true
+    },
+    "animal:sciurus-vulgaris": {
+      "itemId": "animal:sciurus-vulgaris",
+      "scientificName": "Sciurus vulgaris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/a6c667bd80eb717ea256adbf.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/401376.mp3?1650654427",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/112413436",
+      "author": "E. A.",
+      "credit": "(c) E. A., some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 112413436,
+      "observedScientificName": "Sciurus vulgaris",
+      "metrics": {
+        "durationSeconds": 5.607,
+        "outputBytes": 31983
+      },
+      "metadataStripped": true
+    },
+    "animal:erinaceus-europaeus": {
+      "itemId": "animal:erinaceus-europaeus",
+      "scientificName": "Erinaceus europaeus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/25ca1bbfe9afb81f2549c295.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1846497.m4a?1775602605",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/348168809",
+      "author": "Benjamin",
+      "credit": "(c) Benjamin, some rights reserved (CC BY-SA)",
+      "license": "CC BY-SA",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 348168809,
+      "observedScientificName": "Erinaceus europaeus",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 111833
+      },
+      "metadataStripped": true
+    },
+    "animal:mus-musculus": {
+      "itemId": "animal:mus-musculus",
+      "scientificName": "Mus musculus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/1caac85681c0d32af10f9cda.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/79/De-Mus_musculus.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:De-Mus_musculus.ogg",
+      "author": "Jeuwre",
+      "credit": "Own work , recorded with Røde NT-USB and Audacity , converted with SoX (Sound eXchange audio editing software)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 2.026,
+        "outputBytes": 11322
+      },
+      "metadataStripped": true
+    },
+    "animal:suricata-suricatta": {
+      "itemId": "animal:suricata-suricatta",
+      "scientificName": "Suricata suricatta",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:rangifer-tarandus": {
+      "itemId": "animal:rangifer-tarandus",
+      "scientificName": "Rangifer tarandus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ailurus-fulgens": {
+      "itemId": "animal:ailurus-fulgens",
+      "scientificName": "Ailurus fulgens",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ailuropoda-melanoleuca": {
+      "itemId": "animal:ailuropoda-melanoleuca",
+      "scientificName": "Ailuropoda melanoleuca",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:delphinapterus-leucas": {
+      "itemId": "animal:delphinapterus-leucas",
+      "scientificName": "Delphinapterus leucas",
+      "status": "ready",
+      "assetUrl": "/audio/animals/9355403f62a66e5cfbbe071f.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Beluga_vocalizations.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Beluga_vocalizations.ogg",
+      "author": "Recorded by Fisheries Research Agency, Japan, with contract support from NOAA to Hubbs-SeaWorld Research Institute",
+      "credit": "National Oceanic and Atmospheric Administration's National Marine Fisheries Service",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 16.206,
+        "outputBytes": 93464
+      },
+      "metadataStripped": true
+    },
+    "animal:lepus-timidus": {
+      "itemId": "animal:lepus-timidus",
+      "scientificName": "Lepus timidus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:odobenus-rosmarus": {
+      "itemId": "animal:odobenus-rosmarus",
+      "scientificName": "Odobenus rosmarus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:vicugna-pacos": {
+      "itemId": "animal:vicugna-pacos",
+      "scientificName": "Vicugna pacos",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lynx-lynx": {
+      "itemId": "animal:lynx-lynx",
+      "scientificName": "Lynx lynx",
+      "status": "ready",
+      "assetUrl": "/audio/animals/1a983257e0bb70f770fb65a0.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/162970.wav?1612799113",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/69259154",
+      "author": "Julia Moning",
+      "credit": "(c) Julia Moning, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 69259154,
+      "observedScientificName": "Lynx lynx",
+      "metrics": {
+        "durationSeconds": 8.007,
+        "outputBytes": 44791
+      },
+      "metadataStripped": true
+    },
+    "animal:globicephala-melas": {
+      "itemId": "animal:globicephala-melas",
+      "scientificName": "Globicephala melas",
+      "status": "ready",
+      "assetUrl": "/audio/animals/2228f78ab20cd750f1f0d0e0.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Long_finned_Pilot_Whales_orig.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Long_finned_Pilot_Whales_orig.ogg",
+      "author": "L. Ginzkey",
+      "credit": "CD \"Schall im Meer\" of de:Forschungsanstalt der Bundeswehr für Wasserschall und Geophysik",
+      "license": "CC BY-SA 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 120647
+      },
+      "metadataStripped": true
+    },
+    "animal:dugong-dugon": {
+      "itemId": "animal:dugong-dugon",
+      "scientificName": "Dugong dugon",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:physeter-macrocephalus": {
+      "itemId": "animal:physeter-macrocephalus",
+      "scientificName": "Physeter macrocephalus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/debb3d8282e31f39dffba7b7.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1584303.m4a?1753657263",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/301674501",
+      "author": "Valentin Moser",
+      "credit": "(c) Valentin Moser, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 301674501,
+      "observedScientificName": "Physeter macrocephalus",
+      "metrics": {
+        "durationSeconds": 6.907,
+        "outputBytes": 40790
+      },
+      "metadataStripped": true
+    },
+    "animal:desmodus-rotundus": {
+      "itemId": "animal:desmodus-rotundus",
+      "scientificName": "Desmodus rotundus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:enhydra-lutris": {
+      "itemId": "animal:enhydra-lutris",
+      "scientificName": "Enhydra lutris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/edc57b29b66bb296eaa6b127.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/505274.mp3?1658534097",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/127433569",
+      "author": "Tuoichen",
+      "credit": "(c) Tuoichen, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.8,
+      "observationId": 127433569,
+      "observedScientificName": "Enhydra lutris kenyoni",
+      "metrics": {
+        "durationSeconds": 8.607,
+        "outputBytes": 49264
+      },
+      "metadataStripped": true
+    },
+    "animal:talpa-europaea": {
+      "itemId": "animal:talpa-europaea",
+      "scientificName": "Talpa europaea",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:chinchilla-lanigera": {
+      "itemId": "animal:chinchilla-lanigera",
+      "scientificName": "Chinchilla lanigera",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:hydrurga-leptonyx": {
+      "itemId": "animal:hydrurga-leptonyx",
+      "scientificName": "Hydrurga leptonyx",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:camelus-bactrianus": {
+      "itemId": "animal:camelus-bactrianus",
+      "scientificName": "Camelus bactrianus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:cricetus-cricetus": {
+      "itemId": "animal:cricetus-cricetus",
+      "scientificName": "Cricetus cricetus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:myrmecophaga-tridactyla": {
+      "itemId": "animal:myrmecophaga-tridactyla",
+      "scientificName": "Myrmecophaga tridactyla",
+      "status": "ready",
+      "assetUrl": "/audio/animals/30f1dbfc1ec0069c1ca2afcb.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1299606.m4a?1738628777",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/260551679",
+      "author": "Martha Lucia Ortiz-Moreno",
+      "credit": "(c) Martha Lucia Ortiz-Moreno, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 260551679,
+      "observedScientificName": "Myrmecophaga tridactyla",
+      "metrics": {
+        "durationSeconds": 18.306,
+        "outputBytes": 108406
+      },
+      "metadataStripped": true
+    },
+    "animal:capreolus-capreolus": {
+      "itemId": "animal:capreolus-capreolus",
+      "scientificName": "Capreolus capreolus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/2500aa89b62c2dcf4331f54c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/190812.mp3?1618833816",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/74505090",
+      "author": "euqirneto",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 74505090,
+      "observedScientificName": "Capreolus capreolus",
+      "metrics": {
+        "durationSeconds": 16.607,
+        "outputBytes": 106090
+      },
+      "metadataStripped": true
+    },
+    "animal:puma-concolor": {
+      "itemId": "animal:puma-concolor",
+      "scientificName": "Puma concolor",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e08d5ef57a62fac1b8dd98fc.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1189983.m4a?1725118588",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/238981410",
+      "author": "Martin Mortensen",
+      "credit": "(c) Martin Mortensen, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 238981410,
+      "observedScientificName": "Puma concolor",
+      "metrics": {
+        "durationSeconds": 8.207,
+        "outputBytes": 47197
+      },
+      "metadataStripped": true
+    },
+    "animal:canis-lupus-familiaris": {
+      "itemId": "animal:canis-lupus-familiaris",
+      "scientificName": "Canis lupus familiaris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/7acfd22b41fa76b426a42ae9.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg",
+      "author": "Amada44",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 4.106,
+        "outputBytes": 23960
+      },
+      "metadataStripped": true
+    },
+    "animal:saiga-tatarica": {
+      "itemId": "animal:saiga-tatarica",
+      "scientificName": "Saiga tatarica",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:balaenoptera-musculus": {
+      "itemId": "animal:balaenoptera-musculus",
+      "scientificName": "Balaenoptera musculus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:tursiops-truncatus": {
+      "itemId": "animal:tursiops-truncatus",
+      "scientificName": "Tursiops truncatus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:rattus-norvegicus": {
+      "itemId": "animal:rattus-norvegicus",
+      "scientificName": "Rattus norvegicus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/1d6a6c4d92ef2620ded7d797.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/779677.mp3?1690508523",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/175302402",
+      "author": "lucky",
+      "credit": "(c) lucky, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 175302402,
+      "observedScientificName": "Rattus norvegicus",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 110300
+      },
+      "metadataStripped": true
+    },
+    "animal:diceros-bicornis": {
+      "itemId": "animal:diceros-bicornis",
+      "scientificName": "Diceros bicornis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:callorhinus-ursinus": {
+      "itemId": "animal:callorhinus-ursinus",
+      "scientificName": "Callorhinus ursinus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:tapirus-terrestris": {
+      "itemId": "animal:tapirus-terrestris",
+      "scientificName": "Tapirus terrestris",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:hystrix-indica": {
+      "itemId": "animal:hystrix-indica",
+      "scientificName": "Hystrix indica",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:mirounga-leonina": {
+      "itemId": "animal:mirounga-leonina",
+      "scientificName": "Mirounga leonina",
+      "status": "ready",
+      "assetUrl": "/audio/animals/71aa8748a4e99b344a86e788.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/497720.mp3?1657652837",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/125968022",
+      "author": "Nicolas Olejnik",
+      "credit": "(c) Nicolas Olejnik, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 125968022,
+      "observedScientificName": "Mirounga leonina",
+      "metrics": {
+        "durationSeconds": 14.406,
+        "outputBytes": 82709
+      },
+      "metadataStripped": true
+    },
+    "animal:ceratotherium-simum": {
+      "itemId": "animal:ceratotherium-simum",
+      "scientificName": "Ceratotherium simum",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:petauroides-volans": {
+      "itemId": "animal:petauroides-volans",
+      "scientificName": "Petauroides volans",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:sus-scrofa-domesticus": {
+      "itemId": "animal:sus-scrofa-domesticus",
+      "scientificName": "Sus scrofa domesticus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/eb259f6ade6824826bcb4658.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Pig_grunt_-_Erdie.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Pig_grunt_-_Erdie.ogg",
+      "author": "erdie",
+      "credit": "This media file comes from Freesound.org , a collection of Creative Commons licensed audio samples. For more information, please see their official website www.freesound.org",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 0.662,
+        "outputBytes": 4996
+      },
+      "metadataStripped": true
+    },
+    "animal:lontra-felina": {
+      "itemId": "animal:lontra-felina",
+      "scientificName": "Lontra felina",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lobodon-carcinophaga": {
+      "itemId": "animal:lobodon-carcinophaga",
+      "scientificName": "Lobodon carcinophaga",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:solenodon-cubanus": {
+      "itemId": "animal:solenodon-cubanus",
+      "scientificName": "Solenodon cubanus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:panthera-tigris": {
+      "itemId": "animal:panthera-tigris",
+      "scientificName": "Panthera tigris",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:acrobates-pygmaeus": {
+      "itemId": "animal:acrobates-pygmaeus",
+      "scientificName": "Acrobates pygmaeus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:delphinus-delphis": {
+      "itemId": "animal:delphinus-delphis",
+      "scientificName": "Delphinus delphis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:syncerus-caffer": {
+      "itemId": "animal:syncerus-caffer",
+      "scientificName": "Syncerus caffer",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:blarina-brevicauda": {
+      "itemId": "animal:blarina-brevicauda",
+      "scientificName": "Blarina brevicauda",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bradypus-tridactylus": {
+      "itemId": "animal:bradypus-tridactylus",
+      "scientificName": "Bradypus tridactylus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:monachus-schauinslandi": {
+      "itemId": "animal:monachus-schauinslandi",
+      "scientificName": "Monachus schauinslandi",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:mephitis-mephitis": {
+      "itemId": "animal:mephitis-mephitis",
+      "scientificName": "Mephitis mephitis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/c6d87f223b95deefa276aa5f.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1596029.m4a?1754534626",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/304384700",
+      "author": "kristinpiston",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 304384700,
+      "observedScientificName": "Mephitis mephitis",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 114647
+      },
+      "metadataStripped": true
+    },
+    "animal:herpestes-smithii": {
+      "itemId": "animal:herpestes-smithii",
+      "scientificName": "Herpestes smithii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pongo-abelii": {
+      "itemId": "animal:pongo-abelii",
+      "scientificName": "Pongo abelii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:loxodonta-africana": {
+      "itemId": "animal:loxodonta-africana",
+      "scientificName": "Loxodonta africana",
+      "status": "ready",
+      "assetUrl": "/audio/animals/3faf9bb93c1f1be598f244ae.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/103908.mp3?1591559784",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/48825579",
+      "author": "Tuoichen",
+      "credit": "(c) Tuoichen, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 48825579,
+      "observedScientificName": "Loxodonta africana",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 106714
+      },
+      "metadataStripped": true
+    },
+    "animal:zalophus-californianus": {
+      "itemId": "animal:zalophus-californianus",
+      "scientificName": "Zalophus californianus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/a2c76bfa0c246e6303909040.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/581289.mp3?1672886470",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/145868221",
+      "author": "Charla",
+      "credit": "(c) Charla, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 145868221,
+      "observedScientificName": "Zalophus californianus",
+      "metrics": {
+        "durationSeconds": 15.007,
+        "outputBytes": 82327
+      },
+      "metadataStripped": true
+    },
+    "animal:grampus-griseus": {
+      "itemId": "animal:grampus-griseus",
+      "scientificName": "Grampus griseus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ursus-maritimus": {
+      "itemId": "animal:ursus-maritimus",
+      "scientificName": "Ursus maritimus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:crocidura-canariensis": {
+      "itemId": "animal:crocidura-canariensis",
+      "scientificName": "Crocidura canariensis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:diaemus-youngi": {
+      "itemId": "animal:diaemus-youngi",
+      "scientificName": "Diaemus youngii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:erignathus-barbatus": {
+      "itemId": "animal:erignathus-barbatus",
+      "scientificName": "Erignathus barbatus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/1cbb7aea74773e7558f0c52a.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/368655.m4a?1646934377",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/108312599",
+      "author": "Светлана Царахова",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 108312599,
+      "observedScientificName": "Erignathus barbatus",
+      "metrics": {
+        "durationSeconds": 10.507,
+        "outputBytes": 63146
+      },
+      "metadataStripped": true
+    },
+    "animal:lophiomys-imhausi": {
+      "itemId": "animal:lophiomys-imhausi",
+      "scientificName": "Lophiomys imhausi",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:camelus-dromedarius": {
+      "itemId": "animal:camelus-dromedarius",
+      "scientificName": "Camelus dromedarius",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:capra-aegagrus-hircus": {
+      "itemId": "animal:capra-aegagrus-hircus",
+      "scientificName": "Capra aegagrus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pseudorca-crassidens": {
+      "itemId": "animal:pseudorca-crassidens",
+      "scientificName": "Pseudorca crassidens",
+      "status": "ready",
+      "assetUrl": "/audio/animals/72c3a3d7470bd011a156f32a.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1490284.mp3?1748448557",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/284658583",
+      "author": "tunicatedreamz",
+      "credit": "(c) tunicatedreamz, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 284658583,
+      "observedScientificName": "Pseudorca crassidens",
+      "metrics": {
+        "durationSeconds": 17.107,
+        "outputBytes": 104290
+      },
+      "metadataStripped": true
+    },
+    "animal:diphylla-ecaudata": {
+      "itemId": "animal:diphylla-ecaudata",
+      "scientificName": "Diphylla ecaudata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bison-bonasus": {
+      "itemId": "animal:bison-bonasus",
+      "scientificName": "Bison bonasus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:passer-domesticus": {
+      "itemId": "animal:passer-domesticus",
+      "scientificName": "Passer domesticus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/6ae2982ae07602b79bd9a4be.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/ba/House_Sparrows_%28Passer_domesticus%29_%28W1CDR0001537_BD13%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:House_Sparrows_(Passer_domesticus)_(W1CDR0001537_BD13).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 106058
+      },
+      "metadataStripped": true
+    },
+    "animal:pica-pica": {
+      "itemId": "animal:pica-pica",
+      "scientificName": "Pica pica",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e4b8f42688f58b6f1c7de74c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Eurasian_Magpie_%28Pica_pica%29_%28W1CDR0001537_BD28%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Eurasian_Magpie_(Pica_pica)_(W1CDR0001537_BD28).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 109835
+      },
+      "metadataStripped": true
+    },
+    "animal:pyrrhula-pyrrhula": {
+      "itemId": "animal:pyrrhula-pyrrhula",
+      "scientificName": "Pyrrhula pyrrhula",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e1341bf12bbec035fff36cd2.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/80/Bullfinch_%28Pyrrhula_pyrrhula%29_%28W1CDR0001509_BD14%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bullfinch_(Pyrrhula_pyrrhula)_(W1CDR0001509_BD14).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 113988
+      },
+      "metadataStripped": true
+    },
+    "animal:ciconia-ciconia": {
+      "itemId": "animal:ciconia-ciconia",
+      "scientificName": "Ciconia ciconia",
+      "status": "ready",
+      "assetUrl": "/audio/animals/8c52b51e9ae7649c5ef4e92e.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/06/Klapperstorch.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Klapperstorch.ogg",
+      "author": "Jugrü",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 12.009,
+        "outputBytes": 77086
+      },
+      "metadataStripped": true
+    },
+    "animal:corvus-frugilegus": {
+      "itemId": "animal:corvus-frugilegus",
+      "scientificName": "Corvus frugilegus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/c39051d30e6e9cabd270497e.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/Corvus_frugilegus.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Corvus_frugilegus.ogg",
+      "author": "Vladimir Yu. Arkhipov, Arkhivov",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 117451
+      },
+      "metadataStripped": true
+    },
+    "animal:cygnus-olor": {
+      "itemId": "animal:cygnus-olor",
+      "scientificName": "Cygnus olor",
+      "status": "ready",
+      "assetUrl": "/audio/animals/268a23aa542f57b40d2b8b43.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Cygnus_olor_-_Mute_Swan_XC434964.mp3",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cygnus_olor_-_Mute_Swan_XC434964.mp3",
+      "author": "Joost van Bruggen",
+      "credit": "Metadata: https://www.xeno-canto.org/434964 Audio file: https://www.xeno-canto.org/434964/download",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 14.007,
+        "outputBytes": 74639
+      },
+      "metadataStripped": true
+    },
+    "animal:parus-major": {
+      "itemId": "animal:parus-major",
+      "scientificName": "Parus major",
+      "status": "ready",
+      "assetUrl": "/audio/animals/46221c7699a2fd28a454f635.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Great_Tit_%28Parus_major%29_%28W1CDR0001393_BD1%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Great_Tit_(Parus_major)_(W1CDR0001393_BD1).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 121179
+      },
+      "metadataStripped": true
+    },
+    "animal:aquila-chrysaetos": {
+      "itemId": "animal:aquila-chrysaetos",
+      "scientificName": "Aquila chrysaetos",
+      "status": "ready",
+      "assetUrl": "/audio/animals/ad503ce4ded56407d52ae56f.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Golden_Eagle_%28Aquila_chrysaetos%29_%28W1CDR0001387_BD6%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Golden_Eagle_(Aquila_chrysaetos)_(W1CDR0001387_BD6).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 105160
+      },
+      "metadataStripped": true
+    },
+    "animal:strigops-habroptila": {
+      "itemId": "animal:strigops-habroptila",
+      "scientificName": "Strigops habroptila",
+      "status": "ready",
+      "assetUrl": "/audio/animals/0bf5d434eded7a0b4431ea99.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ee/051226-kakapo-billbooming.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:051226-kakapo-billbooming.ogg",
+      "author": "Mnolf",
+      "credit": "Own work, Recorded on Codfish Island, New Zealand If you don't hear anything, try this file instead.",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 17.506,
+        "outputBytes": 93621
+      },
+      "metadataStripped": true
+    },
+    "animal:anser-anser": {
+      "itemId": "animal:anser-anser",
+      "scientificName": "Anser anser",
+      "status": "ready",
+      "assetUrl": "/audio/animals/eda995cca554455be09951b8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/70/Anser_anser_-_Greylag_Goose_XC436358.mp3",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Anser_anser_-_Greylag_Goose_XC436358.mp3",
+      "author": "Joost van Bruggen",
+      "credit": "Metadata: https://www.xeno-canto.org/436358 Audio file: https://www.xeno-canto.org/436358/download",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 107723
+      },
+      "metadataStripped": true
+    },
+    "animal:gallus-gallus-domesticus": {
+      "itemId": "animal:gallus-gallus-domesticus",
+      "scientificName": "Gallus gallus domesticus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/4bf7e231e1062fd77b5354a6.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Chickens_demanding_food.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Chickens_demanding_food.ogg",
+      "author": "alys",
+      "credit": "http://www.pdsounds.org/audio/download/538/chickens_demanding_food.mp3 PDSounds description: http://www.pdsounds.org/sounds/chickens_demanding_food Transferred by Fæ",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 11.306,
+        "outputBytes": 66689
+      },
+      "metadataStripped": true
+    },
+    "animal:sturnus-vulgaris": {
+      "itemId": "animal:sturnus-vulgaris",
+      "scientificName": "Sturnus vulgaris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/0aa3a9c2ac8a06a46bc91996.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Sturnus_vulgaris_juveniles_sound_recording.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sturnus_vulgaris_juveniles_sound_recording.ogg",
+      "author": "Kfrommolt",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 19.506,
+        "outputBytes": 105984
+      },
+      "metadataStripped": true
+    },
+    "animal:falco-peregrinus": {
+      "itemId": "animal:falco-peregrinus",
+      "scientificName": "Falco peregrinus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/11337442915f9d2086d252d3.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/596306.m4a?1676167503",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/148570421",
+      "author": "Carrie Seltzer",
+      "credit": "(c) Carrie Seltzer, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 148570421,
+      "observedScientificName": "Falco peregrinus",
+      "metrics": {
+        "durationSeconds": 15.906,
+        "outputBytes": 91694
+      },
+      "metadataStripped": true
+    },
+    "animal:sterna-hirundo": {
+      "itemId": "animal:sterna-hirundo",
+      "scientificName": "Sterna hirundo",
+      "status": "ready",
+      "assetUrl": "/audio/animals/0b2582bd18b908c2ffc2b4db.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/02/Sterna-hirundo-002.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sterna-hirundo-002.ogg",
+      "author": "No machine-readable author provided. Mdf assumed (based on copyright claims).",
+      "credit": "No machine-readable source provided. Own work assumed (based on copyright claims).",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 121888
+      },
+      "metadataStripped": true
+    },
+    "animal:struthio-camelus": {
+      "itemId": "animal:struthio-camelus",
+      "scientificName": "Struthio camelus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:columba-livia": {
+      "itemId": "animal:columba-livia",
+      "scientificName": "Columba livia",
+      "status": "ready",
+      "assetUrl": "/audio/animals/39f4124e1abc681d1e1104c8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/928549.m4a?1710436888",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/202422434",
+      "author": "E. A.",
+      "credit": "(c) E. A., some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.8,
+      "observationId": 202422434,
+      "observedScientificName": "Columba livia domestica",
+      "metrics": {
+        "durationSeconds": 10.407,
+        "outputBytes": 56612
+      },
+      "metadataStripped": true
+    },
+    "animal:aptenodytes-patagonicus": {
+      "itemId": "animal:aptenodytes-patagonicus",
+      "scientificName": "Aptenodytes patagonicus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/c6744c126a07ebe5444e0b54.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/King_Penguin_Rookery_Audio.oga",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:King_Penguin_Rookery_Audio.oga",
+      "author": "Hullwarren",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 112445
+      },
+      "metadataStripped": true
+    },
+    "animal:tyto-alba": {
+      "itemId": "animal:tyto-alba",
+      "scientificName": "Tyto alba",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e070c34801f1fbfde3ce2579.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Barn_Owl_%28Tyto_alba%29_%28W_TYTO_ALBA_R1_C16%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Barn_Owl_(Tyto_alba)_(W_TYTO_ALBA_R1_C16).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 11.906,
+        "outputBytes": 62856
+      },
+      "metadataStripped": true
+    },
+    "animal:dromaius-novaehollandiae": {
+      "itemId": "animal:dromaius-novaehollandiae",
+      "scientificName": "Dromaius novaehollandiae",
+      "status": "ready",
+      "assetUrl": "/audio/animals/bb214b8efce6a004ac9f7f33.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Dromaius_novaehollandiae_Lue0043_03.wav",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dromaius_novaehollandiae_Lue0043_03.wav",
+      "author": "Lütgens, Hans",
+      "credit": "https://www.tierstimmenarchiv.de/webinterface/contents/showdetails.php?autologin=false&amp;unique_id=TSA:Dromaius_novaehollandiae_Lue_43_3_0&amp;edit=-1",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 110503
+      },
+      "metadataStripped": true
+    },
+    "animal:anas-platyrhynchos": {
+      "itemId": "animal:anas-platyrhynchos",
+      "scientificName": "Anas platyrhynchos",
+      "status": "ready",
+      "assetUrl": "/audio/animals/01972fae8e66e7598544696c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/139201.wav?1601295663",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/61091611",
+      "author": "feralbeetle",
+      "credit": "(c) feralbeetle, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 61091611,
+      "observedScientificName": "Anas platyrhynchos",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 105610
+      },
+      "metadataStripped": true
+    },
+    "animal:ardea-cinerea": {
+      "itemId": "animal:ardea-cinerea",
+      "scientificName": "Ardea cinerea",
+      "status": "ready",
+      "assetUrl": "/audio/animals/c156ee2ebc648b82e631a4c0.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Grey_Heron_%28Ardea_cinerea%29_%28W_ARDEA_CINEREA_R1_C19%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Grey_Heron_(Ardea_cinerea)_(W_ARDEA_CINEREA_R1_C19).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 112527
+      },
+      "metadataStripped": true
+    },
+    "animal:grus-grus": {
+      "itemId": "animal:grus-grus",
+      "scientificName": "Grus grus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/27901eaeb37e13dae7f21d64.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1307958.wav?1739707117",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/261832242",
+      "author": "Donald Davesne",
+      "credit": "(c) Donald Davesne, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 261832242,
+      "observedScientificName": "Grus grus",
+      "metrics": {
+        "durationSeconds": 14.007,
+        "outputBytes": 82426
+      },
+      "metadataStripped": true
+    },
+    "animal:ara-militaris": {
+      "itemId": "animal:ara-militaris",
+      "scientificName": "Ara militaris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/5457da70f9066b0f1e6082fa.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Ara_militaris_-_Military_Macaw_XC250486.mp3",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Ara_militaris_-_Military_Macaw_XC250486.mp3",
+      "author": "Niels Krabbe",
+      "credit": "Metadata: https://www.xeno-canto.org/250486 Audio file: https://www.xeno-canto.org/250486/download",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 109912
+      },
+      "metadataStripped": true
+    },
+    "animal:acridotheres-tristis": {
+      "itemId": "animal:acridotheres-tristis",
+      "scientificName": "Acridotheres tristis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/0e8deb916dc4696f3bbc37c5.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Common_myna-Acridotheres_tristis.wav",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Common_myna-Acridotheres_tristis.wav",
+      "author": "Vinay bhat",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 137536
+      },
+      "metadataStripped": true
+    },
+    "animal:pavo-cristatus": {
+      "itemId": "animal:pavo-cristatus",
+      "scientificName": "Pavo cristatus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/6c638ee1cb7fdd6f7ee9de95.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/311061.wav?1632934923",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/96595514",
+      "author": "Manoj Karingamadathil",
+      "credit": "(c) Manoj Karingamadathil, some rights reserved (CC BY-SA)",
+      "license": "CC BY-SA",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 96595514,
+      "observedScientificName": "Pavo cristatus",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 118084
+      },
+      "metadataStripped": true
+    },
+    "animal:pelecanus-onocrotalus": {
+      "itemId": "animal:pelecanus-onocrotalus",
+      "scientificName": "Pelecanus onocrotalus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/98e61e47f5f0b7443f1ccac0.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Great_White_Pelican_%28Pelecanus_onocrotalus%29_sounds.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Great_White_Pelican_(Pelecanus_onocrotalus)_sounds.ogg",
+      "author": "Marco Dragonetti",
+      "credit": "https://xeno-canto.org/331138",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 11.707,
+        "outputBytes": 68992
+      },
+      "metadataStripped": true
+    },
+    "animal:dendrocopos-major": {
+      "itemId": "animal:dendrocopos-major",
+      "scientificName": "Dendrocopos major",
+      "status": "ready",
+      "assetUrl": "/audio/animals/80a8a9c1c00039bb7a1eec79.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/2005655.wav?1780763858",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/369008903",
+      "author": "Gianni Del Bufalo bygdb",
+      "credit": "(c) Gianni Del Bufalo bygdb, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 369008903,
+      "observedScientificName": "Dendrocopos major",
+      "metrics": {
+        "durationSeconds": 10.207,
+        "outputBytes": 62707
+      },
+      "metadataStripped": true
+    },
+    "animal:bubo-bubo": {
+      "itemId": "animal:bubo-bubo",
+      "scientificName": "Bubo bubo",
+      "status": "ready",
+      "assetUrl": "/audio/animals/3421b6a8438a9c25a586ce5e.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1625650.mp3?1757022778",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/311567747",
+      "author": "carnifex",
+      "credit": "(c) carnifex, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 311567747,
+      "observedScientificName": "Bubo bubo",
+      "metrics": {
+        "durationSeconds": 13.007,
+        "outputBytes": 74277
+      },
+      "metadataStripped": true
+    },
+    "animal:psittacus-erithacus": {
+      "itemId": "animal:psittacus-erithacus",
+      "scientificName": "Psittacus erithacus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/4c793cc2d385d6d86c075627.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Psittacus_erithacus_making_some_noise.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Psittacus_erithacus_making_some_noise.ogg",
+      "author": "Amada44",
+      "credit": "Own work",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 119286
+      },
+      "metadataStripped": true
+    },
+    "animal:casuarius-casuarius": {
+      "itemId": "animal:casuarius-casuarius",
+      "scientificName": "Casuarius casuarius",
+      "status": "ready",
+      "assetUrl": "/audio/animals/5a19959f95cddf7ac1a70aa5.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/2030001.m4a?1781833990",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/372534020",
+      "author": "Wairambar Rainforest",
+      "credit": "(c) Wairambar Rainforest, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 372534020,
+      "observedScientificName": "Casuarius casuarius",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 111453
+      },
+      "metadataStripped": true
+    },
+    "animal:phoenicopterus-roseus": {
+      "itemId": "animal:phoenicopterus-roseus",
+      "scientificName": "Phoenicopterus roseus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/9c776b156ede46f60f2eff1d.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1705959.wav?1764513880",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/328920336",
+      "author": "Mateusz Bronikowski",
+      "credit": "(c) Mateusz Bronikowski, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 328920336,
+      "observedScientificName": "Phoenicopterus roseus",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 109961
+      },
+      "metadataStripped": true
+    },
+    "animal:corvus-corax": {
+      "itemId": "animal:corvus-corax",
+      "scientificName": "Corvus corax",
+      "status": "ready",
+      "assetUrl": "/audio/animals/db44382d63ab1efbc269d0bc.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/16/Common_Raven_%28Corvus_corax%29_%28W1CDR0001449_BD6%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Common_Raven_(Corvus_corax)_(W1CDR0001449_BD6).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 118443
+      },
+      "metadataStripped": true
+    },
+    "animal:psittacula-krameri": {
+      "itemId": "animal:psittacula-krameri",
+      "scientificName": "Psittacula krameri",
+      "status": "ready",
+      "assetUrl": "/audio/animals/47d541008aa28dcea5c21d1d.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/558486.mp3?1667460452",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/140955685",
+      "author": "Doruk Ege Aksu",
+      "credit": "(c) Doruk Ege Aksu, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 140955685,
+      "observedScientificName": "Psittacula krameri",
+      "metrics": {
+        "durationSeconds": 16.107,
+        "outputBytes": 96799
+      },
+      "metadataStripped": true
+    },
+    "animal:diomedea-exulans": {
+      "itemId": "animal:diomedea-exulans",
+      "scientificName": "Diomedea exulans",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": [
+        "search: fetch failed"
+      ]
+    },
+    "animal:burhinus-oedicnemus": {
+      "itemId": "animal:burhinus-oedicnemus",
+      "scientificName": "Burhinus oedicnemus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/5f20b9d85741757d5279ed4c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1267523.mp3?1734208529",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/255106389",
+      "author": "Patrick Hacker",
+      "credit": "(c) Patrick Hacker, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 255106389,
+      "observedScientificName": "Burhinus oedicnemus",
+      "metrics": {
+        "durationSeconds": 7.707,
+        "outputBytes": 42931
+      },
+      "metadataStripped": true
+    },
+    "animal:daption-capense": {
+      "itemId": "animal:daption-capense",
+      "scientificName": "Daption capense",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ramphastos-toco": {
+      "itemId": "animal:ramphastos-toco",
+      "scientificName": "Ramphastos toco",
+      "status": "ready",
+      "assetUrl": "/audio/animals/2942aea3cf627bd7fb2e33b8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/507626.wav?1658836305",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/127889745",
+      "author": "Jennifer Rycenga",
+      "credit": "(c) Jennifer Rycenga, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 127889745,
+      "observedScientificName": "Ramphastos toco",
+      "metrics": {
+        "durationSeconds": 9.406,
+        "outputBytes": 53076
+      },
+      "metadataStripped": true
+    },
+    "animal:meleagris-gallopavo": {
+      "itemId": "animal:meleagris-gallopavo",
+      "scientificName": "Meleagris gallopavo",
+      "status": "ready",
+      "assetUrl": "/audio/animals/bfe5f1cd6d7b45fe24350442.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/302318.wav?1630961856",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/93649779",
+      "author": "Eric Schmidt",
+      "credit": "(c) Eric Schmidt, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 93649779,
+      "observedScientificName": "Meleagris gallopavo",
+      "metrics": {
+        "durationSeconds": 18.506,
+        "outputBytes": 103421
+      },
+      "metadataStripped": true
+    },
+    "animal:pyrrhocorax-graculus": {
+      "itemId": "animal:pyrrhocorax-graculus",
+      "scientificName": "Pyrrhocorax graculus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": [
+        "search: fetch failed"
+      ]
+    },
+    "animal:cyanopsitta-spixii": {
+      "itemId": "animal:cyanopsitta-spixii",
+      "scientificName": "Cyanopsitta spixii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:stercorarius-maccormicki": {
+      "itemId": "animal:stercorarius-maccormicki",
+      "scientificName": "Stercorarius maccormicki",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e60462977136ff590a6d64b8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1260489.wav?1733071778",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/253768975",
+      "author": "steve b",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 253768975,
+      "observedScientificName": "Stercorarius maccormicki",
+      "metrics": {
+        "durationSeconds": 5.806,
+        "outputBytes": 33468
+      },
+      "metadataStripped": true
+    },
+    "animal:nymphicus-hollandicus": {
+      "itemId": "animal:nymphicus-hollandicus",
+      "scientificName": "Nymphicus hollandicus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/7c6dd7ba0f68f0a327c6e134.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1207094.m4a?1726924747",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/243075960",
+      "author": "Pavel Kacl",
+      "credit": "(c) Pavel Kacl, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 243075960,
+      "observedScientificName": "Nymphicus hollandicus",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 111405
+      },
+      "metadataStripped": true
+    },
+    "animal:gallirallus-australis": {
+      "itemId": "animal:gallirallus-australis",
+      "scientificName": "Gallirallus australis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/5b472c04fd9b18a280407747.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/337193.mp3?1639384053",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/102984517",
+      "author": "Svend Hansen",
+      "credit": "(c) Svend Hansen, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 102984517,
+      "observedScientificName": "Gallirallus australis",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 107465
+      },
+      "metadataStripped": true
+    },
+    "animal:pygoscelis-adeliae": {
+      "itemId": "animal:pygoscelis-adeliae",
+      "scientificName": "Pygoscelis adeliae",
+      "status": "ready",
+      "assetUrl": "/audio/animals/5366ad2dbe2cdf24188ce335.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/364474.wav?1646259866",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/107788518",
+      "author": "steve b",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 107788518,
+      "observedScientificName": "Pygoscelis adeliae",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 114668
+      },
+      "metadataStripped": true
+    },
+    "animal:ardeotis-kori": {
+      "itemId": "animal:ardeotis-kori",
+      "scientificName": "Ardeotis kori",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:anous-stolidus": {
+      "itemId": "animal:anous-stolidus",
+      "scientificName": "Anous stolidus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/4f68e3c60b7a9ad72b61f46b.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1019082.wav?1714905717",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/213657462",
+      "author": "er-birds",
+      "credit": "(c) er-birds, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 213657462,
+      "observedScientificName": "Anous stolidus",
+      "metrics": {
+        "durationSeconds": 7.106,
+        "outputBytes": 40175
+      },
+      "metadataStripped": true
+    },
+    "animal:cinnyricinclus-leucogaster": {
+      "itemId": "animal:cinnyricinclus-leucogaster",
+      "scientificName": "Cinnyricinclus leucogaster",
+      "status": "ready",
+      "assetUrl": "/audio/animals/bac0e35c4c97557af6fe01f0.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Cinnyricinclus_leucogaster_-_Violet-backed_Starling_XC605466.mp3",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Cinnyricinclus_leucogaster_-_Violet-backed_Starling_XC605466.mp3",
+      "author": "paulo kivuyo",
+      "credit": "Metadata: https://www.xeno-canto.org/605466 Audio file: https://www.xeno-canto.org/605466/download",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 134460
+      },
+      "metadataStripped": true
+    },
+    "animal:porphyrio-hochstetteri": {
+      "itemId": "animal:porphyrio-hochstetteri",
+      "scientificName": "Porphyrio hochstetteri",
+      "status": "ready",
+      "assetUrl": "/audio/animals/18d44f357040a9fdfd90c251.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1646609.mp3?1758701446",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/316237165",
+      "author": "Richard Littauer",
+      "credit": "(c) Richard Littauer, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 316237165,
+      "observedScientificName": "Porphyrio hochstetteri",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 116511
+      },
+      "metadataStripped": true
+    },
+    "animal:anodorhynchus-hyacinthinus": {
+      "itemId": "animal:anodorhynchus-hyacinthinus",
+      "scientificName": "Anodorhynchus hyacinthinus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/408cb3cd78d1e5ed685a1676.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1983935.wav?1779918152",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/338709062",
+      "author": "Donald Davesne",
+      "credit": "(c) Donald Davesne, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 338709062,
+      "observedScientificName": "Anodorhynchus hyacinthinus",
+      "metrics": {
+        "durationSeconds": 12.107,
+        "outputBytes": 70140
+      },
+      "metadataStripped": true
+    },
+    "animal:taeniopygia-guttata": {
+      "itemId": "animal:taeniopygia-guttata",
+      "scientificName": "Taeniopygia guttata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": [
+        "search: fetch failed"
+      ]
+    },
+    "animal:esox-lucius": {
+      "itemId": "animal:esox-lucius",
+      "scientificName": "Esox lucius",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:silurus-glanis": {
+      "itemId": "animal:silurus-glanis",
+      "scientificName": "Silurus glanis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:anguilla-anguilla": {
+      "itemId": "animal:anguilla-anguilla",
+      "scientificName": "Anguilla anguilla",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lota-lota": {
+      "itemId": "animal:lota-lota",
+      "scientificName": "Lota lota",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:poecilia-reticulata": {
+      "itemId": "animal:poecilia-reticulata",
+      "scientificName": "Poecilia reticulata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:cyprinus-carpio": {
+      "itemId": "animal:cyprinus-carpio",
+      "scientificName": "Cyprinus carpio",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:huso-huso": {
+      "itemId": "animal:huso-huso",
+      "scientificName": "Huso huso",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:salmo-trutta": {
+      "itemId": "animal:salmo-trutta",
+      "scientificName": "Salmo trutta",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:electrophorus-electricus": {
+      "itemId": "animal:electrophorus-electricus",
+      "scientificName": "Electrophorus electricus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:perca-fluviatilis": {
+      "itemId": "animal:perca-fluviatilis",
+      "scientificName": "Perca fluviatilis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:dicentrarchus-labrax": {
+      "itemId": "animal:dicentrarchus-labrax",
+      "scientificName": "Dicentrarchus labrax",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:oncorhynchus-mykiss": {
+      "itemId": "animal:oncorhynchus-mykiss",
+      "scientificName": "Oncorhynchus mykiss",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:scardinius-erythrophthalmus": {
+      "itemId": "animal:scardinius-erythrophthalmus",
+      "scientificName": "Scardinius erythrophthalmus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:gymnocephalus-cernua": {
+      "itemId": "animal:gymnocephalus-cernua",
+      "scientificName": "Gymnocephalus cernua",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:thunnus-thynnus": {
+      "itemId": "animal:thunnus-thynnus",
+      "scientificName": "Thunnus thynnus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:betta-splendens": {
+      "itemId": "animal:betta-splendens",
+      "scientificName": "Betta splendens",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:clarias-gariepinus": {
+      "itemId": "animal:clarias-gariepinus",
+      "scientificName": "Clarias gariepinus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:hucho-taimen": {
+      "itemId": "animal:hucho-taimen",
+      "scientificName": "Hucho taimen",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ictalurus-punctatus": {
+      "itemId": "animal:ictalurus-punctatus",
+      "scientificName": "Ictalurus punctatus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:acipenser-baerii": {
+      "itemId": "animal:acipenser-baerii",
+      "scientificName": "Acipenser baerii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:chondrostoma-nasus": {
+      "itemId": "animal:chondrostoma-nasus",
+      "scientificName": "Chondrostoma nasus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pygocentrus-nattereri": {
+      "itemId": "animal:pygocentrus-nattereri",
+      "scientificName": "Pygocentrus nattereri",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:carassius-auratus": {
+      "itemId": "animal:carassius-auratus",
+      "scientificName": "Carassius auratus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/cc144b0b86979e8fa5bf9af2.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/83/Claude_Debussy%2C_Images_-_06_Poissons_d%27or_%28Marcelle_Meyer%2C_1957%29.flac",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Claude_Debussy,_Images_-_06_Poissons_d%27or_(Marcelle_Meyer,_1957).flac",
+      "author": "Claude Debussy (1862-1918), composer Marcelle Meyer (1897-1958), player (Rome, April 4th 1957)",
+      "credit": "Médiathèque musicale Mahler - fonds discophiles français (ref. Les Discophiles Français DF 98/99)",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 129001
+      },
+      "metadataStripped": true
+    },
+    "animal:mugil-cephalus": {
+      "itemId": "animal:mugil-cephalus",
+      "scientificName": "Mugil cephalus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:sander-lucioperca": {
+      "itemId": "animal:sander-lucioperca",
+      "scientificName": "Sander lucioperca",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:alligator-mississippiensis": {
+      "itemId": "animal:alligator-mississippiensis",
+      "scientificName": "Alligator mississippiensis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/199530c44f979e771a0afb12.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bf/27alligator2bellow.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:27alligator2bellow.ogg",
+      "author": "",
+      "credit": "",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 105845
+      },
+      "metadataStripped": true
+    },
+    "animal:dermochelys-coriacea": {
+      "itemId": "animal:dermochelys-coriacea",
+      "scientificName": "Dermochelys coriacea",
+      "status": "ready",
+      "assetUrl": "/audio/animals/4dc19f5418468a01768403d8.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Dermochelys_coriacea_001.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dermochelys_coriacea_001.ogg",
+      "author": "Philippe Kurlapski",
+      "credit": "Private works",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 111412
+      },
+      "metadataStripped": true
+    },
+    "animal:crocodylus-niloticus": {
+      "itemId": "animal:crocodylus-niloticus",
+      "scientificName": "Crocodylus niloticus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:vipera-berus": {
+      "itemId": "animal:vipera-berus",
+      "scientificName": "Vipera berus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:iguana-iguana": {
+      "itemId": "animal:iguana-iguana",
+      "scientificName": "Iguana iguana",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:natrix-natrix": {
+      "itemId": "animal:natrix-natrix",
+      "scientificName": "Natrix natrix",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ophiophagus-hannah": {
+      "itemId": "animal:ophiophagus-hannah",
+      "scientificName": "Ophiophagus hannah",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:python-regius": {
+      "itemId": "animal:python-regius",
+      "scientificName": "Python regius",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:testudo-graeca": {
+      "itemId": "animal:testudo-graeca",
+      "scientificName": "Testudo graeca",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:varanus-komodoensis": {
+      "itemId": "animal:varanus-komodoensis",
+      "scientificName": "Varanus komodoensis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:dendroaspis-viridis": {
+      "itemId": "animal:dendroaspis-viridis",
+      "scientificName": "Dendroaspis viridis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lacerta-agilis": {
+      "itemId": "animal:lacerta-agilis",
+      "scientificName": "Lacerta agilis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:mecistops-cataphractus": {
+      "itemId": "animal:mecistops-cataphractus",
+      "scientificName": "Mecistops cataphractus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bitis-gabonica": {
+      "itemId": "animal:bitis-gabonica",
+      "scientificName": "Bitis gabonica",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:hemidactylus-turcicus": {
+      "itemId": "animal:hemidactylus-turcicus",
+      "scientificName": "Hemidactylus turcicus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:amblyrhynchus-cristatus": {
+      "itemId": "animal:amblyrhynchus-cristatus",
+      "scientificName": "Amblyrhynchus cristatus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:eunectes-murinus": {
+      "itemId": "animal:eunectes-murinus",
+      "scientificName": "Eunectes murinus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:naja-haje": {
+      "itemId": "animal:naja-haje",
+      "scientificName": "Naja haje",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:python-molurus": {
+      "itemId": "animal:python-molurus",
+      "scientificName": "Python molurus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:chamaeleo-calyptratus": {
+      "itemId": "animal:chamaeleo-calyptratus",
+      "scientificName": "Chamaeleo calyptratus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bufo-bufo": {
+      "itemId": "animal:bufo-bufo",
+      "scientificName": "Bufo bufo",
+      "status": "ready",
+      "assetUrl": "/audio/animals/87c99e7ba1022a5fbc310cc6.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Common_Toad_%28Bufo_bufo%29_%28W_BUFO_BUFO_R3_C2%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Common_Toad_(Bufo_bufo)_(W_BUFO_BUFO_R3_C2).ogg",
+      "author": "",
+      "credit": "This file has been provided by the British Library from its digital collections. Links to the British Library's website may be broken as the library recovers from a October 2023 cyber attack, and will be updated once material becomes accessible online. For more information on the attack see: https://www.bl.uk/about/cyber-attack It is also made available on a British Library website .",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 117037
+      },
+      "metadataStripped": true
+    },
+    "animal:rana-arvalis": {
+      "itemId": "animal:rana-arvalis",
+      "scientificName": "Rana arvalis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/bf7ea85d077c22ec9770e07e.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8b/14_heikikker_individu_Rana_arvalis_individual.wav",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:14_heikikker_individu_Rana_arvalis_individual.wav",
+      "author": "Odé, Baudewijn .mw-parser-output .messagebox{margin:4px 0;width:auto;border-collapse:collapse;border:2px solid var(--border-color-progressive,#6485d1);background-color:var(--background-color-neutral-subtle,#fbfcff);color:var(--color-base,#202122);box-sizing:border-box;border-inline-start-width:8px}.mw-parser-output .messagebox.mbox-small{font-size:88%;line-height:1.25em}.mw-parser-output .mbox-warning,.mw-parser-output .mbox-speedy{border:2px solid var(--border-color-error,#b22222);background:var(--background-color-error-subtle,#ffdbdb);border-inline-start-width:8px}.mw-parser-output .mbox-serious,.mw-parser-output .mbox-delete,.mw-parser-output .mbox-stop{border:2px solid var(--border-color-error,#b22222);border-inline-start-width:8px}.mw-parser-output .mbox-issue,.mw-parser-output .mbox-content{border:2px solid #f28500;background:var(--background-color-warning-subtle,#ffe);border-inline-start-width:8px}.mw-parser-output .mbox-query,.mw-parser-output .mbox-style{border:2px solid #f4c430;background:var(--background-color-warning-subtle,#ffe);border-inline-start-width:8px}.mw-parser-output .mbox-shit{border:2px solid #960;border-inline-start-width:8px}.mw-parser-output .mbox-license{border:2px solid #88a;border-inline-start-width:initial}.mw-parser-output .mbox-legal{border:2px solid var(--border-color-notice,#666);background:var(--background-color-base,#fff);border-inline-start-width:8px}.mw-parser-output .mbox-honor{border:2px solid #ca3;background:var(--background-color-warning-subtle,#fcf4db);border-inline-start-width:8px}.mw-parser-output .mbox-growth{border:2px solid #8d4;background:var(--background-color-success-subtle,#d5fdf4);border-inline-start-width:8px}.mw-parser-output .mbox-move{border:2px solid #93c;border-inline-start-width:8px}.mw-parser-output .mbox-protection,.mw-parser-output .mbox-message{border:2px solid var(--border-color-base,#aaa);border-inline-start-width:8px}.mw-parser-output .messagebox .mbox-text{border:none;padding:0.25em 0.9em;width:100%}.mw-parser-output .messagebox .mbox-image{border:none;padding-top:2px;padding-bottom:2px;padding-inline-start:0.9em;padding-inline-end:0;text-align:center}.mw-parser-output .messagebox .mbox-imageright{border:none;padding-top:2px;padding-bottom:2px;padding-inline-start:0;padding-inline-end:0.9em;text-align:center}.mw-parser-output .messagebox .mbox-empty-cell{border:none;padding:0;width:1px}.mw-parser-output .messagebox .mbox-invalid-type{text-align:center}@media(min-width:720px){.mw-parser-output .messagebox{margin:4px 10%}.mw-parser-output .messagebox.mbox-small{clear:right;float:right;margin:4px 0 4px 1em;width:238px}}body.skin--responsive .mw-parser-output table.messagebox img{max-width:none!important} This work is free and may be used by anyone for any purpose. If you wish to use this content , you do not need to request permission as long as you follow any licensing requirements mentioned on this page. The Wikimedia Foundation has received an e-mail confirming that the copyright holder has approved publication under the terms mentioned on this page. This correspondence has been reviewed by a Volunteer Response Team (VRT) member and stored in our permission archive . The correspondence is available to trusted volunteers as ticket #2017032310011265 . If you have questions about the archived correspondence, please use the VRT noticeboard . Ticket link: https://ticket.wikimedia.org/otrs/index.pl?Action=AgentTicketZoom&TicketNumber=2017032310011265 Find other files from the same ticket:",
+      "credit": "Creemers, R.C.M. & J.J.C.W. van Delft, De amfibieën en reptielen van Nederland, Nationaal Natuurhistorisch Museum Naturalis en European Invertebrate Survey",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 115988
+      },
+      "metadataStripped": true
+    },
+    "animal:lissotriton-vulgaris": {
+      "itemId": "animal:lissotriton-vulgaris",
+      "scientificName": "Lissotriton vulgaris",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bufo-viridis": {
+      "itemId": "animal:bufo-viridis",
+      "scientificName": "Bufo viridis",
+      "status": "ready",
+      "assetUrl": "/audio/animals/27e7018cf934637630961287.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Bufo-viridis-mating-call.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bufo-viridis-mating-call.ogg",
+      "author": "Mnolf",
+      "credit": "Own work Location: Thaur, Austria Equipment: iRiver iFP-390T Post-processing: Converted to .ogg using Audacity",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 102373
+      },
+      "metadataStripped": true
+    },
+    "animal:xenopus-laevis": {
+      "itemId": "animal:xenopus-laevis",
+      "scientificName": "Xenopus laevis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:conraua-goliath": {
+      "itemId": "animal:conraua-goliath",
+      "scientificName": "Conraua goliath",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pelophylax-ridibundus": {
+      "itemId": "animal:pelophylax-ridibundus",
+      "scientificName": "Pelophylax ridibundus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/ef127fd8a0e2f308df340fb7.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Pelophylax_ridibundus_at_Mali_lag%2C_Botevgrad%2C_Bulgaria.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Pelophylax_ridibundus_at_Mali_lag,_Botevgrad,_Bulgaria.ogg",
+      "author": "Dimitǎr Boevski",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 114065
+      },
+      "metadataStripped": true
+    },
+    "animal:salamandra-salamandra": {
+      "itemId": "animal:salamandra-salamandra",
+      "scientificName": "Salamandra salamandra",
+      "status": "ready",
+      "assetUrl": "/audio/animals/90571d21afb90d05668ac919.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1679679.m4a?1761581258",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/82980245",
+      "author": "Régis SICARD BARANOWSKI",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 82980245,
+      "observedScientificName": "Salamandra salamandra",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 111012
+      },
+      "metadataStripped": true
+    },
+    "animal:salamandrella-keyserlingii": {
+      "itemId": "animal:salamandrella-keyserlingii",
+      "scientificName": "Salamandrella keyserlingii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pelophylax-esculentus": {
+      "itemId": "animal:pelophylax-esculentus",
+      "scientificName": "Pelophylax esculentus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/8aaf6cf7b8ec390255d19f59.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/0/03/20_bastaardkikker_enkele_individuen_Rana_kl._esculenta_some_individuals.wav",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:20_bastaardkikker_enkele_individuen_Rana_kl._esculenta_some_individuals.wav",
+      "author": "Odé, Baudewijn .mw-parser-output .messagebox{margin:4px 0;width:auto;border-collapse:collapse;border:2px solid var(--border-color-progressive,#6485d1);background-color:var(--background-color-neutral-subtle,#fbfcff);color:var(--color-base,#202122);box-sizing:border-box;border-inline-start-width:8px}.mw-parser-output .messagebox.mbox-small{font-size:88%;line-height:1.25em}.mw-parser-output .mbox-warning,.mw-parser-output .mbox-speedy{border:2px solid var(--border-color-error,#b22222);background:var(--background-color-error-subtle,#ffdbdb);border-inline-start-width:8px}.mw-parser-output .mbox-serious,.mw-parser-output .mbox-delete,.mw-parser-output .mbox-stop{border:2px solid var(--border-color-error,#b22222);border-inline-start-width:8px}.mw-parser-output .mbox-issue,.mw-parser-output .mbox-content{border:2px solid #f28500;background:var(--background-color-warning-subtle,#ffe);border-inline-start-width:8px}.mw-parser-output .mbox-query,.mw-parser-output .mbox-style{border:2px solid #f4c430;background:var(--background-color-warning-subtle,#ffe);border-inline-start-width:8px}.mw-parser-output .mbox-shit{border:2px solid #960;border-inline-start-width:8px}.mw-parser-output .mbox-license{border:2px solid #88a;border-inline-start-width:initial}.mw-parser-output .mbox-legal{border:2px solid var(--border-color-notice,#666);background:var(--background-color-base,#fff);border-inline-start-width:8px}.mw-parser-output .mbox-honor{border:2px solid #ca3;background:var(--background-color-warning-subtle,#fcf4db);border-inline-start-width:8px}.mw-parser-output .mbox-growth{border:2px solid #8d4;background:var(--background-color-success-subtle,#d5fdf4);border-inline-start-width:8px}.mw-parser-output .mbox-move{border:2px solid #93c;border-inline-start-width:8px}.mw-parser-output .mbox-protection,.mw-parser-output .mbox-message{border:2px solid var(--border-color-base,#aaa);border-inline-start-width:8px}.mw-parser-output .messagebox .mbox-text{border:none;padding:0.25em 0.9em;width:100%}.mw-parser-output .messagebox .mbox-image{border:none;padding-top:2px;padding-bottom:2px;padding-inline-start:0.9em;padding-inline-end:0;text-align:center}.mw-parser-output .messagebox .mbox-imageright{border:none;padding-top:2px;padding-bottom:2px;padding-inline-start:0;padding-inline-end:0.9em;text-align:center}.mw-parser-output .messagebox .mbox-empty-cell{border:none;padding:0;width:1px}.mw-parser-output .messagebox .mbox-invalid-type{text-align:center}@media(min-width:720px){.mw-parser-output .messagebox{margin:4px 10%}.mw-parser-output .messagebox.mbox-small{clear:right;float:right;margin:4px 0 4px 1em;width:238px}}body.skin--responsive .mw-parser-output table.messagebox img{max-width:none!important} This work is free and may be used by anyone for any purpose. If you wish to use this content , you do not need to request permission as long as you follow any licensing requirements mentioned on this page. The Wikimedia Foundation has received an e-mail confirming that the copyright holder has approved publication under the terms mentioned on this page. This correspondence has been reviewed by a Volunteer Response Team (VRT) member and stored in our permission archive . The correspondence is available to trusted volunteers as ticket #2017032310011265 . If you have questions about the archived correspondence, please use the VRT noticeboard . Ticket link: https://ticket.wikimedia.org/otrs/index.pl?Action=AgentTicketZoom&TicketNumber=2017032310011265 Find other files from the same ticket:",
+      "credit": "Creemers, R.C.M. & J.J.C.W. van Delft, De amfibieën en reptielen van Nederland, Nationaal Natuurhistorisch Museum Naturalis en European Invertebrate Survey",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 119002
+      },
+      "metadataStripped": true
+    },
+    "animal:apis-mellifera": {
+      "itemId": "animal:apis-mellifera",
+      "scientificName": "Apis mellifera",
+      "status": "ready",
+      "assetUrl": "/audio/animals/81b675e9d6311b1fed11f515.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/BioAcoustica_413-2_Apis_mellifera_524_.flac",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:BioAcoustica_413-2_Apis_mellifera_524_.flac",
+      "author": "",
+      "credit": "http://bio.acousti.ca/node/9372",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 114559
+      },
+      "metadataStripped": true
+    },
+    "animal:danaus-plexippus": {
+      "itemId": "animal:danaus-plexippus",
+      "scientificName": "Danaus plexippus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "candidateCount": 1,
+      "failures": [
+        "Wikimedia Commons: ffmpeg exited 4294967274: [out#0/ogg @ 000001f89a4bd740] Output file does not contain any stream\r\nError opening output file C:\\projects\\dev\\seans_starter_pack\\public\\audio\\animals\\.building-danaus-plexippus.ogg.\r\nError opening output files: Invalid argument"
+      ]
+    },
+    "animal:leptinotarsa-decemlineata": {
+      "itemId": "animal:leptinotarsa-decemlineata",
+      "scientificName": "Leptinotarsa decemlineata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:cimex-lectularius": {
+      "itemId": "animal:cimex-lectularius",
+      "scientificName": "Cimex lectularius",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bombus-terrestris": {
+      "itemId": "animal:bombus-terrestris",
+      "scientificName": "Bombus terrestris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/de7b33801449b248450efbcb.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/715556.wav?1685257618",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/164155236",
+      "author": "Tony Wills",
+      "credit": "(c) Tony Wills, some rights reserved (CC BY-SA)",
+      "license": "CC BY-SA",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 164155236,
+      "observedScientificName": "Bombus terrestris",
+      "metrics": {
+        "durationSeconds": 8.207,
+        "outputBytes": 46863
+      },
+      "metadataStripped": true
+    },
+    "animal:lucanus-cervus": {
+      "itemId": "animal:lucanus-cervus",
+      "scientificName": "Lucanus cervus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/dc913c335c4c0b02a1dab3a5.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Ru-Lucanus_cervus_%28intro%29.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Ru-Lucanus_cervus_(intro).ogg",
+      "author": "Speaker: Andrew Krizhanovsky , incorporating: flay-flok - complet album / 06 - intro (by-sa 2.0, en:Jamendo ) Philippe Mayne - L'or du fou / 03 - In the Deep (by-sa 3.0, en:Jamendo ) File:Ru-audio template-Wikipedia2.ogg (by-sa 3.0) Authors of the article",
+      "credit": "Own recording by the speaker Derivative of Жук-олень",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 125027
+      },
+      "metadataStripped": true
+    },
+    "animal:acheta-domesticus": {
+      "itemId": "animal:acheta-domesticus",
+      "scientificName": "Acheta domesticus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/554cedf0cc56649fdb966f99.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/BioAcoustica_393-9_Acheta_domesticus_3545_.flac",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:BioAcoustica_393-9_Acheta_domesticus_3545_.flac",
+      "author": "",
+      "credit": "http://bio.acousti.ca/sites/bio.acousti.ca/files/393-9_Acheta_domesticus_3545_.wav",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 119532
+      },
+      "metadataStripped": true
+    },
+    "animal:tettigonia-viridissima": {
+      "itemId": "animal:tettigonia-viridissima",
+      "scientificName": "Tettigonia viridissima",
+      "status": "ready",
+      "assetUrl": "/audio/animals/50a4afbfc2c081d841ce4dfe.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b8/BioAcoustica_394-5_Tettigonia_viridissima_360r2_.flac",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:BioAcoustica_394-5_Tettigonia_viridissima_360r2_.flac",
+      "author": "",
+      "credit": "http://bio.acousti.ca/node/9058",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 119775
+      },
+      "metadataStripped": true
+    },
+    "animal:mantis-religiosa": {
+      "itemId": "animal:mantis-religiosa",
+      "scientificName": "Mantis religiosa",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:blattella-germanica": {
+      "itemId": "animal:blattella-germanica",
+      "scientificName": "Blattella germanica",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:papilio-machaon": {
+      "itemId": "animal:papilio-machaon",
+      "scientificName": "Papilio machaon",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:solenopsis-invicta": {
+      "itemId": "animal:solenopsis-invicta",
+      "scientificName": "Solenopsis invicta",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:oryctes-nasicornis": {
+      "itemId": "animal:oryctes-nasicornis",
+      "scientificName": "Oryctes nasicornis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lipoptena-cervi": {
+      "itemId": "animal:lipoptena-cervi",
+      "scientificName": "Lipoptena cervi",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:scarabaeus-sacer": {
+      "itemId": "animal:scarabaeus-sacer",
+      "scientificName": "Scarabaeus sacer",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lymantria-dispar": {
+      "itemId": "animal:lymantria-dispar",
+      "scientificName": "Lymantria dispar",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:tineola-bisselliella": {
+      "itemId": "animal:tineola-bisselliella",
+      "scientificName": "Tineola bisselliella",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:aglais-io": {
+      "itemId": "animal:aglais-io",
+      "scientificName": "Aglais io",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:galleria-mellonella": {
+      "itemId": "animal:galleria-mellonella",
+      "scientificName": "Galleria mellonella",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:coccinella-septempunctata": {
+      "itemId": "animal:coccinella-septempunctata",
+      "scientificName": "Coccinella septempunctata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pulex-irritans": {
+      "itemId": "animal:pulex-irritans",
+      "scientificName": "Pulex irritans",
+      "status": "ready",
+      "assetUrl": "/audio/animals/af18453857e4b473cbdb0f88.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d5/De-Pulex_irritans.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:De-Pulex_irritans.ogg",
+      "author": "Jeuwre",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 1.813,
+        "outputBytes": 10138
+      },
+      "metadataStripped": true
+    },
+    "animal:anax-imperator": {
+      "itemId": "animal:anax-imperator",
+      "scientificName": "Anax imperator",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:periplaneta-americana": {
+      "itemId": "animal:periplaneta-americana",
+      "scientificName": "Periplaneta americana",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:daktulosphaira-vitifoliae": {
+      "itemId": "animal:daktulosphaira-vitifoliae",
+      "scientificName": "Daktulosphaira vitifoliae",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:monomorium-pharaonis": {
+      "itemId": "animal:monomorium-pharaonis",
+      "scientificName": "Monomorium pharaonis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:latrodectus-tredecimguttatus": {
+      "itemId": "animal:latrodectus-tredecimguttatus",
+      "scientificName": "Latrodectus tredecimguttatus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ixodes-ricinus": {
+      "itemId": "animal:ixodes-ricinus",
+      "scientificName": "Ixodes ricinus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lycosa-singoriensis": {
+      "itemId": "animal:lycosa-singoriensis",
+      "scientificName": "Lycosa singoriensis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pandinus-imperator": {
+      "itemId": "animal:pandinus-imperator",
+      "scientificName": "Pandinus imperator",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:sarcoptes-scabiei": {
+      "itemId": "animal:sarcoptes-scabiei",
+      "scientificName": "Sarcoptes scabiei",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:dermanyssus-gallinae": {
+      "itemId": "animal:dermanyssus-gallinae",
+      "scientificName": "Dermanyssus gallinae",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:argas-reflexus": {
+      "itemId": "animal:argas-reflexus",
+      "scientificName": "Argas reflexus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:hyalomma-dromedarii": {
+      "itemId": "animal:hyalomma-dromedarii",
+      "scientificName": "Hyalomma dromedarii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:sepia-officinalis": {
+      "itemId": "animal:sepia-officinalis",
+      "scientificName": "Sepia officinalis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:octopus-vulgaris": {
+      "itemId": "animal:octopus-vulgaris",
+      "scientificName": "Octopus vulgaris",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:nautilus-pompilius": {
+      "itemId": "animal:nautilus-pompilius",
+      "scientificName": "Nautilus pompilius",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:hapalochlaena-lunulata": {
+      "itemId": "animal:hapalochlaena-lunulata",
+      "scientificName": "Hapalochlaena lunulata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:sepia-apama": {
+      "itemId": "animal:sepia-apama",
+      "scientificName": "Sepia apama",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:carcharodon-carcharias": {
+      "itemId": "animal:carcharodon-carcharias",
+      "scientificName": "Carcharodon carcharias",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:homarus-americanus": {
+      "itemId": "animal:homarus-americanus",
+      "scientificName": "Homarus americanus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:rhincodon-typus": {
+      "itemId": "animal:rhincodon-typus",
+      "scientificName": "Rhincodon typus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:arion-vulgaris": {
+      "itemId": "animal:arion-vulgaris",
+      "scientificName": "Arion vulgaris",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e788c1e8d2e2561a5e921e56.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Slug_eating_a_leaf.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Slug_eating_a_leaf.ogg",
+      "author": "Ianactually",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 106266
+      },
+      "metadataStripped": true
+    },
+    "animal:astacus-astacus": {
+      "itemId": "animal:astacus-astacus",
+      "scientificName": "Astacus astacus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:paralithodes-camtschaticus": {
+      "itemId": "animal:paralithodes-camtschaticus",
+      "scientificName": "Paralithodes camtschaticus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:dreissena-polymorpha": {
+      "itemId": "animal:dreissena-polymorpha",
+      "scientificName": "Dreissena polymorpha",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:margaritifera-margaritifera": {
+      "itemId": "animal:margaritifera-margaritifera",
+      "scientificName": "Margaritifera margaritifera",
+      "status": "ready",
+      "assetUrl": "/audio/animals/f6bb0eda1bf76a585675c205.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/52171.mp3?1575806712",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/36463493",
+      "author": "Sidnei Dantas",
+      "credit": "(c) Sidnei Dantas, some rights reserved (CC BY-SA)",
+      "license": "CC BY-SA",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.8,
+      "observationId": 36463493,
+      "observedScientificName": "Rhinella margaritifera",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 127084
+      },
+      "metadataStripped": true
+    },
+    "animal:mytilus-edulis": {
+      "itemId": "animal:mytilus-edulis",
+      "scientificName": "Mytilus edulis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:callinectes-sapidus": {
+      "itemId": "animal:callinectes-sapidus",
+      "scientificName": "Callinectes sapidus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:helix-pomatia": {
+      "itemId": "animal:helix-pomatia",
+      "scientificName": "Helix pomatia",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:glaucus-atlanticus": {
+      "itemId": "animal:glaucus-atlanticus",
+      "scientificName": "Glaucus atlanticus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:unio-pictorum": {
+      "itemId": "animal:unio-pictorum",
+      "scientificName": "Unio pictorum",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:achatina-fulica": {
+      "itemId": "animal:achatina-fulica",
+      "scientificName": "Achatina fulica",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:limax-maximus": {
+      "itemId": "animal:limax-maximus",
+      "scientificName": "Limax maximus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:huso-dauricus": {
+      "itemId": "animal:huso-dauricus",
+      "scientificName": "Huso dauricus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/4c326715f986fe863e89ac6a.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons search",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Rus-Konstantin_L.-%D0%BA%D0%B0%D0%BB%D1%83%D0%B3%D0%B0.wav",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rus-Konstantin_L.-%D0%BA%D0%B0%D0%BB%D1%83%D0%B3%D0%B0.wav",
+      "author": "Konstantin L.",
+      "credit": "Own work",
+      "license": "CC0",
+      "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "attributionRequired": false,
+      "confidence": 0.85,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 0.99,
+        "outputBytes": 6097
+      },
+      "metadataStripped": true
+    },
+    "animal:aptenodytes-forsteri": {
+      "itemId": "animal:aptenodytes-forsteri",
+      "scientificName": "Aptenodytes forsteri",
+      "status": "ready",
+      "assetUrl": "/audio/animals/1b574c1e1ce084f443e23f5c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/908836.wav?1708998247",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/200575498",
+      "author": "steve b",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 200575498,
+      "observedScientificName": "Aptenodytes forsteri",
+      "metrics": {
+        "durationSeconds": 1.272,
+        "outputBytes": 8083
+      },
+      "metadataStripped": true
+    },
+    "animal:cygnus-atratus": {
+      "itemId": "animal:cygnus-atratus",
+      "scientificName": "Cygnus atratus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/1a4cb20495fc693a365e17c1.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/19335.mp3?1523264533",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/10725549",
+      "author": "Claudia Schipp",
+      "credit": "no rights reserved",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false,
+      "confidence": 0.95,
+      "observationId": 10725549,
+      "observedScientificName": "Cygnus atratus",
+      "metrics": {
+        "durationSeconds": 10.806,
+        "outputBytes": 67144
+      },
+      "metadataStripped": true
+    },
+    "animal:tinca-tinca": {
+      "itemId": "animal:tinca-tinca",
+      "scientificName": "Tinca tinca",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:chelonia-mydas": {
+      "itemId": "animal:chelonia-mydas",
+      "scientificName": "Chelonia mydas",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:corvus-cornix": {
+      "itemId": "animal:corvus-cornix",
+      "scientificName": "Corvus cornix",
+      "status": "ready",
+      "assetUrl": "/audio/animals/af2bb26c8cb7bad38f669249.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f1/%D0%9A%D0%B0%D1%80%D0%BA%D0%B0%D0%BD%D0%BD%D1%8F.ogg",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:%D0%9A%D0%B0%D1%80%D0%BA%D0%B0%D0%BD%D0%BD%D1%8F.ogg",
+      "author": "Qypchak",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 116985
+      },
+      "metadataStripped": true
+    },
+    "animal:pagodroma-nivea": {
+      "itemId": "animal:pagodroma-nivea",
+      "scientificName": "Pagodroma nivea",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:amazona-aestiva": {
+      "itemId": "animal:amazona-aestiva",
+      "scientificName": "Amazona aestiva",
+      "status": "ready",
+      "assetUrl": "/audio/animals/636998e91dfa761122f46e39.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/819437.wav?1695725991",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/184987985",
+      "author": "Pablo",
+      "credit": "(c) Pablo, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 184987985,
+      "observedScientificName": "Amazona aestiva",
+      "metrics": {
+        "durationSeconds": 3,
+        "outputBytes": 16440
+      },
+      "metadataStripped": true
+    },
+    "animal:sousa-chinensis": {
+      "itemId": "animal:sousa-chinensis",
+      "scientificName": "Sousa chinensis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:bolborhynchus-lineola": {
+      "itemId": "animal:bolborhynchus-lineola",
+      "scientificName": "Bolborhynchus lineola",
+      "status": "ready",
+      "assetUrl": "/audio/animals/845bf194b2ee506f333f78a3.ogg",
+      "soundType": "animal-vocalization",
+      "source": "Wikimedia Commons",
+      "sourceFileUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5b/Bolborhynchus_lineola_-_Barred_Parakeet_XC250543.mp3",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Bolborhynchus_lineola_-_Barred_Parakeet_XC250543.mp3",
+      "author": "Niels Krabbe",
+      "credit": "Metadata: https://www.xeno-canto.org/250543 Audio file: https://www.xeno-canto.org/250543/download",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "attributionRequired": true,
+      "confidence": 1,
+      "observationId": null,
+      "observedScientificName": null,
+      "metrics": {
+        "durationSeconds": 14.607,
+        "outputBytes": 77466
+      },
+      "metadataStripped": true
+    },
+    "animal:stenella-coeruleoalba": {
+      "itemId": "animal:stenella-coeruleoalba",
+      "scientificName": "Stenella coeruleoalba",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pusa-hispida-botnica": {
+      "itemId": "animal:pusa-hispida-botnica",
+      "scientificName": "Pusa hispida botnica",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:blarina-carolinensis": {
+      "itemId": "animal:blarina-carolinensis",
+      "scientificName": "Blarina carolinensis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:steno-bredanensis": {
+      "itemId": "animal:steno-bredanensis",
+      "scientificName": "Steno bredanensis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lissodelphis-borealis": {
+      "itemId": "animal:lissodelphis-borealis",
+      "scientificName": "Lissodelphis borealis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:stenella-frontalis": {
+      "itemId": "animal:stenella-frontalis",
+      "scientificName": "Stenella frontalis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:phoca-vitulina-stejnegeri": {
+      "itemId": "animal:phoca-vitulina-stejnegeri",
+      "scientificName": "Phoca vitulina stejnegeri",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:peponocephala-electra": {
+      "itemId": "animal:peponocephala-electra",
+      "scientificName": "Peponocephala electra",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ixodes-scapularis": {
+      "itemId": "animal:ixodes-scapularis",
+      "scientificName": "Ixodes scapularis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:rhynochetos-jubatus": {
+      "itemId": "animal:rhynochetos-jubatus",
+      "scientificName": "Rhynochetos jubatus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:anthropoides-paradiseus": {
+      "itemId": "animal:anthropoides-paradiseus",
+      "scientificName": "Anthropoides paradiseus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:polyodon-spathula": {
+      "itemId": "animal:polyodon-spathula",
+      "scientificName": "Polyodon spathula",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:vandellia-cirrhosa": {
+      "itemId": "animal:vandellia-cirrhosa",
+      "scientificName": "Vandellia cirrhosa",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:anoplopoma-fimbria": {
+      "itemId": "animal:anoplopoma-fimbria",
+      "scientificName": "Anoplopoma fimbria",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:atlantisia-rogersi": {
+      "itemId": "animal:atlantisia-rogersi",
+      "scientificName": "Atlantisia rogersi",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:natrix-tessellata": {
+      "itemId": "animal:natrix-tessellata",
+      "scientificName": "Natrix tessellata",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pseudopus-apodus": {
+      "itemId": "animal:pseudopus-apodus",
+      "scientificName": "Pseudopus apodus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:gracula-religiosa": {
+      "itemId": "animal:gracula-religiosa",
+      "scientificName": "Gracula religiosa",
+      "status": "ready",
+      "assetUrl": "/audio/animals/e8ab434a14e8f1856795402c.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1033357.wav?1715491520",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/215182338",
+      "author": "Sam Hambly",
+      "credit": "(c) Sam Hambly, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 215182338,
+      "observedScientificName": "Gracula religiosa",
+      "metrics": {
+        "durationSeconds": 9.907,
+        "outputBytes": 59836
+      },
+      "metadataStripped": true
+    },
+    "animal:cacatua-sanguinea": {
+      "itemId": "animal:cacatua-sanguinea",
+      "scientificName": "Cacatua sanguinea",
+      "status": "ready",
+      "assetUrl": "/audio/animals/caaedb29f8d072820d215d88.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1339128.m4a?1742284493",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/265801430",
+      "author": "Caleb Catto",
+      "credit": "(c) Caleb Catto, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 265801430,
+      "observedScientificName": "Cacatua sanguinea",
+      "metrics": {
+        "durationSeconds": 13.906,
+        "outputBytes": 82045
+      },
+      "metadataStripped": true
+    },
+    "animal:macronectes-giganteus": {
+      "itemId": "animal:macronectes-giganteus",
+      "scientificName": "Macronectes giganteus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:oryctolagus-cuniculus-domesticus": {
+      "itemId": "animal:oryctolagus-cuniculus-domesticus",
+      "scientificName": "Oryctolagus cuniculus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:cerastes-cerastes": {
+      "itemId": "animal:cerastes-cerastes",
+      "scientificName": "Cerastes cerastes",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:dendroaspis-polylepis": {
+      "itemId": "animal:dendroaspis-polylepis",
+      "scientificName": "Dendroaspis polylepis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:canis-latrans": {
+      "itemId": "animal:canis-latrans",
+      "scientificName": "Canis latrans",
+      "status": "ready",
+      "assetUrl": "/audio/animals/ecf159bb6da5cb74fd3f932a.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/339613.m4a?1640230528",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/103500194",
+      "author": "Cricket Raspet",
+      "credit": "(c) Cricket Raspet, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 103500194,
+      "observedScientificName": "Canis latrans",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 112861
+      },
+      "metadataStripped": true
+    },
+    "animal:varanus-niloticus": {
+      "itemId": "animal:varanus-niloticus",
+      "scientificName": "Varanus niloticus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:serinus-canaria": {
+      "itemId": "animal:serinus-canaria",
+      "scientificName": "Serinus canaria",
+      "status": "ready",
+      "assetUrl": "/audio/animals/ff5685f6d3fe07afbd6d301b.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/597008.wav?1676285711",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/148684081",
+      "author": "Donald Davesne",
+      "credit": "(c) Donald Davesne, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 148684081,
+      "observedScientificName": "Serinus canaria",
+      "metrics": {
+        "durationSeconds": 5.806,
+        "outputBytes": 34027
+      },
+      "metadataStripped": true
+    },
+    "animal:gobio-gobio": {
+      "itemId": "animal:gobio-gobio",
+      "scientificName": "Gobio gobio",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:gymnocorymbus-ternetzi": {
+      "itemId": "animal:gymnocorymbus-ternetzi",
+      "scientificName": "Gymnocorymbus ternetzi",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lepomis-gibbosus": {
+      "itemId": "animal:lepomis-gibbosus",
+      "scientificName": "Lepomis gibbosus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:zamenis-longissimus": {
+      "itemId": "animal:zamenis-longissimus",
+      "scientificName": "Zamenis longissimus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:acipenser-gueldenstaedtii": {
+      "itemId": "animal:acipenser-gueldenstaedtii",
+      "scientificName": "Acipenser gueldenstaedtii",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:coregonus-muksun": {
+      "itemId": "animal:coregonus-muksun",
+      "scientificName": "Coregonus muksun",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:lacerta-viridis": {
+      "itemId": "animal:lacerta-viridis",
+      "scientificName": "Lacerta viridis",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:pagophilus-groenlandicus": {
+      "itemId": "animal:pagophilus-groenlandicus",
+      "scientificName": "Pagophilus groenlandicus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:podargus-strigoides": {
+      "itemId": "animal:podargus-strigoides",
+      "scientificName": "Podargus strigoides",
+      "status": "ready",
+      "assetUrl": "/audio/animals/8ab7b7ba7203d2894feb093d.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/871224.wav?1704455675",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/195830536",
+      "author": "graeme lunt",
+      "credit": "(c) graeme lunt, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.95,
+      "observationId": 195830536,
+      "observedScientificName": "Podargus strigoides",
+      "metrics": {
+        "durationSeconds": 11.507,
+        "outputBytes": 65469
+      },
+      "metadataStripped": true
+    },
+    "animal:triturus-cristatus": {
+      "itemId": "animal:triturus-cristatus",
+      "scientificName": "Triturus cristatus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:caretta-caretta": {
+      "itemId": "animal:caretta-caretta",
+      "scientificName": "Caretta caretta",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:abramis-brama": {
+      "itemId": "animal:abramis-brama",
+      "scientificName": "Abramis brama",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:macrovipera-lebetina": {
+      "itemId": "animal:macrovipera-lebetina",
+      "scientificName": "Macrovipera lebetinus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:panthera-pardus": {
+      "itemId": "animal:panthera-pardus",
+      "scientificName": "Panthera pardus",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:ctenopharyngodon-idella": {
+      "itemId": "animal:ctenopharyngodon-idella",
+      "scientificName": "Ctenopharyngodon idella",
+      "status": "not-found",
+      "searchedSources": [
+        "Wikimedia Commons/Wikidata",
+        "iNaturalist",
+        "Wikimedia Commons search"
+      ],
+      "failures": []
+    },
+    "animal:rutilus-rutilus": {
+      "itemId": "animal:rutilus-rutilus",
+      "scientificName": "Rutilus rutilus",
+      "status": "ready",
+      "assetUrl": "/audio/animals/9236b046b7d58f4dcfaa353b.ogg",
+      "soundType": "animal-vocalization",
+      "source": "iNaturalist",
+      "sourceFileUrl": "https://static.inaturalist.org/sounds/1798255.wav?1773055794",
+      "sourcePageUrl": "https://www.inaturalist.org/observations/342059169",
+      "author": "Eric Schmidt",
+      "credit": "(c) Eric Schmidt, some rights reserved (CC BY)",
+      "license": "CC BY",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true,
+      "confidence": 0.8,
+      "observationId": 342059169,
+      "observedScientificName": "Pheugopedius rutilus",
+      "metrics": {
+        "durationSeconds": 20.006,
+        "outputBytes": 108671
+      },
+      "metadataStripped": true
+    }
+  }
+}

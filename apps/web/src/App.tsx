@@ -264,6 +264,7 @@ type AssistHintView = {
   title: string
   subtitle: string
   body?: string
+  value?: unknown
   people?: Person[]
   available: boolean
 }
@@ -278,7 +279,7 @@ type AdminWindow = Window & {
   SEANS_ADMIN_GET_DAILY_SALT?: () => number
 }
 
-const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'info', 'fact']
+const ASSIST_HINT_KEYS: AssistHintKey[] = ['plot', 'info', 'fact', 'silhouette', 'sound']
 const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
   info: 'info',
   fact: 'fact',
@@ -288,15 +289,49 @@ const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
   cast_secondary: 'info',
   awards: 'info',
 }
-const assistHintTitle = (key: AssistHintKey, mode?: TitleMode) => key === 'plot'
-  ? mode
-    ? CATALOG_HINT_COPY[mode].plotOptionTitle
-    : 'Сюжетная подсказка'
-  : key === 'fact'
-    ? 'Интересный факт'
-    : mode
-      ? CATALOG_HINT_COPY[mode].optionTitle
-      : 'Неоткрытая информация'
+const assistHintTitle = (key: AssistHintKey, mode?: TitleMode) => {
+  if (key === 'plot') return mode ? CATALOG_HINT_COPY[mode].plotOptionTitle : 'Сюжетная подсказка'
+  if (key === 'fact') return 'Интересный факт'
+  if (key === 'silhouette') return 'Силуэт'
+  if (key === 'sound') return 'Голос животного'
+  return mode ? CATALOG_HINT_COPY[mode].optionTitle : 'Неоткрытая информация'
+}
+
+type AnimalMediaHint = {
+  kind: 'silhouette' | 'sound'
+  url: string
+  soundType?: string | null
+  attribution?: {
+    author?: string | null
+    license?: string | null
+  } | null
+}
+
+const animalMediaHint = (value: unknown): AnimalMediaHint | null => {
+  if (!value || typeof value !== 'object') return null
+  const candidate = value as Partial<AnimalMediaHint>
+  if ((candidate.kind !== 'silhouette' && candidate.kind !== 'sound') || typeof candidate.url !== 'string' || !candidate.url) return null
+  return candidate as AnimalMediaHint
+}
+
+const hintMediaUrl = (url: string) => /^https?:\/\//i.test(url) ? url : publicAssetUrl(url)
+const isAnimalSilhouetteAsset = (url: unknown): url is string => typeof url === 'string' && /^\/images\/animals\/silhouettes\/[a-f0-9]{24}\.webp$/.test(url)
+const isAnimalSoundAsset = (url: unknown): url is string => typeof url === 'string' && /^\/audio\/animals\/[a-f0-9]{24}\.ogg$/.test(url)
+
+function AssistHintValue({ value }: { value: unknown }) {
+  const media = animalMediaHint(value)
+  if (!media) {
+    const text = Array.isArray(value) ? value.join(', ') : String(value ?? '—')
+    return <p>{text}</p>
+  }
+  const attribution = [media.attribution?.author, media.attribution?.license].map((part) => String(part ?? '').trim()).filter(Boolean).join(' · ')
+  return <div className={`animal-media-hint animal-media-hint--${media.kind}`}>
+    {media.kind === 'silhouette'
+      ? <div className="animal-media-hint__silhouette"><img src={hintMediaUrl(media.url)} alt="Силуэт загаданного животного" draggable={false} /></div>
+      : <audio controls preload="metadata" controlsList="nodownload noplaybackrate" src={hintMediaUrl(media.url)}>Ваш браузер не поддерживает воспроизведение аудио.</audio>}
+    {attribution && <small>{media.kind === 'sound' ? 'Запись' : 'Изображение'}: {attribution}</small>}
+  </div>
+}
 const normalizeAssistHintKeyValue = (value: unknown): AssistHintKey | null => {
   if (typeof value !== 'string') return null
   const normalized = value.trim()
@@ -804,6 +839,26 @@ const renderUnopenedLocalInfo = (item: TitleItem, candidate: string, attempts: A
 
 const buildAssistHints = (item: TitleItem, choices: HintChoice[], attempts: Attempt[] = []): AssistHintView[] => {
   const out: AssistHintView[] = []
+  if (item.mode === 'animal') {
+    if (isAnimalSilhouetteAsset(item.silhouetteUrl) && !choices.some((choice) => choice.key === 'silhouette')) {
+      out.push({
+        key: 'silhouette',
+        title: 'Силуэт',
+        subtitle: 'Очертания загаданного животного без фотографии и названия',
+        value: { kind: 'silhouette', url: item.silhouetteUrl, attribution: item.silhouetteAttribution ?? item.mediaAttribution ?? null },
+        available: true,
+      })
+    }
+    if (isAnimalSoundAsset(item.soundUrl) && !choices.some((choice) => choice.key === 'sound')) {
+      out.push({
+        key: 'sound',
+        title: 'Голос животного',
+        subtitle: 'Короткая лицензированная запись без названия животного',
+        value: { kind: 'sound', url: item.soundUrl, soundType: item.soundType ?? null, attribution: item.soundAttribution ?? null },
+        available: true,
+      })
+    }
+  }
   if (!choices.some((choice) => choice.key === 'plot') && isPlayableGamePlotHint(item)) {
     const plotBody = cropHintText(cleanHintText(String(item.plotHint ?? '')))
     if (plotBody) {
@@ -845,7 +900,23 @@ const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): Assis
   let plotOpened = false
 
   for (const choice of [...choices].sort((a, b) => a.round - b.round)) {
-    if (choice.key === 'plot' && plotBody && !plotOpened) {
+    if (choice.key === 'silhouette' && item.mode === 'animal' && isAnimalSilhouetteAsset(item.silhouetteUrl)) {
+      out.push({
+        key: 'silhouette',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: 'Силуэт',
+        value: { kind: 'silhouette', url: item.silhouetteUrl, attribution: item.silhouetteAttribution ?? item.mediaAttribution ?? null },
+        available: true,
+      })
+    } else if (choice.key === 'sound' && item.mode === 'animal' && isAnimalSoundAsset(item.soundUrl)) {
+      out.push({
+        key: 'sound',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: 'Голос животного',
+        value: { kind: 'sound', url: item.soundUrl, soundType: item.soundType ?? null, attribution: item.soundAttribution ?? null },
+        available: true,
+      })
+    } else if (choice.key === 'plot' && plotBody && !plotOpened) {
       plotOpened = true
       out.push({
         key: 'plot',
@@ -2585,6 +2656,10 @@ function Game({
   challenge,
   onPlayNext,
   onReplay,
+  replayCost,
+  replayShortage,
+  replayPending,
+  replayAccessSource,
   onConfigureMode,
 }: {
   titles: TitleItem[]
@@ -2609,6 +2684,10 @@ function Game({
   challenge: ChallengePayload | null
   onPlayNext: (mode: TitleMode | null) => void
   onReplay: () => void
+  replayCost: number
+  replayShortage: number
+  replayPending: boolean
+  replayAccessSource: 'tickets' | 'club'
   onConfigureMode: () => void
 }) {
   const effectivePeriod: PeriodKey = GAME_MODE_MANIFEST[mode].periodPolicy === 'all' ? 'all' : period
@@ -3037,6 +3116,7 @@ function Game({
         {revealedAssistHints.map((hint, index) => <article key={`${hint.key}-${index}`} className="assist-reveal-card">
           <span><Sparkles /> {hint.title}</span>
           {hint.body && <p>{renderHintBody(hint.body)}</p>}
+          {hint.value != null && <AssistHintValue value={hint.value} />}
           {!!hint.people?.length && <div className="assist-people-row">
             {hint.people.map((person, index) => <PersonPortrait key={`${personName(person)}-${index}`} person={person} />)}
           </div>}
@@ -3069,6 +3149,11 @@ function Game({
         onConfigure={onConfigureMode}
         onChallenge={shareChallenge}
         onCopy={copyResult}
+        onReplay={onReplay}
+        replayCost={replayCost}
+        replayShortage={replayShortage}
+        replayPending={replayPending}
+        replayAccessSource={replayAccessSource}
         onReport={reportContent}
       />}
 
@@ -3224,7 +3309,7 @@ const withRevealedServerHint = (current: GameResponse | undefined, response: Hin
   }
 }
 
-function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, onConfigureMode, onSessionLoaded, onPackSession }: {
+function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, replayCost, replayShortage, replayPending, replayAccessSource, onConfigureMode, onSessionLoaded, onPackSession }: {
   sessionId: string
   onHome: () => void
   onBack: () => void
@@ -3234,6 +3319,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   onReview: () => void
   onPlayNext: (mode: TitleMode | null) => void
   onReplay: () => void
+  replayCost: number
+  replayShortage: number
+  replayPending: boolean
+  replayAccessSource: 'tickets' | 'club'
   onConfigureMode: () => void
   onSessionLoaded: (session: GameSessionSnapshot) => void
   onPackSession: (session: GameSessionSnapshot) => void
@@ -3762,7 +3851,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Sparkles /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       {(session.status === 'playing' || session.status === 'final_choice') && <div className="progress-row"><SegmentedProgress value={session.status === 'final_choice' ? maxAttempts : session.attemptsCount} max={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Sparkles /> Подсказка</ActionButton>}</div>}
-      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><p>{Array.isArray(choice.response.value) ? choice.response.value.join(', ') : String(choice.response.value ?? '—')}</p></article>)}</section>}
+      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Sparkles /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><AssistHintValue value={choice.response.value} /></article>)}</section>}
       {session.status === 'final_choice' && session.finalChoice && <FinalChoicePanel
         mode={session.mode}
         snapshot={session.finalChoice}
@@ -3797,7 +3886,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             if (session.mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: session.period, outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
-          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReplay={onReplay} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && packLeaderboard.data && !packLeaderboard.isError && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
@@ -3888,7 +3977,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           <h2>Подсказка открыта</h2>
           <article className="hint-modal__reveal">
             <span><Sparkles /> {assistHintTitle(revealedHint.hintKey, session.mode)} · после {revealedHint.checkpoint} попыток</span>
-            <p>{Array.isArray(revealedHint.value) ? revealedHint.value.join(', ') : String(revealedHint.value ?? '—')}</p>
+            <AssistHintValue value={revealedHint.value} />
           </article>
           <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>
         </> : <>
@@ -5126,6 +5215,10 @@ function GameApp() {
             onReview={openMusicReview}
             onPlayNext={playNextDaily}
             onReplay={launchFreePlay}
+            replayCost={freePlayCostValue}
+            replayShortage={freePlayShortage}
+            replayPending={titleActionPending}
+            replayAccessSource={clubFreePlay ? 'club' : 'tickets'}
             onConfigureMode={() => moveToScreen('title')}
             onSessionLoaded={syncServerSessionContext}
             onPackSession={(session) => activateServerSession(session, 'hub')}
@@ -5158,6 +5251,10 @@ function GameApp() {
           challenge={challengeAccepted ? challenge : null}
           onPlayNext={playNextDaily}
           onReplay={launchFreePlay}
+          replayCost={freePlayCostValue}
+          replayShortage={freePlayShortage}
+          replayPending={titleActionPending}
+          replayAccessSource={clubFreePlay ? 'club' : 'tickets'}
           onConfigureMode={() => moveToScreen('title')}
             />)}
 

@@ -248,7 +248,8 @@ const sourceChecks = [
     path: 'infra/nginx/shoditsa.conf.template',
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
-      ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*connections[^)]*danetki[^)]*\)\$/],
+      ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*animal[^)]*connections[^)]*danetki[^)]*\)\$/],
+      ['immutable opaque animal media', /location\s+~\*\s+"\^\/\(images\/animals\/silhouettes\|audio\/animals\)\/\[a-f0-9\]\{24\}\\\.\(webp\|ogg\)\$"\s*\{[^]*max-age=31536000,\s*immutable/],
       ['friends room SPA refresh route', /location\s+=\s+\/games\/together\s*\{[^}]*try_files\s+\/index\.html\s+=404/s],
       ['private route noindex header', /X-Robots-Tag\s+"noindex, follow, noarchive"/],
       ['invalid game route 404', /location\s+\/games\/\s*\{[^}]*return\s+404/s],
@@ -289,6 +290,7 @@ const sourceChecks = [
     required: [
       ['content-addressed local release id', /Get-FileHash[^]*\$commitSha-\$artifactHash/],
       ['atomic local release activation', /current\.next[^]*mv -Tf/],
+      ['animal route migration and verification', /NGINX_ROUTE_CONFIG[^]*animal[^]*docker exec[^]*animal/],
     ],
   },
   {

@@ -14,7 +14,7 @@ import {
   type PlayableMode,
 } from '@shoditsa/contracts'
 import {
-  attendanceStats, connectionsSessionState, dailyAttendance, dailyChallenges, danetkiDailyUsage, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
+  attendanceStats, connectionsSessionState, contentItemVersions, dailyAttendance, dailyChallenges, danetkiDailyUsage, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
   promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
@@ -27,6 +27,12 @@ import { settlePositiveWalletCredit, walletCreditMetadata } from './wallet-credi
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 const UNLOCKABLE: PlayableMode[] = [...PERIOD_UNLOCKABLE_MODE_IDS]
 const FREE_PLAY: CatalogGuessModeId[] = CATALOG_GUESS_MODE_IDS.filter((mode) => GAME_MODE_MANIFEST[mode].freePlay)
+
+export const unseenFreePlayCandidates = <Item extends { id: string }>(items: readonly Item[], seenItemIds: Iterable<string>) => {
+  const seen = new Set(seenItemIds)
+  const unseen = items.filter((item) => !seen.has(item.id))
+  return unseen.length ? unseen : [...items]
+}
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
@@ -172,7 +178,16 @@ export const startFreePlay = async (
   const revisionId = await activeRevision(tx)
   const pool = await answerPool(tx, revisionId, mode, 'all', mode === 'music' ? difficulty ?? 'medium' : null)
   if (!pool.items.length) throw new ApiError(503, 'CONTENT_POOL_EMPTY', 'Для режима нет доступных вариантов')
-  const answer = pool.items[randomInt(pool.items.length)]
+  const seenAnswers = await tx.select({ itemId: contentItemVersions.itemId })
+    .from(gameSessions)
+    .innerJoin(contentItemVersions, eq(contentItemVersions.id, gameSessions.answerItemVersionId))
+    .where(and(
+      eq(gameSessions.userId, userId),
+      eq(gameSessions.mode, mode),
+      eq(gameSessions.puzzleDate, date),
+    ))
+  const candidates = unseenFreePlayCandidates(pool.items, seenAnswers.map((entry) => entry.itemId))
+  const answer = candidates[randomInt(candidates.length)]
   const balanceAfter = wallet.balance - cost
   const ledger = clubActive ? [] : await tx.insert(walletLedger).values({
     userId, operationKey: `free-play:${userId}:${idempotencyKey}`, type: 'spend', reason: 'free-play', amount: -cost, balanceAfter,

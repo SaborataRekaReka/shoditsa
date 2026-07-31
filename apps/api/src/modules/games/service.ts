@@ -277,7 +277,7 @@ type BuiltHintOption = {
   key: AssistHintKey
   title: string
   subtitle: string
-  value: string
+  value: unknown
   sourceKey?: string
 }
 
@@ -289,10 +289,53 @@ const hintChoiceSourceKey = (choice: ExistingHintChoice) => {
   return typeof sourceKey === 'string' && sourceKey ? sourceKey : null
 }
 
+const safeHintAttribution = (attribution: TitleItem['mediaAttribution']) => attribution
+  ? {
+      author: attribution.author,
+      license: attribution.license,
+      attributionRequired: attribution.attributionRequired,
+    }
+  : null
+
+const isRuntimeAnimalSilhouette = (value: unknown): value is string => (
+  typeof value === 'string' && /^\/images\/animals\/silhouettes\/[a-f0-9]{24}\.webp$/.test(value)
+)
+const isRuntimeAnimalSound = (value: unknown): value is string => (
+  typeof value === 'string' && /^\/audio\/animals\/[a-f0-9]{24}\.ogg$/.test(value)
+)
+
 export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = [], seed = ''): BuiltHintOption[] => {
   const options: BuiltHintOption[] = []
   const evidence = revealedAttemptEvidence(attempts)
   const copy = CATALOG_HINT_COPY[answer.mode]
+
+  if (answer.mode === 'animal') {
+    if (isRuntimeAnimalSilhouette(answer.silhouetteUrl) && !choices.some((choice) => choice.hintKey === 'silhouette')) {
+      options.push({
+        key: 'silhouette',
+        title: 'Силуэт',
+        subtitle: 'Очертания загаданного животного без фотографии и названия',
+        value: {
+          kind: 'silhouette',
+          url: answer.silhouetteUrl,
+          attribution: safeHintAttribution(answer.silhouetteAttribution ?? answer.mediaAttribution ?? null),
+        },
+      })
+    }
+    if (isRuntimeAnimalSound(answer.soundUrl) && !choices.some((choice) => choice.hintKey === 'sound')) {
+      options.push({
+        key: 'sound',
+        title: 'Голос животного',
+        subtitle: 'Короткая лицензированная запись без названия животного',
+        value: {
+          kind: 'sound',
+          url: answer.soundUrl,
+          soundType: answer.soundType ?? null,
+          attribution: safeHintAttribution(answer.soundAttribution ?? null),
+        },
+      })
+    }
+  }
 
   const plotAlreadyOpened = choices.some((choice) => choice.hintKey === 'plot')
   const selectedPlotHint = selectPlotHintVariant(answer, seed)
@@ -552,7 +595,12 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
           ? 'available'
           : 'locked',
     })),
-    hintChoices: isPromptSession ? [] : choices.filter((choice) => choice.hintKey === 'plot' || choice.hintKey === 'info'),
+    hintChoices: isPromptSession ? [] : choices.filter((choice) => (
+      choice.hintKey === 'plot'
+      || choice.hintKey === 'info'
+      || choice.hintKey === 'silhouette'
+      || choice.hintKey === 'sound'
+    )),
     hintOptions: hintOptions.map(({ key, title, subtitle }) => ({ key, title, subtitle })),
     progressiveHints: promptRuntime?.progressiveHints ?? [],
     promoPrompt: promptRuntime?.promoPrompt ?? null,

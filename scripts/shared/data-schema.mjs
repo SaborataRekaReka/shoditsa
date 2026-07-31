@@ -66,6 +66,42 @@ const validateTitleDataset = (json, file) => {
   return errors
 }
 
+const validateAnimalMedia = async (items, rootDir, file) => {
+  const errors = []
+  if (items.length !== 300) errors.push(`${file}: animal runtime roster must contain exactly 300 items, found ${items.length}`)
+  const silhouetteUrls = new Set()
+  for (const item of items) {
+    if (!isObject(item) || item.mode !== 'animal') continue
+    if (typeof item.silhouetteUrl !== 'string' || !item.silhouetteUrl.startsWith('/images/animals/silhouettes/')) {
+      errors.push(`${file}: animal ${item.id ?? '(unknown)'} must have a separate local silhouetteUrl`)
+    } else {
+      if (item.silhouetteUrl === item.posterUrl) errors.push(`${file}: animal ${item.id} silhouette must not replace or reuse posterUrl`)
+      if (silhouetteUrls.has(item.silhouetteUrl)) errors.push(`${file}: duplicate animal silhouette ${item.silhouetteUrl}`)
+      silhouetteUrls.add(item.silhouetteUrl)
+      try {
+        await fs.access(path.join(rootDir, 'public', item.silhouetteUrl.replace(/^\/+/, '')))
+      } catch {
+        errors.push(`${file}: animal ${item.id} silhouette asset is missing: ${item.silhouetteUrl}`)
+      }
+    }
+    if (item.soundUrl != null) {
+      if (typeof item.soundUrl !== 'string' || !item.soundUrl.startsWith('/audio/animals/')) {
+        errors.push(`${file}: animal ${item.id} soundUrl must be a localized animal audio asset`)
+      } else {
+        try {
+          await fs.access(path.join(rootDir, 'public', item.soundUrl.replace(/^\/+/, '')))
+        } catch {
+          errors.push(`${file}: animal ${item.id} sound asset is missing: ${item.soundUrl}`)
+        }
+      }
+      if (!isObject(item.soundAttribution) || typeof item.soundAttribution.license !== 'string' || !item.soundAttribution.license) {
+        errors.push(`${file}: animal ${item.id} sound attribution is missing`)
+      }
+    }
+  }
+  return errors
+}
+
 const validateVignetteMap = (json, file) => {
   if (!Array.isArray(json)) return [`${file}: root must be an array`]
   return json.flatMap((entry) => {
@@ -115,6 +151,9 @@ export const validateGeneratedData = async (rootDir) => {
     const { json, sourcePath } = await readFirstExistingJson(locations)
     const fileLabel = path.relative(dataDir, sourcePath)
     errors.push(...validateTitleDataset(json, fileLabel || datasetName))
+    if (datasetName === 'animals' && Array.isArray(json)) {
+      errors.push(...await validateAnimalMedia(json, rootDir, fileLabel || datasetName))
+    }
   }
 
   errors.push(...validateVignetteMap(await readJson(path.join(dataDir, files.vignettes)), files.vignettes))

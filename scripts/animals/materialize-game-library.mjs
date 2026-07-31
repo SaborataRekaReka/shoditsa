@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const generatedDir = path.join(root, 'data', 'animals', 'generated')
 const rosterPath = path.join(generatedDir, 'roster.json')
+const silhouetteManifestPath = path.join(root, 'data', 'animals', 'media', 'silhouettes-manifest.json')
+const soundManifestPath = path.join(root, 'data', 'animals', 'media', 'sounds-manifest.json')
 const libraryDir = path.join(root, 'public', 'data', 'libraries', 'animals')
 const itemsPath = path.join(libraryDir, 'items.json')
 const searchIndexPath = path.join(libraryDir, 'search-index.json')
@@ -187,9 +189,24 @@ const mediaAttribution = (media) => media ? {
   attributionRequired: Boolean(media.attributionRequired),
 } : null
 
-const animalToTitleItem = (animal, rosterEntry) => {
+const animalToTitleItem = (animal, rosterEntry, mediaManifests) => {
   const primaryImage = animal.media?.primaryImage ?? null
-  const sound = animal.hints?.sounds?.[0] ?? null
+  const generatedSound = mediaManifests.sounds?.items?.[animal.id]
+  const generatedSilhouette = mediaManifests.silhouettes?.items?.[animal.id]
+  const sound = generatedSound
+    ? generatedSound.status === 'ready'
+      ? {
+          fileUrl: generatedSound.assetUrl,
+          soundType: generatedSound.soundType,
+          sourcePageUrl: generatedSound.sourcePageUrl,
+          author: generatedSound.author,
+          credit: generatedSound.credit,
+          license: generatedSound.license,
+          licenseUrl: generatedSound.licenseUrl,
+          attributionRequired: generatedSound.attributionRequired,
+        }
+      : null
+    : animal.hints?.sounds?.[0] ?? null
   const rangeMap = animal.hints?.rangeMaps?.[0] ?? null
   const silhouette = animal.hints?.silhouettes?.[0] ?? null
   const commonNameRu = capitalize(animal.identity?.commonNameRu)
@@ -256,10 +273,15 @@ const animalToTitleItem = (animal, rosterEntry) => {
     senses: unique(animal.hints?.sensesRu ?? []),
     soundUrl: text(sound?.fileUrl) || null,
     soundType: text(sound?.soundType) || null,
-    silhouetteUrl: text(silhouette?.sourceFileUrl) || null,
+    silhouetteUrl: generatedSilhouette?.status === 'ready'
+      ? text(generatedSilhouette.assetUrl)
+      : text(silhouette?.sourceFileUrl) || null,
     rangeMapUrl: text(rangeMap?.fileUrl) || null,
     mediaAttribution: mediaAttribution(primaryImage),
     soundAttribution: mediaAttribution(sound),
+    silhouetteAttribution: generatedSilhouette?.status === 'ready'
+      ? generatedSilhouette.attribution ?? mediaAttribution(primaryImage)
+      : mediaAttribution(primaryImage),
     rangeMapAttribution: mediaAttribution(rangeMap),
     sourceFlags: ['animal-pipeline', 'wikidata', 'gbif', primaryImage ? 'wikimedia-commons' : ''],
     dataQuality: {
@@ -317,10 +339,22 @@ const buildSearchIndex = (items, generatedAt) => {
 }
 
 const readJson = async (file) => JSON.parse(await readFile(file, 'utf8'))
+const readOptionalJson = async (file) => {
+  try {
+    return await readJson(file)
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null
+    throw error
+  }
+}
 const writeJson = async (file, value) => writeFile(file, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
 
 const main = async () => {
-  const roster = await readJson(rosterPath)
+  const [roster, silhouettes, sounds] = await Promise.all([
+    readJson(rosterPath),
+    readOptionalJson(silhouetteManifestPath),
+    readOptionalJson(soundManifestPath),
+  ])
   const rosterEntries = Array.isArray(roster.animals) ? roster.animals : []
   const wantedIds = new Set(rosterEntries.map((entry) => entry.id))
   const byId = new Map()
@@ -338,7 +372,7 @@ const main = async () => {
   const missingIds = rosterEntries.map((entry) => entry.id).filter((id) => !byId.has(id))
   if (missingIds.length) throw new Error(`Roster records not found: ${missingIds.join(', ')}`)
 
-  const items = rosterEntries.map((entry) => animalToTitleItem(byId.get(entry.id), entry))
+  const items = rosterEntries.map((entry) => animalToTitleItem(byId.get(entry.id), entry, { silhouettes, sounds }))
   const duplicateTitles = items
     .map((item) => item.titleRu.toLocaleLowerCase('ru-RU'))
     .filter((title, index, all) => all.indexOf(title) !== index)

@@ -109,6 +109,20 @@ if command -v nginx >/dev/null 2>&1; then
     fi
     HOST_NGINX_CHANGED=1
   fi
+  if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' "$NGINX_CONFIG"; then
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$NGINX_CONFIG"; then
+      echo "Host Nginx is missing the canonical game SEO route allowlist" >&2
+      cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+      exit 1
+    fi
+    sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/animal|danetki/' "$NGINX_CONFIG"
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' "$NGINX_CONFIG"; then
+      cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+      echo "Could not add Animals to the host Nginx route" >&2
+      exit 1
+    fi
+    HOST_NGINX_CHANGED=1
+  fi
   if ! grep -Eq 'client_max_body_size[[:space:]]+25m;' "$NGINX_CONFIG"; then
     if grep -Eq 'client_max_body_size[[:space:]]+[0-9]+[kKmM]?;' "$NGINX_CONFIG"; then
       sed -Ei 's/client_max_body_size[[:space:]]+[0-9]+[kKmM]?;/client_max_body_size 25m;/g' "$NGINX_CONFIG"
@@ -148,7 +162,8 @@ elif command -v docker >/dev/null 2>&1; then
   NGINX_ROUTE_CONFIG=""
   NGINX_ROUTE_BACKUP=""
   NGINX_ROUTE_CHANGED=0
-  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null; then
+  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null \
+    || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' >/dev/null; then
     mapfile -t NGINX_ROUTE_CONFIGS < <(
       while IFS= read -r source; do
         if [ -f "$source" ]; then
@@ -163,12 +178,22 @@ elif command -v docker >/dev/null 2>&1; then
       exit 1
     fi
     NGINX_ROUTE_CONFIG="${NGINX_ROUTE_CONFIGS[0]}"
-    NGINX_ROUTE_BACKUP="${NGINX_ROUTE_CONFIG}.pre-connections-route"
+    NGINX_ROUTE_BACKUP="${NGINX_ROUTE_CONFIG}.pre-game-route"
     cp -a "$NGINX_ROUTE_CONFIG" "$NGINX_ROUTE_BACKUP"
-    sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/connections|danetki/' "$NGINX_ROUTE_CONFIG"
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
+      sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/connections|danetki/' "$NGINX_ROUTE_CONFIG"
+    fi
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
+      sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/animal|danetki/' "$NGINX_ROUTE_CONFIG"
+    fi
     if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
       cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
       echo "Could not add Connections to the mounted Docker Nginx route" >&2
+      exit 1
+    fi
+    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
+      cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
+      echo "Could not add Animals to the mounted Docker Nginx route" >&2
       exit 1
     fi
     NGINX_ROUTE_CHANGED=1
@@ -201,6 +226,11 @@ elif command -v docker >/dev/null 2>&1; then
   fi
   if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null; then
     echo "Docker Nginx did not activate the Connections SEO route" >&2
+    rollback_nginx_route
+    exit 1
+  fi
+  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' >/dev/null; then
+    echo "Docker Nginx did not activate the Animals SEO route" >&2
     rollback_nginx_route
     exit 1
   fi

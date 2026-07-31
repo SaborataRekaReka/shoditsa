@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T20:16:30.170Z",
+  "generatedAt": "2026-07-31T07:18:52.344Z",
   "sourceRoster": "data/animals/generated/roster.json",
   "rosterGeneratedAt": "2026-07-30T19:51:46.781Z",
   "schemaVersion": null,
@@ -10,7 +10,7 @@
     "hard": 20
   },
   "imageCount": 300,
-  "soundCount": 56,
+  "soundCount": 117,
   "silhouetteCount": 300,
   "rangeMapCount": 204
 }

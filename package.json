@@ -84,6 +84,8 @@
     "data:audit:animals": "node scripts/animals/audit-roster.mjs",
     "data:select:animals": "node scripts/animals/select-roster.mjs --policy=data/animals/selection-policy.json",
     "data:publish:animals": "node scripts/animals/materialize-game-library.mjs",
+    "data:media:animals:silhouettes": "python scripts/animals/render-silhouettes.py",
+    "data:media:animals:sounds": "node scripts/animals/enrich-sounds.mjs",
     "data:test:animals": "node --test scripts/animals/model.test.mjs",
     "data:enrich:games": "node scripts/games/enrich-catalog.mjs",
     "data:enrich:games:displayed-fields": "node scripts/games/enrich-displayed-fields.mjs",

@@ -61,6 +61,11 @@ type Props = {
   onConfigure: () => void
   onChallenge?: () => void
   onCopy: () => void
+  onReplay?: () => void
+  replayCost?: number
+  replayShortage?: number
+  replayPending?: boolean
+  replayAccessSource?: 'tickets' | 'club'
   onReport?: (reason: ContentReportReason, comment: string) => void
   autoScroll?: boolean
   packProgress?: {
@@ -167,6 +172,11 @@ export function GameResult(props: Props) {
       onConfigure={props.onConfigure}
       onChallenge={props.onChallenge}
       onCopy={props.onCopy}
+      onReplay={props.onReplay}
+      replayCost={props.replayCost}
+      replayShortage={props.replayShortage}
+      replayPending={props.replayPending}
+      replayAccessSource={props.replayAccessSource}
       showTip={props.won}
       showCopy
       showReplayGate={props.completedToday !== undefined}

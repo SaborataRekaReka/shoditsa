@@ -11,7 +11,7 @@ export type ContentStatus = MusicContentStatus | 'test' | 'review' | 'duplicate'
 
 export type Person = { nameRu: string; nameOriginal: string; photoUrl?: string | null }
 export type FilmAwards = { wins: number; nominations: number; notable: string[] }
-export type AssistHintKey = 'plot' | 'info' | 'fact'
+export type AssistHintKey = 'plot' | 'info' | 'fact' | 'silhouette' | 'sound'
 export type HintCheckpoint = 5 | 8
 export type HintChoice = { round: HintCheckpoint; key: AssistHintKey }
 export type TitleRatings = {
@@ -317,6 +317,7 @@ export type TitleItem = {
   rangeMapUrl?: string | null
   mediaAttribution?: MediaAttribution | null
   soundAttribution?: MediaAttribution | null
+  silhouetteAttribution?: MediaAttribution | null
   rangeMapAttribution?: MediaAttribution | null
 
   country?: string

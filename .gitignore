@@ -6,6 +6,8 @@ dist-yandex.zip
 .env
 .env.local
 *.log
+__pycache__/
+*.py[cod]
 test-results/
 playwright-report/
 /var/

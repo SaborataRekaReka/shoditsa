@@ -97,7 +97,12 @@ export const FinalChoiceBodySchema = Type.Union([
 
 export const HintChoiceBodySchema = Type.Object({
   checkpoint: Type.Union([Type.Literal(5), Type.Literal(8)]),
-  hintKey: Type.Union([Type.Literal('plot'), Type.Literal('info')]),
+  hintKey: Type.Union([
+    Type.Literal('plot'),
+    Type.Literal('info'),
+    Type.Literal('silhouette'),
+    Type.Literal('sound'),
+  ]),
 }, { additionalProperties: false })
 
 export const ProfilePatchSchema = Type.Partial(Type.Object({

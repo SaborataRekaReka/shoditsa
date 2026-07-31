@@ -51,6 +51,12 @@ server {
         add_header Cache-Control "public, max-age=31536000, immutable" always;
     }
 
+    location ~* "^/(images/animals/silhouettes|audio/animals)/[a-f0-9]{24}\.(webp|ogg)$" {
+        try_files $uri =404;
+        access_log off;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+    }
+
     location = /index.html {
         add_header Cache-Control "no-cache" always;
     }
@@ -58,7 +64,7 @@ server {
     # Search engines receive route-specific HTML (metadata, JSON-LD and useful
     # text) at the canonical browser-history URL. The /seo files themselves are
     # implementation details and cannot be opened as duplicate public pages.
-    location ~ ^/games/(movie|series|anime|game|city|music|diagnosis|connections|danetki)$ {
+    location ~ ^/games/(movie|series|anime|game|city|music|diagnosis|animal|connections|danetki)$ {
         try_files /seo$uri.html =404;
         add_header Cache-Control "no-cache" always;
     }

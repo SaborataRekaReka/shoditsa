@@ -37,13 +37,44 @@ contains the model factory, normalizers, validator and scoring rules.
 6. Genus/species -> AnAge life history and maximum observed longevity.
 7. Scientific name -> optional GloBI prey and predator candidates.
 8. Commons pointers -> URLs, author, credit and per-file license.
-9. Licensed primary image -> reversible CSS silhouette mask with inherited attribution.
+9. Licensed primary image -> separately materialized foreground silhouette with inherited attribution.
 10. Russian Wikipedia title -> latest complete 365-day pageview total.
 11. Editorial seed -> fields that cannot safely be inferred.
 
 The pipeline rejects Commons media marked NC, ND, all-rights-reserved or with an
 unknown/non-allowed license. GloBI results go only to
 `ecology.interactionCandidates`: every relation needs editorial verification.
+
+## Runtime silhouettes and sounds
+
+The runtime game keeps the normal photograph in `posterUrl` and stores the
+separate visual clue in `silhouetteUrl`. Build real foreground masks for the
+selected 300 animals with:
+
+```powershell
+python -m pip install --target .tmp/animal-media-python rembg==2.0.67
+$env:PYTHONPATH = (Resolve-Path .tmp/animal-media-python).Path
+npm run data:media:animals:silhouettes
+```
+
+The command writes lossless local WebP masks to
+`public/images/animals/silhouettes/`, a provenance manifest to
+`data/animals/media/silhouettes-manifest.json`, and a contact sheet to
+`.tmp/animal-media/silhouette-contact-sheet.webp`.
+
+Collect and normalize commercially reusable recordings with:
+
+```powershell
+npm run data:media:animals:sounds
+```
+
+Existing licensed Commons recordings are localized first. Missing recordings
+are searched by scientific name in research-grade iNaturalist observations and
+then Commons. Only Public Domain, CC0, CC BY and CC BY-SA media are accepted.
+Every clip is normalized to a local mono Ogg Opus file of at most 20 seconds,
+with author, source and license preserved in
+`data/animals/media/sounds-manifest.json`. A missing real species recording
+remains missing; ambient or fabricated audio is never substituted.
 
 Run one animal:
 

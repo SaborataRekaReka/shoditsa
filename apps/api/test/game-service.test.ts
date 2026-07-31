@@ -462,6 +462,36 @@ describe('server hint options', () => {
     expect(options[1]?.value).toBe('Формат: TV сериал')
   })
 
+  it('offers separate silhouette and sound choices for animal cards', () => {
+    const answer = {
+      id: 'animal:lion',
+      mode: 'animal',
+      titleRu: 'Лев',
+      titleOriginal: 'Panthera leo',
+      alternativeTitles: [],
+      popularityScore: 1,
+      plotHint: 'Крупный хищник живёт группами и отличается заметным половым диморфизмом.',
+      taxonomicClass: 'Млекопитающие',
+      silhouetteUrl: '/images/animals/silhouettes/0123456789abcdef01234567.webp',
+      soundUrl: '/audio/animals/89abcdef0123456789abcdef.ogg',
+      soundType: 'roar',
+      mediaAttribution: { sourcePageUrl: 'https://commons.wikimedia.org/wiki/File:Lion.jpg', author: 'Author', credit: '', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0', attributionRequired: true },
+      soundAttribution: { sourcePageUrl: 'https://commons.wikimedia.org/wiki/File:Lion.ogg', author: 'Recorder', credit: '', license: 'CC0', licenseUrl: null, attributionRequired: false },
+    } as TitleItem
+
+    const options = buildHintOptions(answer, [])
+    expect(options.map((option) => option.key)).toEqual(['silhouette', 'sound', 'plot', 'info'])
+    expect(options.find((option) => option.key === 'silhouette')?.value).toMatchObject({
+      kind: 'silhouette',
+      url: '/images/animals/silhouettes/0123456789abcdef01234567.webp',
+    })
+    expect(options.find((option) => option.key === 'sound')?.value).toMatchObject({
+      kind: 'sound',
+      url: '/audio/animals/89abcdef0123456789abcdef.ogg',
+    })
+    expect(buildHintOptions(answer, [{ hintKey: 'silhouette' }, { hintKey: 'sound' }]).map((option) => option.key)).toEqual(['plot', 'info'])
+  })
+
   it('keeps plot choice available until selected and never offers facts', () => {
     const answer = {
       id: 'movie_plot_choice', mode: 'movie', titleRu: 'Пример фильма', titleOriginal: 'Example Movie', alternativeTitles: [], popularityScore: 0,

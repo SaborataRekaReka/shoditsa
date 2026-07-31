@@ -1,0 +1,206 @@
+{
+  "animal:grampus-griseus": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Grampus_griseus_by_OpenCage.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Grampus_griseus_by_OpenCage.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Grampus_griseus_by_OpenCage.jpg",
+      "author": "OpenCage",
+      "credit": "Own work",
+      "license": "CC BY-SA 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.5/",
+      "attributionRequired": true
+    }
+  },
+  "animal:vulpes-vulpes": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Red_Fox_%28Vulpes_vulpes%29_%284%29.jpg/1920px-Red_Fox_%28Vulpes_vulpes%29_%284%29.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Red_Fox_(Vulpes_vulpes)_(4).jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Red_Fox_(Vulpes_vulpes)_(4).jpg",
+      "author": "Ken Billington",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:vipera-berus": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Benny_Trapp_Vipera_berus.jpg/1920px-Benny_Trapp_Vipera_berus.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Benny_Trapp_Vipera_berus.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Benny_Trapp_Vipera_berus.jpg",
+      "author": "Benny Trapp",
+      "credit": "Own work",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:tettigonia-viridissima": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/Tettigonia_viridissima_148992578.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Tettigonia_viridissima_148992578.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Tettigonia_viridissima_148992578.jpg",
+      "author": "Peter Gabler",
+      "credit": "iNaturalist observation media",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "attributionRequired": false
+    }
+  },
+  "animal:dreissena-polymorpha": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Dreissena_polymorpha_MHNT_CON_2013_1180_Noulet.jpg/1920px-Dreissena_polymorpha_MHNT_CON_2013_1180_Noulet.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dreissena_polymorpha_MHNT_CON_2013_1180_Noulet.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Dreissena_polymorpha_MHNT_CON_2013_1180_Noulet.jpg",
+      "author": "Didier Descouens",
+      "credit": "Muséum de Toulouse",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:stenella-coeruleoalba": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Stenella_coeruleoalba_238741367.jpg/1920px-Stenella_coeruleoalba_238741367.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Stenella_coeruleoalba_238741367.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Stenella_coeruleoalba_238741367.jpg",
+      "author": "shahar chaikin",
+      "credit": "iNaturalist observation media",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:steno-bredanensis": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/27/Steno_bredanensis.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Steno_bredanensis.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Steno_bredanensis.jpg",
+      "author": "Unknown author",
+      "credit": "NOAA",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false
+    }
+  },
+  "animal:anoplopoma-fimbria": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/Sablefish_%28Anoplopoma_fimbria%29_01.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sablefish_(Anoplopoma_fimbria)_01.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Sablefish_(Anoplopoma_fimbria)_01.jpg",
+      "author": "Bloopityboop",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:gobio-gobio": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/Gobio_gobio.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Gobio_gobio.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Gobio_gobio.jpg",
+      "author": "Michal Maňas",
+      "credit": "Own work",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+      "attributionRequired": true
+    }
+  },
+  "animal:lacerta-viridis": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Lacerta_viridis_-_male_02.JPG/1920px-Lacerta_viridis_-_male_02.JPG",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lacerta_viridis_-_male_02.JPG",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lacerta_viridis_-_male_02.JPG",
+      "author": "Uoaei1",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:eunectes-murinus": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Eunectes_murinus_158463290.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Eunectes_murinus_158463290.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Eunectes_murinus_158463290.jpg",
+      "author": "Abby Darrah",
+      "credit": "iNaturalist observation media",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:chamaeleo-calyptratus": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/d/de/Chamaeleo_calyptratus_female.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Chamaeleo_calyptratus_female.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Chamaeleo_calyptratus_female.jpg",
+      "author": "Drägüs",
+      "credit": "Own work",
+      "license": "Public domain",
+      "licenseUrl": null,
+      "attributionRequired": false
+    }
+  },
+  "animal:solenopsis-invicta": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Solenopsis_invicta_casent0178134_profile_1.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Solenopsis_invicta_casent0178134_profile_1.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Solenopsis_invicta_casent0178134_profile_1.jpg",
+      "author": "April Nobile",
+      "credit": "AntWeb",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:lipoptena-cervi": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Lipoptena_cervi_%28Linnaeus%2C_1758%29_labelled_as_Pediculus_Cervi_Fabr._%28Panzer_%26_Sturm_1793%29_whitened.png",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lipoptena_cervi_(Linnaeus,_1758)_labelled_as_Pediculus_Cervi_Fabr._(Panzer_%26_Sturm_1793)_whitened.png",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lipoptena_cervi_(Linnaeus,_1758)_labelled_as_Pediculus_Cervi_Fabr._(Panzer_%26_Sturm_1793)_whitened.png",
+      "author": "Biodiversity Heritage Library",
+      "credit": "Digitized historical plate",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:hapalochlaena-lunulata": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Hapalochlaena_lunulata.JPG",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hapalochlaena_lunulata.JPG",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hapalochlaena_lunulata.JPG",
+      "author": "Jens Petersen",
+      "credit": "Own work",
+      "license": "CC BY 2.5",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+      "attributionRequired": true
+    }
+  },
+  "animal:lion": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Lion_%28Panthera_leo%29_male_6y.jpg/1920px-Lion_%28Panthera_leo%29_male_6y.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_(Panthera_leo)_male_6y.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Lion_(Panthera_leo)_male_6y.jpg",
+      "author": "Charles J. Sharp",
+      "credit": "Own work",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "attributionRequired": true
+    }
+  },
+  "animal:felis-catus": {
+    "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Felis_catus-cat_on_snow.jpg/1920px-Felis_catus-cat_on_snow.jpg",
+    "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Felis_catus-cat_on_snow.jpg",
+    "attribution": {
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Felis_catus-cat_on_snow.jpg",
+      "author": "Von.grzanka",
+      "credit": "Own work",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "attributionRequired": true
+    }
+  }
+}
