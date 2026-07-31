@@ -21,6 +21,8 @@ const writeJson = (filePath, value) => {
 
 const compact = (values) => [...new Set(values.map((value) => String(value ?? '').trim()).filter(Boolean))]
 const normalizeText = (value) => String(value ?? '')
+  .normalize('NFD')
+  .replace(/\p{M}+/gu, '')
   .toLocaleLowerCase('ru-RU')
   .replace(/ё/g, 'е')
   .replace(/[^a-zа-я0-9]+/gi, ' ')
@@ -75,11 +77,14 @@ export const normalizeGenres = (genres) => {
 }
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const accentInsensitivePattern = (value) => [...String(value ?? '').normalize('NFD').replace(/\p{M}+/gu, '')]
+  .map((character) => `${escapeRegExp(character)}\\p{M}*`)
+  .join('')
 const sanitizeClue = (value, titles) => {
   let result = String(value ?? '').trim()
   for (const title of compact(titles).sort((a, b) => b.length - a.length)) {
     if (normalizeText(title).length < 3) continue
-    result = result.replace(new RegExp(escapeRegExp(title), 'giu'), 'это произведение')
+    result = result.normalize('NFD').replace(new RegExp(accentInsensitivePattern(title), 'giu'), 'это произведение').normalize('NFC')
   }
   return result.replace(/\s+/g, ' ').trim()
 }

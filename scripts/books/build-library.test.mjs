@@ -47,3 +47,15 @@ test('never emits a contradictory adaptation count', () => {
   assert.equal(absent.hasAdaptation, false)
   assert.equal(absent.bookAdaptationCount, 0)
 })
+
+test('removes a title from a clue even when the clue contains stress marks', () => {
+  const item = buildBookItem({
+    'ID книги': 'book-accent-test',
+    'Название': { 'На русском': 'Капитанская дочка', 'На языке оригинала': 'The Captain’s Daughter' },
+    'Автор': 'Александр Пушкин',
+    'Аннотация': '«Капита́нская до́чка» — историческое произведение о восстании.',
+  }, 0)
+
+  assert.equal(item.plotHint.includes('Капита́нская'), false)
+  assert.match(item.plotHint, /это произведение/i)
+})
