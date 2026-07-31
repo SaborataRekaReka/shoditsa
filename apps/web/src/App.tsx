@@ -4921,6 +4921,10 @@ function GameApp() {
     setGameExperience(catalogGameExperience(challenge.date === getMoscowDate() ? 'hub' : 'rewatch'))
     setChallengeAccepted(true)
     if (SERVER_RUNTIME) {
+      if (!isPlayableModeId(challenge.mode)) {
+        setServerActionError('Этот игровой режим ещё не опубликован')
+        return
+      }
       const today = serverRuntime.meta?.moscowDate ?? getMoscowDate()
       startServerSession.mutate({
         key: crypto.randomUUID(),
@@ -5115,6 +5119,10 @@ function GameApp() {
     trackMetrikaGoal('start_session', { mode, period })
     if (mode === 'diagnosis') trackDiagnosisGoal('start', { period })
     if (SERVER_RUNTIME) {
+      if (!isPlayableModeId(mode)) {
+        setServerActionError('Этот игровой режим ещё не опубликован')
+        return
+      }
       setServerActionError('')
       setFreePlayArmed(false)
       const backTarget = screen === 'rewatch' ? 'rewatch' : screen === 'title' ? 'title' : 'hub'
@@ -5164,6 +5172,10 @@ function GameApp() {
     }
     if (SERVER_RUNTIME) {
       if (startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending) return
+      if (!isPlayableModeId(mode)) {
+        setServerActionError('Этот игровой режим ещё не опубликован')
+        return
+      }
       setServerActionError('')
       startServerSession.mutate({
         key: crypto.randomUUID(),
