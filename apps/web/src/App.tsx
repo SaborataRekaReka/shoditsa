@@ -168,7 +168,7 @@ const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   music: 'images/title-posters/music-ticket-poster.webp',
   diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
   animal: 'images/title-posters/animal-ticket-poster.webp',
-  book: 'images/title-posters/book-ticket-poster.svg',
+  book: 'images/title-posters/book-ticket-poster-v2.webp',
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId) as TitleMode[])
@@ -1678,7 +1678,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
         <div className="title-game-mark">
           <span>{modeIcon(mode)}</span>
           <i>Игра дня · №{dayNumber(date)}</i>
-          <h1>{modeMeta(mode).title}</h1>
+          <h1>{mode === 'book' ? 'Угадай книгу' : modeMeta(mode).title}</h1>
         </div>
         <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
         <p>Угадайте {modeMeta(mode).subject} дня за десять попыток</p>
