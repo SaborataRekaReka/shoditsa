@@ -1,5 +1,6 @@
 import { Type, type Static } from '@sinclair/typebox'
 import { PlayableCatalogGuessModeSchema } from './schemas.js'
+import { PLAYABLE_CATALOG_GUESS_MODE_IDS } from './game-modes.js'
 import type { PublicContentItem } from './api.js'
 import type { EconomyQuote } from './economy.js'
 
@@ -67,6 +68,9 @@ export const FRIENDS_ROOM_PACK_VARIANTS = {
   animal: [
     { id: 'all', label: 'Весь каталог', description: '300 животных основного набора' },
   ],
+  book: [
+    { id: 'all', label: 'Весь каталог', description: '277 известных книг разных эпох и жанров' },
+  ],
 } as const satisfies Record<Static<typeof PlayableCatalogGuessModeSchema>, readonly FriendsRoomPackVariant[]>
 
 export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
@@ -78,6 +82,7 @@ export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
   music: 'medium',
   diagnosis: 'all',
   animal: 'all',
+  book: 'all',
 } as const satisfies Record<Static<typeof PlayableCatalogGuessModeSchema>, string>
 
 export type FriendsRoomPackSelection = {
@@ -96,7 +101,7 @@ export const friendsRoomMinimumRounds = (packCount: number) => Math.max(3, Math.
 export const FriendsRoomCreateBodySchema = Type.Object({
   gameType: Type.Optional(Type.Union([Type.Literal('quiz'), Type.Literal('danetki')])),
   mode: Type.Optional(PlayableCatalogGuessModeSchema),
-  packs: Type.Optional(Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 })),
+  packs: Type.Optional(Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: PLAYABLE_CATALOG_GUESS_MODE_IDS.length })),
   roundsTotal: Type.Optional(FriendsRoomRoundsTotalSchema),
   shufflePacks: Type.Optional(Type.Boolean()),
   answerTimeSeconds: Type.Optional(Type.Union([Type.Literal(15), Type.Literal(20), Type.Literal(30), Type.Literal(45)])),
@@ -113,7 +118,7 @@ export const FriendsRoomJoinBodySchema = Type.Object({
 export const FriendsRoomConfigBodySchema = Type.Partial(Type.Object({
   gameType: Type.Union([Type.Literal('quiz'), Type.Literal('danetki')]),
   mode: PlayableCatalogGuessModeSchema,
-  packs: Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 }),
+  packs: Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: PLAYABLE_CATALOG_GUESS_MODE_IDS.length }),
   roundsTotal: FriendsRoomRoundsTotalSchema,
   shufflePacks: Type.Boolean(),
   answerTimeSeconds: Type.Union([Type.Literal(15), Type.Literal(20), Type.Literal(30), Type.Literal(45)]),

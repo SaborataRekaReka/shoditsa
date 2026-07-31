@@ -149,9 +149,10 @@ const sourceChecks = [
     path: 'packages/contracts/src/game-modes.ts',
     required: [
       ['canonical content modes', /CONTENT_MODE_IDS\s*=\s*\[[^\]]*'danetki'[^\]]*'animal'[^\]]*\]\s*as const/],
-      ['canonical playable modes', /PLAYABLE_MODE_IDS\s*=\s*\[[^\]]*'movie'[^\]]*'series'[^\]]*'anime'[^\]]*'game'[^\]]*'music'[^\]]*'diagnosis'[^\]]*'city'[^\]]*'animal'[^\]]*\]\s*as const/],
+      ['canonical playable modes', /PLAYABLE_MODE_IDS\s*=\s*\[[^\]]*'movie'[^\]]*'series'[^\]]*'anime'[^\]]*'game'[^\]]*'music'[^\]]*'diagnosis'[^\]]*'city'[^\]]*'animal'[^\]]*'book'[^\]]*\]\s*as const/],
       ['city manifest entry', /city:\s*\{/],
       ['animal manifest entry', /animal:\s*\{/],
+      ['book manifest entry', /book:\s*\{/],
       ['separate danetki engine', /danetki:\s*\{[^}]*engine:\s*'danetki_chat'/],
       ['manifest-derived daily order', /DAILY_MODE_IDS\s*=\s*PLAYABLE_MODE_IDS/],
     ],
@@ -248,7 +249,7 @@ const sourceChecks = [
     path: 'infra/nginx/shoditsa.conf.template',
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
-      ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*animal[^)]*connections[^)]*danetki[^)]*\)\$/],
+      ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*animal[^)]*book[^)]*connections[^)]*danetki[^)]*\)\$/],
       ['immutable opaque animal media', /location\s+~\*\s+"\^\/\(images\/animals\/silhouettes\|audio\/animals\)\/\[a-f0-9\]\{24\}\\\.\(webp\|ogg\)\$"\s*\{[^]*max-age=31536000,\s*immutable/],
       ['friends room SPA refresh route', /location\s+=\s+\/games\/together\s*\{[^}]*try_files\s+\/index\.html\s+=404/s],
       ['private route noindex header', /X-Robots-Tag\s+"noindex, follow, noarchive"/],
@@ -281,6 +282,7 @@ const sourceChecks = [
       ['Docker proxy refreshed after API recreation', /refresh_docker_nginx\(\)[^]*docker restart[^]*if ! refresh_docker_nginx/],
       ['worker SHA verification', /API_WORKER_IMAGE[^]*shoditsa-api:\$\{GITHUB_SHA\}/],
       ['Connections production rollout', /set_env_value CONNECTIONS_ENABLED true/],
+      ['book route rollout', /NGINX_ROUTE_CONFIG[^]*book[^]*docker exec[^]*book/],
       ['K-pop special release import', /content-import-kpop-special\.js --apply --activate --actor-id="\$ADMIN_USER_ID"/],
       ['superseded releases cannot activate', /Confirm release is still main tip[^]*git ls-remote origin refs\/heads\/main[^]*if:\s*steps\.main_tip\.outputs\.deploy == 'true'/],
     ],

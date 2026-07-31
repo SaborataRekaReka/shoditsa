@@ -44,6 +44,8 @@ const MODES: Array<{ id: PlayableCatalogGuessModeId; label: string; poster: stri
   { id: 'city', label: 'Города', poster: 'images/title-posters/city-ticket-poster.webp', color: 'var(--mode-city-brand)' },
   { id: 'music', label: 'Музыка', poster: 'images/title-posters/music-ticket-poster.webp', color: 'var(--mode-music-brand)' },
   { id: 'diagnosis', label: 'Диагнозы', poster: 'images/title-posters/diagnosis-ticket-poster.webp', color: 'var(--mode-diagnosis-brand)' },
+  { id: 'animal', label: 'Животные', poster: 'images/title-posters/animal-ticket-poster.webp', color: 'var(--mode-animal-brand)' },
+  { id: 'book', label: 'Книги', poster: 'images/title-posters/book-ticket-poster.svg', color: 'var(--mode-book-brand)' },
 ]
 const DANETKI_MODE = { id: 'danetki' as const, label: 'Данетки', poster: 'images/title-posters/danetki-ticket-poster.webp', color: 'var(--mode-danetki-brand)' }
 const ROOM_MODES = [...MODES, DANETKI_MODE]
