@@ -31,3 +31,31 @@ test('builds a safe playable card and removes title leakage', () => {
   assert.equal(item.hasAdaptation, true)
 })
 
+test('never emits a contradictory adaptation count', () => {
+  const base = {
+    'ID книги': 'book-adaptation-test',
+    'Название': { 'На русском': 'Книга', 'На языке оригинала': 'Book' },
+    'Автор': 'Автор',
+    'Экранизации': { 'Есть': 'да', 'Годы основных экранизаций': [] },
+  }
+
+  const declared = buildBookItem(base, 0)
+  assert.equal(declared.hasAdaptation, true)
+  assert.equal(declared.bookAdaptationCount, 1)
+
+  const absent = buildBookItem({ ...base, 'Экранизации': { 'Есть': 'нет', 'Годы основных экранизаций': [] } }, 0)
+  assert.equal(absent.hasAdaptation, false)
+  assert.equal(absent.bookAdaptationCount, 0)
+})
+
+test('removes a title from a clue even when the clue contains stress marks', () => {
+  const item = buildBookItem({
+    'ID книги': 'book-accent-test',
+    'Название': { 'На русском': 'Капитанская дочка', 'На языке оригинала': 'The Captain’s Daughter' },
+    'Автор': 'Александр Пушкин',
+    'Аннотация': '«Капита́нская до́чка» — историческое произведение о восстании.',
+  }, 0)
+
+  assert.equal(item.plotHint.includes('Капита́нская'), false)
+  assert.match(item.plotHint, /это произведение/i)
+})

@@ -53,7 +53,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -818,7 +818,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": true,
     "bookAwards": [
       "The New Vanguard",
@@ -886,7 +886,7 @@
     "isPartOfSeries": true,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": true,
     "bookAwards": [
       "премия «Хьюго» за лучший роман",
@@ -1247,7 +1247,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -1875,7 +1875,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -2170,7 +2170,7 @@
     "isPartOfSeries": true,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -2717,7 +2717,7 @@
     "isPartOfSeries": true,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -4414,7 +4414,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -5659,7 +5659,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": true,
     "bookAwards": [
       "Reese's Book Club."
@@ -6977,7 +6977,7 @@
     "isPartOfSeries": true,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": true,
     "bookAwards": [
       "премия «Хьюго» за лучший роман",
@@ -7594,7 +7594,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": true,
     "bookAwards": [
       "Reese's Book Club."
@@ -8311,8 +8311,8 @@
     ],
     "popularityScore": 0.9806,
     "posterUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Captain%27s_Daughter_1837.jpg",
-    "description": "«Капита́нская до́чка» — исторический роман (или повесть) Александра Пушкина, действие которого происходит во время восстания Емельяна Пугачёва.",
-    "plotHint": "«Капита́нская до́чка» — исторический роман (или повесть) Александра Пушкина, действие которого происходит во время восстания Емельяна Пугачёва.",
+    "description": "«это произведение» — исторический роман (или повесть) Александра Пушкина, действие которого происходит во время восстания Емельяна Пугачёва.",
+    "plotHint": "«это произведение» — исторический роман (или повесть) Александра Пушкина, действие которого происходит во время восстания Емельяна Пугачёва.",
     "topRank": 8,
     "aliases": [],
     "sourceFlags": [
@@ -11650,7 +11650,7 @@
     "isPartOfSeries": true,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": true,
     "bookAwards": [
       "премия «Хьюго» за лучший роман",
@@ -12126,7 +12126,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -17374,7 +17374,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
@@ -19043,7 +19043,7 @@
     "isPartOfSeries": false,
     "hasAdaptation": true,
     "bookAdaptationYears": [],
-    "bookAdaptationCount": 0,
+    "bookAdaptationCount": 1,
     "hasAwards": false,
     "bookAwards": [],
     "bookMainCharacters": [
