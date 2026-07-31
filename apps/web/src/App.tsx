@@ -168,10 +168,11 @@ const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   music: 'images/title-posters/music-ticket-poster.webp',
   diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
   animal: 'images/title-posters/animal-ticket-poster.webp',
+  book: 'images/title-posters/book-ticket-poster.svg',
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
-const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId))
-const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS.filter(isCatalogGuessModeId))
+const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId) as TitleMode[])
+const FREE_PLAY_MODES = new Set<TitleMode>(FREE_PLAY_MODE_IDS.filter(isCatalogGuessModeId) as TitleMode[])
 const DTF_COMMENTS_PACK_ID = 'dtf-game-comments-25-v1'
 const DTF_COMMENTS_POOL_COUNT = 20
 
@@ -784,6 +785,18 @@ const buildInfoHintCandidates = (item: TitleItem) => {
       compactAssistList('Ареал', item.animalContinents ?? [], 3),
       compactAssistList('Питание', item.diets ?? [], 2),
       item.conservationStatus ? `Охранный статус: ${item.conservationStatus}` : '',
+    ].filter(Boolean)
+  }
+
+  if (item.mode === 'book') {
+    return [
+      compactAssistList('Автор', item.bookAuthors ?? [], 2),
+      item.bookCountry ? `Страна: ${item.bookCountry}` : '',
+      item.bookOriginalLanguage ? `Язык оригинала: ${item.bookOriginalLanguage}` : '',
+      compactAssistList('Жанры', item.bookGenres ?? [], 3),
+      compactAssistList('Главные персонажи', item.bookMainCharacters ?? [], 3),
+      compactAssistList('Годы экранизаций', (item.bookAdaptationYears ?? []).map(String), 3),
+      compactAssistList('Литературные премии', item.bookAwards ?? [], 2),
     ].filter(Boolean)
   }
 
@@ -2616,6 +2629,34 @@ function AnimalAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt
   </article>
 }
 
+function BookAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+  const score = attemptProgressStats(attempt.hints)
+  const published = item.bookPublicationYear == null
+    ? 'Год не указан'
+    : item.bookPublicationYear < 0
+      ? `${Math.abs(item.bookPublicationYear)} до н. э.`
+      : String(item.bookPublicationYear)
+  return <article className="attempt-card attempt-card--book">
+    <div className="attempt-card__header">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} />
+      <div className="attempt-card__identity">
+        <span className="attempt-label">Попытка {index + 1}</span>
+        <h2>{item.titleRu}</h2>
+        <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || (item.bookAuthors ?? []).join(', ')}</span></p>
+        <div className="gm-genres">
+          {(item.bookAuthors ?? []).slice(0, 1).map((author) => <span className="gm-genre" key={author}>{author}</span>)}
+          <span className="gm-genre">{published}</span>
+        </div>
+      </div>
+    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+    <div className="attempt-clue-grid book-attempt__clues">
+      {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+    </div>
+  </article>
+}
+
 const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
   movie: AttemptCard,
   series: AttemptCard,
@@ -2625,6 +2666,7 @@ const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
   music: MusicAttemptCard,
   diagnosis: DiagnosisAttemptCard,
   animal: AnimalAttemptCard,
+  book: BookAttemptCard,
 }
 
 function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {
@@ -3167,7 +3209,7 @@ function Game({
           inputProps={{
             ref: inputRef,
             id: 'movie-search',
-            'aria-label': mode === 'diagnosis' ? 'Введите диагноз' : mode === 'animal' ? 'Введите животное' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название',
+            'aria-label': mode === 'diagnosis' ? 'Введите диагноз' : mode === 'animal' ? 'Введите животное' : mode === 'book' ? 'Введите книгу' : mode === 'game' ? 'Введите игру' : mode === 'music' ? 'Введите артиста' : 'Введите название',
             value: query,
             autoComplete: 'off',
             placeholder: modeMeta(mode).searchPlaceholder,
@@ -4451,9 +4493,9 @@ function GameApp() {
     const target: PlayerRouteState = {
       screen: routedScreen,
       mode: routedScreen === 'title'
-        ? currentRouteMode === 'connections' ? 'connections' : mode
+        ? currentRouteMode === 'connections' ? 'connections' : isPlayableModeId(mode) ? mode : undefined
         : routedScreen === 'game' && !serverSessionId
-          ? mode
+          ? isPlayableModeId(mode) ? mode : undefined
           : undefined,
       sessionId: routedScreen === 'game' ? serverSessionId ?? undefined : undefined,
       packId: routedScreen === 'special' ? playerRouteFromPathname(routeLocation.pathname).packId : undefined,

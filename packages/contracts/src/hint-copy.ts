@@ -79,4 +79,12 @@ export const CATALOG_HINT_COPY = {
     modalTitle: 'Подсказка о животном',
     loadingText: 'Ищем неоткрытый признак животного',
   },
+  book: {
+    plotOptionTitle: 'Завязка книги',
+    plotOptionSubtitle: 'Краткое описание сюжета без названия и ключевых спойлеров',
+    optionTitle: 'Неоткрытая информация о книге',
+    optionSubtitle: 'Автор, персонажи или экранизации, которые ещё не раскрывались',
+    modalTitle: 'Подсказка о книге',
+    loadingText: 'Ищем неоткрытые сведения о книге',
+  },
 } as const satisfies Record<CatalogGuessModeId, CatalogHintCopy>

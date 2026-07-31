@@ -1,21 +1,21 @@
 import type { DailyAttendance, SavedGame, TitleMode } from '../../types'
 import type { DailyHubState, DailyRewardState } from './daily-progress.types'
 import {
-  CATALOG_GUESS_DAILY_MODE_IDS,
   ECONOMY_RULE_SET,
+  FULL_HOUSE_MODE_IDS,
   GAME_MODE_MANIFEST,
   KPOP_ARTISTS_PACK_ID,
   type FullHouseModeId,
 } from '@shoditsa/contracts'
 
-export const DAILY_MODE_ORDER: FullHouseModeId[] = [...CATALOG_GUESS_DAILY_MODE_IDS]
+export const DAILY_MODE_ORDER: FullHouseModeId[] = [...FULL_HOUSE_MODE_IDS]
 
 export const DAILY_MODE_LABELS = Object.fromEntries(
   DAILY_MODE_ORDER.map((mode) => [mode, GAME_MODE_MANIFEST[mode].label]),
 ) as Record<FullHouseModeId, string>
 
 const MODE_ACCUSATIVE: Record<TitleMode, string> = {
-  movie: 'кино', series: 'сериалы', anime: 'аниме', game: 'игры', city: 'города', music: 'музыку', diagnosis: 'диагнозы', animal: 'животных',
+  movie: 'кино', series: 'сериалы', anime: 'аниме', game: 'игры', city: 'города', music: 'музыку', diagnosis: 'диагнозы', animal: 'животных', book: 'книги',
 }
 
 const newestFirst = (left: SavedGame, right: SavedGame) => right.updatedAt - left.updatedAt
@@ -58,7 +58,7 @@ export const buildDailyHubState = (
 ): DailyHubState => {
   const dailyModes = DAILY_MODE_ORDER
   const completedSet = new Set<FullHouseModeId>([
-    ...attendance.completedModes,
+    ...attendance.completedModes.filter((mode): mode is FullHouseModeId => FULL_HOUSE_MODE_IDS.includes(mode as FullHouseModeId)),
   ])
   const completedModes = dailyModes.filter((mode) => completedSet.has(mode))
   const activeGames = games.filter((game) => isMainRouteGame(game) && (game.status === 'playing' || game.status === 'final_choice') && savedGameAttemptCount(game) > 0 && isDailySession(game, attendance.date, globalDailySalt)).sort(newestFirst)
@@ -66,8 +66,8 @@ export const buildDailyHubState = (
     .filter((game) => isMainRouteGame(game) && isDailySession(game, attendance.date, globalDailySalt) && (game.status === 'won' || game.status === 'lost'))
     .sort(newestFirst)
   const activeGame = activeGames[0] ?? null
-  const unfinishedModes = CATALOG_GUESS_DAILY_MODE_IDS.filter((mode) => !completedSet.has(mode))
-  const recommendedMode = unfinishedModes.includes(preferredMode) ? preferredMode : unfinishedModes[0] ?? preferredMode
+  const unfinishedModes = dailyModes.filter((mode) => !completedSet.has(mode))
+  const recommendedMode = unfinishedModes.find((mode) => mode === preferredMode) ?? unfinishedModes[0] ?? dailyModes[0] ?? preferredMode
   const completedCount = completedModes.length
 
   return {
@@ -81,7 +81,7 @@ export const buildDailyHubState = (
     primaryLabel: activeGame ? `Продолжить ${MODE_ACCUSATIVE[activeGame.mode]}` : 'Играть сейчас',
     primaryMeta: activeGame ? `${savedGameAttemptCount(activeGame)} из 10 попыток` : null,
     punchesCaption: activeGame
-      ? `${DAILY_MODE_LABELS[activeGame.mode]} в процессе`
+      ? `${GAME_MODE_MANIFEST[activeGame.mode].label} в процессе`
       : completedCount === 0 ? 'Выберите первую игру' : completedCount < dailyModes.length ? 'Выберите следующую игру' : 'Все игры дня завершены',
     reward: dailyRewardState(completedCount, dailyModes.length),
   }

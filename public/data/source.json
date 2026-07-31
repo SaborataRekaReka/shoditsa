@@ -74,5 +74,8 @@
   },
   "animalCount": 300,
   "animalSource": "data/animals/generated/roster.json",
-  "animalGeneratedAt": "2026-07-31T07:18:52.344Z"
+  "animalGeneratedAt": "2026-07-31T07:18:52.344Z",
+  "bookCount": 277,
+  "bookSource": "data/books/source/books_enriched_full.json",
+  "bookGeneratedAt": "2026-07-31T13:50:36.357Z"
 }

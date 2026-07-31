@@ -1,4 +1,4 @@
-import type { CatalogGuessModeId, FriendsRoomScorePart, Hint, TitleItem } from '@shoditsa/contracts'
+import type { FriendsRoomScorePart, Hint, PlayableCatalogGuessModeId, TitleItem } from '@shoditsa/contracts'
 import { compareTitles } from '@shoditsa/game-core'
 
 type ScoreStatus = FriendsRoomScorePart['status']
@@ -31,7 +31,7 @@ const COMMON_WEIGHTS: Record<string, number> = {
   timezone: 45,
 }
 
-const MODE_WEIGHTS: Record<CatalogGuessModeId, Record<string, number>> = {
+const MODE_WEIGHTS: Record<PlayableCatalogGuessModeId, Record<string, number>> = {
   movie: { kp: 25, imdb: 25 },
   series: { seasons: 35, series_status: 20, kp: 25, imdb: 25 },
   anime: { anime_kind: 30, anime_status: 20, episodes: 30, episodes_aired: 25, anime_source: 65, shiki: 25 },
@@ -74,7 +74,7 @@ export const scoreFriendsRoomGuess = ({ answer, guess, elapsedSeconds, answerTim
   const breakdown = compareTitles(guess, answer).flatMap((hint) => {
     const result = statusFactor(hint)
     if (!result) return []
-    const maxPoints = MODE_WEIGHTS[answer.mode][hint.key] ?? COMMON_WEIGHTS[hint.key] ?? 30
+    const maxPoints = (MODE_WEIGHTS[answer.mode as PlayableCatalogGuessModeId] ?? {})[hint.key] ?? COMMON_WEIGHTS[hint.key] ?? 30
     const points = Math.round(maxPoints * result.factor)
     return points > 0 ? [{ key: hint.key, label: hint.label, status: result.status, points, maxPoints }] : []
   })

@@ -43,7 +43,7 @@ export type UserBadge = {
 
 export type PublicContentItem = {
   id: string
-  mode: PlayableMode
+  mode: CatalogGuessModeId
   titleRu: string
   titleOriginal: string
   year: number | null

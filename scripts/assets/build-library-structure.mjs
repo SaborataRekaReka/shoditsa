@@ -48,7 +48,14 @@ const LIBRARIES = [
     sourceFile: 'animals.generated.json',
     idKey: 'id',
   },
+  {
+    key: 'books',
+    sourceFile: 'books.generated.json',
+    idKey: 'id',
+  },
 ]
+
+const onlyKey = process.argv.find((arg) => arg.startsWith('--only='))?.slice('--only='.length) ?? null
 
 const normalize = (value) => String(value ?? '')
   .toLocaleLowerCase('ru-RU')
@@ -133,13 +140,19 @@ const buildSearchIndex = (libraryName, items, idKey) => {
 }
 
 const main = () => {
+  const selectedLibraries = onlyKey ? LIBRARIES.filter((library) => library.key === onlyKey) : LIBRARIES
+  if (!selectedLibraries.length) throw new Error(`Unknown library key: ${onlyKey}`)
+  const existingIndexPath = path.join(TARGET_ROOT, 'index.json')
+  const existingLibraries = onlyKey && fs.existsSync(existingIndexPath)
+    ? (readJson(existingIndexPath).libraries ?? []).filter((library) => library.key !== onlyKey)
+    : []
   const summary = {
     generatedAt: new Date().toISOString(),
     root: 'public/data/libraries',
-    libraries: [],
+    libraries: existingLibraries,
   }
 
-  for (const library of LIBRARIES) {
+  for (const library of selectedLibraries) {
     const sourcePath = path.join(SOURCE_DIR, library.sourceFile)
     const targetDir = path.join(TARGET_ROOT, library.key)
     const targetItemsPath = path.join(targetDir, 'items.json')
@@ -179,6 +192,9 @@ const main = () => {
 
     console.log(`${library.key}: ${items.length}`)
   }
+
+  const order = new Map(LIBRARIES.map((library, index) => [library.key, index]))
+  summary.libraries.sort((left, right) => (order.get(left.key) ?? 999) - (order.get(right.key) ?? 999))
 
   writeJson(path.join(TARGET_ROOT, 'index.json'), summary)
   console.log(`Catalog index: public/data/libraries/index.json`)

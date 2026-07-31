@@ -15,6 +15,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'bodyCoverings', 'habitats', 'animalContinents', 'diets', 'locomotion', 'reproduction', 'legCount', 'bodyMassKg', 'soundUrl', 'silhouetteUrl', 'rangeMapUrl', 'mediaAttribution'],
+  book: ['bookAuthors', 'bookCountry', 'bookOriginalLanguage', 'bookPublicationYear', 'bookGenres', 'bookGenresRaw', 'isPartOfSeries', 'hasAdaptation', 'bookAdaptationYears', 'bookAdaptationCount', 'hasAwards', 'bookAwards', 'bookMainCharacters', 'bookCoverSourceUrl'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'allowedInGame', 'popularityScore'],
 }
@@ -28,6 +29,7 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'habitats', 'animalContinents', 'diets', 'bodyMassKg'],
+  book: ['bookAuthors', 'bookCountry', 'bookOriginalLanguage', 'bookPublicationYear', 'bookGenres', 'isPartOfSeries', 'hasAdaptation'],
   danetki: ['condition', 'solution', 'difficulty', 'genres', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'allowedInGame'],
   connections: ['difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'allowedInGame'],
 }

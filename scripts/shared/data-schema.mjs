@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city', 'animal']
+const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city', 'animal', 'book']
 const CITY_RANK_KEYS = ['economy', 'humanCapital', 'qualityOfLife', 'ecology', 'governance']
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -102,6 +102,22 @@ const validateAnimalMedia = async (items, rootDir, file) => {
   return errors
 }
 
+const validateBooks = (items, file) => {
+  const errors = []
+  if (items.length !== 277) errors.push(`${file}: book runtime roster must contain exactly 277 items, found ${items.length}`)
+  for (const item of items) {
+    if (!isObject(item) || item.mode !== 'book') continue
+    if (!Array.isArray(item.bookAuthors) || !item.bookAuthors.length) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have an author`)
+    if (!Number.isFinite(item.bookPublicationYear)) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have a publication year`)
+    if (!Array.isArray(item.bookGenres) || !item.bookGenres.length) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have normalized genres`)
+    if (typeof item.bookCountry !== 'string' || !item.bookCountry) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have a country`)
+    if (typeof item.bookOriginalLanguage !== 'string' || !item.bookOriginalLanguage) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have an original language`)
+    if (typeof item.posterUrl !== 'string' || !/^https:\/\//.test(item.posterUrl)) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have an HTTPS cover URL`)
+    if (typeof item.plotHint !== 'string' || !item.plotHint.trim()) errors.push(`${file}: book ${item.id ?? '(unknown)'} must have a plot hint`)
+  }
+  return errors
+}
+
 const validateVignetteMap = (json, file) => {
   if (!Array.isArray(json)) return [`${file}: root must be an array`]
   return json.flatMap((entry) => {
@@ -115,7 +131,7 @@ const validateVignetteMap = (json, file) => {
 
 const validateSource = (json, file) => {
   if (!isObject(json)) return [`${file}: root must be object`]
-  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount', 'animalCount']
+  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount', 'animalCount', 'bookCount']
   return numericKeys
     .filter((key) => json[key] != null && typeof json[key] !== 'number')
     .map((key) => `${file}: ${key} must be number when present`)
@@ -131,6 +147,7 @@ export const validateGeneratedData = async (rootDir) => {
     diagnoses: 'diagnoses.generated.json',
     cities: 'cities.generated.json',
     animals: 'animals.generated.json',
+    books: 'books.generated.json',
     vignettes: 'diagnosis-case-vignettes.by-id.json',
     source: 'source.json',
   }
@@ -145,6 +162,7 @@ export const validateGeneratedData = async (rootDir) => {
     diagnoses: [path.join(dataDir, files.diagnoses), path.join(dataDir, 'libraries', 'diagnoses', 'items.json')],
     cities: [path.join(dataDir, 'libraries', 'cities', 'items.json'), path.join(dataDir, files.cities)],
     animals: [path.join(dataDir, 'libraries', 'animals', 'items.json'), path.join(dataDir, files.animals)],
+    books: [path.join(dataDir, 'libraries', 'books', 'items.json'), path.join(dataDir, files.books)],
   }
 
   for (const [datasetName, locations] of Object.entries(datasetLocations)) {
@@ -153,6 +171,9 @@ export const validateGeneratedData = async (rootDir) => {
     errors.push(...validateTitleDataset(json, fileLabel || datasetName))
     if (datasetName === 'animals' && Array.isArray(json)) {
       errors.push(...await validateAnimalMedia(json, rootDir, fileLabel || datasetName))
+    }
+    if (datasetName === 'books' && Array.isArray(json)) {
+      errors.push(...validateBooks(json, fileLabel || datasetName))
     }
   }
 

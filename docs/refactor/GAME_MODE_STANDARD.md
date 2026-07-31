@@ -1,5 +1,7 @@
 # Стандарт добавления игрового режима
 
+Для полного процесса от данных до production сначала выполнить [GAME_MODE_INTEGRATION_RUNBOOK.md](../GAME_MODE_INTEGRATION_RUNBOOK.md). Этот файл описывает архитектурный минимум; runbook добавляет data-first rollout, release-content, active revision, браузерный UX и production gates.
+
 Новый режим не добавляется отдельным экраном или веткой маршрутизации. Он подключается как данные и набор правил к существующему игровому конвейеру.
 
 1. Добавить идентификатор и capabilities в `packages/contracts/src/game-modes.ts`: порядок дня, каталог данных, period/difficulty policy, free play и варианты.

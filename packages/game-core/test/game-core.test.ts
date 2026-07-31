@@ -405,6 +405,24 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'animal_family')).toMatchObject({ status: 'miss' })
     expect(hints.find((hint) => hint.key === 'body_mass')).toMatchObject({ direction: 'up' })
   })
+  it('loads the complete book roster and compares literary criteria through the shared mode registry', () => {
+    const books = JSON.parse(readFileSync(new URL('../../../public/data/libraries/books/items.json', import.meta.url), 'utf8')) as TitleItem[]
+    const nineteenEightyFour = books.find((item) => item.id === 'book-167')!
+    const harryPotter = books.find((item) => item.id === 'book-182')!
+    const hints = compareTitles(nineteenEightyFour, harryPotter)
+
+    expect(books).toHaveLength(277)
+    expect(titleSearchNames(harryPotter)).toContain("Harry Potter and the Philosopher's Stone")
+    expect(hints.find((hint) => hint.key === 'book_authors')).toMatchObject({ status: 'miss' })
+    expect(hints.find((hint) => hint.key === 'book_country')).toMatchObject({ status: 'match' })
+    expect(hints.find((hint) => hint.key === 'book_language')).toMatchObject({ status: 'match' })
+    expect(hints.find((hint) => hint.key === 'book_year')).toMatchObject({ status: 'miss', direction: 'up' })
+    expect(hints.find((hint) => hint.key === 'book_series')).toMatchObject({ status: 'miss' })
+    expect(hints.find((hint) => hint.key === 'book_adaptation')).toMatchObject({ status: 'match' })
+    expect(hints.find((hint) => hint.key === 'book_adaptation_count')).toMatchObject({ status: 'close', direction: 'down' })
+    expect(hints.find((hint) => hint.key === 'book_awards')).toMatchObject({ status: 'miss' })
+    expect(compareTitles(harryPotter, harryPotter).every((hint) => hint.status === 'match')).toBe(true)
+  })
   it('requires an explicit opt-in before including promo cards in the regular games pool', () => {
     const regular = {
       id: 'tgdb_1',

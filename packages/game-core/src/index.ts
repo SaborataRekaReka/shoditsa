@@ -1613,6 +1613,60 @@ export const compareAnimals = (guess: TitleItem, answer: TitleItem): Hint[] => {
   ]
 }
 
+const formatBookYear = (value: number | null | undefined) => {
+  const year = toFiniteNumber(value)
+  if (year == null) return 'Нет данных'
+  return year < 0 ? `${Math.abs(year)} до н. э.` : String(year)
+}
+
+export const compareBooks = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const listHint = (key: string, label: string, guessValues: string[] | undefined, answerValues: string[] | undefined): Hint => {
+    const comparableGuess = knownComparisonValues(guessValues)
+    const comparableAnswer = knownComparisonValues(answerValues)
+    return {
+      key,
+      label,
+      value: list(comparableGuess),
+      status: setStatus(comparableGuess, comparableAnswer),
+      direction: null,
+      matchedValues: overlaps(comparableGuess, comparableAnswer),
+    }
+  }
+  const scalarHint = (key: string, label: string, guessValue: string | null | undefined, answerValue: string | null | undefined): Hint => ({
+    key,
+    label,
+    value: knownComparisonText(guessValue) ?? 'Нет данных',
+    status: scalar(guessValue, answerValue),
+    direction: null,
+  })
+  const booleanHint = (key: string, label: string, guessValue: boolean | undefined, answerValue: boolean | undefined): Hint => ({
+    key,
+    label,
+    value: guessValue == null ? 'Нет данных' : guessValue ? 'Да' : 'Нет',
+    status: guessValue == null || answerValue == null ? 'unknown' : guessValue === answerValue ? 'match' : 'miss',
+    direction: null,
+  })
+  const year = numeric(guess.bookPublicationYear, answer.bookPublicationYear, 0, 10)
+  const adaptationCount = numeric(guess.bookAdaptationCount, answer.bookAdaptationCount, 0, 2)
+
+  return [
+    ...(knownComparisonValues(answer.bookAuthors).length ? [listHint('book_authors', 'Автор', guess.bookAuthors, answer.bookAuthors)] : []),
+    ...(knownComparisonText(answer.bookCountry) ? [scalarHint('book_country', 'Страна', guess.bookCountry, answer.bookCountry)] : []),
+    ...(knownComparisonText(answer.bookOriginalLanguage) ? [scalarHint('book_language', 'Язык оригинала', guess.bookOriginalLanguage, answer.bookOriginalLanguage)] : []),
+    ...(answer.bookPublicationYear != null ? [{ key: 'book_year', label: 'Год публикации', value: formatBookYear(guess.bookPublicationYear), ...year } satisfies Hint] : []),
+    ...(knownComparisonValues(answer.bookGenres).length ? [listHint('book_genres', 'Жанры', guess.bookGenres, answer.bookGenres)] : []),
+    ...(answer.isPartOfSeries != null ? [booleanHint('book_series', 'Часть цикла', guess.isPartOfSeries, answer.isPartOfSeries)] : []),
+    ...(answer.hasAdaptation != null ? [booleanHint('book_adaptation', 'Экранизация', guess.hasAdaptation, answer.hasAdaptation)] : []),
+    ...(answer.bookAdaptationCount != null ? [{
+      key: 'book_adaptation_count',
+      label: 'Экранизаций',
+      value: guess.bookAdaptationCount == null ? 'Нет данных' : String(guess.bookAdaptationCount),
+      ...adaptationCount,
+    } satisfies Hint] : []),
+    ...(answer.hasAwards != null ? [booleanHint('book_awards', 'Премии', guess.hasAwards, answer.hasAwards)] : []),
+  ]
+}
+
 export type GameModeRules = {
   pool: (items: TitleItem[], variantKey: string | null) => TitleItem[]
   compare: (guess: TitleItem, answer: TitleItem) => Hint[]
@@ -1629,6 +1683,7 @@ export const GAME_MODE_RULES: Record<TitleMode, GameModeRules> = {
   music: { pool: unchangedPool, compare: compareMusic },
   diagnosis: { pool: unchangedPool, compare: compareDiagnoses },
   animal: { pool: unchangedPool, compare: compareAnimals },
+  book: { pool: unchangedPool, compare: compareBooks },
 }
 
 export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {

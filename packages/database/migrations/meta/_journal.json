@@ -281,6 +281,13 @@
       "when": 1785442150139,
       "tag": "0039_robust_marvel_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1785513600000,
+      "tag": "0040_add_book_content_mode",
+      "breakpoints": true
     }
   ]
 }

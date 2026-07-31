@@ -1,5 +1,5 @@
 import { Type, type Static, type TSchema } from '@sinclair/typebox'
-import { CATALOG_GUESS_MODE_IDS, CONTENT_MODE_IDS, PLAYABLE_MODE_IDS } from './game-modes.js'
+import { CATALOG_GUESS_MODE_IDS, CONTENT_MODE_IDS, PLAYABLE_CATALOG_GUESS_MODE_IDS, PLAYABLE_MODE_IDS } from './game-modes.js'
 
 export const CONTENT_MODES = CONTENT_MODE_IDS
 export const PLAYABLE_MODES = PLAYABLE_MODE_IDS
@@ -9,6 +9,7 @@ export const DIFFICULTY_KEYS = ['easy', 'medium', 'hard', 'expert'] as const
 export const ContentModeSchema = Type.Union(CONTENT_MODES.map((value) => Type.Literal(value)))
 export const PlayableModeSchema = Type.Union(PLAYABLE_MODES.map((value) => Type.Literal(value)))
 export const CatalogGuessModeSchema = Type.Union(CATALOG_GUESS_MODE_IDS.map((value) => Type.Literal(value)))
+export const PlayableCatalogGuessModeSchema = Type.Union(PLAYABLE_CATALOG_GUESS_MODE_IDS.map((value) => Type.Literal(value)))
 export const PeriodKeySchema = Type.Union(PERIOD_KEYS.map((value) => Type.Literal(value)))
 export const DifficultyKeySchema = Type.Union(DIFFICULTY_KEYS.map((value) => Type.Literal(value)))
 export const NullableDifficultySchema = Type.Union([DifficultyKeySchema, Type.Null()])
@@ -27,7 +28,7 @@ export const ErrorEnvelopeSchema = Type.Object({
 
 export const PublicContentItemSchema = Type.Object({
   id: Type.String({ minLength: 1 }),
-  mode: PlayableModeSchema,
+  mode: CatalogGuessModeSchema,
   titleRu: Type.String(),
   titleOriginal: Type.String(),
   year: Type.Union([Type.Integer(), Type.Null()]),
@@ -36,7 +37,7 @@ export const PublicContentItemSchema = Type.Object({
 }, { additionalProperties: true })
 
 export const CatalogSearchQuerySchema = Type.Object({
-  mode: CatalogGuessModeSchema,
+  mode: PlayableCatalogGuessModeSchema,
   q: Type.String({ minLength: 1, maxLength: 100 }),
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(DifficultyKeySchema),
@@ -50,9 +51,7 @@ export const CatalogSearchResponseSchema = Type.Object({
 
 export const GameStartBodySchema = Type.Object({
   kind: Type.Union([Type.Literal('daily'), Type.Literal('archive'), Type.Literal('free_play'), Type.Literal('pack')]),
-  // Danetki shares the canonical route, but remains outside PLAYABLE_MODES
-  // because the legacy catalog engine still assumes title-guessing semantics.
-  mode: ContentModeSchema,
+  mode: PlayableModeSchema,
   roomMode: Type.Optional(Type.Union([Type.Literal('solo'), Type.Literal('group')])),
   period: Type.Optional(PeriodKeySchema),
   difficulty: Type.Optional(NullableDifficultySchema),
@@ -112,7 +111,7 @@ export const ProfilePatchSchema = Type.Partial(Type.Object({
 }, { additionalProperties: false }))
 
 export const PeriodUnlockBodySchema = Type.Object({ mode: PlayableModeSchema, period: PeriodKeySchema }, { additionalProperties: false })
-export const FreePlayBodySchema = Type.Object({ mode: CatalogGuessModeSchema, difficulty: Type.Optional(NullableDifficultySchema) }, { additionalProperties: false })
+export const FreePlayBodySchema = Type.Object({ mode: PlayableCatalogGuessModeSchema, difficulty: Type.Optional(NullableDifficultySchema) }, { additionalProperties: false })
 export const PromoRedeemBodySchema = Type.Object({ code: Type.String({ minLength: 1, maxLength: 64 }) }, { additionalProperties: false })
 
 export const ArchiveQuerySchema = Type.Object({
@@ -212,6 +211,7 @@ export const AdminContentReviewDecisionSchema = Type.Object({
 export type ContentMode = Static<typeof ContentModeSchema>
 export type PlayableMode = Static<typeof PlayableModeSchema>
 export type CatalogGuessMode = Static<typeof CatalogGuessModeSchema>
+export type PlayableCatalogGuessMode = Static<typeof PlayableCatalogGuessModeSchema>
 export type ApiPeriodKey = Static<typeof PeriodKeySchema>
 export type ApiDifficultyKey = Static<typeof DifficultyKeySchema>
 export type CatalogSearchQuery = Static<typeof CatalogSearchQuerySchema>

@@ -21,6 +21,7 @@ import {
   type AssistHintKey, type CatalogSearchQuery, type ContentReportBody, type FinalChoiceBody, type FreePlayBody, type GameStartBody, type HintChoiceBody,
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
   isCatalogGuessModeId,
+  isPlayableModeId,
 } from '@shoditsa/contracts'
 import {
   account, appSettings, auditLog, authEvents, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
@@ -353,6 +354,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       ) }
     }
     if (!isCatalogGuessModeId(body.mode)) throw new ApiError(422, 'GAME_MODE_UNSUPPORTED', 'Этот игровой режим пока не поддерживается')
+    if (!isPlayableModeId(body.mode)) throw new ApiError(404, 'GAME_MODE_NOT_RELEASED', 'Этот игровой режим ещё не опубликован')
     if (body.kind === 'free_play') throw new ApiError(422, 'GAME_KIND_UNSUPPORTED', 'Свободная игра для этого режима запускается через экономику')
     if (body.kind === 'pack') {
       if (!body.packId || !body.packPosition) throw new ApiError(422, 'PACK_POSITION_REQUIRED', 'Для спецпоказа нужны packId и packPosition')

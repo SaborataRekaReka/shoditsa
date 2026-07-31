@@ -1,5 +1,5 @@
 import { Type, type Static } from '@sinclair/typebox'
-import { CatalogGuessModeSchema } from './schemas.js'
+import { PlayableCatalogGuessModeSchema } from './schemas.js'
 import type { PublicContentItem } from './api.js'
 import type { EconomyQuote } from './economy.js'
 
@@ -67,7 +67,7 @@ export const FRIENDS_ROOM_PACK_VARIANTS = {
   animal: [
     { id: 'all', label: 'Весь каталог', description: '300 животных основного набора' },
   ],
-} as const satisfies Record<Static<typeof CatalogGuessModeSchema>, readonly FriendsRoomPackVariant[]>
+} as const satisfies Record<Static<typeof PlayableCatalogGuessModeSchema>, readonly FriendsRoomPackVariant[]>
 
 export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
   movie: 'all',
@@ -78,15 +78,15 @@ export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
   music: 'medium',
   diagnosis: 'all',
   animal: 'all',
-} as const satisfies Record<Static<typeof CatalogGuessModeSchema>, string>
+} as const satisfies Record<Static<typeof PlayableCatalogGuessModeSchema>, string>
 
 export type FriendsRoomPackSelection = {
-  mode: Static<typeof CatalogGuessModeSchema>
+  mode: Static<typeof PlayableCatalogGuessModeSchema>
   variant: string
 }
 
 export const FriendsRoomPackSelectionSchema = Type.Object({
-  mode: CatalogGuessModeSchema,
+  mode: PlayableCatalogGuessModeSchema,
   variant: Type.String({ minLength: 1, maxLength: 40 }),
 }, { additionalProperties: false })
 
@@ -95,7 +95,7 @@ export const friendsRoomMinimumRounds = (packCount: number) => Math.max(3, Math.
 
 export const FriendsRoomCreateBodySchema = Type.Object({
   gameType: Type.Optional(Type.Union([Type.Literal('quiz'), Type.Literal('danetki')])),
-  mode: Type.Optional(CatalogGuessModeSchema),
+  mode: Type.Optional(PlayableCatalogGuessModeSchema),
   packs: Type.Optional(Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 })),
   roundsTotal: Type.Optional(FriendsRoomRoundsTotalSchema),
   shufflePacks: Type.Optional(Type.Boolean()),
@@ -112,7 +112,7 @@ export const FriendsRoomJoinBodySchema = Type.Object({
 
 export const FriendsRoomConfigBodySchema = Type.Partial(Type.Object({
   gameType: Type.Union([Type.Literal('quiz'), Type.Literal('danetki')]),
-  mode: CatalogGuessModeSchema,
+  mode: PlayableCatalogGuessModeSchema,
   packs: Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: 7 }),
   roundsTotal: FriendsRoomRoundsTotalSchema,
   shufflePacks: Type.Boolean(),
@@ -187,7 +187,7 @@ export type FriendsRoomMessage = {
 
 export type FriendsRoomRound = {
   position: number
-  mode: Static<typeof CatalogGuessModeSchema>
+  mode: Static<typeof PlayableCatalogGuessModeSchema>
   variant: string
   prompt: string
   hints: string[]
@@ -205,7 +205,7 @@ export type FriendsRoomSnapshot = {
   danetkiSessionId: string | null
   danetkiLaunchCost: number
   danetkiLaunch: FriendsRoomDanetkiLaunch
-  mode: Static<typeof CatalogGuessModeSchema>
+  mode: Static<typeof PlayableCatalogGuessModeSchema>
   packs: FriendsRoomPackSelection[]
   capacity: number
   roundsTotal: number
@@ -239,7 +239,7 @@ export type FriendsRoomSummary = {
   id: string
   code: string
   gameType: FriendsRoomGameType
-  mode: Static<typeof CatalogGuessModeSchema>
+  mode: Static<typeof PlayableCatalogGuessModeSchema>
   packs: FriendsRoomPackSelection[]
   players: number
   capacity: number
@@ -256,7 +256,7 @@ export type FriendsRoomPreview = {
   hostName: string
   gameType: FriendsRoomGameType
   danetkiLaunchCost: number
-  mode: Static<typeof CatalogGuessModeSchema>
+  mode: Static<typeof PlayableCatalogGuessModeSchema>
   packs: FriendsRoomPackSelection[]
   players: number
   capacity: number

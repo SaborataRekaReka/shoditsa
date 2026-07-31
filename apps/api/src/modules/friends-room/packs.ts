@@ -2,22 +2,22 @@ import {
   FRIENDS_ROOM_DEFAULT_PACK_VARIANTS,
   FRIENDS_ROOM_PACK_VARIANTS,
   type FriendsRoomPackSelection,
-  type CatalogGuessModeId,
+  type PlayableCatalogGuessModeId,
   type TitleItem,
 } from '@shoditsa/contracts'
 import { ApiError } from '../../lib/errors.js'
 
-export const defaultFriendsRoomPack = (mode: CatalogGuessModeId): FriendsRoomPackSelection => ({
+export const defaultFriendsRoomPack = (mode: PlayableCatalogGuessModeId): FriendsRoomPackSelection => ({
   mode,
   variant: FRIENDS_ROOM_DEFAULT_PACK_VARIANTS[mode],
 })
 
 export const normalizeFriendsRoomPacks = (
   packs: FriendsRoomPackSelection[] | null | undefined,
-  legacyMode: CatalogGuessModeId = 'series',
+  legacyMode: PlayableCatalogGuessModeId = 'series',
 ): FriendsRoomPackSelection[] => {
   const source = packs?.length ? packs : [defaultFriendsRoomPack(legacyMode)]
-  const seen = new Set<CatalogGuessModeId>()
+  const seen = new Set<PlayableCatalogGuessModeId>()
   const result: FriendsRoomPackSelection[] = []
   for (const pack of source) {
     if (seen.has(pack.mode)) continue

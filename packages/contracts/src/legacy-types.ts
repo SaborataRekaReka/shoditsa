@@ -320,6 +320,22 @@ export type TitleItem = {
   silhouetteAttribution?: MediaAttribution | null
   rangeMapAttribution?: MediaAttribution | null
 
+  bookRank?: number | null
+  bookAuthors?: string[]
+  bookCountry?: string
+  bookOriginalLanguage?: string
+  bookPublicationYear?: number | null
+  bookGenres?: string[]
+  bookGenresRaw?: string[]
+  isPartOfSeries?: boolean
+  hasAdaptation?: boolean
+  bookAdaptationYears?: number[]
+  bookAdaptationCount?: number | null
+  hasAwards?: boolean
+  bookAwards?: string[]
+  bookMainCharacters?: string[]
+  bookCoverSourceUrl?: string | null
+
   country?: string
   countryFlagUrl?: string | null
   continent?: string

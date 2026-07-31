@@ -1,8 +1,8 @@
-import type { PlayableModeId } from '@shoditsa/contracts'
 import type { LucideIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import {
   BookOpenText,
+  BookOpen,
   Check,
   ChevronDown,
   CircleHelp,
@@ -32,9 +32,10 @@ const GUIDE_ICONS = {
   music: Music2,
   diagnosis: Stethoscope,
   animal: PawPrint,
+  book: BookOpen,
   connections: Grid2X2,
   danetki: ScanSearch,
-} satisfies Record<PlayableModeId, LucideIcon>
+} satisfies Record<SeoGameMode, LucideIcon>
 
 const DANETKI_RULES = {
   searchInstruction: 'Прочитайте необычную ситуацию и выберите формат: расследовать одному или создать общую комнату для друзей.',
