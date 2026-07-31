@@ -89,4 +89,15 @@ describe('search index contract', () => {
     expect(GAME_SEO.diagnosis.lead).toContain('Игра «Поставь диагноз»')
     expect(GAME_SEO.diagnosis.description).not.toContain('лечение')
   })
+
+  it('targets the book guessing intent with a dedicated social image', () => {
+    const route = seoRouteFromPathname('/games/book')
+    const data = structuredDataForSeoRoute(route) as { '@graph': Array<Record<string, unknown>> }
+
+    expect(GAME_SEO.book.title).toContain('Угадай книгу по описанию')
+    expect(GAME_SEO.book.title).toContain('литературная викторина')
+    expect(GAME_SEO.book.paragraphs.join(' ')).toContain('Викторина по книгам')
+    expect(route.imagePath).toBe('/images/social/book-game-og-v1.webp')
+    expect(data['@graph'].some((entry) => entry.image === 'https://shoditsa.ru/images/social/book-game-og-v1.webp')).toBe(true)
+  })
 })

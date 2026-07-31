@@ -103,7 +103,9 @@ export const seoRouteFromPathname = (pathname: string): SeoRoute => {
     indexable: true,
     imagePath: game.mode === 'connections'
       ? '/images/connections/connections-title-hero-v2.webp'
-      : DEFAULT_SOCIAL_IMAGE_PATH,
+      : game.mode === 'book'
+        ? '/images/social/book-game-og-v1.webp'
+        : DEFAULT_SOCIAL_IMAGE_PATH,
   }
 
   return utilitySeo(normalized) ?? {
@@ -133,6 +135,7 @@ export const normalizeSiteUrl = (value: string | undefined) => {
 
 export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN) => {
   const canonicalUrl = new URL(route.canonicalPath, `${siteUrl}/`).toString()
+  const imageUrl = new URL(route.imagePath, `${siteUrl}/`).toString()
   const websiteId = `${siteUrl}/#website`
   const applicationId = `${siteUrl}/#application`
 
@@ -157,10 +160,10 @@ export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN
         '@type': 'WebSite', '@id': websiteId, url: `${siteUrl}/`, name: SITE_NAME, alternateName: 'Сходится', inLanguage: SITE_LANGUAGE,
       },
       {
-        '@type': 'WebPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId }, mainEntity: { '@id': `${canonicalUrl}#game` },
+        '@type': 'WebPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, image: imageUrl, inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId }, mainEntity: { '@id': `${canonicalUrl}#game` },
       },
       {
-        '@type': 'WebApplication', '@id': `${canonicalUrl}#game`, name: route.heading, url: canonicalUrl, description: route.description, applicationCategory: 'GameApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', inLanguage: SITE_LANGUAGE, isAccessibleForFree: true,
+        '@type': 'WebApplication', '@id': `${canonicalUrl}#game`, name: route.heading, url: canonicalUrl, description: route.description, image: imageUrl, applicationCategory: 'GameApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', inLanguage: SITE_LANGUAGE, isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
       },
       {
