@@ -54,6 +54,7 @@ describe('friends room multiplayer API', () => {
   const grantClub = async (cookie: string) => {
     const me = await app.inject({ method: 'GET', url: '/api/v1/me', headers: { cookie } })
     const userId = me.json().user.id as string
+    await database.db.update(user).set({ isAnonymous: false }).where(eq(user.id, userId))
     await database.db.insert(userEntitlements).values({
       userId,
       entitlementKey: 'club',

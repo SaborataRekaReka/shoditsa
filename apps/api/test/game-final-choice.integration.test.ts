@@ -117,7 +117,7 @@ describe('game final choice API', () => {
       selectedItemId: fixture.answer.itemId,
       correct: true,
     })
-    expect(first.json().reward.components).toMatchObject({ completion: 0, win: 0, efficiency: 0, finalChoiceWin: 5 })
+    expect(first.json().reward.components).toMatchObject({ completion: 5, win: 0, efficiency: 0, finalChoiceWin: 5 })
 
     const replay = await app.inject({
       method: 'POST',
@@ -168,11 +168,11 @@ describe('game final choice API', () => {
       selectedItemId: null,
       correct: false,
     })
-    expect(revealed.json().reward.components).toMatchObject({ completion: 0, win: 0, finalChoiceWin: 0 })
+    expect(revealed.json().reward.components).toMatchObject({ completion: 5, win: 0, finalChoiceWin: 0 })
   })
 
-  it('turns a late choice into an automatic reveal after ten seconds', async () => {
-    const fixture = await createFinalSession(new Date(Date.now() - 10_100))
+  it('turns a late choice into an automatic reveal after the final-choice window', async () => {
+    const fixture = await createFinalSession(new Date(Date.now() - 45_100))
     const response = await app.inject({
       method: 'POST',
       url: `/api/v1/games/${fixture.session.id}/final-choice`,
