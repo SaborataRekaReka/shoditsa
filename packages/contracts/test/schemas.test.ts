@@ -25,7 +25,7 @@ describe('API schemas', () => {
     expect(friendsRoomMinimumRounds(7)).toBe(9)
   })
   it('accepts city through the canonical game route with a supported variant', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'city', variantKey: 'capitals' })).toBe(true))
-  it('keeps unreleased catalog modes out of public game starts', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'book' })).toBe(false))
+  it('accepts books through the canonical game route', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'book' })).toBe(true))
   it('accepts a solo danetki session through the canonical game route', () => expect(Value.Check(GameStartBodySchema, { kind: 'daily', mode: 'danetki', roomMode: 'solo' })).toBe(true))
   it('accepts free play for the danetki chat engine', () => expect(Value.Check(GameStartBodySchema, { kind: 'free_play', mode: 'danetki', roomMode: 'group' })).toBe(true))
   it('accepts a pack session selector', () => expect(Value.Check(GameStartBodySchema, { kind: 'pack', mode: 'game', packId: 'dtf-game-comments-25-v1', packPosition: 1 })).toBe(true))
