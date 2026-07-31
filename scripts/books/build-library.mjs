@@ -106,6 +106,8 @@ export const buildBookItem = (raw, index) => {
   const adaptations = raw?.['Экранизации'] ?? {}
   const adaptationYears = compact(Array.isArray(adaptations?.['Годы основных экранизаций']) ? adaptations['Годы основных экранизаций'] : [])
     .map(Number).filter(Number.isFinite).sort((a, b) => a - b)
+  const adaptationDeclared = Object.values(adaptations).some((value) => normalizeText(value) === '\u0434\u0430')
+  const hasAdaptation = adaptationDeclared || adaptationYears.length > 0
   const awards = splitAwards(raw?.['Премии'])
   const removals = EDITORIAL_CHARACTER_REMOVALS.get(id) ?? new Set()
   const characters = compact(Array.isArray(raw?.['Главные персонажи']) ? raw['Главные персонажи'] : [])
@@ -150,9 +152,12 @@ export const buildBookItem = (raw, index) => {
     bookGenres: normalizeGenres(bookGenresRaw),
     bookGenresRaw,
     isPartOfSeries: normalizeText(raw?.['Часть цикла']) === 'да',
-    hasAdaptation: normalizeText(adaptations?.['Есть']) === 'да' || adaptationYears.length > 0,
+    hasAdaptation,
     bookAdaptationYears: adaptationYears,
-    bookAdaptationCount: adaptationYears.length,
+    // Some source cards only confirm that an adaptation exists without listing
+    // every release year. Preserve that fact without rendering the impossible
+    // combination "adaptation: yes / count: 0" in the comparison grid.
+    bookAdaptationCount: hasAdaptation ? Math.max(1, adaptationYears.length) : 0,
     hasAwards: awards.length > 0,
     bookAwards: awards,
     bookMainCharacters: characters,
@@ -169,6 +174,8 @@ const validate = (items) => {
     ids.add(item.id)
     if (!item.posterUrl) issues.push(`${item.id}: missing cover`)
     if (!item.plotHint) issues.push(`${item.id}: missing plot hint`)
+    if (item.hasAdaptation && item.bookAdaptationCount < 1) issues.push(`${item.id}: adaptation is declared but count is zero`)
+    if (!item.hasAdaptation && item.bookAdaptationCount !== 0) issues.push(`${item.id}: adaptation count exists without an adaptation`)
     const normalizedHint = normalizeText(item.plotHint)
     for (const title of [item.titleRu, item.titleOriginal]) {
       const normalizedTitle = normalizeText(title)

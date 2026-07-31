@@ -31,3 +31,19 @@ test('builds a safe playable card and removes title leakage', () => {
   assert.equal(item.hasAdaptation, true)
 })
 
+test('never emits a contradictory adaptation count', () => {
+  const base = {
+    'ID книги': 'book-adaptation-test',
+    'Название': { 'На русском': 'Книга', 'На языке оригинала': 'Book' },
+    'Автор': 'Автор',
+    'Экранизации': { 'Есть': 'да', 'Годы основных экранизаций': [] },
+  }
+
+  const declared = buildBookItem(base, 0)
+  assert.equal(declared.hasAdaptation, true)
+  assert.equal(declared.bookAdaptationCount, 1)
+
+  const absent = buildBookItem({ ...base, 'Экранизации': { 'Есть': 'нет', 'Годы основных экранизаций': [] } }, 0)
+  assert.equal(absent.hasAdaptation, false)
+  assert.equal(absent.bookAdaptationCount, 0)
+})
