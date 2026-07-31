@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { Lock, RotateCcw } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from '../../app/mode-config'
+import { isPlayableModeId } from '@shoditsa/contracts'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { api, queryKeys } from '../../api/client'
@@ -87,9 +88,10 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
   useEffect(() => {
     setArchiveSection((current) => current === 'connections' ? current : mode)
   }, [mode])
+  const playableMode = isPlayableModeId(mode) ? mode : 'movie'
   const archive = useQuery({
-    queryKey: queryKeys.archiveCalendar({ mode, period, from: dates.at(-1), to: dates[0] }),
-    queryFn: () => api.archiveCalendar({ mode, period, from: dates.at(-1)!, to: dates[0]! }),
+    queryKey: queryKeys.archiveCalendar({ mode: playableMode, period, from: dates.at(-1), to: dates[0] }),
+    queryFn: () => api.archiveCalendar({ mode: playableMode, period, from: dates.at(-1)!, to: dates[0]! }),
     enabled: Boolean(serverRuntime.me),
   })
   const connectionsArchive = useQuery({

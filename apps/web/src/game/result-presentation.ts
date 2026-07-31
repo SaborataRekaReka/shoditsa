@@ -34,6 +34,11 @@ type ResultItem = Pick<
   | 'habitats'
   | 'animalContinents'
   | 'diets'
+  | 'bookAuthors'
+  | 'bookPublicationYear'
+  | 'bookGenres'
+  | 'bookCountry'
+  | 'bookOriginalLanguage'
 >
 
 const values = (items: Array<string | number | null | undefined>) =>
@@ -45,6 +50,9 @@ export const resultCardMeta = (item: ResultItem) => {
   }
   if (item.mode === 'animal') {
     return values([item.scientificName || item.titleOriginal, item.taxonomicClass, item.animalOrder]).join(' · ')
+  }
+  if (item.mode === 'book') {
+    return values([...(item.bookAuthors ?? []).slice(0, 2), item.bookPublicationYear, item.bookCountry]).join(' · ')
   }
   if (item.mode === 'game') {
     return values([
@@ -77,6 +85,9 @@ export const resultCardTags = (item: ResultItem) => {
   }
   if (item.mode === 'animal') {
     return [...(item.habitats ?? []).slice(0, 2), ...(item.animalContinents ?? []).slice(0, 2), ...(item.diets ?? []).slice(0, 1)]
+  }
+  if (item.mode === 'book') {
+    return [...(item.bookGenres ?? []).slice(0, 3), item.bookOriginalLanguage].filter((value): value is string => Boolean(value))
   }
   if (item.mode === 'game') {
     return [...(item.genres ?? []).slice(0, 2), ...(item.platforms ?? []).slice(0, 2)]

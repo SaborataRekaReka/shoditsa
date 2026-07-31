@@ -184,6 +184,14 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: 'Ареал', present: (payload) => hasContentValue(payload.animalContinents) },
     { label: 'Иллюстрация', present: (payload) => hasTextValue(payload.posterUrl) },
   ],
+  book: [
+    { label: 'Автор', present: (payload) => hasContentValue(payload.bookAuthors) },
+    { label: 'Страна', present: (payload) => hasTextValue(payload.bookCountry) },
+    { label: 'Язык оригинала', present: (payload) => hasTextValue(payload.bookOriginalLanguage) },
+    { label: 'Год публикации', present: (payload) => hasContentValue(payload.bookPublicationYear) },
+    { label: 'Жанры', present: (payload) => hasContentValue(payload.bookGenres) },
+    { label: 'Обложка', present: (payload) => hasTextValue(payload.posterUrl) },
+  ],
   danetki: [
     { label: 'Русское название', present: (payload) => hasTextValue(payload.titleRu) },
     { label: 'Условие', present: (payload) => hasTextValue(payload.condition) },
@@ -438,7 +446,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
       )`
         : field === 'title' ? sql<string>`concat_ws(' ', ${contentItemVersions.titleRu}, ${contentItemVersions.titleOriginal}, ${effectivePayload}->>'alternativeTitles', ${effectivePayload}->>'aliases')`
           : field === 'id' ? sql<string>`${contentItemVersions.itemId}`
-            : field === 'mode' ? sql<string>`concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'city' then 'города' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' when 'animal' then 'животные' end)`
+            : field === 'mode' ? sql<string>`concat_ws(' ', ${contentItemVersions.mode}::text, case ${contentItemVersions.mode} when 'movie' then 'кино' when 'series' then 'сериалы' when 'anime' then 'аниме' when 'game' then 'игры' when 'city' then 'города' when 'music' then 'музыка' when 'diagnosis' then 'диагнозы' when 'animal' then 'животные' when 'book' then 'книги' end)`
               : field === 'publicationStatus' || field === 'allowedInGame' ? sql<string>`case when coalesce((${effectivePayload}->>'allowedInGame')::boolean, ${contentItemVersions.allowedInGame}) then 'true да yes 1 в игре active published разрешена' else 'false нет no 0 скрыта hidden blocked запрещена' end`
                 : field === 'changeSource' ? sql<string>`coalesce((select cwc.source from content_workspace_changes cwc where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')`
                   : field === 'pipeline' ? sql<string>`coalesce((select pr.pipeline_key from content_workspace_changes cwc join pipeline_runs pr on pr.id = cwc.pipeline_run_id where cwc.item_id = ${contentItemVersions.itemId} order by cwc."updatedAt" desc limit 1), '')`

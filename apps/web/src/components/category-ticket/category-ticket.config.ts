@@ -1,12 +1,12 @@
 import type { LucideIcon } from 'lucide-react'
 import { CATALOG_GUESS_DAILY_MODE_IDS, GAME_MODE_MANIFEST } from '@shoditsa/contracts'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
-import type { TitleMode } from '../../types'
+import type { PlayableCatalogGuessModeId } from '@shoditsa/contracts'
 
-export type CategoryTicketMode = TitleMode | 'danetki' | 'connections'
+export type CategoryTicketMode = PlayableCatalogGuessModeId | 'danetki' | 'connections'
 
 export type CategoryTicketConfig = {
-  mode: TitleMode
+  mode: PlayableCatalogGuessModeId
   title: string
   description: string
   color: string

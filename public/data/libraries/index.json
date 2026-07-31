@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T07:18:52.344Z",
+  "generatedAt": "2026-07-31T13:50:36.455Z",
   "root": "public/data/libraries",
   "libraries": [
     {
@@ -31,13 +31,6 @@
       "count": 999
     },
     {
-      "key": "diagnoses",
-      "source": "public/data/diagnoses.generated.json",
-      "itemsFile": "public/data/libraries/diagnoses/items.json",
-      "searchIndexFile": "public/data/libraries/diagnoses/search-index.json",
-      "count": 120
-    },
-    {
       "key": "cities",
       "source": "data/cities/raw/v2_final.json",
       "itemsFile": "public/data/libraries/cities/items.json",
@@ -45,11 +38,25 @@
       "count": 980
     },
     {
+      "key": "diagnoses",
+      "source": "public/data/diagnoses.generated.json",
+      "itemsFile": "public/data/libraries/diagnoses/items.json",
+      "searchIndexFile": "public/data/libraries/diagnoses/search-index.json",
+      "count": 120
+    },
+    {
       "key": "animals",
       "source": "data/animals/generated/roster.json",
       "itemsFile": "public/data/libraries/animals/items.json",
       "searchIndexFile": "public/data/libraries/animals/search-index.json",
       "count": 300
+    },
+    {
+      "key": "books",
+      "source": "public/data/books.generated.json",
+      "itemsFile": "public/data/libraries/books/items.json",
+      "searchIndexFile": "public/data/libraries/books/search-index.json",
+      "count": 277
     }
   ]
 }

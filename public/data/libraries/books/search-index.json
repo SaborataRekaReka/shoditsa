@@ -1,0 +1,6840 @@
+{
+  "version": 1,
+  "library": "books",
+  "generatedAt": "2026-07-31T13:50:36.484Z",
+  "totalItems": 277,
+  "tokensCount": 1087,
+  "docs": [
+    {
+      "id": "book-283",
+      "titleRu": "13 причин почему",
+      "titleOriginal": "13 Reasons Why",
+      "alternativeTitles": [
+        "13 Reasons Why"
+      ],
+      "year": 2007,
+      "topRank": 260,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-167",
+      "titleRu": "1984",
+      "titleOriginal": "Nineteen Eighty-Four",
+      "alternativeTitles": [
+        "Nineteen Eighty-Four"
+      ],
+      "year": 1949,
+      "topRank": 147,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-193",
+      "titleRu": "2001: Космическая одиссея",
+      "titleOriginal": "2001: A Space Odyssey",
+      "alternativeTitles": [
+        "2001: A Space Odyssey"
+      ],
+      "year": 1968,
+      "topRank": 172,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-170",
+      "titleRu": "451 градус по Фаренгейту",
+      "titleOriginal": "Fahrenheit 451",
+      "alternativeTitles": [
+        "Fahrenheit 451"
+      ],
+      "year": 1953,
+      "topRank": 150,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-052",
+      "titleRu": "А зори здесь тихие",
+      "titleOriginal": "А зори здесь тихие…",
+      "alternativeTitles": [],
+      "year": 1969,
+      "topRank": 41,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-129",
+      "titleRu": "Авессалом, Авессалом!",
+      "titleOriginal": "Absalom, Absalom!",
+      "alternativeTitles": [
+        "Absalom, Absalom!"
+      ],
+      "year": 1936,
+      "topRank": 110,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-179",
+      "titleRu": "Автостопом по галактике",
+      "titleOriginal": "The Hitchhiker's Guide to the Galaxy",
+      "alternativeTitles": [
+        "The Hitchhiker's Guide to the Galaxy"
+      ],
+      "year": 1979,
+      "topRank": 158,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-066",
+      "titleRu": "Азазель",
+      "titleOriginal": "Азазель",
+      "alternativeTitles": [],
+      "year": 1998,
+      "topRank": 49,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-112",
+      "titleRu": "Алиса в Стране чудес",
+      "titleOriginal": "Alice's Adventures in Wonderland",
+      "alternativeTitles": [
+        "Alice's Adventures in Wonderland"
+      ],
+      "year": 1865,
+      "topRank": 93,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-244",
+      "titleRu": "Алхимик",
+      "titleOriginal": "O Alquimista",
+      "alternativeTitles": [
+        "O Alquimista"
+      ],
+      "year": 1988,
+      "topRank": 222,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-038",
+      "titleRu": "Алые паруса",
+      "titleOriginal": "Алые паруса",
+      "alternativeTitles": [],
+      "year": 1923,
+      "topRank": 27,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-252",
+      "titleRu": "Американа",
+      "titleOriginal": "Americanah",
+      "alternativeTitles": [
+        "Americanah"
+      ],
+      "year": 2013,
+      "topRank": 230,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-200",
+      "titleRu": "Американские боги",
+      "titleOriginal": "American Gods",
+      "alternativeTitles": [
+        "American Gods"
+      ],
+      "year": 2001,
+      "topRank": 179,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-029",
+      "titleRu": "Анна Каренина",
+      "titleOriginal": "Анна Каренина",
+      "alternativeTitles": [],
+      "year": 1877,
+      "topRank": 19,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-175",
+      "titleRu": "Атлант расправил плечи",
+      "titleOriginal": "Atlas Shrugged",
+      "alternativeTitles": [
+        "Atlas Shrugged"
+      ],
+      "year": 1957,
+      "topRank": 154,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-263",
+      "titleRu": "Бегущий в лабиринте",
+      "titleOriginal": "The Maze Runner",
+      "alternativeTitles": [
+        "The Maze Runner"
+      ],
+      "year": 2009,
+      "topRank": 241,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-246",
+      "titleRu": "Бегущий за ветром",
+      "titleOriginal": "The kite runner",
+      "alternativeTitles": [
+        "The kite runner"
+      ],
+      "year": 2003,
+      "topRank": 224,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-041",
+      "titleRu": "Белая гвардия",
+      "titleOriginal": "Белая гвардия",
+      "alternativeTitles": [],
+      "year": 1925,
+      "topRank": 30,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-251",
+      "titleRu": "Белые зубы",
+      "titleOriginal": "White Teeth",
+      "alternativeTitles": [
+        "White Teeth"
+      ],
+      "year": 2001,
+      "topRank": 229,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-117",
+      "titleRu": "Белый Клык",
+      "titleOriginal": "White Fang",
+      "alternativeTitles": [
+        "White Fang"
+      ],
+      "year": 1906,
+      "topRank": 98,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-203",
+      "titleRu": "Бесплодные земли",
+      "titleOriginal": "The Dark Tower III: The Waste Lands",
+      "alternativeTitles": [
+        "The Dark Tower III: The Waste Lands"
+      ],
+      "year": 1991,
+      "topRank": 182,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-033",
+      "titleRu": "Бесы",
+      "titleOriginal": "Бѣсы",
+      "alternativeTitles": [
+        "Бѣсы"
+      ],
+      "year": 1871,
+      "topRank": 23,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-153",
+      "titleRu": "Бледный огонь",
+      "titleOriginal": "Pale Fire",
+      "alternativeTitles": [
+        "Pale Fire"
+      ],
+      "year": 1962,
+      "topRank": 133,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-004",
+      "titleRu": "Божественная комедия",
+      "titleOriginal": "La Divina Commedia",
+      "alternativeTitles": [
+        "La Divina Commedia"
+      ],
+      "year": null,
+      "topRank": 3,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-164",
+      "titleRu": "Бойня номер пять",
+      "titleOriginal": "Slaughterhouse-Five",
+      "alternativeTitles": [
+        "Slaughterhouse-Five"
+      ],
+      "year": 1969,
+      "topRank": 144,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-162",
+      "titleRu": "Бойцовский клуб",
+      "titleOriginal": "Fight Club",
+      "alternativeTitles": [
+        "Fight Club"
+      ],
+      "year": 1996,
+      "topRank": 142,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-276",
+      "titleRu": "Большая маленькая ложь",
+      "titleOriginal": "Big Little Lies",
+      "alternativeTitles": [
+        "Big Little Lies"
+      ],
+      "year": 2014,
+      "topRank": 253,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-089",
+      "titleRu": "Большие надежды",
+      "titleOriginal": "Great Expectations",
+      "alternativeTitles": [
+        "Great Expectations"
+      ],
+      "year": 1861,
+      "topRank": 70,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-031",
+      "titleRu": "Братья Карамазовы",
+      "titleOriginal": "Братья Карамазовы",
+      "alternativeTitles": [],
+      "year": 1880,
+      "topRank": 21,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-135",
+      "titleRu": "Будденброки",
+      "titleOriginal": "Buddenbrooks",
+      "alternativeTitles": [
+        "Buddenbrooks"
+      ],
+      "year": 1901,
+      "topRank": 116,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-278",
+      "titleRu": "Бункер. Иллюзия",
+      "titleOriginal": "Wool",
+      "alternativeTitles": [
+        "Wool"
+      ],
+      "year": 2012,
+      "topRank": 255,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-132",
+      "titleRu": "В ожидании Годо",
+      "titleOriginal": "En attendant Godot",
+      "alternativeTitles": [
+        "En attendant Godot"
+      ],
+      "year": 1952,
+      "topRank": 113,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-122",
+      "titleRu": "В поисках утраченного времени",
+      "titleOriginal": "À la recherche du temps perdu",
+      "alternativeTitles": [
+        "À la recherche du temps perdu"
+      ],
+      "year": 2000,
+      "topRank": 103,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-240",
+      "titleRu": "Вегетарианка",
+      "titleOriginal": "채식주의자",
+      "alternativeTitles": [
+        "채식주의자"
+      ],
+      "year": 2007,
+      "topRank": 219,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-136",
+      "titleRu": "Великий Гэтсби",
+      "titleOriginal": "The Great Gatsby",
+      "alternativeTitles": [
+        "The Great Gatsby"
+      ],
+      "year": 1925,
+      "topRank": 117,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-287",
+      "titleRu": "Ветер в ивах",
+      "titleOriginal": "The Wind in the Willows",
+      "alternativeTitles": [
+        "The Wind in the Willows"
+      ],
+      "year": 1908,
+      "topRank": 264,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-208",
+      "titleRu": "Ветер сквозь замочную скважину",
+      "titleOriginal": "The Dark Tower: The Wind Through the Keyhole",
+      "alternativeTitles": [
+        "The Dark Tower: The Wind Through the Keyhole"
+      ],
+      "year": 2012,
+      "topRank": 187,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-022",
+      "titleRu": "Вечера на хуторе близ Диканьки",
+      "titleOriginal": "Вечера на хуторе близ Диканьки",
+      "alternativeTitles": [],
+      "year": 1830,
+      "topRank": 13,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-289",
+      "titleRu": "Винни-Пух",
+      "titleOriginal": "Winnie-the-Pooh",
+      "alternativeTitles": [
+        "Winnie-the-Pooh"
+      ],
+      "year": 1926,
+      "topRank": 266,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-172",
+      "titleRu": "Вино из одуванчиков",
+      "titleOriginal": "Dandelion Wine",
+      "alternativeTitles": [
+        "Dandelion Wine"
+      ],
+      "year": 1957,
+      "topRank": 151,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-264",
+      "titleRu": "Виноваты звёзды",
+      "titleOriginal": "The Fault in Our Stars",
+      "alternativeTitles": [
+        "The Fault in Our Stars"
+      ],
+      "year": 2012,
+      "topRank": 242,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-034",
+      "titleRu": "Вишнёвый сад",
+      "titleOriginal": "Вишнёвый сад",
+      "alternativeTitles": [],
+      "year": 1904,
+      "topRank": 24,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-181",
+      "titleRu": "Властелин колец",
+      "titleOriginal": "The Lord of the Rings",
+      "alternativeTitles": [
+        "The Lord of the Rings"
+      ],
+      "year": 1954,
+      "topRank": 160,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-268",
+      "titleRu": "Воды слонам!",
+      "titleOriginal": "Water for Elephants",
+      "alternativeTitles": [
+        "Water for Elephants"
+      ],
+      "year": 2006,
+      "topRank": 245,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-156",
+      "titleRu": "Возлюбленная",
+      "titleOriginal": "Beloved",
+      "alternativeTitles": [
+        "Beloved"
+      ],
+      "year": 1987,
+      "topRank": 136,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-028",
+      "titleRu": "Война и мир",
+      "titleOriginal": "Война и мир",
+      "alternativeTitles": [],
+      "year": 1869,
+      "topRank": 18,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-108",
+      "titleRu": "Война миров",
+      "titleOriginal": "The War of the Worlds",
+      "alternativeTitles": [
+        "The War of the Worlds"
+      ],
+      "year": 1897,
+      "topRank": 89,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-106",
+      "titleRu": "Вокруг света за восемьдесят дней",
+      "titleOriginal": "Le Tour du monde en quatre-vingts jours",
+      "alternativeTitles": [
+        "Le Tour du monde en quatre-vingts jours"
+      ],
+      "year": 1872,
+      "topRank": 87,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-205",
+      "titleRu": "Волки Кальи",
+      "titleOriginal": "Wolves of the Calla",
+      "alternativeTitles": [
+        "Wolves of the Calla"
+      ],
+      "year": 2003,
+      "topRank": 184,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-133",
+      "titleRu": "Волшебная гора",
+      "titleOriginal": "Der Zauberberg",
+      "alternativeTitles": [
+        "Der Zauberberg"
+      ],
+      "year": 1924,
+      "topRank": 114,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-195",
+      "titleRu": "Волшебник Земноморья",
+      "titleOriginal": "A Wizard of Earthsea",
+      "alternativeTitles": [
+        "A Wizard of Earthsea"
+      ],
+      "year": 1968,
+      "topRank": 174,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-074",
+      "titleRu": "Волшебник Изумрудного города",
+      "titleOriginal": "Волшебник Изумрудного города",
+      "alternativeTitles": [],
+      "year": 1939,
+      "topRank": 55,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-282",
+      "titleRu": "Всё закончится на нас",
+      "titleOriginal": "It Ends with Us",
+      "alternativeTitles": [
+        "It Ends with Us"
+      ],
+      "year": 2016,
+      "topRank": 259,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-075",
+      "titleRu": "Гамлет",
+      "titleOriginal": "The Tragedy of Hamlet, Prince of Denmark",
+      "alternativeTitles": [
+        "The Tragedy of Hamlet, Prince of Denmark"
+      ],
+      "year": null,
+      "topRank": 56,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-188",
+      "titleRu": "Гарри Поттер и Дары Смерти",
+      "titleOriginal": "Harry Potter and the Deathly Hallows",
+      "alternativeTitles": [
+        "Harry Potter and the Deathly Hallows"
+      ],
+      "year": 2007,
+      "topRank": 167,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-185",
+      "titleRu": "Гарри Поттер и Кубок огня",
+      "titleOriginal": "Harry Potter and the Goblet of Fire",
+      "alternativeTitles": [
+        "Harry Potter and the Goblet of Fire"
+      ],
+      "year": 2000,
+      "topRank": 164,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-186",
+      "titleRu": "Гарри Поттер и Орден Феникса",
+      "titleOriginal": "Harry Potter and the Order of the Phoenix",
+      "alternativeTitles": [
+        "Harry Potter and the Order of the Phoenix"
+      ],
+      "year": 2003,
+      "topRank": 165,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-187",
+      "titleRu": "Гарри Поттер и Принц-полукровка",
+      "titleOriginal": "Harry Potter and the Half-Blood Prince",
+      "alternativeTitles": [
+        "Harry Potter and the Half-Blood Prince"
+      ],
+      "year": 2005,
+      "topRank": 166,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-183",
+      "titleRu": "Гарри Поттер и Тайная комната",
+      "titleOriginal": "Harry Potter and the Chamber of Secrets",
+      "alternativeTitles": [
+        "Harry Potter and the Chamber of Secrets"
+      ],
+      "year": 1998,
+      "topRank": 162,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-184",
+      "titleRu": "Гарри Поттер и узник Азкабана",
+      "titleOriginal": "Harry Potter and the Prisoner of Azkaban",
+      "alternativeTitles": [
+        "Harry Potter and the Prisoner of Azkaban"
+      ],
+      "year": 1999,
+      "topRank": 163,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-182",
+      "titleRu": "Гарри Поттер и философский камень",
+      "titleOriginal": "Harry Potter and the Philosopher's Stone",
+      "alternativeTitles": [
+        "Harry Potter and the Philosopher's Stone"
+      ],
+      "year": 1997,
+      "topRank": 161,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-018",
+      "titleRu": "Герой нашего времени",
+      "titleOriginal": "Герой нашего времени",
+      "alternativeTitles": [],
+      "year": 1840,
+      "topRank": 9,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-217",
+      "titleRu": "Глубокий сон",
+      "titleOriginal": "The Big Sleep",
+      "alternativeTitles": [
+        "The Big Sleep"
+      ],
+      "year": 1939,
+      "topRank": 196,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-261",
+      "titleRu": "Голодные игры",
+      "titleOriginal": "The Hunger Games",
+      "alternativeTitles": [
+        "The Hunger Games"
+      ],
+      "year": 2008,
+      "topRank": 239,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-084",
+      "titleRu": "Гордость и предубеждение",
+      "titleOriginal": "Pride and Prejudice",
+      "alternativeTitles": [
+        "Pride and Prejudice"
+      ],
+      "year": 1813,
+      "topRank": 65,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-019",
+      "titleRu": "Горе от ума",
+      "titleOriginal": "Горе от ума",
+      "alternativeTitles": [],
+      "year": 1825,
+      "topRank": 10,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-099",
+      "titleRu": "Госпожа Бовари",
+      "titleOriginal": "Madame Bovary",
+      "alternativeTitles": [
+        "Madame Bovary"
+      ],
+      "year": 1857,
+      "topRank": 80,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-094",
+      "titleRu": "Граф Монте-Кристо",
+      "titleOriginal": "Le Comte de Monte-Cristo",
+      "alternativeTitles": [
+        "Le Comte de Monte-Cristo"
+      ],
+      "year": 1844,
+      "topRank": 75,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-154",
+      "titleRu": "Гроздья гнева",
+      "titleOriginal": "The Grapes of Wrath",
+      "alternativeTitles": [
+        "The Grapes of Wrath"
+      ],
+      "year": 1939,
+      "topRank": 134,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-088",
+      "titleRu": "Грозовой перевал",
+      "titleOriginal": "Wuthering Heights",
+      "alternativeTitles": [
+        "Wuthering Heights"
+      ],
+      "year": 1847,
+      "topRank": 69,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-068",
+      "titleRu": "Даниэль Штайн, переводчик",
+      "titleOriginal": "Даниэль Штайн, переводчик",
+      "alternativeTitles": [],
+      "year": 2006,
+      "topRank": 51,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-114",
+      "titleRu": "Дары волхвов",
+      "titleOriginal": "The Gift of the Magi",
+      "alternativeTitles": [
+        "The Gift of the Magi"
+      ],
+      "year": 1906,
+      "topRank": 95,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-051",
+      "titleRu": "Два капитана",
+      "titleOriginal": "Два капитана",
+      "alternativeTitles": [],
+      "year": 1940,
+      "topRank": 40,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-105",
+      "titleRu": "Двадцать тысяч лье под водой",
+      "titleOriginal": "Vingt Mille Lieues sous les mers",
+      "alternativeTitles": [
+        "Vingt Mille Lieues sous les mers"
+      ],
+      "year": 1869,
+      "topRank": 86,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-058",
+      "titleRu": "Двенадцать",
+      "titleOriginal": "Двенадцать",
+      "alternativeTitles": [],
+      "year": 1918,
+      "topRank": 44,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-045",
+      "titleRu": "Двенадцать стульев",
+      "titleOriginal": "Двенадцать стульев",
+      "alternativeTitles": [],
+      "year": 1928,
+      "topRank": 34,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-275",
+      "titleRu": "Девушка в поезде",
+      "titleOriginal": "The Girl on the Train",
+      "alternativeTitles": [
+        "The Girl on the Train"
+      ],
+      "year": 2015,
+      "topRank": 252,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-220",
+      "titleRu": "Девушка с татуировкой дракона",
+      "titleOriginal": "Män som hatar kvinnor",
+      "alternativeTitles": [
+        "Män som hatar kvinnor"
+      ],
+      "year": 2005,
+      "topRank": 199,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-280",
+      "titleRu": "Дейзи Джонс & The Six",
+      "titleOriginal": "Daisy Jones & The Six",
+      "alternativeTitles": [
+        "Daisy Jones & The Six"
+      ],
+      "year": 2019,
+      "topRank": 257,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-087",
+      "titleRu": "Джейн Эйр",
+      "titleOriginal": "Jane Eyre",
+      "alternativeTitles": [
+        "Jane Eyre"
+      ],
+      "year": 1847,
+      "topRank": 68,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-262",
+      "titleRu": "Дивергент",
+      "titleOriginal": "Divergent",
+      "alternativeTitles": [
+        "Divergent"
+      ],
+      "year": 2011,
+      "topRank": 240,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-267",
+      "titleRu": "До встречи с тобой",
+      "titleOriginal": "Me Before You",
+      "alternativeTitles": [
+        "Me Before You"
+      ],
+      "year": 2016,
+      "topRank": 244,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-042",
+      "titleRu": "Доктор Живаго",
+      "titleOriginal": "Доктор Живаго",
+      "alternativeTitles": [],
+      "year": 1957,
+      "topRank": 31,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-064",
+      "titleRu": "Дом, в котором…",
+      "titleOriginal": "Дом, в котором…",
+      "alternativeTitles": [],
+      "year": 2009,
+      "topRank": 47,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-080",
+      "titleRu": "Дон Кихот",
+      "titleOriginal": "Don Quixote",
+      "alternativeTitles": [
+        "Don Quixote"
+      ],
+      "year": null,
+      "topRank": 61,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-176",
+      "titleRu": "Дорога",
+      "titleOriginal": "The Road",
+      "alternativeTitles": [
+        "The Road"
+      ],
+      "year": 2006,
+      "topRank": 155,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-110",
+      "titleRu": "Дракула",
+      "titleOriginal": "Dracula",
+      "alternativeTitles": [
+        "Dracula"
+      ],
+      "year": 1897,
+      "topRank": 91,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-121",
+      "titleRu": "Дублинцы",
+      "titleOriginal": "Dubliners",
+      "alternativeTitles": [
+        "Dubliners"
+      ],
+      "year": 1914,
+      "topRank": 102,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-091",
+      "titleRu": "Дэвид Копперфилд",
+      "titleOriginal": "David Copperfield or The Personal History, Adventures, Experience and Observation of David Copperfield the Younger of Blunderstone Rookery (Which He Never Meant to Publish on Any Account)",
+      "alternativeTitles": [
+        "David Copperfield or The Personal History, Adventures, Experience and Observation of David Copperfield the Younger of Blunderstone Rookery (Which He Never Meant to Publish on Any Account)"
+      ],
+      "year": 1850,
+      "topRank": 72,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-177",
+      "titleRu": "Дюна",
+      "titleOriginal": "Dune",
+      "alternativeTitles": [
+        "Dune"
+      ],
+      "year": 1965,
+      "topRank": 156,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-015",
+      "titleRu": "Евгений Онегин",
+      "titleOriginal": "Евгений Онегин",
+      "alternativeTitles": [],
+      "year": 1825,
+      "topRank": 7,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-150",
+      "titleRu": "Если однажды зимней ночью путник",
+      "titleOriginal": "Se una notte d'inverno un viaggiatore",
+      "alternativeTitles": [
+        "Se una notte d'inverno un viaggiatore"
+      ],
+      "year": 1979,
+      "topRank": 130,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-265",
+      "titleRu": "Жена путешественника во времени",
+      "titleOriginal": "The Time Traveler's Wife",
+      "alternativeTitles": [
+        "The Time Traveler's Wife"
+      ],
+      "year": 2003,
+      "topRank": 243,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-257",
+      "titleRu": "Женщина в песках",
+      "titleOriginal": "砂の女",
+      "alternativeTitles": [
+        "砂の女"
+      ],
+      "year": 1962,
+      "topRank": 235,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-248",
+      "titleRu": "Жизнь Пи",
+      "titleOriginal": "Life of Pi",
+      "alternativeTitles": [
+        "Life of Pi"
+      ],
+      "year": 2001,
+      "topRank": 226,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-174",
+      "titleRu": "Заводной апельсин",
+      "titleOriginal": "A Clockwork Orange",
+      "alternativeTitles": [
+        "A Clockwork Orange"
+      ],
+      "year": 1962,
+      "topRank": 153,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-198",
+      "titleRu": "Задача трёх тел",
+      "titleOriginal": "The Three-Body Problem",
+      "alternativeTitles": [
+        "The Three-Body Problem"
+      ],
+      "year": 2006,
+      "topRank": 177,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-125",
+      "titleRu": "Замок",
+      "titleOriginal": "Das Schloss",
+      "alternativeTitles": [
+        "Das Schloss"
+      ],
+      "year": 1926,
+      "topRank": 106,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-229",
+      "titleRu": "Зелёная миля",
+      "titleOriginal": "The Green Mile",
+      "alternativeTitles": [
+        "The Green Mile"
+      ],
+      "year": 1996,
+      "topRank": 208,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-211",
+      "titleRu": "Знак четырёх",
+      "titleOriginal": "The Sign of the Four",
+      "alternativeTitles": [
+        "The Sign of the Four"
+      ],
+      "year": 1890,
+      "topRank": 190,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-118",
+      "titleRu": "Зов предков",
+      "titleOriginal": "The Call of the Wild",
+      "alternativeTitles": [
+        "The Call of the Wild"
+      ],
+      "year": 1903,
+      "topRank": 99,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-046",
+      "titleRu": "Золотой телёнок",
+      "titleOriginal": "Золотой телёнок",
+      "alternativeTitles": [],
+      "year": 1931,
+      "topRank": 35,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-065",
+      "titleRu": "Зулейха открывает глаза",
+      "titleOriginal": "Зулейха открывает глаза",
+      "alternativeTitles": [],
+      "year": 2015,
+      "topRank": 48,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-140",
+      "titleRu": "И восходит солнце",
+      "titleOriginal": "The Sun Also Rises",
+      "alternativeTitles": [
+        "The Sun Also Rises"
+      ],
+      "year": 1926,
+      "topRank": 121,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-213",
+      "titleRu": "И никого не стало",
+      "titleOriginal": "And Then There Were None",
+      "alternativeTitles": [
+        "And Then There Were None"
+      ],
+      "year": 1943,
+      "topRank": 192,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-277",
+      "titleRu": "И повсюду тлеют пожары",
+      "titleOriginal": "Little Fires Everywhere",
+      "alternativeTitles": [
+        "Little Fires Everywhere"
+      ],
+      "year": 2017,
+      "topRank": 254,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-254",
+      "titleRu": "И пришло разрушение",
+      "titleOriginal": "Things Fall Apart",
+      "alternativeTitles": [
+        "Things Fall Apart"
+      ],
+      "year": 1958,
+      "topRank": 232,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-190",
+      "titleRu": "Игра престолов",
+      "titleOriginal": "A Game of Thrones",
+      "alternativeTitles": [
+        "A Game of Thrones"
+      ],
+      "year": 1996,
+      "topRank": 169,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-032",
+      "titleRu": "Идиот",
+      "titleOriginal": "Идиот",
+      "alternativeTitles": [],
+      "year": 1869,
+      "topRank": 22,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-202",
+      "titleRu": "Извлечение троих",
+      "titleOriginal": "The Dark Tower II: The Drawing of the Three",
+      "alternativeTitles": [
+        "The Dark Tower II: The Drawing of the Three"
+      ],
+      "year": 1987,
+      "topRank": 181,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-001",
+      "titleRu": "Илиада",
+      "titleOriginal": "Iliad",
+      "alternativeTitles": [
+        "Iliad"
+      ],
+      "year": null,
+      "topRank": 1,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-151",
+      "titleRu": "Имя розы",
+      "titleOriginal": "Il nome della rosa",
+      "alternativeTitles": [
+        "Il nome della rosa"
+      ],
+      "year": 1980,
+      "topRank": 131,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-233",
+      "titleRu": "Искупление",
+      "titleOriginal": "Atonement",
+      "alternativeTitles": [
+        "Atonement"
+      ],
+      "year": 2001,
+      "topRank": 212,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-259",
+      "titleRu": "Исповедь неполноценного человека",
+      "titleOriginal": "人間失格",
+      "alternativeTitles": [
+        "人間失格"
+      ],
+      "year": 1948,
+      "topRank": 237,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-036",
+      "titleRu": "История одного города",
+      "titleOriginal": "История одного города",
+      "alternativeTitles": [],
+      "year": 1870,
+      "topRank": 26,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-274",
+      "titleRu": "Исчезнувшая",
+      "titleOriginal": "Gone Girl",
+      "alternativeTitles": [
+        "Gone Girl"
+      ],
+      "year": 2012,
+      "topRank": 251,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-016",
+      "titleRu": "Капитанская дочка",
+      "titleOriginal": "Капитанская дочка",
+      "alternativeTitles": [],
+      "year": 1836,
+      "topRank": 8,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-256",
+      "titleRu": "Кафка на пляже",
+      "titleOriginal": "海辺のカフカ",
+      "alternativeTitles": [
+        "海辺のカフカ"
+      ],
+      "year": 2002,
+      "topRank": 234,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-006",
+      "titleRu": "Кентерберийские рассказы",
+      "titleOriginal": "The Canterbury Tales",
+      "alternativeTitles": [
+        "The Canterbury Tales"
+      ],
+      "year": null,
+      "topRank": 5,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-231",
+      "titleRu": "Кладбище домашних животных",
+      "titleOriginal": "Pet Sematary",
+      "alternativeTitles": [
+        "Pet Sematary"
+      ],
+      "year": 1983,
+      "topRank": 210,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-247",
+      "titleRu": "Книжный вор",
+      "titleOriginal": "The Book Thief",
+      "alternativeTitles": [
+        "The Book Thief"
+      ],
+      "year": 2006,
+      "topRank": 225,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-130",
+      "titleRu": "Когда я умирала",
+      "titleOriginal": "As I Lay Dying",
+      "alternativeTitles": [
+        "As I Lay Dying"
+      ],
+      "year": 1930,
+      "topRank": 111,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-219",
+      "titleRu": "Код да Винчи",
+      "titleOriginal": "The Da Vinci Code",
+      "alternativeTitles": [
+        "The Da Vinci Code"
+      ],
+      "year": 2003,
+      "topRank": 198,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-204",
+      "titleRu": "Колдун и кристалл",
+      "titleOriginal": "Wizard and Glass",
+      "alternativeTitles": [
+        "Wizard and Glass"
+      ],
+      "year": 1997,
+      "topRank": 183,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-291",
+      "titleRu": "Комета в долине муми-троллей",
+      "titleOriginal": "Kometjakten",
+      "alternativeTitles": [
+        "Kometjakten"
+      ],
+      "year": 1946,
+      "topRank": 268,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-271",
+      "titleRu": "Комната",
+      "titleOriginal": "The Room",
+      "alternativeTitles": [
+        "The Room"
+      ],
+      "year": 2003,
+      "topRank": 248,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-232",
+      "titleRu": "Королева Марго",
+      "titleOriginal": "La Reine Margot",
+      "alternativeTitles": [
+        "La Reine Margot"
+      ],
+      "year": 1845,
+      "topRank": 211,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-078",
+      "titleRu": "Король Лир",
+      "titleOriginal": "The Tragedy of King Lear",
+      "alternativeTitles": [
+        "The Tragedy of King Lear"
+      ],
+      "year": null,
+      "topRank": 59,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-055",
+      "titleRu": "Котлован",
+      "titleOriginal": "Котлован",
+      "alternativeTitles": [],
+      "year": 1969,
+      "topRank": 42,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-098",
+      "titleRu": "Красное и чёрное",
+      "titleOriginal": "Le Rouge et le Noir",
+      "alternativeTitles": [
+        "Le Rouge et le Noir"
+      ],
+      "year": 1830,
+      "topRank": 79,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-281",
+      "titleRu": "Красный, белый и королевский синий",
+      "titleOriginal": "Red, White & Royal Blue",
+      "alternativeTitles": [
+        "Red, White & Royal Blue"
+      ],
+      "year": 2019,
+      "topRank": 258,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-189",
+      "titleRu": "Лев, колдунья и платяной шкаф",
+      "titleOriginal": "The Lion, the Witch and the Wardrobe",
+      "alternativeTitles": [
+        "The Lion, the Witch and the Wardrobe"
+      ],
+      "year": 1950,
+      "topRank": 168,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-194",
+      "titleRu": "Левая рука Тьмы",
+      "titleOriginal": "The Left Hand of Darkness",
+      "alternativeTitles": [
+        "The Left Hand of Darkness"
+      ],
+      "year": 1969,
+      "topRank": 173,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-152",
+      "titleRu": "Лолита",
+      "titleOriginal": "Lolito",
+      "alternativeTitles": [
+        "Lolito"
+      ],
+      "year": 1955,
+      "topRank": 132,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-077",
+      "titleRu": "Макбет",
+      "titleOriginal": "Macbeth",
+      "alternativeTitles": [
+        "Macbeth"
+      ],
+      "year": null,
+      "topRank": 58,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-294",
+      "titleRu": "Маленькие женщины",
+      "titleOriginal": "Little Women or, Meg, Jo, Beth and Amy",
+      "alternativeTitles": [
+        "Little Women or, Meg, Jo, Beth and Amy"
+      ],
+      "year": 1868,
+      "topRank": 271,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-285",
+      "titleRu": "Маленький принц",
+      "titleOriginal": "Le Petit Prince",
+      "alternativeTitles": [
+        "Le Petit Prince"
+      ],
+      "year": 1943,
+      "topRank": 262,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-218",
+      "titleRu": "Мальтийский сокол",
+      "titleOriginal": "The Maltese Falcon",
+      "alternativeTitles": [
+        "The Maltese Falcon"
+      ],
+      "year": 1929,
+      "topRank": 197,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-272",
+      "titleRu": "Марсианин",
+      "titleOriginal": "The Martian",
+      "alternativeTitles": [
+        "The Martian"
+      ],
+      "year": 2011,
+      "topRank": 249,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-116",
+      "titleRu": "Мартин Иден",
+      "titleOriginal": "Martin Eden",
+      "alternativeTitles": [
+        "Martin Eden"
+      ],
+      "year": 1909,
+      "topRank": 97,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-039",
+      "titleRu": "Мастер и Маргарита",
+      "titleOriginal": "Мастер и Маргарита",
+      "alternativeTitles": [],
+      "year": 1967,
+      "topRank": 28,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-300",
+      "titleRu": "Матильда",
+      "titleOriginal": "Matilda",
+      "alternativeTitles": [
+        "Matilda"
+      ],
+      "year": 1986,
+      "topRank": 277,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-107",
+      "titleRu": "Машина времени",
+      "titleOriginal": "The Time Machine",
+      "alternativeTitles": [
+        "The Time Machine"
+      ],
+      "year": 1895,
+      "topRank": 88,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-020",
+      "titleRu": "Мёртвые души",
+      "titleOriginal": "Мёртвые души",
+      "alternativeTitles": [],
+      "year": 1842,
+      "topRank": 11,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-196",
+      "titleRu": "Мечтают ли андроиды об электроовцах?",
+      "titleOriginal": "Do Androids Dream of Electric Sheep?",
+      "alternativeTitles": [
+        "Do Androids Dream of Electric Sheep?"
+      ],
+      "year": 1968,
+      "topRank": 175,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-100",
+      "titleRu": "Мидлмарч",
+      "titleOriginal": "Middlemarch",
+      "alternativeTitles": [
+        "Middlemarch"
+      ],
+      "year": 1871,
+      "topRank": 81,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-270",
+      "titleRu": "Милые кости",
+      "titleOriginal": "The Lovely Bones",
+      "alternativeTitles": [
+        "The Lovely Bones"
+      ],
+      "year": 2003,
+      "topRank": 247,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-126",
+      "titleRu": "Миссис Дэллоуэй",
+      "titleOriginal": "Mrs Dalloway",
+      "alternativeTitles": [
+        "Mrs Dalloway"
+      ],
+      "year": 1925,
+      "topRank": 107,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-101",
+      "titleRu": "Моби Дик",
+      "titleOriginal": "Moby-Dick",
+      "alternativeTitles": [
+        "Moby-Dick"
+      ],
+      "year": 1851,
+      "topRank": 82,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-224",
+      "titleRu": "Молчание ягнят",
+      "titleOriginal": "The Silence of the Lambs",
+      "alternativeTitles": [
+        "The Silence of the Lambs"
+      ],
+      "year": 1988,
+      "topRank": 203,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-057",
+      "titleRu": "Москва — Петушки",
+      "titleOriginal": "Москва — Петушки",
+      "alternativeTitles": [],
+      "year": 1970,
+      "topRank": 43,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-166",
+      "titleRu": "Мосты округа Мэдисон",
+      "titleOriginal": "The Bridges of Madison County",
+      "alternativeTitles": [
+        "The Bridges of Madison County"
+      ],
+      "year": 1992,
+      "topRank": 146,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-237",
+      "titleRu": "Моя гениальная подруга",
+      "titleOriginal": "My Brilliant Friend",
+      "alternativeTitles": [
+        "My Brilliant Friend"
+      ],
+      "year": 2018,
+      "topRank": 216,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-044",
+      "titleRu": "Мы",
+      "titleOriginal": "Мы",
+      "alternativeTitles": [],
+      "year": 1924,
+      "topRank": 33,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-131",
+      "titleRu": "Мэлон умирает",
+      "titleOriginal": "Malone Meurt",
+      "alternativeTitles": [
+        "Malone Meurt"
+      ],
+      "year": 1951,
+      "topRank": 112,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-299",
+      "titleRu": "Мэри Поппинс",
+      "titleOriginal": "Mary Poppins",
+      "alternativeTitles": [
+        "Mary Poppins"
+      ],
+      "year": 1934,
+      "topRank": 276,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-142",
+      "titleRu": "На Западном фронте без перемен",
+      "titleOriginal": "Im Westen nichts Neues",
+      "alternativeTitles": [
+        "Im Westen nichts Neues"
+      ],
+      "year": 1928,
+      "topRank": 123,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-127",
+      "titleRu": "На маяк",
+      "titleOriginal": "To the Lighthouse",
+      "alternativeTitles": [
+        "To the Lighthouse"
+      ],
+      "year": 1927,
+      "topRank": 108,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-159",
+      "titleRu": "Над кукушкиным гнездом",
+      "titleOriginal": "One Flew Over the Cuckoo's Nest",
+      "alternativeTitles": [
+        "One Flew Over the Cuckoo's Nest"
+      ],
+      "year": 1962,
+      "topRank": 139,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-137",
+      "titleRu": "Над пропастью во ржи",
+      "titleOriginal": "The Catcher in the Rye",
+      "alternativeTitles": [
+        "The Catcher in the Rye"
+      ],
+      "year": 1951,
+      "topRank": 118,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-238",
+      "titleRu": "Не отпускай меня",
+      "titleOriginal": "Never Let Me Go",
+      "alternativeTitles": [
+        "Never Let Me Go"
+      ],
+      "year": 2005,
+      "topRank": 217,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-072",
+      "titleRu": "Незнайка в Солнечном городе",
+      "titleOriginal": "Незнайка в Солнечном городе",
+      "alternativeTitles": [],
+      "year": 1958,
+      "topRank": 53,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-073",
+      "titleRu": "Незнайка на Луне",
+      "titleOriginal": "Незнайка на Луне",
+      "alternativeTitles": [],
+      "year": 1965,
+      "topRank": 54,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-178",
+      "titleRu": "Нейромант",
+      "titleOriginal": "Neuromancer",
+      "alternativeTitles": [
+        "Neuromancer"
+      ],
+      "year": 1984,
+      "topRank": 157,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-255",
+      "titleRu": "Норвежский лес",
+      "titleOriginal": "ノルウェイの森",
+      "alternativeTitles": [
+        "ノルウェイの森"
+      ],
+      "year": 1987,
+      "topRank": 233,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-067",
+      "titleRu": "Ночной Дозор",
+      "titleOriginal": "Ночной Дозор",
+      "alternativeTitles": [],
+      "year": 1998,
+      "topRank": 50,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-169",
+      "titleRu": "О дивный новый мир",
+      "titleOriginal": "Brave New World",
+      "alternativeTitles": [
+        "Brave New World"
+      ],
+      "year": 1932,
+      "topRank": 149,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-155",
+      "titleRu": "О мышах и людях",
+      "titleOriginal": "Of Mice and Men",
+      "alternativeTitles": [
+        "Of Mice and Men"
+      ],
+      "year": 1937,
+      "topRank": 135,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-050",
+      "titleRu": "Обитаемый остров",
+      "titleOriginal": "Обитаемый остров",
+      "alternativeTitles": [],
+      "year": 1971,
+      "topRank": 39,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-234",
+      "titleRu": "Облачный атлас",
+      "titleOriginal": "Cloud Atlas",
+      "alternativeTitles": [
+        "Cloud Atlas"
+      ],
+      "year": 2004,
+      "topRank": 213,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-027",
+      "titleRu": "Обломов",
+      "titleOriginal": "Обломов",
+      "alternativeTitles": [],
+      "year": 1859,
+      "topRank": 17,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-090",
+      "titleRu": "Оливер Твист",
+      "titleOriginal": "Oliver Twist",
+      "alternativeTitles": [
+        "Oliver Twist"
+      ],
+      "year": 1838,
+      "topRank": 71,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-227",
+      "titleRu": "Оно",
+      "titleOriginal": "Cancer",
+      "alternativeTitles": [
+        "Cancer"
+      ],
+      "year": 1986,
+      "topRank": 206,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-292",
+      "titleRu": "Опасное лето",
+      "titleOriginal": "Farlig midsommar",
+      "alternativeTitles": [
+        "Farlig midsommar"
+      ],
+      "year": 1954,
+      "topRank": 269,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-191",
+      "titleRu": "Основание",
+      "titleOriginal": "Foundation",
+      "alternativeTitles": [
+        "Foundation"
+      ],
+      "year": 1951,
+      "topRank": 170,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-103",
+      "titleRu": "Остров сокровищ",
+      "titleOriginal": "Treasure Island",
+      "alternativeTitles": [
+        "Treasure Island"
+      ],
+      "year": 1883,
+      "topRank": 84,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-097",
+      "titleRu": "Отверженные",
+      "titleOriginal": "Les Misérables",
+      "alternativeTitles": [
+        "Les Misérables"
+      ],
+      "year": 1862,
+      "topRank": 78,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-079",
+      "titleRu": "Отелло",
+      "titleOriginal": "The Tragedy of Othello, The Moor of Venice",
+      "alternativeTitles": [
+        "The Tragedy of Othello, The Moor of Venice"
+      ],
+      "year": null,
+      "topRank": 60,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-025",
+      "titleRu": "Отцы и дети",
+      "titleOriginal": "Отцы и дѣти",
+      "alternativeTitles": [
+        "Отцы и дѣти"
+      ],
+      "year": 1862,
+      "topRank": 16,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-113",
+      "titleRu": "Падение дома Ашеров",
+      "titleOriginal": "The Fall of the House of Usher",
+      "alternativeTitles": [
+        "The Fall of the House of Usher"
+      ],
+      "year": 1839,
+      "topRank": 94,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-035",
+      "titleRu": "Палата № 6",
+      "titleOriginal": "Палата № 6",
+      "alternativeTitles": [],
+      "year": 1892,
+      "topRank": 25,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-226",
+      "titleRu": "Парфюмер. История одного убийцы",
+      "titleOriginal": "Das Parfum",
+      "alternativeTitles": [
+        "Das Parfum"
+      ],
+      "year": 1985,
+      "topRank": 205,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-288",
+      "titleRu": "Паутина Шарлотты",
+      "titleOriginal": "Charlotte’s Web",
+      "alternativeTitles": [
+        "Charlotte’s Web"
+      ],
+      "year": 1952,
+      "topRank": 265,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-239",
+      "titleRu": "Пачинко",
+      "titleOriginal": "Pachinko",
+      "alternativeTitles": [
+        "Pachinko"
+      ],
+      "year": 2017,
+      "topRank": 218,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-297",
+      "titleRu": "Пеппи Длинныйчулок",
+      "titleOriginal": "Pippi Långstrump",
+      "alternativeTitles": [
+        "Pippi Långstrump"
+      ],
+      "year": 1945,
+      "topRank": 274,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-273",
+      "titleRu": "Первому игроку приготовиться",
+      "titleOriginal": "Ready Player One",
+      "alternativeTitles": [
+        "Ready Player One"
+      ],
+      "year": 2011,
+      "topRank": 250,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-206",
+      "titleRu": "Песнь Сюзанны",
+      "titleOriginal": "The Dark Tower VI: Song of Susannah",
+      "alternativeTitles": [
+        "The Dark Tower VI: Song of Susannah"
+      ],
+      "year": 2004,
+      "topRank": 185,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-049",
+      "titleRu": "Пикник на обочине",
+      "titleOriginal": "Piknik na obočine",
+      "alternativeTitles": [
+        "Piknik na obočine"
+      ],
+      "year": 1972,
+      "topRank": 38,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-298",
+      "titleRu": "Питер Пэн",
+      "titleOriginal": "Peter Pan; or, the Boy Who Wouldn't Grow Up",
+      "alternativeTitles": [
+        "Peter Pan; or, the Boy Who Wouldn't Grow Up"
+      ],
+      "year": 1911,
+      "topRank": 275,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-139",
+      "titleRu": "По ком звонит колокол",
+      "titleOriginal": "For Whom the Bell Tolls",
+      "alternativeTitles": [
+        "For Whom the Bell Tolls"
+      ],
+      "year": 1940,
+      "topRank": 120,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-163",
+      "titleRu": "Повелитель мух",
+      "titleOriginal": "Lord of the Flies",
+      "alternativeTitles": [
+        "Lord of the Flies"
+      ],
+      "year": 1954,
+      "topRank": 143,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-092",
+      "titleRu": "Повесть о двух городах",
+      "titleOriginal": "A Tale of Two Cities",
+      "alternativeTitles": [
+        "A Tale of Two Cities"
+      ],
+      "year": 1859,
+      "topRank": 73,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-253",
+      "titleRu": "Половина жёлтого солнца",
+      "titleOriginal": "Half of a Yellow Sun",
+      "alternativeTitles": [
+        "Half of a Yellow Sun"
+      ],
+      "year": 2006,
+      "topRank": 231,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-047",
+      "titleRu": "Понедельник начинается в субботу",
+      "titleOriginal": "Понедельник начинается в субботу",
+      "alternativeTitles": [],
+      "year": 1965,
+      "topRank": 36,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-250",
+      "titleRu": "Поправки",
+      "titleOriginal": "The Corrections",
+      "alternativeTitles": [
+        "The Corrections"
+      ],
+      "year": 2001,
+      "topRank": 228,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-109",
+      "titleRu": "Портрет Дориана Грея",
+      "titleOriginal": "The Picture of Dorian Gray",
+      "alternativeTitles": [
+        "The Picture of Dorian Gray"
+      ],
+      "year": 1890,
+      "topRank": 90,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-120",
+      "titleRu": "Портрет художника в юности",
+      "titleOriginal": "A Portrait of the Artist as a Young Man",
+      "alternativeTitles": [
+        "A Portrait of the Artist as a Young Man"
+      ],
+      "year": 1918,
+      "topRank": 101,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-241",
+      "titleRu": "Последний самурай",
+      "titleOriginal": "The Last Samurai",
+      "alternativeTitles": [
+        "The Last Samurai"
+      ],
+      "year": 2000,
+      "topRank": 220,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-144",
+      "titleRu": "Посторонний",
+      "titleOriginal": "L'Étranger",
+      "alternativeTitles": [
+        "L'Étranger"
+      ],
+      "year": 1942,
+      "topRank": 125,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-005",
+      "titleRu": "Потерянный рай",
+      "titleOriginal": "Paradise Lost",
+      "alternativeTitles": [
+        "Paradise Lost"
+      ],
+      "year": null,
+      "topRank": 4,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-124",
+      "titleRu": "Превращение",
+      "titleOriginal": "Die Verwandlung",
+      "alternativeTitles": [
+        "Die Verwandlung"
+      ],
+      "year": 1915,
+      "topRank": 105,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-030",
+      "titleRu": "Преступление и наказание",
+      "titleOriginal": "Преступление и наказание",
+      "alternativeTitles": [],
+      "year": 1866,
+      "topRank": 20,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-222",
+      "titleRu": "Призрак дома на холме",
+      "titleOriginal": "The Haunting of Hill House",
+      "alternativeTitles": [
+        "The Haunting of Hill House"
+      ],
+      "year": 1959,
+      "topRank": 201,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-071",
+      "titleRu": "Приключения Незнайки и его друзей",
+      "titleOriginal": "Приключения Незнайки и его друзей",
+      "alternativeTitles": [],
+      "year": 1954,
+      "topRank": 52,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-102",
+      "titleRu": "Приключения Тома Сойера",
+      "titleOriginal": "The Adventures of Tom Sawyer",
+      "alternativeTitles": [
+        "The Adventures of Tom Sawyer"
+      ],
+      "year": 1876,
+      "topRank": 83,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-212",
+      "titleRu": "Приключения Шерлока Холмса",
+      "titleOriginal": "The Adventures of Sherlock Holmes",
+      "alternativeTitles": [
+        "The Adventures of Sherlock Holmes"
+      ],
+      "year": 1892,
+      "topRank": 191,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-269",
+      "titleRu": "Прислуга",
+      "titleOriginal": "The Help",
+      "alternativeTitles": [
+        "The Help"
+      ],
+      "year": 2009,
+      "topRank": 246,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-228",
+      "titleRu": "Противостояние",
+      "titleOriginal": "The Stand",
+      "alternativeTitles": [
+        "The Stand"
+      ],
+      "year": 1978,
+      "topRank": 207,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-123",
+      "titleRu": "Процесс",
+      "titleOriginal": "Der Prozeß",
+      "alternativeTitles": [
+        "Der Prozeß"
+      ],
+      "year": 1925,
+      "topRank": 104,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-082",
+      "titleRu": "Путешествия Гулливера",
+      "titleOriginal": "Travels into Several Remote Nations of the World, in Four Parts. By Lemuel Gulliver, First a Surgeon, and then a Captain of several Ships",
+      "alternativeTitles": [
+        "Travels into Several Remote Nations of the World, in Four Parts. By Lemuel Gulliver, First a Surgeon, and then a Captain of several Ships"
+      ],
+      "year": null,
+      "topRank": 63,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-245",
+      "titleRu": "Пятьдесят оттенков серого",
+      "titleOriginal": "Fifty Shades of Grey",
+      "alternativeTitles": [
+        "Fifty Shades of Grey"
+      ],
+      "year": 2011,
+      "topRank": 223,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-086",
+      "titleRu": "Разум и чувства",
+      "titleOriginal": "Sense and Sensibility",
+      "alternativeTitles": [
+        "Sense and Sensibility"
+      ],
+      "year": 1811,
+      "topRank": 67,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-173",
+      "titleRu": "Рассказ служанки",
+      "titleOriginal": "The Handmaid's Tale",
+      "alternativeTitles": [
+        "The Handmaid's Tale"
+      ],
+      "year": 1985,
+      "topRank": 152,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-221",
+      "titleRu": "Ребекка",
+      "titleOriginal": "Rebecca",
+      "alternativeTitles": [
+        "Rebecca"
+      ],
+      "year": 1938,
+      "topRank": 200,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-223",
+      "titleRu": "Ребёнок Розмари",
+      "titleOriginal": "Rosemary's Baby",
+      "alternativeTitles": [
+        "Rosemary's Baby"
+      ],
+      "year": 1967,
+      "topRank": 202,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-021",
+      "titleRu": "Ревизор",
+      "titleOriginal": "Ревизор",
+      "alternativeTitles": [],
+      "year": 1836,
+      "topRank": 12,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-083",
+      "titleRu": "Робинзон Крузо",
+      "titleOriginal": "The Life and Strange Surprizing Adventures of Robinson Crusoe, of York, Mariner: Who lived Eight and Twenty Years, all alone in an un-inhabited Island on the Coast of America, near the Mouth of the Great River of Oroonoque; Having been cast on Shore by Shipwreck, wherein all the Men perished but himself. With An Account how he was at last as strangely deliver'd by Pyrates. Written by Himself...",
+      "alternativeTitles": [
+        "The Life and Strange Surprizing Adventures of Robinson Crusoe, of York, Mariner: Who lived Eight and Twenty Years, all alone in an un-inhabited Island on the Coast of America, near the Mouth of the Great River of Oroonoque; Having been cast on Shore by Shipwreck, wherein all the Men perished but himself. With An Account how he was at last as strangely deliver'd by Pyrates. Written by Himself..."
+      ],
+      "year": null,
+      "topRank": 64,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-076",
+      "titleRu": "Ромео и Джульетта",
+      "titleOriginal": "Romeo and Juliet",
+      "alternativeTitles": [
+        "Romeo and Juliet"
+      ],
+      "year": null,
+      "topRank": 57,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-230",
+      "titleRu": "Сияние",
+      "titleOriginal": "The Shining",
+      "alternativeTitles": [
+        "The Shining"
+      ],
+      "year": 1977,
+      "topRank": 209,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-168",
+      "titleRu": "Скотный двор",
+      "titleOriginal": "Animal Farm",
+      "alternativeTitles": [
+        "Animal Farm"
+      ],
+      "year": 1945,
+      "topRank": 148,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-284",
+      "titleRu": "Служанка",
+      "titleOriginal": "The Housemaid",
+      "alternativeTitles": [
+        "The Housemaid"
+      ],
+      "year": 2022,
+      "topRank": 261,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-134",
+      "titleRu": "Смерть в Венеции",
+      "titleOriginal": "Der Tod in Venedig",
+      "alternativeTitles": [
+        "Der Tod in Venedig"
+      ],
+      "year": 1912,
+      "topRank": 115,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-216",
+      "titleRu": "Смерть на Ниле",
+      "titleOriginal": "Death on the Nile",
+      "alternativeTitles": [
+        "Death on the Nile"
+      ],
+      "year": 1937,
+      "topRank": 195,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-258",
+      "titleRu": "Снежная страна",
+      "titleOriginal": "雪国",
+      "alternativeTitles": [
+        "雪国"
+      ],
+      "year": 1935,
+      "topRank": 236,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-209",
+      "titleRu": "Собака Баскервилей",
+      "titleOriginal": "The Hound of the Baskervilles",
+      "alternativeTitles": [
+        "The Hound of the Baskervilles"
+      ],
+      "year": 1902,
+      "topRank": 188,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-040",
+      "titleRu": "Собачье сердце",
+      "titleOriginal": "Собачье сердце",
+      "alternativeTitles": [],
+      "year": 1987,
+      "topRank": 29,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-096",
+      "titleRu": "Собор Парижской Богоматери",
+      "titleOriginal": "Notre-Dame de Paris",
+      "alternativeTitles": [
+        "Notre-Dame de Paris"
+      ],
+      "year": 1831,
+      "topRank": 77,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-197",
+      "titleRu": "Солярис",
+      "titleOriginal": "Solaris",
+      "alternativeTitles": [
+        "Solaris"
+      ],
+      "year": 1961,
+      "topRank": 176,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-249",
+      "titleRu": "Средний пол",
+      "titleOriginal": "Middlesex",
+      "alternativeTitles": [
+        "Middlesex"
+      ],
+      "year": 2002,
+      "topRank": 227,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-138",
+      "titleRu": "Старик и море",
+      "titleOriginal": "The Old Man and the Sea",
+      "alternativeTitles": [
+        "The Old Man and the Sea"
+      ],
+      "year": 1952,
+      "topRank": 119,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-147",
+      "titleRu": "Степной волк",
+      "titleOriginal": "Der Steppenwolf",
+      "alternativeTitles": [
+        "Der Steppenwolf"
+      ],
+      "year": 1927,
+      "topRank": 128,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-148",
+      "titleRu": "Сто лет одиночества",
+      "titleOriginal": "Cien años de soledad",
+      "alternativeTitles": [
+        "Cien años de soledad"
+      ],
+      "year": 1967,
+      "topRank": 129,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-199",
+      "titleRu": "Стража! Стража!",
+      "titleOriginal": "Guards! Guards!",
+      "alternativeTitles": [
+        "Guards! Guards!"
+      ],
+      "year": 1989,
+      "topRank": 178,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-104",
+      "titleRu": "Странная история доктора Джекила и мистера Хайда",
+      "titleOriginal": "Strange Case of Dr Jekyll and Mr Hyde",
+      "alternativeTitles": [
+        "Strange Case of Dr Jekyll and Mr Hyde"
+      ],
+      "year": 1886,
+      "topRank": 85,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-201",
+      "titleRu": "Стрелок",
+      "titleOriginal": "The Dark Tower: The Gunslinger",
+      "alternativeTitles": [
+        "The Dark Tower: The Gunslinger"
+      ],
+      "year": 1982,
+      "topRank": 180,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-260",
+      "titleRu": "Сумерки",
+      "titleOriginal": "Twilight",
+      "alternativeTitles": [
+        "Twilight"
+      ],
+      "year": 2005,
+      "topRank": 238,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-296",
+      "titleRu": "Таинственный сад",
+      "titleOriginal": "The Secret Garden",
+      "alternativeTitles": [
+        "The Secret Garden"
+      ],
+      "year": 1912,
+      "topRank": 273,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-236",
+      "titleRu": "Тайная история",
+      "titleOriginal": "The Secret History",
+      "alternativeTitles": [
+        "The Secret History"
+      ],
+      "year": 1992,
+      "topRank": 215,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-225",
+      "titleRu": "Талантливый мистер Рипли",
+      "titleOriginal": "The Talented Mr. Ripley",
+      "alternativeTitles": [
+        "The Talented Mr. Ripley"
+      ],
+      "year": 1955,
+      "topRank": 204,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-242",
+      "titleRu": "Там, где раки поют",
+      "titleOriginal": "Where the Crawdads Sing",
+      "alternativeTitles": [
+        "Where the Crawdads Sing"
+      ],
+      "year": 2018,
+      "topRank": 221,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-023",
+      "titleRu": "Тарас Бульба",
+      "titleOriginal": "Тарас Бульба",
+      "alternativeTitles": [],
+      "year": 1835,
+      "topRank": 14,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-207",
+      "titleRu": "Тёмная Башня",
+      "titleOriginal": "The Dark Tower",
+      "alternativeTitles": [
+        "The Dark Tower"
+      ],
+      "year": 1982,
+      "topRank": 186,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-279",
+      "titleRu": "Тёмная материя",
+      "titleOriginal": "Dark Matter",
+      "alternativeTitles": [
+        "Dark Matter"
+      ],
+      "year": 2016,
+      "topRank": 256,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-043",
+      "titleRu": "Тихий Дон",
+      "titleOriginal": "Тихий Дон",
+      "alternativeTitles": [],
+      "year": 1928,
+      "topRank": 32,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-146",
+      "titleRu": "Тошнота",
+      "titleOriginal": "La Nausée",
+      "alternativeTitles": [
+        "La Nausée"
+      ],
+      "year": 1938,
+      "topRank": 127,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-095",
+      "titleRu": "Три мушкетёра",
+      "titleOriginal": "Les Trois Mousquetaires",
+      "alternativeTitles": [
+        "Les Trois Mousquetaires"
+      ],
+      "year": 1844,
+      "topRank": 76,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-141",
+      "titleRu": "Три товарища",
+      "titleOriginal": "Drei Kameraden",
+      "alternativeTitles": [
+        "Drei Kameraden"
+      ],
+      "year": 1936,
+      "topRank": 122,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-143",
+      "titleRu": "Триумфальная арка",
+      "titleOriginal": "Arc de Triomphe",
+      "alternativeTitles": [
+        "Arc de Triomphe"
+      ],
+      "year": 1945,
+      "topRank": 124,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-115",
+      "titleRu": "Трое в лодке, не считая собаки",
+      "titleOriginal": "Three Men in a Boat",
+      "alternativeTitles": [
+        "Three Men in a Boat"
+      ],
+      "year": 1889,
+      "topRank": 96,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-048",
+      "titleRu": "Трудно быть богом",
+      "titleOriginal": "Трудно быть богом",
+      "alternativeTitles": [],
+      "year": 1964,
+      "topRank": 37,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-214",
+      "titleRu": "Убийство в «Восточном экспрессе»",
+      "titleOriginal": "Murder on the Orient Express",
+      "alternativeTitles": [
+        "Murder on the Orient Express"
+      ],
+      "year": 1934,
+      "topRank": 193,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-215",
+      "titleRu": "Убийство Роджера Экройда",
+      "titleOriginal": "The Murder of Roger Ackroyd",
+      "alternativeTitles": [
+        "The Murder of Roger Ackroyd"
+      ],
+      "year": 1926,
+      "topRank": 194,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-158",
+      "titleRu": "Убить пересмешника",
+      "titleOriginal": "To Kill a Mockingbird",
+      "alternativeTitles": [
+        "To Kill a Mockingbird"
+      ],
+      "year": 1960,
+      "topRank": 138,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-293",
+      "titleRu": "Удивительный волшебник из страны Оз",
+      "titleOriginal": "The Wonderful Wizard of Oz",
+      "alternativeTitles": [
+        "The Wonderful Wizard of Oz"
+      ],
+      "year": 1900,
+      "topRank": 270,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-119",
+      "titleRu": "Улисс",
+      "titleOriginal": "Ulysses",
+      "alternativeTitles": [
+        "Ulysses"
+      ],
+      "year": 1922,
+      "topRank": 100,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-165",
+      "titleRu": "Унесённые ветром",
+      "titleOriginal": "Gone with the Wind",
+      "alternativeTitles": [
+        "Gone with the Wind"
+      ],
+      "year": 1936,
+      "topRank": 145,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-081",
+      "titleRu": "Фауст",
+      "titleOriginal": "Faust",
+      "alternativeTitles": [
+        "Faust"
+      ],
+      "year": 1808,
+      "topRank": 62,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-111",
+      "titleRu": "Франкенштейн, или Современный Прометей",
+      "titleOriginal": "Frankenstein",
+      "alternativeTitles": [
+        "Frankenstein"
+      ],
+      "year": 1818,
+      "topRank": 92,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-180",
+      "titleRu": "Хоббит, или Туда и обратно",
+      "titleOriginal": "The Hobbit",
+      "alternativeTitles": [
+        "The Hobbit"
+      ],
+      "year": 1937,
+      "topRank": 159,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-160",
+      "titleRu": "Цветы для Элджернона",
+      "titleOriginal": "Flowers for Algernon",
+      "alternativeTitles": [
+        "Flowers for Algernon"
+      ],
+      "year": 1959,
+      "topRank": 140,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-161",
+      "titleRu": "Чайка по имени Джонатан Ливингстон",
+      "titleOriginal": "Jonathan Livingston Seagull",
+      "alternativeTitles": [
+        "Jonathan Livingston Seagull"
+      ],
+      "year": 1970,
+      "topRank": 141,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-063",
+      "titleRu": "Чапаев и Пустота",
+      "titleOriginal": "Чапаев и Пустота",
+      "alternativeTitles": [],
+      "year": 1996,
+      "topRank": 46,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-286",
+      "titleRu": "Чарли и шоколадная фабрика",
+      "titleOriginal": "Charlie and the Chocolate Factory",
+      "alternativeTitles": [
+        "Charlie and the Chocolate Factory"
+      ],
+      "year": 1964,
+      "topRank": 263,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-157",
+      "titleRu": "Человек-невидимка",
+      "titleOriginal": "Invisible Man",
+      "alternativeTitles": [
+        "Invisible Man"
+      ],
+      "year": 1952,
+      "topRank": 137,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-145",
+      "titleRu": "Чума",
+      "titleOriginal": "La peste",
+      "alternativeTitles": [
+        "La peste"
+      ],
+      "year": 1947,
+      "topRank": 126,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-014",
+      "titleRu": "Шахнаме",
+      "titleOriginal": "شاهنامه",
+      "alternativeTitles": [
+        "شاهنامه"
+      ],
+      "year": null,
+      "topRank": 6,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-024",
+      "titleRu": "Шинель",
+      "titleOriginal": "Шинель",
+      "alternativeTitles": [],
+      "year": 1842,
+      "topRank": 15,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-290",
+      "titleRu": "Шляпа Волшебника",
+      "titleOriginal": "Trollkarlens hatt",
+      "alternativeTitles": [
+        "Trollkarlens hatt"
+      ],
+      "year": 1948,
+      "topRank": 267,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-128",
+      "titleRu": "Шум и ярость",
+      "titleOriginal": "The Sound and the Fury",
+      "alternativeTitles": [
+        "The Sound and the Fury"
+      ],
+      "year": 1929,
+      "topRank": 109,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-235",
+      "titleRu": "Щегол",
+      "titleOriginal": "The Goldfinch",
+      "alternativeTitles": [
+        "The Goldfinch"
+      ],
+      "year": 2013,
+      "topRank": 214,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-085",
+      "titleRu": "Эмма",
+      "titleOriginal": "Emma",
+      "alternativeTitles": [
+        "Emma"
+      ],
+      "year": 1815,
+      "topRank": 66,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-003",
+      "titleRu": "Энеида",
+      "titleOriginal": "Aenēis",
+      "alternativeTitles": [
+        "Aenēis"
+      ],
+      "year": null,
+      "topRank": 2,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-295",
+      "titleRu": "Энн из Зелёных Крыш",
+      "titleOriginal": "Anne of Green Gables",
+      "alternativeTitles": [
+        "Anne of Green Gables"
+      ],
+      "year": 1908,
+      "topRank": 272,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-210",
+      "titleRu": "Этюд в багровых тонах",
+      "titleOriginal": "A Study in Scarlet",
+      "alternativeTitles": [
+        "A Study in Scarlet"
+      ],
+      "year": 1887,
+      "topRank": 189,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-192",
+      "titleRu": "Я, робот",
+      "titleOriginal": "I, Robot.",
+      "alternativeTitles": [
+        "I, Robot."
+      ],
+      "year": 1950,
+      "topRank": 171,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-093",
+      "titleRu": "Ярмарка тщеславия",
+      "titleOriginal": "Vanity Fair",
+      "alternativeTitles": [
+        "Vanity Fair"
+      ],
+      "year": 1848,
+      "topRank": 74,
+      "steamAppId": null,
+      "icd10": []
+    },
+    {
+      "id": "book-062",
+      "titleRu": "Generation «П»",
+      "titleOriginal": "Generation «П»",
+      "alternativeTitles": [],
+      "year": 1999,
+      "topRank": 45,
+      "steamAppId": null,
+      "icd10": []
+    }
+  ],
+  "tokenToIds": {
+    "13": [
+      "book-283"
+    ],
+    "451": [
+      "book-170"
+    ],
+    "1984": [
+      "book-167"
+    ],
+    "2001": [
+      "book-193"
+    ],
+    "авессалом": [
+      "book-129"
+    ],
+    "автостопом": [
+      "book-179"
+    ],
+    "азазель": [
+      "book-066"
+    ],
+    "азкабана": [
+      "book-184"
+    ],
+    "алиса": [
+      "book-112"
+    ],
+    "алхимик": [
+      "book-244"
+    ],
+    "алые": [
+      "book-038"
+    ],
+    "американа": [
+      "book-252"
+    ],
+    "американские": [
+      "book-200"
+    ],
+    "андроиды": [
+      "book-196"
+    ],
+    "анна": [
+      "book-029"
+    ],
+    "апельсин": [
+      "book-174"
+    ],
+    "арка": [
+      "book-143"
+    ],
+    "атлант": [
+      "book-175"
+    ],
+    "атлас": [
+      "book-234"
+    ],
+    "ашеров": [
+      "book-113"
+    ],
+    "багровых": [
+      "book-210"
+    ],
+    "баскервилей": [
+      "book-209"
+    ],
+    "башня": [
+      "book-207"
+    ],
+    "бегущий": [
+      "book-246",
+      "book-263"
+    ],
+    "без": [
+      "book-142"
+    ],
+    "белая": [
+      "book-041"
+    ],
+    "белые": [
+      "book-251"
+    ],
+    "белый": [
+      "book-117",
+      "book-281"
+    ],
+    "бесплодные": [
+      "book-203"
+    ],
+    "бесы": [
+      "book-033"
+    ],
+    "бледный": [
+      "book-153"
+    ],
+    "близ": [
+      "book-022"
+    ],
+    "бовари": [
+      "book-099"
+    ],
+    "боги": [
+      "book-200"
+    ],
+    "богом": [
+      "book-048"
+    ],
+    "богоматери": [
+      "book-096"
+    ],
+    "божественная": [
+      "book-004"
+    ],
+    "бойня": [
+      "book-164"
+    ],
+    "бойцовский": [
+      "book-162"
+    ],
+    "большая": [
+      "book-276"
+    ],
+    "большие": [
+      "book-089"
+    ],
+    "братья": [
+      "book-031"
+    ],
+    "будденброки": [
+      "book-135"
+    ],
+    "бульба": [
+      "book-023"
+    ],
+    "бункер": [
+      "book-278"
+    ],
+    "быть": [
+      "book-048"
+    ],
+    "вегетарианка": [
+      "book-240"
+    ],
+    "великий": [
+      "book-136"
+    ],
+    "венеции": [
+      "book-134"
+    ],
+    "ветер": [
+      "book-208",
+      "book-287"
+    ],
+    "ветром": [
+      "book-165",
+      "book-246"
+    ],
+    "вечера": [
+      "book-022"
+    ],
+    "винни": [
+      "book-289"
+    ],
+    "вино": [
+      "book-172"
+    ],
+    "виноваты": [
+      "book-264"
+    ],
+    "винчи": [
+      "book-219"
+    ],
+    "вишневый": [
+      "book-034"
+    ],
+    "властелин": [
+      "book-181"
+    ],
+    "во": [
+      "book-137",
+      "book-265"
+    ],
+    "водой": [
+      "book-105"
+    ],
+    "воды": [
+      "book-268"
+    ],
+    "возлюбленная": [
+      "book-156"
+    ],
+    "война": [
+      "book-028",
+      "book-108"
+    ],
+    "вокруг": [
+      "book-106"
+    ],
+    "волк": [
+      "book-147"
+    ],
+    "волки": [
+      "book-205"
+    ],
+    "волхвов": [
+      "book-114"
+    ],
+    "волшебная": [
+      "book-133"
+    ],
+    "волшебник": [
+      "book-074",
+      "book-195",
+      "book-293"
+    ],
+    "волшебника": [
+      "book-290"
+    ],
+    "вор": [
+      "book-247"
+    ],
+    "восемьдесят": [
+      "book-106"
+    ],
+    "восточном": [
+      "book-214"
+    ],
+    "восходит": [
+      "book-140"
+    ],
+    "времени": [
+      "book-018",
+      "book-107",
+      "book-122",
+      "book-265"
+    ],
+    "все": [
+      "book-282"
+    ],
+    "встречи": [
+      "book-267"
+    ],
+    "галактике": [
+      "book-179"
+    ],
+    "гамлет": [
+      "book-075"
+    ],
+    "гарри": [
+      "book-182",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-187",
+      "book-188"
+    ],
+    "гвардия": [
+      "book-041"
+    ],
+    "где": [
+      "book-242"
+    ],
+    "гениальная": [
+      "book-237"
+    ],
+    "герой": [
+      "book-018"
+    ],
+    "глаза": [
+      "book-065"
+    ],
+    "глубокий": [
+      "book-217"
+    ],
+    "гнева": [
+      "book-154"
+    ],
+    "гнездом": [
+      "book-159"
+    ],
+    "годо": [
+      "book-132"
+    ],
+    "голодные": [
+      "book-261"
+    ],
+    "гора": [
+      "book-133"
+    ],
+    "гордость": [
+      "book-084"
+    ],
+    "горе": [
+      "book-019"
+    ],
+    "города": [
+      "book-036",
+      "book-074"
+    ],
+    "городах": [
+      "book-092"
+    ],
+    "городе": [
+      "book-072"
+    ],
+    "госпожа": [
+      "book-099"
+    ],
+    "градус": [
+      "book-170"
+    ],
+    "граф": [
+      "book-094"
+    ],
+    "грея": [
+      "book-109"
+    ],
+    "гроздья": [
+      "book-154"
+    ],
+    "грозовой": [
+      "book-088"
+    ],
+    "гулливера": [
+      "book-082"
+    ],
+    "гэтсби": [
+      "book-136"
+    ],
+    "да": [
+      "book-219"
+    ],
+    "даниэль": [
+      "book-068"
+    ],
+    "дары": [
+      "book-114",
+      "book-188"
+    ],
+    "два": [
+      "book-051"
+    ],
+    "двадцать": [
+      "book-105"
+    ],
+    "двенадцать": [
+      "book-045",
+      "book-058"
+    ],
+    "двор": [
+      "book-168"
+    ],
+    "двух": [
+      "book-092"
+    ],
+    "девушка": [
+      "book-220",
+      "book-275"
+    ],
+    "дейзи": [
+      "book-280"
+    ],
+    "дети": [
+      "book-025"
+    ],
+    "джейн": [
+      "book-087"
+    ],
+    "джекила": [
+      "book-104"
+    ],
+    "джонатан": [
+      "book-161"
+    ],
+    "джонс": [
+      "book-280"
+    ],
+    "джульетта": [
+      "book-076"
+    ],
+    "дивергент": [
+      "book-262"
+    ],
+    "дивный": [
+      "book-169"
+    ],
+    "дик": [
+      "book-101"
+    ],
+    "диканьки": [
+      "book-022"
+    ],
+    "длинныйчулок": [
+      "book-297"
+    ],
+    "для": [
+      "book-160"
+    ],
+    "дней": [
+      "book-106"
+    ],
+    "до": [
+      "book-267"
+    ],
+    "дозор": [
+      "book-067"
+    ],
+    "доктор": [
+      "book-042"
+    ],
+    "доктора": [
+      "book-104"
+    ],
+    "долине": [
+      "book-291"
+    ],
+    "дом": [
+      "book-064"
+    ],
+    "дома": [
+      "book-113",
+      "book-222"
+    ],
+    "домашних": [
+      "book-231"
+    ],
+    "дон": [
+      "book-043",
+      "book-080"
+    ],
+    "дориана": [
+      "book-109"
+    ],
+    "дорога": [
+      "book-176"
+    ],
+    "дочка": [
+      "book-016"
+    ],
+    "дракона": [
+      "book-220"
+    ],
+    "дракула": [
+      "book-110"
+    ],
+    "друзей": [
+      "book-071"
+    ],
+    "дублинцы": [
+      "book-121"
+    ],
+    "души": [
+      "book-020"
+    ],
+    "дэвид": [
+      "book-091"
+    ],
+    "дэллоуэй": [
+      "book-126"
+    ],
+    "дюна": [
+      "book-177"
+    ],
+    "евгений": [
+      "book-015"
+    ],
+    "его": [
+      "book-071"
+    ],
+    "если": [
+      "book-150"
+    ],
+    "желтого": [
+      "book-253"
+    ],
+    "жена": [
+      "book-265"
+    ],
+    "женщина": [
+      "book-257"
+    ],
+    "женщины": [
+      "book-294"
+    ],
+    "живаго": [
+      "book-042"
+    ],
+    "животных": [
+      "book-231"
+    ],
+    "жизнь": [
+      "book-248"
+    ],
+    "за": [
+      "book-106",
+      "book-246"
+    ],
+    "заводной": [
+      "book-174"
+    ],
+    "задача": [
+      "book-198"
+    ],
+    "закончится": [
+      "book-282"
+    ],
+    "замок": [
+      "book-125"
+    ],
+    "замочную": [
+      "book-208"
+    ],
+    "западном": [
+      "book-142"
+    ],
+    "звезды": [
+      "book-264"
+    ],
+    "звонит": [
+      "book-139"
+    ],
+    "здесь": [
+      "book-052"
+    ],
+    "зеленая": [
+      "book-229"
+    ],
+    "зеленых": [
+      "book-295"
+    ],
+    "земли": [
+      "book-203"
+    ],
+    "земноморья": [
+      "book-195"
+    ],
+    "зимней": [
+      "book-150"
+    ],
+    "знак": [
+      "book-211"
+    ],
+    "зов": [
+      "book-118"
+    ],
+    "золотой": [
+      "book-046"
+    ],
+    "зори": [
+      "book-052"
+    ],
+    "зубы": [
+      "book-251"
+    ],
+    "зулейха": [
+      "book-065"
+    ],
+    "ивах": [
+      "book-287"
+    ],
+    "игра": [
+      "book-190"
+    ],
+    "игроку": [
+      "book-273"
+    ],
+    "игры": [
+      "book-261"
+    ],
+    "иден": [
+      "book-116"
+    ],
+    "идиот": [
+      "book-032"
+    ],
+    "из": [
+      "book-172",
+      "book-293",
+      "book-295"
+    ],
+    "извлечение": [
+      "book-202"
+    ],
+    "изумрудного": [
+      "book-074"
+    ],
+    "или": [
+      "book-111",
+      "book-180"
+    ],
+    "илиада": [
+      "book-001"
+    ],
+    "иллюзия": [
+      "book-278"
+    ],
+    "имени": [
+      "book-161"
+    ],
+    "имя": [
+      "book-151"
+    ],
+    "искупление": [
+      "book-233"
+    ],
+    "исповедь": [
+      "book-259"
+    ],
+    "история": [
+      "book-036",
+      "book-104",
+      "book-226",
+      "book-236"
+    ],
+    "исчезнувшая": [
+      "book-274"
+    ],
+    "кальи": [
+      "book-205"
+    ],
+    "камень": [
+      "book-182"
+    ],
+    "капитана": [
+      "book-051"
+    ],
+    "капитанская": [
+      "book-016"
+    ],
+    "карамазовы": [
+      "book-031"
+    ],
+    "каренина": [
+      "book-029"
+    ],
+    "кафка": [
+      "book-256"
+    ],
+    "кентерберийские": [
+      "book-006"
+    ],
+    "кихот": [
+      "book-080"
+    ],
+    "кладбище": [
+      "book-231"
+    ],
+    "клуб": [
+      "book-162"
+    ],
+    "клык": [
+      "book-117"
+    ],
+    "книжный": [
+      "book-247"
+    ],
+    "когда": [
+      "book-130"
+    ],
+    "код": [
+      "book-219"
+    ],
+    "колдун": [
+      "book-204"
+    ],
+    "колдунья": [
+      "book-189"
+    ],
+    "колец": [
+      "book-181"
+    ],
+    "колокол": [
+      "book-139"
+    ],
+    "ком": [
+      "book-139"
+    ],
+    "комедия": [
+      "book-004"
+    ],
+    "комета": [
+      "book-291"
+    ],
+    "комната": [
+      "book-183",
+      "book-271"
+    ],
+    "копперфилд": [
+      "book-091"
+    ],
+    "королева": [
+      "book-232"
+    ],
+    "королевский": [
+      "book-281"
+    ],
+    "король": [
+      "book-078"
+    ],
+    "космическая": [
+      "book-193"
+    ],
+    "кости": [
+      "book-270"
+    ],
+    "котлован": [
+      "book-055"
+    ],
+    "котором": [
+      "book-064"
+    ],
+    "красное": [
+      "book-098"
+    ],
+    "красный": [
+      "book-281"
+    ],
+    "кристалл": [
+      "book-204"
+    ],
+    "кристо": [
+      "book-094"
+    ],
+    "крузо": [
+      "book-083"
+    ],
+    "крыш": [
+      "book-295"
+    ],
+    "кубок": [
+      "book-185"
+    ],
+    "кукушкиным": [
+      "book-159"
+    ],
+    "лабиринте": [
+      "book-263"
+    ],
+    "лев": [
+      "book-189"
+    ],
+    "левая": [
+      "book-194"
+    ],
+    "лес": [
+      "book-255"
+    ],
+    "лет": [
+      "book-148"
+    ],
+    "лето": [
+      "book-292"
+    ],
+    "ли": [
+      "book-196"
+    ],
+    "ливингстон": [
+      "book-161"
+    ],
+    "лир": [
+      "book-078"
+    ],
+    "лодке": [
+      "book-115"
+    ],
+    "ложь": [
+      "book-276"
+    ],
+    "лолита": [
+      "book-152"
+    ],
+    "луне": [
+      "book-073"
+    ],
+    "лье": [
+      "book-105"
+    ],
+    "людях": [
+      "book-155"
+    ],
+    "макбет": [
+      "book-077"
+    ],
+    "маленькая": [
+      "book-276"
+    ],
+    "маленькие": [
+      "book-294"
+    ],
+    "маленький": [
+      "book-285"
+    ],
+    "мальтийский": [
+      "book-218"
+    ],
+    "маргарита": [
+      "book-039"
+    ],
+    "марго": [
+      "book-232"
+    ],
+    "марсианин": [
+      "book-272"
+    ],
+    "мартин": [
+      "book-116"
+    ],
+    "мастер": [
+      "book-039"
+    ],
+    "материя": [
+      "book-279"
+    ],
+    "матильда": [
+      "book-300"
+    ],
+    "машина": [
+      "book-107"
+    ],
+    "маяк": [
+      "book-127"
+    ],
+    "меня": [
+      "book-238"
+    ],
+    "мертвые": [
+      "book-020"
+    ],
+    "мечтают": [
+      "book-196"
+    ],
+    "мидлмарч": [
+      "book-100"
+    ],
+    "милые": [
+      "book-270"
+    ],
+    "миля": [
+      "book-229"
+    ],
+    "мир": [
+      "book-028",
+      "book-169"
+    ],
+    "миров": [
+      "book-108"
+    ],
+    "миссис": [
+      "book-126"
+    ],
+    "мистер": [
+      "book-225"
+    ],
+    "мистера": [
+      "book-104"
+    ],
+    "моби": [
+      "book-101"
+    ],
+    "молчание": [
+      "book-224"
+    ],
+    "монте": [
+      "book-094"
+    ],
+    "море": [
+      "book-138"
+    ],
+    "москва": [
+      "book-057"
+    ],
+    "мосты": [
+      "book-166"
+    ],
+    "моя": [
+      "book-237"
+    ],
+    "муми": [
+      "book-291"
+    ],
+    "мух": [
+      "book-163"
+    ],
+    "мушкетера": [
+      "book-095"
+    ],
+    "мы": [
+      "book-044"
+    ],
+    "мышах": [
+      "book-155"
+    ],
+    "мэдисон": [
+      "book-166"
+    ],
+    "мэлон": [
+      "book-131"
+    ],
+    "мэри": [
+      "book-299"
+    ],
+    "на": [
+      "book-022",
+      "book-049",
+      "book-073",
+      "book-127",
+      "book-142",
+      "book-216",
+      "book-222",
+      "book-256",
+      "book-282"
+    ],
+    "над": [
+      "book-137",
+      "book-159"
+    ],
+    "надежды": [
+      "book-089"
+    ],
+    "наказание": [
+      "book-030"
+    ],
+    "нас": [
+      "book-282"
+    ],
+    "начинается": [
+      "book-047"
+    ],
+    "нашего": [
+      "book-018"
+    ],
+    "не": [
+      "book-115",
+      "book-213",
+      "book-238"
+    ],
+    "невидимка": [
+      "book-157"
+    ],
+    "незнайка": [
+      "book-072",
+      "book-073"
+    ],
+    "незнайки": [
+      "book-071"
+    ],
+    "нейромант": [
+      "book-178"
+    ],
+    "неполноценного": [
+      "book-259"
+    ],
+    "никого": [
+      "book-213"
+    ],
+    "ниле": [
+      "book-216"
+    ],
+    "новый": [
+      "book-169"
+    ],
+    "номер": [
+      "book-164"
+    ],
+    "норвежский": [
+      "book-255"
+    ],
+    "ночной": [
+      "book-067"
+    ],
+    "ночью": [
+      "book-150"
+    ],
+    "об": [
+      "book-196"
+    ],
+    "обитаемый": [
+      "book-050"
+    ],
+    "облачный": [
+      "book-234"
+    ],
+    "обломов": [
+      "book-027"
+    ],
+    "обочине": [
+      "book-049"
+    ],
+    "обратно": [
+      "book-180"
+    ],
+    "огня": [
+      "book-185"
+    ],
+    "огонь": [
+      "book-153"
+    ],
+    "одиночества": [
+      "book-148"
+    ],
+    "одиссея": [
+      "book-193"
+    ],
+    "однажды": [
+      "book-150"
+    ],
+    "одного": [
+      "book-036",
+      "book-226"
+    ],
+    "одуванчиков": [
+      "book-172"
+    ],
+    "ожидании": [
+      "book-132"
+    ],
+    "оз": [
+      "book-293"
+    ],
+    "округа": [
+      "book-166"
+    ],
+    "оливер": [
+      "book-090"
+    ],
+    "онегин": [
+      "book-015"
+    ],
+    "оно": [
+      "book-227"
+    ],
+    "опасное": [
+      "book-292"
+    ],
+    "орден": [
+      "book-186"
+    ],
+    "основание": [
+      "book-191"
+    ],
+    "остров": [
+      "book-050",
+      "book-103"
+    ],
+    "от": [
+      "book-019"
+    ],
+    "отверженные": [
+      "book-097"
+    ],
+    "отелло": [
+      "book-079"
+    ],
+    "открывает": [
+      "book-065"
+    ],
+    "отпускай": [
+      "book-238"
+    ],
+    "оттенков": [
+      "book-245"
+    ],
+    "отцы": [
+      "book-025"
+    ],
+    "падение": [
+      "book-113"
+    ],
+    "палата": [
+      "book-035"
+    ],
+    "парижской": [
+      "book-096"
+    ],
+    "паруса": [
+      "book-038"
+    ],
+    "парфюмер": [
+      "book-226"
+    ],
+    "паутина": [
+      "book-288"
+    ],
+    "пачинко": [
+      "book-239"
+    ],
+    "пеппи": [
+      "book-297"
+    ],
+    "первому": [
+      "book-273"
+    ],
+    "перевал": [
+      "book-088"
+    ],
+    "переводчик": [
+      "book-068"
+    ],
+    "перемен": [
+      "book-142"
+    ],
+    "пересмешника": [
+      "book-158"
+    ],
+    "песках": [
+      "book-257"
+    ],
+    "песнь": [
+      "book-206"
+    ],
+    "петушки": [
+      "book-057"
+    ],
+    "пи": [
+      "book-248"
+    ],
+    "пикник": [
+      "book-049"
+    ],
+    "питер": [
+      "book-298"
+    ],
+    "платяной": [
+      "book-189"
+    ],
+    "плечи": [
+      "book-175"
+    ],
+    "пляже": [
+      "book-256"
+    ],
+    "по": [
+      "book-139",
+      "book-161",
+      "book-170",
+      "book-179"
+    ],
+    "повелитель": [
+      "book-163"
+    ],
+    "повесть": [
+      "book-092"
+    ],
+    "повсюду": [
+      "book-277"
+    ],
+    "под": [
+      "book-105"
+    ],
+    "подруга": [
+      "book-237"
+    ],
+    "поезде": [
+      "book-275"
+    ],
+    "пожары": [
+      "book-277"
+    ],
+    "поисках": [
+      "book-122"
+    ],
+    "пол": [
+      "book-249"
+    ],
+    "половина": [
+      "book-253"
+    ],
+    "полукровка": [
+      "book-187"
+    ],
+    "понедельник": [
+      "book-047"
+    ],
+    "поппинс": [
+      "book-299"
+    ],
+    "поправки": [
+      "book-250"
+    ],
+    "портрет": [
+      "book-109",
+      "book-120"
+    ],
+    "последний": [
+      "book-241"
+    ],
+    "посторонний": [
+      "book-144"
+    ],
+    "потерянный": [
+      "book-005"
+    ],
+    "поттер": [
+      "book-182",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-187",
+      "book-188"
+    ],
+    "почему": [
+      "book-283"
+    ],
+    "поют": [
+      "book-242"
+    ],
+    "превращение": [
+      "book-124"
+    ],
+    "предков": [
+      "book-118"
+    ],
+    "предубеждение": [
+      "book-084"
+    ],
+    "престолов": [
+      "book-190"
+    ],
+    "преступление": [
+      "book-030"
+    ],
+    "приготовиться": [
+      "book-273"
+    ],
+    "призрак": [
+      "book-222"
+    ],
+    "приключения": [
+      "book-071",
+      "book-102",
+      "book-212"
+    ],
+    "принц": [
+      "book-187",
+      "book-285"
+    ],
+    "прислуга": [
+      "book-269"
+    ],
+    "причин": [
+      "book-283"
+    ],
+    "пришло": [
+      "book-254"
+    ],
+    "прометей": [
+      "book-111"
+    ],
+    "пропастью": [
+      "book-137"
+    ],
+    "противостояние": [
+      "book-228"
+    ],
+    "процесс": [
+      "book-123"
+    ],
+    "пустота": [
+      "book-063"
+    ],
+    "путешественника": [
+      "book-265"
+    ],
+    "путешествия": [
+      "book-082"
+    ],
+    "путник": [
+      "book-150"
+    ],
+    "пух": [
+      "book-289"
+    ],
+    "пэн": [
+      "book-298"
+    ],
+    "пять": [
+      "book-164"
+    ],
+    "пятьдесят": [
+      "book-245"
+    ],
+    "разрушение": [
+      "book-254"
+    ],
+    "разум": [
+      "book-086"
+    ],
+    "рай": [
+      "book-005"
+    ],
+    "раки": [
+      "book-242"
+    ],
+    "расправил": [
+      "book-175"
+    ],
+    "рассказ": [
+      "book-173"
+    ],
+    "рассказы": [
+      "book-006"
+    ],
+    "ребекка": [
+      "book-221"
+    ],
+    "ребенок": [
+      "book-223"
+    ],
+    "ревизор": [
+      "book-021"
+    ],
+    "ржи": [
+      "book-137"
+    ],
+    "рипли": [
+      "book-225"
+    ],
+    "робинзон": [
+      "book-083"
+    ],
+    "робот": [
+      "book-192"
+    ],
+    "роджера": [
+      "book-215"
+    ],
+    "розмари": [
+      "book-223"
+    ],
+    "розы": [
+      "book-151"
+    ],
+    "ромео": [
+      "book-076"
+    ],
+    "рука": [
+      "book-194"
+    ],
+    "сад": [
+      "book-034",
+      "book-296"
+    ],
+    "самурай": [
+      "book-241"
+    ],
+    "света": [
+      "book-106"
+    ],
+    "сердце": [
+      "book-040"
+    ],
+    "серого": [
+      "book-245"
+    ],
+    "синий": [
+      "book-281"
+    ],
+    "сияние": [
+      "book-230"
+    ],
+    "скважину": [
+      "book-208"
+    ],
+    "сквозь": [
+      "book-208"
+    ],
+    "скотный": [
+      "book-168"
+    ],
+    "слонам": [
+      "book-268"
+    ],
+    "служанка": [
+      "book-284"
+    ],
+    "служанки": [
+      "book-173"
+    ],
+    "смерти": [
+      "book-188"
+    ],
+    "смерть": [
+      "book-134",
+      "book-216"
+    ],
+    "снежная": [
+      "book-258"
+    ],
+    "собака": [
+      "book-209"
+    ],
+    "собаки": [
+      "book-115"
+    ],
+    "собачье": [
+      "book-040"
+    ],
+    "собор": [
+      "book-096"
+    ],
+    "современный": [
+      "book-111"
+    ],
+    "сойера": [
+      "book-102"
+    ],
+    "сокол": [
+      "book-218"
+    ],
+    "сокровищ": [
+      "book-103"
+    ],
+    "солнечном": [
+      "book-072"
+    ],
+    "солнца": [
+      "book-253"
+    ],
+    "солнце": [
+      "book-140"
+    ],
+    "солярис": [
+      "book-197"
+    ],
+    "сон": [
+      "book-217"
+    ],
+    "средний": [
+      "book-249"
+    ],
+    "стало": [
+      "book-213"
+    ],
+    "старик": [
+      "book-138"
+    ],
+    "степной": [
+      "book-147"
+    ],
+    "сто": [
+      "book-148"
+    ],
+    "стража": [
+      "book-199"
+    ],
+    "страна": [
+      "book-258"
+    ],
+    "стране": [
+      "book-112"
+    ],
+    "странная": [
+      "book-104"
+    ],
+    "страны": [
+      "book-293"
+    ],
+    "стрелок": [
+      "book-201"
+    ],
+    "стульев": [
+      "book-045"
+    ],
+    "субботу": [
+      "book-047"
+    ],
+    "сумерки": [
+      "book-260"
+    ],
+    "считая": [
+      "book-115"
+    ],
+    "сы": [
+      "book-033"
+    ],
+    "сюзанны": [
+      "book-206"
+    ],
+    "таинственный": [
+      "book-296"
+    ],
+    "тайная": [
+      "book-183",
+      "book-236"
+    ],
+    "талантливый": [
+      "book-225"
+    ],
+    "там": [
+      "book-242"
+    ],
+    "тарас": [
+      "book-023"
+    ],
+    "татуировкой": [
+      "book-220"
+    ],
+    "твист": [
+      "book-090"
+    ],
+    "тел": [
+      "book-198"
+    ],
+    "теленок": [
+      "book-046"
+    ],
+    "темная": [
+      "book-207",
+      "book-279"
+    ],
+    "ти": [
+      "book-025"
+    ],
+    "тихие": [
+      "book-052"
+    ],
+    "тихий": [
+      "book-043"
+    ],
+    "тлеют": [
+      "book-277"
+    ],
+    "тобой": [
+      "book-267"
+    ],
+    "товарища": [
+      "book-141"
+    ],
+    "тома": [
+      "book-102"
+    ],
+    "тонах": [
+      "book-210"
+    ],
+    "тошнота": [
+      "book-146"
+    ],
+    "трех": [
+      "book-198"
+    ],
+    "три": [
+      "book-095",
+      "book-141"
+    ],
+    "триумфальная": [
+      "book-143"
+    ],
+    "трое": [
+      "book-115"
+    ],
+    "троих": [
+      "book-202"
+    ],
+    "троллей": [
+      "book-291"
+    ],
+    "трудно": [
+      "book-048"
+    ],
+    "туда": [
+      "book-180"
+    ],
+    "тщеславия": [
+      "book-093"
+    ],
+    "тысяч": [
+      "book-105"
+    ],
+    "тьмы": [
+      "book-194"
+    ],
+    "убийство": [
+      "book-214",
+      "book-215"
+    ],
+    "убийцы": [
+      "book-226"
+    ],
+    "убить": [
+      "book-158"
+    ],
+    "удивительный": [
+      "book-293"
+    ],
+    "узник": [
+      "book-184"
+    ],
+    "улисс": [
+      "book-119"
+    ],
+    "ума": [
+      "book-019"
+    ],
+    "умирает": [
+      "book-131"
+    ],
+    "умирала": [
+      "book-130"
+    ],
+    "унесенные": [
+      "book-165"
+    ],
+    "утраченного": [
+      "book-122"
+    ],
+    "фабрика": [
+      "book-286"
+    ],
+    "фаренгейту": [
+      "book-170"
+    ],
+    "фауст": [
+      "book-081"
+    ],
+    "феникса": [
+      "book-186"
+    ],
+    "философский": [
+      "book-182"
+    ],
+    "франкенштейн": [
+      "book-111"
+    ],
+    "фронте": [
+      "book-142"
+    ],
+    "хайда": [
+      "book-104"
+    ],
+    "хоббит": [
+      "book-180"
+    ],
+    "холме": [
+      "book-222"
+    ],
+    "холмса": [
+      "book-212"
+    ],
+    "художника": [
+      "book-120"
+    ],
+    "хуторе": [
+      "book-022"
+    ],
+    "цветы": [
+      "book-160"
+    ],
+    "чайка": [
+      "book-161"
+    ],
+    "чапаев": [
+      "book-063"
+    ],
+    "чарли": [
+      "book-286"
+    ],
+    "человек": [
+      "book-157"
+    ],
+    "человека": [
+      "book-259"
+    ],
+    "черное": [
+      "book-098"
+    ],
+    "четырех": [
+      "book-211"
+    ],
+    "чувства": [
+      "book-086"
+    ],
+    "чудес": [
+      "book-112"
+    ],
+    "чума": [
+      "book-145"
+    ],
+    "шарлотты": [
+      "book-288"
+    ],
+    "шахнаме": [
+      "book-014"
+    ],
+    "шерлока": [
+      "book-212"
+    ],
+    "шинель": [
+      "book-024"
+    ],
+    "шкаф": [
+      "book-189"
+    ],
+    "шляпа": [
+      "book-290"
+    ],
+    "шоколадная": [
+      "book-286"
+    ],
+    "штайн": [
+      "book-068"
+    ],
+    "шум": [
+      "book-128"
+    ],
+    "щегол": [
+      "book-235"
+    ],
+    "эйр": [
+      "book-087"
+    ],
+    "экройда": [
+      "book-215"
+    ],
+    "экспрессе": [
+      "book-214"
+    ],
+    "элджернона": [
+      "book-160"
+    ],
+    "электроовцах": [
+      "book-196"
+    ],
+    "эмма": [
+      "book-085"
+    ],
+    "энеида": [
+      "book-003"
+    ],
+    "энн": [
+      "book-295"
+    ],
+    "этюд": [
+      "book-210"
+    ],
+    "юности": [
+      "book-120"
+    ],
+    "ягнят": [
+      "book-224"
+    ],
+    "ярмарка": [
+      "book-093"
+    ],
+    "ярость": [
+      "book-128"
+    ],
+    "absalom": [
+      "book-129"
+    ],
+    "account": [
+      "book-083",
+      "book-091"
+    ],
+    "ackroyd": [
+      "book-215"
+    ],
+    "adventures": [
+      "book-083",
+      "book-091",
+      "book-102",
+      "book-112",
+      "book-212"
+    ],
+    "aen": [
+      "book-003"
+    ],
+    "algernon": [
+      "book-160"
+    ],
+    "alice": [
+      "book-112"
+    ],
+    "all": [
+      "book-083"
+    ],
+    "alone": [
+      "book-083"
+    ],
+    "alquimista": [
+      "book-244"
+    ],
+    "also": [
+      "book-140"
+    ],
+    "america": [
+      "book-083"
+    ],
+    "american": [
+      "book-200"
+    ],
+    "americanah": [
+      "book-252"
+    ],
+    "amy": [
+      "book-294"
+    ],
+    "an": [
+      "book-083"
+    ],
+    "and": [
+      "book-076",
+      "book-082",
+      "book-083",
+      "book-084",
+      "book-086",
+      "book-091",
+      "book-104",
+      "book-128",
+      "book-138",
+      "book-155",
+      "book-182",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-187",
+      "book-188",
+      "book-189",
+      "book-204",
+      "book-213",
+      "book-286",
+      "book-294"
+    ],
+    "androids": [
+      "book-196"
+    ],
+    "animal": [
+      "book-168"
+    ],
+    "anne": [
+      "book-295"
+    ],
+    "any": [
+      "book-091"
+    ],
+    "apart": [
+      "book-254"
+    ],
+    "arc": [
+      "book-143"
+    ],
+    "artist": [
+      "book-120"
+    ],
+    "as": [
+      "book-083",
+      "book-120",
+      "book-130"
+    ],
+    "at": [
+      "book-083"
+    ],
+    "atlas": [
+      "book-175",
+      "book-234"
+    ],
+    "atonement": [
+      "book-233"
+    ],
+    "attendant": [
+      "book-132"
+    ],
+    "azkaban": [
+      "book-184"
+    ],
+    "baby": [
+      "book-223"
+    ],
+    "baskervilles": [
+      "book-209"
+    ],
+    "been": [
+      "book-083"
+    ],
+    "before": [
+      "book-267"
+    ],
+    "bell": [
+      "book-139"
+    ],
+    "beloved": [
+      "book-156"
+    ],
+    "beth": [
+      "book-294"
+    ],
+    "big": [
+      "book-217",
+      "book-276"
+    ],
+    "blood": [
+      "book-187"
+    ],
+    "blue": [
+      "book-281"
+    ],
+    "blunderstone": [
+      "book-091"
+    ],
+    "boat": [
+      "book-115"
+    ],
+    "body": [
+      "book-198"
+    ],
+    "bones": [
+      "book-270"
+    ],
+    "book": [
+      "book-247"
+    ],
+    "bovary": [
+      "book-099"
+    ],
+    "boy": [
+      "book-298"
+    ],
+    "brave": [
+      "book-169"
+    ],
+    "bridges": [
+      "book-166"
+    ],
+    "brilliant": [
+      "book-237"
+    ],
+    "buddenbrooks": [
+      "book-135"
+    ],
+    "but": [
+      "book-083"
+    ],
+    "by": [
+      "book-082",
+      "book-083"
+    ],
+    "call": [
+      "book-118"
+    ],
+    "calla": [
+      "book-205"
+    ],
+    "cancer": [
+      "book-227"
+    ],
+    "canterbury": [
+      "book-006"
+    ],
+    "captain": [
+      "book-082"
+    ],
+    "case": [
+      "book-104"
+    ],
+    "cast": [
+      "book-083"
+    ],
+    "catcher": [
+      "book-137"
+    ],
+    "chamber": [
+      "book-183"
+    ],
+    "charlie": [
+      "book-286"
+    ],
+    "charlotte": [
+      "book-288"
+    ],
+    "chocolate": [
+      "book-286"
+    ],
+    "cien": [
+      "book-148"
+    ],
+    "cities": [
+      "book-092"
+    ],
+    "clockwork": [
+      "book-174"
+    ],
+    "cloud": [
+      "book-234"
+    ],
+    "club": [
+      "book-162"
+    ],
+    "coast": [
+      "book-083"
+    ],
+    "code": [
+      "book-219"
+    ],
+    "commedia": [
+      "book-004"
+    ],
+    "comte": [
+      "book-094"
+    ],
+    "copperfield": [
+      "book-091"
+    ],
+    "corrections": [
+      "book-250"
+    ],
+    "county": [
+      "book-166"
+    ],
+    "crawdads": [
+      "book-242"
+    ],
+    "cristo": [
+      "book-094"
+    ],
+    "crusoe": [
+      "book-083"
+    ],
+    "cuckoo": [
+      "book-159"
+    ],
+    "da": [
+      "book-219"
+    ],
+    "daisy": [
+      "book-280"
+    ],
+    "dalloway": [
+      "book-126"
+    ],
+    "dame": [
+      "book-096"
+    ],
+    "dandelion": [
+      "book-172"
+    ],
+    "dark": [
+      "book-201",
+      "book-202",
+      "book-203",
+      "book-206",
+      "book-207",
+      "book-208",
+      "book-279"
+    ],
+    "darkness": [
+      "book-194"
+    ],
+    "das": [
+      "book-125",
+      "book-226"
+    ],
+    "david": [
+      "book-091"
+    ],
+    "de": [
+      "book-094",
+      "book-096",
+      "book-143",
+      "book-148"
+    ],
+    "death": [
+      "book-216"
+    ],
+    "deathly": [
+      "book-188"
+    ],
+    "deliver": [
+      "book-083"
+    ],
+    "della": [
+      "book-151"
+    ],
+    "denmark": [
+      "book-075"
+    ],
+    "der": [
+      "book-123",
+      "book-133",
+      "book-134",
+      "book-147"
+    ],
+    "dick": [
+      "book-101"
+    ],
+    "die": [
+      "book-124"
+    ],
+    "divergent": [
+      "book-262"
+    ],
+    "divina": [
+      "book-004"
+    ],
+    "do": [
+      "book-196"
+    ],
+    "don": [
+      "book-080"
+    ],
+    "dorian": [
+      "book-109"
+    ],
+    "dr": [
+      "book-104"
+    ],
+    "dracula": [
+      "book-110"
+    ],
+    "drawing": [
+      "book-202"
+    ],
+    "dream": [
+      "book-196"
+    ],
+    "drei": [
+      "book-141"
+    ],
+    "du": [
+      "book-106",
+      "book-122"
+    ],
+    "dubliners": [
+      "book-121"
+    ],
+    "dune": [
+      "book-177"
+    ],
+    "dying": [
+      "book-130"
+    ],
+    "earthsea": [
+      "book-195"
+    ],
+    "eden": [
+      "book-116"
+    ],
+    "eight": [
+      "book-083"
+    ],
+    "eighty": [
+      "book-167"
+    ],
+    "electric": [
+      "book-196"
+    ],
+    "elephants": [
+      "book-268"
+    ],
+    "emma": [
+      "book-085"
+    ],
+    "en": [
+      "book-106",
+      "book-132"
+    ],
+    "ends": [
+      "book-282"
+    ],
+    "et": [
+      "book-098"
+    ],
+    "everywhere": [
+      "book-277"
+    ],
+    "expectations": [
+      "book-089"
+    ],
+    "experience": [
+      "book-091"
+    ],
+    "express": [
+      "book-214"
+    ],
+    "eyre": [
+      "book-087"
+    ],
+    "factory": [
+      "book-286"
+    ],
+    "fahrenheit": [
+      "book-170"
+    ],
+    "fair": [
+      "book-093"
+    ],
+    "falcon": [
+      "book-218"
+    ],
+    "fall": [
+      "book-113",
+      "book-254"
+    ],
+    "fang": [
+      "book-117"
+    ],
+    "farlig": [
+      "book-292"
+    ],
+    "farm": [
+      "book-168"
+    ],
+    "fault": [
+      "book-264"
+    ],
+    "faust": [
+      "book-081"
+    ],
+    "fifty": [
+      "book-245"
+    ],
+    "fight": [
+      "book-162"
+    ],
+    "fire": [
+      "book-153",
+      "book-185"
+    ],
+    "fires": [
+      "book-277"
+    ],
+    "first": [
+      "book-082"
+    ],
+    "five": [
+      "book-164"
+    ],
+    "flew": [
+      "book-159"
+    ],
+    "flies": [
+      "book-163"
+    ],
+    "flowers": [
+      "book-160"
+    ],
+    "for": [
+      "book-139",
+      "book-160",
+      "book-268"
+    ],
+    "foundation": [
+      "book-191"
+    ],
+    "four": [
+      "book-082",
+      "book-167",
+      "book-211"
+    ],
+    "frankenstein": [
+      "book-111"
+    ],
+    "friend": [
+      "book-237"
+    ],
+    "fury": [
+      "book-128"
+    ],
+    "gables": [
+      "book-295"
+    ],
+    "galaxy": [
+      "book-179"
+    ],
+    "game": [
+      "book-190"
+    ],
+    "games": [
+      "book-261"
+    ],
+    "garden": [
+      "book-296"
+    ],
+    "gatsby": [
+      "book-136"
+    ],
+    "generation": [
+      "book-062"
+    ],
+    "gift": [
+      "book-114"
+    ],
+    "girl": [
+      "book-274",
+      "book-275"
+    ],
+    "glass": [
+      "book-204"
+    ],
+    "go": [
+      "book-238"
+    ],
+    "goblet": [
+      "book-185"
+    ],
+    "godot": [
+      "book-132"
+    ],
+    "gods": [
+      "book-200"
+    ],
+    "goldfinch": [
+      "book-235"
+    ],
+    "gone": [
+      "book-165",
+      "book-274"
+    ],
+    "grapes": [
+      "book-154"
+    ],
+    "gray": [
+      "book-109"
+    ],
+    "great": [
+      "book-083",
+      "book-089",
+      "book-136"
+    ],
+    "green": [
+      "book-229",
+      "book-295"
+    ],
+    "grey": [
+      "book-245"
+    ],
+    "grow": [
+      "book-298"
+    ],
+    "guards": [
+      "book-199"
+    ],
+    "guide": [
+      "book-179"
+    ],
+    "gulliver": [
+      "book-082"
+    ],
+    "gunslinger": [
+      "book-201"
+    ],
+    "half": [
+      "book-187",
+      "book-253"
+    ],
+    "hallows": [
+      "book-188"
+    ],
+    "hamlet": [
+      "book-075"
+    ],
+    "hand": [
+      "book-194"
+    ],
+    "handmaid": [
+      "book-173"
+    ],
+    "harry": [
+      "book-182",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-187",
+      "book-188"
+    ],
+    "hatar": [
+      "book-220"
+    ],
+    "hatt": [
+      "book-290"
+    ],
+    "haunting": [
+      "book-222"
+    ],
+    "having": [
+      "book-083"
+    ],
+    "he": [
+      "book-083",
+      "book-091"
+    ],
+    "heights": [
+      "book-088"
+    ],
+    "help": [
+      "book-269"
+    ],
+    "hill": [
+      "book-222"
+    ],
+    "himself": [
+      "book-083"
+    ],
+    "history": [
+      "book-091",
+      "book-236"
+    ],
+    "hitchhiker": [
+      "book-179"
+    ],
+    "hobbit": [
+      "book-180"
+    ],
+    "holmes": [
+      "book-212"
+    ],
+    "hound": [
+      "book-209"
+    ],
+    "house": [
+      "book-113",
+      "book-222"
+    ],
+    "housemaid": [
+      "book-284"
+    ],
+    "how": [
+      "book-083"
+    ],
+    "hunger": [
+      "book-261"
+    ],
+    "hyde": [
+      "book-104"
+    ],
+    "ii": [
+      "book-202"
+    ],
+    "iii": [
+      "book-203"
+    ],
+    "il": [
+      "book-151"
+    ],
+    "iliad": [
+      "book-001"
+    ],
+    "im": [
+      "book-142"
+    ],
+    "in": [
+      "book-082",
+      "book-083",
+      "book-112",
+      "book-115",
+      "book-134",
+      "book-137",
+      "book-210",
+      "book-264",
+      "book-287"
+    ],
+    "ine": [
+      "book-049"
+    ],
+    "inhabited": [
+      "book-083"
+    ],
+    "into": [
+      "book-082"
+    ],
+    "inverno": [
+      "book-150"
+    ],
+    "invisible": [
+      "book-157"
+    ],
+    "is": [
+      "book-003"
+    ],
+    "island": [
+      "book-083",
+      "book-103"
+    ],
+    "it": [
+      "book-282"
+    ],
+    "jane": [
+      "book-087"
+    ],
+    "jekyll": [
+      "book-104"
+    ],
+    "jo": [
+      "book-294"
+    ],
+    "jonathan": [
+      "book-161"
+    ],
+    "jones": [
+      "book-280"
+    ],
+    "jours": [
+      "book-106"
+    ],
+    "juliet": [
+      "book-076"
+    ],
+    "kameraden": [
+      "book-141"
+    ],
+    "keyhole": [
+      "book-208"
+    ],
+    "kill": [
+      "book-158"
+    ],
+    "king": [
+      "book-078"
+    ],
+    "kite": [
+      "book-246"
+    ],
+    "kometjakten": [
+      "book-291"
+    ],
+    "kvinnor": [
+      "book-220"
+    ],
+    "la": [
+      "book-004",
+      "book-122",
+      "book-145",
+      "book-146",
+      "book-232"
+    ],
+    "lambs": [
+      "book-224"
+    ],
+    "lands": [
+      "book-203"
+    ],
+    "last": [
+      "book-083",
+      "book-241"
+    ],
+    "lay": [
+      "book-130"
+    ],
+    "le": [
+      "book-094",
+      "book-098",
+      "book-106",
+      "book-285"
+    ],
+    "lear": [
+      "book-078"
+    ],
+    "left": [
+      "book-194"
+    ],
+    "lemuel": [
+      "book-082"
+    ],
+    "les": [
+      "book-095",
+      "book-097",
+      "book-105"
+    ],
+    "let": [
+      "book-238"
+    ],
+    "lies": [
+      "book-276"
+    ],
+    "lieues": [
+      "book-105"
+    ],
+    "life": [
+      "book-083",
+      "book-248"
+    ],
+    "lighthouse": [
+      "book-127"
+    ],
+    "lion": [
+      "book-189"
+    ],
+    "little": [
+      "book-276",
+      "book-277",
+      "book-294"
+    ],
+    "lived": [
+      "book-083"
+    ],
+    "livingston": [
+      "book-161"
+    ],
+    "lolito": [
+      "book-152"
+    ],
+    "lord": [
+      "book-163",
+      "book-181"
+    ],
+    "lost": [
+      "book-005"
+    ],
+    "lovely": [
+      "book-270"
+    ],
+    "macbeth": [
+      "book-077"
+    ],
+    "machine": [
+      "book-107"
+    ],
+    "madame": [
+      "book-099"
+    ],
+    "madison": [
+      "book-166"
+    ],
+    "magi": [
+      "book-114"
+    ],
+    "malone": [
+      "book-131"
+    ],
+    "maltese": [
+      "book-218"
+    ],
+    "man": [
+      "book-120",
+      "book-138",
+      "book-157"
+    ],
+    "margot": [
+      "book-232"
+    ],
+    "mariner": [
+      "book-083"
+    ],
+    "martian": [
+      "book-272"
+    ],
+    "martin": [
+      "book-116"
+    ],
+    "mary": [
+      "book-299"
+    ],
+    "matilda": [
+      "book-300"
+    ],
+    "matter": [
+      "book-279"
+    ],
+    "maze": [
+      "book-263"
+    ],
+    "me": [
+      "book-238",
+      "book-267"
+    ],
+    "meant": [
+      "book-091"
+    ],
+    "meg": [
+      "book-294"
+    ],
+    "men": [
+      "book-083",
+      "book-115",
+      "book-155"
+    ],
+    "mers": [
+      "book-105"
+    ],
+    "meurt": [
+      "book-131"
+    ],
+    "mice": [
+      "book-155"
+    ],
+    "middlemarch": [
+      "book-100"
+    ],
+    "middlesex": [
+      "book-249"
+    ],
+    "midsommar": [
+      "book-292"
+    ],
+    "mile": [
+      "book-229"
+    ],
+    "mille": [
+      "book-105"
+    ],
+    "mis": [
+      "book-097"
+    ],
+    "moby": [
+      "book-101"
+    ],
+    "mockingbird": [
+      "book-158"
+    ],
+    "monde": [
+      "book-106"
+    ],
+    "monte": [
+      "book-094"
+    ],
+    "moor": [
+      "book-079"
+    ],
+    "mousquetaires": [
+      "book-095"
+    ],
+    "mouth": [
+      "book-083"
+    ],
+    "mr": [
+      "book-104",
+      "book-225"
+    ],
+    "mrs": [
+      "book-126"
+    ],
+    "murder": [
+      "book-214",
+      "book-215"
+    ],
+    "my": [
+      "book-237"
+    ],
+    "na": [
+      "book-049"
+    ],
+    "nations": [
+      "book-082"
+    ],
+    "naus": [
+      "book-146"
+    ],
+    "near": [
+      "book-083"
+    ],
+    "nest": [
+      "book-159"
+    ],
+    "neues": [
+      "book-142"
+    ],
+    "neuromancer": [
+      "book-178"
+    ],
+    "never": [
+      "book-091",
+      "book-238"
+    ],
+    "new": [
+      "book-169"
+    ],
+    "ngstrump": [
+      "book-297"
+    ],
+    "nichts": [
+      "book-142"
+    ],
+    "nile": [
+      "book-216"
+    ],
+    "nineteen": [
+      "book-167"
+    ],
+    "noir": [
+      "book-098"
+    ],
+    "nome": [
+      "book-151"
+    ],
+    "none": [
+      "book-213"
+    ],
+    "notre": [
+      "book-096"
+    ],
+    "notte": [
+      "book-150"
+    ],
+    "obo": [
+      "book-049"
+    ],
+    "observation": [
+      "book-091"
+    ],
+    "odyssey": [
+      "book-193"
+    ],
+    "of": [
+      "book-075",
+      "book-078",
+      "book-079",
+      "book-082",
+      "book-083",
+      "book-091",
+      "book-092",
+      "book-102",
+      "book-104",
+      "book-108",
+      "book-109",
+      "book-113",
+      "book-114",
+      "book-118",
+      "book-120",
+      "book-154",
+      "book-155",
+      "book-163",
+      "book-166",
+      "book-181",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-190",
+      "book-194",
+      "book-195",
+      "book-196",
+      "book-202",
+      "book-205",
+      "book-206",
+      "book-209",
+      "book-211",
+      "book-212",
+      "book-215",
+      "book-222",
+      "book-224",
+      "book-245",
+      "book-248",
+      "book-253",
+      "book-293",
+      "book-295"
+    ],
+    "old": [
+      "book-138"
+    ],
+    "oliver": [
+      "book-090"
+    ],
+    "on": [
+      "book-083",
+      "book-091",
+      "book-214",
+      "book-216",
+      "book-275"
+    ],
+    "one": [
+      "book-159",
+      "book-273"
+    ],
+    "or": [
+      "book-091",
+      "book-294",
+      "book-298"
+    ],
+    "orange": [
+      "book-174"
+    ],
+    "order": [
+      "book-186"
+    ],
+    "orient": [
+      "book-214"
+    ],
+    "oroonoque": [
+      "book-083"
+    ],
+    "os": [
+      "book-148"
+    ],
+    "othello": [
+      "book-079"
+    ],
+    "our": [
+      "book-264"
+    ],
+    "over": [
+      "book-159"
+    ],
+    "oz": [
+      "book-293"
+    ],
+    "pachinko": [
+      "book-239"
+    ],
+    "pale": [
+      "book-153"
+    ],
+    "pan": [
+      "book-298"
+    ],
+    "paradise": [
+      "book-005"
+    ],
+    "parfum": [
+      "book-226"
+    ],
+    "paris": [
+      "book-096"
+    ],
+    "parts": [
+      "book-082"
+    ],
+    "perdu": [
+      "book-122"
+    ],
+    "perished": [
+      "book-083"
+    ],
+    "personal": [
+      "book-091"
+    ],
+    "peste": [
+      "book-145"
+    ],
+    "pet": [
+      "book-231"
+    ],
+    "peter": [
+      "book-298"
+    ],
+    "petit": [
+      "book-285"
+    ],
+    "philosopher": [
+      "book-182"
+    ],
+    "phoenix": [
+      "book-186"
+    ],
+    "pi": [
+      "book-248"
+    ],
+    "picture": [
+      "book-109"
+    ],
+    "piknik": [
+      "book-049"
+    ],
+    "pippi": [
+      "book-297"
+    ],
+    "player": [
+      "book-273"
+    ],
+    "pooh": [
+      "book-289"
+    ],
+    "poppins": [
+      "book-299"
+    ],
+    "portrait": [
+      "book-120"
+    ],
+    "potter": [
+      "book-182",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-187",
+      "book-188"
+    ],
+    "prejudice": [
+      "book-084"
+    ],
+    "pride": [
+      "book-084"
+    ],
+    "prince": [
+      "book-075",
+      "book-187",
+      "book-285"
+    ],
+    "prisoner": [
+      "book-184"
+    ],
+    "problem": [
+      "book-198"
+    ],
+    "proze": [
+      "book-123"
+    ],
+    "publish": [
+      "book-091"
+    ],
+    "pyrates": [
+      "book-083"
+    ],
+    "quatre": [
+      "book-106"
+    ],
+    "quixote": [
+      "book-080"
+    ],
+    "rables": [
+      "book-097"
+    ],
+    "ready": [
+      "book-273"
+    ],
+    "reasons": [
+      "book-283"
+    ],
+    "rebecca": [
+      "book-221"
+    ],
+    "recherche": [
+      "book-122"
+    ],
+    "red": [
+      "book-281"
+    ],
+    "reine": [
+      "book-232"
+    ],
+    "remote": [
+      "book-082"
+    ],
+    "rings": [
+      "book-181"
+    ],
+    "ripley": [
+      "book-225"
+    ],
+    "rises": [
+      "book-140"
+    ],
+    "river": [
+      "book-083"
+    ],
+    "road": [
+      "book-176"
+    ],
+    "robinson": [
+      "book-083"
+    ],
+    "robot": [
+      "book-192"
+    ],
+    "roger": [
+      "book-215"
+    ],
+    "romeo": [
+      "book-076"
+    ],
+    "rookery": [
+      "book-091"
+    ],
+    "room": [
+      "book-271"
+    ],
+    "rosa": [
+      "book-151"
+    ],
+    "rosemary": [
+      "book-223"
+    ],
+    "rouge": [
+      "book-098"
+    ],
+    "royal": [
+      "book-281"
+    ],
+    "runner": [
+      "book-246",
+      "book-263"
+    ],
+    "rye": [
+      "book-137"
+    ],
+    "samurai": [
+      "book-241"
+    ],
+    "sawyer": [
+      "book-102"
+    ],
+    "scarlet": [
+      "book-210"
+    ],
+    "schloss": [
+      "book-125"
+    ],
+    "se": [
+      "book-150"
+    ],
+    "sea": [
+      "book-138"
+    ],
+    "seagull": [
+      "book-161"
+    ],
+    "secret": [
+      "book-236",
+      "book-296"
+    ],
+    "secrets": [
+      "book-183"
+    ],
+    "sematary": [
+      "book-231"
+    ],
+    "sense": [
+      "book-086"
+    ],
+    "sensibility": [
+      "book-086"
+    ],
+    "several": [
+      "book-082"
+    ],
+    "shades": [
+      "book-245"
+    ],
+    "sheep": [
+      "book-196"
+    ],
+    "sherlock": [
+      "book-212"
+    ],
+    "shining": [
+      "book-230"
+    ],
+    "ships": [
+      "book-082"
+    ],
+    "shipwreck": [
+      "book-083"
+    ],
+    "shore": [
+      "book-083"
+    ],
+    "shrugged": [
+      "book-175"
+    ],
+    "sign": [
+      "book-211"
+    ],
+    "silence": [
+      "book-224"
+    ],
+    "sing": [
+      "book-242"
+    ],
+    "six": [
+      "book-280"
+    ],
+    "slaughterhouse": [
+      "book-164"
+    ],
+    "sleep": [
+      "book-217"
+    ],
+    "solaris": [
+      "book-197"
+    ],
+    "soledad": [
+      "book-148"
+    ],
+    "som": [
+      "book-220"
+    ],
+    "song": [
+      "book-206"
+    ],
+    "sound": [
+      "book-128"
+    ],
+    "sous": [
+      "book-105"
+    ],
+    "space": [
+      "book-193"
+    ],
+    "stand": [
+      "book-228"
+    ],
+    "stars": [
+      "book-264"
+    ],
+    "steppenwolf": [
+      "book-147"
+    ],
+    "stone": [
+      "book-182"
+    ],
+    "strange": [
+      "book-083",
+      "book-104"
+    ],
+    "strangely": [
+      "book-083"
+    ],
+    "study": [
+      "book-210"
+    ],
+    "sun": [
+      "book-140",
+      "book-253"
+    ],
+    "surgeon": [
+      "book-082"
+    ],
+    "surprizing": [
+      "book-083"
+    ],
+    "susannah": [
+      "book-206"
+    ],
+    "tale": [
+      "book-092",
+      "book-173"
+    ],
+    "talented": [
+      "book-225"
+    ],
+    "tales": [
+      "book-006"
+    ],
+    "teeth": [
+      "book-251"
+    ],
+    "temps": [
+      "book-122"
+    ],
+    "the": [
+      "book-006",
+      "book-075",
+      "book-078",
+      "book-079",
+      "book-082",
+      "book-083",
+      "book-091",
+      "book-102",
+      "book-107",
+      "book-108",
+      "book-109",
+      "book-113",
+      "book-114",
+      "book-118",
+      "book-120",
+      "book-127",
+      "book-128",
+      "book-136",
+      "book-137",
+      "book-138",
+      "book-139",
+      "book-140",
+      "book-154",
+      "book-159",
+      "book-163",
+      "book-165",
+      "book-166",
+      "book-173",
+      "book-176",
+      "book-179",
+      "book-180",
+      "book-181",
+      "book-182",
+      "book-183",
+      "book-184",
+      "book-185",
+      "book-186",
+      "book-187",
+      "book-188",
+      "book-189",
+      "book-194",
+      "book-198",
+      "book-201",
+      "book-202",
+      "book-203",
+      "book-205",
+      "book-206",
+      "book-207",
+      "book-208",
+      "book-209",
+      "book-211",
+      "book-212",
+      "book-214",
+      "book-215",
+      "book-216",
+      "book-217",
+      "book-218",
+      "book-219",
+      "book-222",
+      "book-224",
+      "book-225",
+      "book-228",
+      "book-229",
+      "book-230",
+      "book-235",
+      "book-236",
+      "book-241",
+      "book-242",
+      "book-246",
+      "book-247",
+      "book-250",
+      "book-261",
+      "book-263",
+      "book-264",
+      "book-265",
+      "book-269",
+      "book-270",
+      "book-271",
+      "book-272",
+      "book-275",
+      "book-280",
+      "book-284",
+      "book-286",
+      "book-287",
+      "book-289",
+      "book-293",
+      "book-296",
+      "book-298"
+    ],
+    "then": [
+      "book-082",
+      "book-213"
+    ],
+    "there": [
+      "book-213"
+    ],
+    "thief": [
+      "book-247"
+    ],
+    "things": [
+      "book-254"
+    ],
+    "three": [
+      "book-115",
+      "book-198",
+      "book-202"
+    ],
+    "thrones": [
+      "book-190"
+    ],
+    "through": [
+      "book-208"
+    ],
+    "time": [
+      "book-107",
+      "book-265"
+    ],
+    "to": [
+      "book-091",
+      "book-127",
+      "book-158",
+      "book-179"
+    ],
+    "tod": [
+      "book-134"
+    ],
+    "tolls": [
+      "book-139"
+    ],
+    "tom": [
+      "book-102"
+    ],
+    "tour": [
+      "book-106"
+    ],
+    "tower": [
+      "book-201",
+      "book-202",
+      "book-203",
+      "book-206",
+      "book-207",
+      "book-208"
+    ],
+    "tragedy": [
+      "book-075",
+      "book-078",
+      "book-079"
+    ],
+    "train": [
+      "book-275"
+    ],
+    "tranger": [
+      "book-144"
+    ],
+    "traveler": [
+      "book-265"
+    ],
+    "travels": [
+      "book-082"
+    ],
+    "treasure": [
+      "book-103"
+    ],
+    "triomphe": [
+      "book-143"
+    ],
+    "trois": [
+      "book-095"
+    ],
+    "trollkarlens": [
+      "book-290"
+    ],
+    "twenty": [
+      "book-083"
+    ],
+    "twilight": [
+      "book-260"
+    ],
+    "twist": [
+      "book-090"
+    ],
+    "two": [
+      "book-092"
+    ],
+    "ulysses": [
+      "book-119"
+    ],
+    "un": [
+      "book-083",
+      "book-150"
+    ],
+    "una": [
+      "book-150"
+    ],
+    "up": [
+      "book-298"
+    ],
+    "us": [
+      "book-282"
+    ],
+    "usher": [
+      "book-113"
+    ],
+    "vanity": [
+      "book-093"
+    ],
+    "venedig": [
+      "book-134"
+    ],
+    "venice": [
+      "book-079"
+    ],
+    "verwandlung": [
+      "book-124"
+    ],
+    "vi": [
+      "book-206"
+    ],
+    "viaggiatore": [
+      "book-150"
+    ],
+    "vinci": [
+      "book-219"
+    ],
+    "vingt": [
+      "book-105"
+    ],
+    "vingts": [
+      "book-106"
+    ],
+    "war": [
+      "book-108"
+    ],
+    "wardrobe": [
+      "book-189"
+    ],
+    "was": [
+      "book-083"
+    ],
+    "waste": [
+      "book-203"
+    ],
+    "water": [
+      "book-268"
+    ],
+    "web": [
+      "book-288"
+    ],
+    "were": [
+      "book-213"
+    ],
+    "westen": [
+      "book-142"
+    ],
+    "where": [
+      "book-242"
+    ],
+    "wherein": [
+      "book-083"
+    ],
+    "which": [
+      "book-091"
+    ],
+    "white": [
+      "book-117",
+      "book-251",
+      "book-281"
+    ],
+    "who": [
+      "book-083",
+      "book-298"
+    ],
+    "whom": [
+      "book-139"
+    ],
+    "why": [
+      "book-283"
+    ],
+    "wife": [
+      "book-265"
+    ],
+    "wild": [
+      "book-118"
+    ],
+    "willows": [
+      "book-287"
+    ],
+    "wind": [
+      "book-165",
+      "book-208",
+      "book-287"
+    ],
+    "wine": [
+      "book-172"
+    ],
+    "winnie": [
+      "book-289"
+    ],
+    "witch": [
+      "book-189"
+    ],
+    "with": [
+      "book-083",
+      "book-165",
+      "book-282"
+    ],
+    "wizard": [
+      "book-195",
+      "book-204",
+      "book-293"
+    ],
+    "wolves": [
+      "book-205"
+    ],
+    "women": [
+      "book-294"
+    ],
+    "wonderful": [
+      "book-293"
+    ],
+    "wonderland": [
+      "book-112"
+    ],
+    "wool": [
+      "book-278"
+    ],
+    "world": [
+      "book-082",
+      "book-169"
+    ],
+    "worlds": [
+      "book-108"
+    ],
+    "wouldn": [
+      "book-298"
+    ],
+    "wrath": [
+      "book-154"
+    ],
+    "written": [
+      "book-083"
+    ],
+    "wuthering": [
+      "book-088"
+    ],
+    "years": [
+      "book-083"
+    ],
+    "yellow": [
+      "book-253"
+    ],
+    "york": [
+      "book-083"
+    ],
+    "you": [
+      "book-267"
+    ],
+    "young": [
+      "book-120"
+    ],
+    "younger": [
+      "book-091"
+    ],
+    "zauberberg": [
+      "book-133"
+    ]
+  }
+}

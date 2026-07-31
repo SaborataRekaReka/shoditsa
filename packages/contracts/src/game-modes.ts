@@ -1,5 +1,5 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book'] as const
 // Every listed runtime is available in the player application. Full-house
 // participation remains a separate capability below.
 export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'animal', 'connections', 'danetki'] as const
@@ -13,7 +13,7 @@ export type GameModeCapabilities = {
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'danetki' | 'connections'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'danetki' | 'connections'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
@@ -73,12 +73,16 @@ export const GAME_MODE_MANIFEST = {
     engine: 'catalog_guess', label: 'Животные', dailyLabel: 'Животное', shareIcon: '🐾', dataDir: 'animals', dailyOrder: 8,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
+  book: {
+    engine: 'catalog_guess', label: 'Книги', dailyLabel: 'Книга', shareIcon: '📚', dataDir: 'books', dailyOrder: 9,
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
+  },
   danetki: {
-    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 10,
+    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 11,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted'],
   },
   connections: {
-    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 9,
+    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 10,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>
@@ -95,11 +99,18 @@ export const isCatalogGuessModeId = (value: unknown): value is CatalogGuessModeI
 
 export const CATALOG_GUESS_MODE_IDS = CONTENT_MODE_IDS.filter(isCatalogGuessModeId)
 
+export type PlayableCatalogGuessModeId = Extract<PlayableModeId, CatalogGuessModeId>
+export const PLAYABLE_CATALOG_GUESS_MODE_IDS = PLAYABLE_MODE_IDS.filter(
+  (mode): mode is PlayableCatalogGuessModeId => isCatalogGuessModeId(mode),
+)
+
 export const DAILY_MODE_IDS = PLAYABLE_MODE_IDS
   .filter((mode) => GAME_MODE_MANIFEST[mode].dailyOrder > 0)
   .sort((left, right) => GAME_MODE_MANIFEST[left].dailyOrder - GAME_MODE_MANIFEST[right].dailyOrder)
 
-export const CATALOG_GUESS_DAILY_MODE_IDS = DAILY_MODE_IDS.filter(isCatalogGuessModeId)
+export const CATALOG_GUESS_DAILY_MODE_IDS = DAILY_MODE_IDS.filter(
+  (mode): mode is PlayableCatalogGuessModeId => isCatalogGuessModeId(mode),
+)
 
 export type FullHouseModeId = {
   [Mode in PlayableModeId]: typeof GAME_MODE_MANIFEST[Mode]['countsTowardFullHouse'] extends true ? Mode : never

@@ -1,4 +1,4 @@
-import { KPOP_ARTISTS_PACK_ID, isCatalogGuessModeId, type ActiveSessionSummary, type GameSessionSnapshot } from '@shoditsa/contracts'
+import { KPOP_ARTISTS_PACK_ID, isCatalogGuessModeId, type ActiveSessionSummary, type GameSessionSnapshot, type PlayableCatalogGuessModeId } from '@shoditsa/contracts'
 
 export type CatalogGameBackTarget = 'title' | 'rewatch' | 'hub'
 
@@ -24,6 +24,6 @@ export const gameExperienceForSession = (
 }
 
 export const catalogActiveSessions = (sessions: ActiveSessionSummary[]) =>
-  sessions.filter((session): session is ActiveSessionSummary & { mode: Extract<ActiveSessionSummary['mode'], 'movie' | 'series' | 'anime' | 'game' | 'city' | 'music' | 'diagnosis' | 'animal'> } => (
+  sessions.filter((session): session is ActiveSessionSummary & { mode: PlayableCatalogGuessModeId } => (
     session.kind !== 'pack' && isCatalogGuessModeId(session.mode)
   ))

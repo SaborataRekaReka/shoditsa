@@ -45,7 +45,7 @@ const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admi
 
 const MODES: Array<{ value: ContentMode; label: string }> = [
   { value: 'movie', label: 'Кино' }, { value: 'series', label: 'Сериалы' }, { value: 'anime', label: 'Аниме' },
-  { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' }, { value: 'animal', label: 'Животные' },
+  { value: 'game', label: 'Игры' }, { value: 'music', label: 'Музыка' }, { value: 'diagnosis', label: 'Диагнозы' }, { value: 'city', label: 'Города' }, { value: 'animal', label: 'Животные' }, { value: 'book', label: 'Книги' },
   { value: 'danetki', label: 'Данетки' }, { value: 'connections', label: 'Связи' },
 ]
 const MODE_LABEL = Object.fromEntries(MODES.map((mode) => [mode.value, mode.label])) as Record<ContentMode, string>
@@ -802,6 +802,16 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Среда', ['habitats']],
       ['Ареал', ['animalContinents']],
       ['Питание', ['diets']],
+    ],
+    book: [
+      ['Автор', ['bookAuthors']],
+      ['Страна', ['bookCountry']],
+      ['Язык оригинала', ['bookOriginalLanguage']],
+      ['Год публикации', ['bookPublicationYear']],
+      ['Жанры', ['bookGenres']],
+      ['Персонажи', ['bookMainCharacters']],
+      ['Экранизации', ['bookAdaptationYears']],
+      ['Премии', ['bookAwards']],
     ],
     danetki: [
       ['Условие', ['condition']],
@@ -2782,6 +2792,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'bodyCoverings', 'habitats', 'animalContinents', 'diets', 'locomotion', 'reproduction', 'legCount', 'bodyMassKg', 'soundUrl', 'silhouetteUrl', 'rangeMapUrl', 'mediaAttribution'],
+  book: ['bookAuthors', 'bookCountry', 'bookOriginalLanguage', 'bookPublicationYear', 'bookGenres', 'bookGenresRaw', 'isPartOfSeries', 'hasAdaptation', 'bookAdaptationYears', 'bookAdaptationCount', 'hasAwards', 'bookAwards', 'bookMainCharacters', 'bookCoverSourceUrl'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['locale', 'difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'popularityScore'],
 }

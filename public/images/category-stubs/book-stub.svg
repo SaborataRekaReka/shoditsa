@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Открытая книга в библиотеке">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2c211a"/><stop offset="1" stop-color="#705039"/></linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4ead4"/><stop offset="1" stop-color="#d9c39f"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-opacity=".35"/></filter>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g opacity=".18" fill="#f3ddad"><circle cx="90" cy="82" r="2"/><circle cx="692" cy="115" r="3"/><circle cx="136" cy="488" r="3"/><circle cx="650" cy="468" r="2"/></g>
+  <g filter="url(#shadow)" transform="translate(92 135)">
+    <path d="M308 65C230 8 121 12 40 50v309c91-34 190-22 268 42z" fill="url(#paper)" stroke="#261c16" stroke-width="9"/>
+    <path d="M308 65c78-57 187-53 268-15v309c-91-34-190-22-268 42z" fill="url(#paper)" stroke="#261c16" stroke-width="9"/>
+    <path d="M308 66v333" stroke="#a47b54" stroke-width="8"/>
+    <g stroke="#8e755b" stroke-width="7" stroke-linecap="round" opacity=".65"><path d="M88 111h153M88 151h175M88 191h134M88 231h166M88 271h147"/><path d="M372 111h153M350 151h175M371 191h134M350 231h166M369 271h147"/></g>
+    <path d="M48 360c90-24 184-9 260 41 76-50 170-65 260-41" fill="none" stroke="#b98a55" stroke-width="16"/>
+  </g>
+</svg>

@@ -529,6 +529,7 @@ describe('server hint options', () => {
       music: { countries: ['KZ'] },
       diagnosis: { bodySystems: ['Нервная система'] },
       animal: { taxonomicClass: 'Млекопитающие' },
+      book: { bookAuthors: ['Автор'] },
     } as const
 
     for (const mode of CATALOG_GUESS_MODE_IDS) {

@@ -9,7 +9,7 @@ import type {
   FriendsRoomSnapshot,
   FriendsRoomSummary,
   DifficultyKey,
-  CatalogGuessModeId,
+  PlayableCatalogGuessModeId,
   TitleItem,
 } from '@shoditsa/contracts'
 import {
@@ -64,7 +64,7 @@ const FRIENDS_ROOM_PRESENCE_SECONDS = 35
 const roomCapacity = (gameType: FriendsRoomGameType) => gameType === 'danetki' ? FRIENDS_ROOM_DANETKI_CAPACITY : FRIENDS_ROOM_CAPACITY
 const connectedMemberCondition = () => sql`${friendsRoomMembers.lastSeenAt} >= now() - (${FRIENDS_ROOM_PRESENCE_SECONDS} * interval '1 second')`
 
-const modePrompt: Record<CatalogGuessModeId, string> = {
+const modePrompt: Record<PlayableCatalogGuessModeId, string> = {
   movie: 'Какой фильм соответствует этим подсказкам?',
   series: 'Какой сериал соответствует этим подсказкам?',
   anime: 'Какое аниме соответствует этим подсказкам?',
@@ -191,7 +191,7 @@ const hostRoom = async (tx: Transaction, roomId: string, userId: string) => {
 
 const roomPacks = (room: RoomRow) => normalizeFriendsRoomPacks(
   Array.isArray(room.packs) ? room.packs as FriendsRoomPackSelection[] : null,
-  room.mode as CatalogGuessModeId,
+  room.mode as PlayableCatalogGuessModeId,
 )
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
@@ -426,7 +426,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     danetkiSessionId: room.danetkiSessionId,
     danetkiLaunchCost,
     danetkiLaunch: room.danetkiLaunch,
-    mode: room.mode as CatalogGuessModeId,
+    mode: room.mode as PlayableCatalogGuessModeId,
     packs,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
     roundsTotal: room.roundsTotal,
@@ -453,7 +453,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     })),
     round: round ? {
       position: round.position,
-      mode: item?.mode ?? packs[0].mode,
+      mode: (item?.mode ?? packs[0].mode) as PlayableCatalogGuessModeId,
       variant: round.packVariant,
       prompt: round.prompt,
       hints: Array.isArray(round.hints) ? round.hints.filter((entry): entry is string => typeof entry === 'string') : [],
@@ -530,7 +530,7 @@ export const previewFriendsRoom = async (db: Database, code: string) => {
     danetkiLaunchCost: room.gameType === 'danetki' && room.danetkiLaunch.kind !== 'daily'
       ? await getNextDanetkiRoomCost(db, room.ownerUserId, 'group')
       : 0,
-    mode: room.mode as CatalogGuessModeId,
+    mode: room.mode as PlayableCatalogGuessModeId,
     packs: roomPacks(room),
     players: members.length,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
@@ -568,7 +568,7 @@ export const listFriendsRooms = async (db: Database, userId: string): Promise<Fr
     id: room.id,
     code: room.code,
     gameType: room.gameType as FriendsRoomGameType,
-    mode: room.mode as CatalogGuessModeId,
+    mode: room.mode as PlayableCatalogGuessModeId,
     packs: roomPacks(room),
     players: playerCounts.get(room.id) ?? 0,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
@@ -681,7 +681,7 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
       }
     }
     const packs = requestedPacks
-      ? normalizeFriendsRoomPacks(requestedPacks, room.mode as CatalogGuessModeId)
+      ? normalizeFriendsRoomPacks(requestedPacks, room.mode as PlayableCatalogGuessModeId)
       : requestedMode
         ? [defaultFriendsRoomPack(requestedMode)]
         : null

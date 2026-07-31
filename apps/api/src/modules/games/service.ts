@@ -240,6 +240,18 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
     ])
   }
 
+  if (answer.mode === 'book') {
+    return presentInfoCandidates([
+      infoListCandidate('book_authors', 'Автор', answer.bookAuthors ?? [], 2),
+      infoScalarCandidate('book_country', 'Страна', answer.bookCountry),
+      infoScalarCandidate('book_language', 'Язык оригинала', answer.bookOriginalLanguage),
+      infoListCandidate('book_genres', 'Жанры', answer.bookGenres ?? [], 3),
+      infoListCandidate(null, 'Главные персонажи', answer.bookMainCharacters ?? [], 3),
+      infoListCandidate(null, 'Годы экранизаций', (answer.bookAdaptationYears ?? []).map(String), 3),
+      infoListCandidate(null, 'Литературные премии', answer.bookAwards ?? [], 2),
+    ])
+  }
+
   if (answer.mode === 'anime') {
     return presentInfoCandidates([
       answer.animeKind ? infoScalarCandidate('anime_kind', 'Формат', answer.animeKind) : null,
@@ -381,6 +393,9 @@ export const publicCard = (item: TitleItem) => ({
     facts: _privateFacts,
     description: _privateDescription,
     shortDescription: _privateShortDescription,
+    bookMainCharacters: _privateBookMainCharacters,
+    bookAdaptationYears: _privateBookAdaptationYears,
+    bookAwards: _privateBookAwards,
     ...publicItem
   }) => publicItem)(item),
   titleOriginal: item.titleOriginal ?? '',

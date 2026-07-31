@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { CatalogGuessModeId, TitleItem } from '@shoditsa/contracts'
+import type { PlayableCatalogGuessModeId, TitleItem } from '@shoditsa/contracts'
 import { scoreFriendsRoomGuess } from '../src/modules/friends-room/scoring.js'
 
-const sharedByMode: Record<CatalogGuessModeId, Partial<TitleItem>> = {
+const sharedByMode: Record<PlayableCatalogGuessModeId, Partial<TitleItem>> = {
   movie: { year: 2014, countries: ['Россия'], genres: ['драма'], directors: [{ nameRu: 'Режиссёр', nameOriginal: '' }] },
   series: { year: 2014, countries: ['Россия'], genres: ['драма'], seasonsCount: 3, showrunners: [{ nameRu: 'Шоураннер', nameOriginal: '' }] },
   anime: { year: 2014, genres: ['драма'], studios: ['Studio A'], animeKind: 'TV', episodes: 24 },
@@ -13,7 +13,7 @@ const sharedByMode: Record<CatalogGuessModeId, Partial<TitleItem>> = {
   animal: { taxonomicClass: 'Млекопитающие', animalOrder: 'Хищные', animalFamily: 'Кошачьи', habitats: ['Саванна'], animalContinents: ['Африка'], bodyMassKg: 100 },
 }
 
-const title = (mode: CatalogGuessModeId, id: string): TitleItem => ({
+const title = (mode: PlayableCatalogGuessModeId, id: string): TitleItem => ({
   id,
   mode,
   titleRu: id,
@@ -29,7 +29,7 @@ describe('friends room weighted scoring', () => {
     expect(scoreFriendsRoomGuess({ answer, guess: answer, elapsedSeconds: 30, answerTimeSeconds: 30 }).points).toBe(700)
   })
 
-  it.each(Object.keys(sharedByMode) as CatalogGuessModeId[])('awards bounded partial points for matching %s attributes', (mode) => {
+  it.each(Object.keys(sharedByMode) as PlayableCatalogGuessModeId[])('awards bounded partial points for matching %s attributes', (mode) => {
     const result = scoreFriendsRoomGuess({
       answer: title(mode, `${mode}-answer`),
       guess: title(mode, `${mode}-guess`),

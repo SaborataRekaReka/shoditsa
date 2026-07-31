@@ -84,7 +84,7 @@ const sourceChecks = [
       ['native SEO disclosure', /<details\s+className="hub-guide"[^>]*>/],
       ['HTML-resident game copy', /content\.paragraphs\.map/],
       ['useful nested FAQ disclosure', /ticket-dossier__faq[^]*content\.faq\.map/],
-      ['manifest-driven game guide icons', /satisfies\s+Record<PlayableModeId,\s*LucideIcon>/],
+      ['manifest-driven game guide icons', /satisfies\s+Record<SeoGameMode,\s*LucideIcon>/],
       ['shared native artifact disclosure', /function GameArtifactSeoDetails[^]*artifact-dossier ticket-dossier/],
       ['compact nested long-form disclosure', /ticket-dossier__more[^]*content\.paragraphs\.map/],
       ['presentation-driven artifact language', /GAME_GUIDE_PRESENTATION\[mode\]/],

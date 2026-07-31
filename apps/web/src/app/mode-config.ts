@@ -9,7 +9,7 @@ export type ModeConfig = {
   daily: string
   lower: string
   searchPlaceholder: string
-  dataFile: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals'
+  dataFile: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books'
   emptyArticle: 'любой' | 'любого'
 }
 
@@ -101,6 +101,17 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     searchPlaceholder: 'Найти животное…',
     dataFile: 'animals',
     emptyArticle: 'любого',
+  },
+  book: {
+    title: 'Книги',
+    plural: 'Книги',
+    subject: 'книгу',
+    subjectGenitive: 'книги',
+    daily: 'Книга',
+    lower: 'книги',
+    searchPlaceholder: 'Найти книгу…',
+    dataFile: 'books',
+    emptyArticle: 'любой',
   },
 }
 

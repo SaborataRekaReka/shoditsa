@@ -134,7 +134,7 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
 
   useEffect(() => {
     if (!enabled) return
-    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; cityCount?: number; musicCount?: number; diagnosisCount?: number; animalCount?: number }>('./data/source.json')
+    fetchJsonCached<{ movieCount?: number; seriesCount?: number; animeCount?: number; gameCount?: number; cityCount?: number; musicCount?: number; diagnosisCount?: number; animalCount?: number; bookCount?: number }>('./data/source.json')
       .then((source) => {
         setTitleCounts((current) => ({
           movie: Number.isFinite(source.movieCount) ? source.movieCount! : current.movie,
@@ -145,6 +145,7 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
           music: Number.isFinite(source.musicCount) ? source.musicCount! : current.music,
           diagnosis: Number.isFinite(source.diagnosisCount) ? source.diagnosisCount! : current.diagnosis,
           animal: Number.isFinite(source.animalCount) ? source.animalCount! : current.animal,
+          book: Number.isFinite(source.bookCount) ? source.bookCount! : current.book,
         }))
 
         const sourceSalt = toIntegerOrNull((source as { dailySalt?: number }).dailySalt)

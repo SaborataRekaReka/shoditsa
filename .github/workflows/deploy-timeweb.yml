@@ -40,6 +40,7 @@ jobs:
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-import-game-hints.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-import-kpop-special.js
           docker run --rm "shoditsa-api:${GITHUB_SHA}" test -f /app/apps/api/dist/content-migrate-media.js
+          docker run --rm "shoditsa-api:${GITHUB_SHA}" node scripts/diagnostics/verify-game-mode-release.mjs --mode=book --data-dir=books --source=/app/release-content/libraries --expected=277 --min-playable=277 --criteria=bookAuthors,bookCountry,bookOriginalLanguage,bookPublicationYear,bookGenres,isPartOfSeries,hasAdaptation,bookAdaptationCount,hasAwards --min-criteria=6 --require-poster --strict-aliases
           docker save "shoditsa-api:${GITHUB_SHA}" | gzip -1 > release-api-image.tar.gz
           test -s release-api-image.tar.gz
       - name: Package web release
