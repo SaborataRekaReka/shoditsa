@@ -163,6 +163,7 @@ const applyPaymentState = async (
   order: Order,
   product: Product,
   state: Pick<VerifiedPaymentState, 'status' | 'occurredAt'>,
+  touchPendingUpdatedAt = true,
 ) => {
   if (['refunded', 'chargeback'].includes(order.status)) return order.status
   if (state.status === 'paid') {
@@ -197,7 +198,7 @@ const applyPaymentState = async (
   await tx.update(paymentOrders).set({
     status: state.status,
     providerStatus: state.status,
-    updatedAt: state.occurredAt,
+    ...(state.status !== 'pending' || touchPendingUpdatedAt ? { updatedAt: state.occurredAt } : {}),
     ...(['failed', 'canceled', 'expired'].includes(state.status) ? { closedAt: state.occurredAt } : {}),
   }).where(eq(paymentOrders.id, order.id))
   return state.status
@@ -258,7 +259,7 @@ const applyReconciledPaymentState = async (
   if (joined.order.status !== 'pending') return { joined, status: joined.order.status }
   const mismatch = providerStateError(joined.order, state)
   if (mismatch) throw mismatch
-  const status = await applyPaymentState(tx, joined.order, joined.product, state)
+  const status = await applyPaymentState(tx, joined.order, joined.product, state, touchPendingUpdatedAt)
   await upsertCommerceSubscription(tx, joined.order.provider, joined.order, joined.product, state)
   await tx.update(paymentOrders).set({
     metadata: sql`${paymentOrders.metadata} || ${JSON.stringify({ lastReconciledAt: now.toISOString() })}::jsonb`,
