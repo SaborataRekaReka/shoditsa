@@ -5,7 +5,7 @@ import {
   Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
   Download, FileClock, FileJson, Filter, Grid2X2, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
   LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
-  RotateCcw, Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound,
+  RotateCcw, Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
 import { CATALOG_HINT_COPY, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
@@ -827,6 +827,45 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
   }).filter((entry) => entry.value).slice(0, 9)
 }
 
+const ANIMAL_SOUND_TYPE_LABEL: Record<string, string> = {
+  'animal-vocalization': 'Голос животного',
+  call: 'Позывка',
+  growl: 'Рычание',
+  roar: 'Рык',
+  song: 'Пение',
+}
+
+const audioAssetUrl = (value: unknown) => {
+  const url = previewValue(value)
+  return !url || /^(?:https?:|blob:|data:)/i.test(url) ? url : publicAssetUrl(url)
+}
+
+function AnimalAudioPreview({ payload, compact = false }: { payload: Record<string, unknown>; compact?: boolean }) {
+  const soundUrl = audioAssetUrl(payload.soundUrl)
+  const soundType = previewValue(payload.soundType)
+  const attribution = record(payload.soundAttribution)
+  const author = previewValue(attribution.author)
+  const credit = previewValue(attribution.credit)
+  const license = previewValue(attribution.license)
+  const sourcePageUrl = previewValue(attribution.sourcePageUrl)
+  const licenseUrl = previewValue(attribution.licenseUrl)
+  const credits = [author, credit].filter((value, index, values) => value && values.indexOf(value) === index)
+
+  return <section className={`admin-animal-audio${compact ? ' admin-animal-audio--compact' : ''}${soundUrl ? '' : ' is-empty'}`}>
+    <header>
+      <div><Volume2 /><span><strong>Запись голоса</strong><small>{soundUrl ? ((ANIMAL_SOUND_TYPE_LABEL[soundType] ?? soundType) || 'Звук животного') : 'Для этого животного запись пока не добавлена'}</small></span></div>
+      <span>{soundUrl ? 'Можно слушать' : 'Нет записи'}</span>
+    </header>
+    {soundUrl && <>
+      <audio key={soundUrl} controls preload="metadata" src={soundUrl}>Ваш браузер не поддерживает воспроизведение аудио.</audio>
+      {(credits.length > 0 || license || sourcePageUrl) && <footer>
+        <span>{credits.join(' · ')}{credits.length > 0 && license ? ' · ' : ''}{licenseUrl ? <a href={licenseUrl} target="_blank" rel="noreferrer noopener">{license}</a> : license}</span>
+        {sourcePageUrl && <a href={sourcePageUrl} target="_blank" rel="noreferrer noopener"><ExternalLink />Источник записи</a>}
+      </footer>}
+    </>}
+  </section>
+}
+
 function ContentPreviewModal({
   items,
   currentId,
@@ -905,7 +944,7 @@ function ContentPreviewModal({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null
-      if (target?.matches('input, textarea, select, [contenteditable="true"]') || event.metaKey || event.ctrlKey || event.altKey) return
+      if (target?.matches('input, textarea, select, audio, [contenteditable="true"]') || event.metaKey || event.ctrlKey || event.altKey) return
       if (event.key === 'Escape') onClose()
       if (event.key === 'ArrowLeft') move(-1)
       if (event.key === 'ArrowRight') move(1)
@@ -969,6 +1008,7 @@ function ContentPreviewModal({
             {!!warnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Проверьте карточку</strong><span>{warnings.join(' • ')}</span></div>}
             <div className="admin-attempt-fields">{fields.length ? fields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
           </section>
+          {mode === 'animal' && <AnimalAudioPreview payload={payload} compact />}
           <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{hint}</p></article></section>
           <ContentCommentsPreview payload={payload} mode={mode} />
           <section className={`admin-content-preview-review is-${reviewStatus}`}>
@@ -1103,6 +1143,7 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
         <main>
           {data.schema.groups.filter((group) => group.key !== 'media').map(renderGroup)}
           {mode === 'game' && <ContentCommentsEditor payload={payload} onChange={(comments) => setPayload((current) => ({ ...current, comments }))} />}
+          {mode === 'animal' && <AnimalAudioPreview payload={payload} />}
           {data.schema.groups.filter((group) => group.key === 'media').map(renderGroup)}
           {extraFields.length > 0 && <details className="admin-extra-fields"><summary>Дополнительные поля <span>{extraFields.length}</span><ChevronDown /></summary><div className="admin-form-grid">{extraFields.map((field) => <FieldEditor key={field} name={field} value={payload[field]} onChange={(value) => setPayload((current) => ({ ...current, [field]: value }))} />)}</div></details>}
         </main>
