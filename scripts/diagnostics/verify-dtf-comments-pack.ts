@@ -9,6 +9,7 @@ import {
   contentRevisions,
   createDatabase,
 } from '@shoditsa/database'
+import { isAllowedInRegularGame } from '@shoditsa/game-core'
 import { getPack } from '../../apps/api/src/modules/packs/service.js'
 import { loadPackSessionPrompt } from '../../apps/api/src/modules/packs/prompt-runtime.js'
 import { DTF_COMMENTS_PACK_ID } from '../../apps/api/src/modules/packs/policy.js'
@@ -48,7 +49,13 @@ try {
     .where(eq(contentPackEntries.packId, DTF_COMMENTS_PACK_ID))
     .orderBy(asc(contentPackEntries.position))
   assert.equal(answers.length, 20)
-  assert.ok(answers.every((answer) => answer.allowedInGame))
+  // Pack access is controlled by the enabled entry and the pack policy. This
+  // column only describes eligibility for the regular pool; canonical cards
+  // with a limited status may still be intentional answers in a special.
+  assert.ok(answers.every((answer) => (
+    answer.allowedInGame === isAllowedInRegularGame(answer.payload as TitleItem)
+  )))
+  assert.ok(answers.some((answer) => answer.allowedInGame))
   assert.ok(answers.every((answer) => !answer.itemId.startsWith('promo:')))
   assert.ok(answers.every((answer) => {
     const comments = (answer.payload as TitleItem).comments ?? []
