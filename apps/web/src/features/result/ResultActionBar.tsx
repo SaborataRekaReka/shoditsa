@@ -59,13 +59,6 @@ export function ResultActionBar({
   const replayShortageValue = Math.max(0, Math.trunc(replayShortage))
   const replayBalance = Math.max(0, replayCostValue - replayShortageValue)
   const paidReplay = Boolean(onReplay)
-  const replayButtonLabel = replayPending
-    ? 'Запускаем новую игру…'
-    : replayShortageValue > 0
-      ? `Не хватает ${formatTickets(replayShortageValue)}`
-      : replayAccessSource === 'club'
-        ? 'Сыграть ещё раз · по клубу'
-        : `Сыграть ещё раз · ${formatTickets(replayCostValue)}`
   const confirmReplay = () => {
     if (!onReplay || replayPending || replayShortageValue > 0) return
     onReplay()
@@ -89,9 +82,14 @@ export function ResultActionBar({
     </div>
     <div className="result-after-actions result-card__wide">
       {afterLabel && <span className="result-after-actions__label">{afterLabel}</span>}
-      {showReplayGate && <ControlButton className="result-replay" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending}>
+      {showReplayGate && <ControlButton
+        className="result-replay"
+        onClick={() => setReplayNoticeOpen(true)}
+        disabled={replayPending}
+        aria-label={replayPending ? 'Запускаем новую игру' : 'Сыграть ещё раз'}
+      >
         <RotateCcw />
-        <span>{paidReplay ? replayButtonLabel : 'Сыграть ещё раз'}</span>
+        <span>{replayPending ? 'Запускаем…' : 'Играть ещё'}</span>
       </ControlButton>}
       {onChallenge && <ControlButton className="result-challenge" onClick={onChallenge}>
         <Swords />
