@@ -31,7 +31,7 @@ test('builds a safe playable card and removes title leakage', () => {
   assert.equal(item.hasAdaptation, true)
 })
 
-test('never emits a contradictory adaptation count', () => {
+test('distinguishes an unknown adaptation count from zero', () => {
   const base = {
     'ID книги': 'book-adaptation-test',
     'Название': { 'На русском': 'Книга', 'На языке оригинала': 'Book' },
@@ -41,7 +41,13 @@ test('never emits a contradictory adaptation count', () => {
 
   const declared = buildBookItem(base, 0)
   assert.equal(declared.hasAdaptation, true)
-  assert.equal(declared.bookAdaptationCount, 1)
+  assert.equal(declared.bookAdaptationCount, null)
+  assert.deepEqual(declared.dataQuality.missingFields, ['bookAdaptationYears', 'bookAdaptationCount'])
+
+  const dated = buildBookItem({ ...base, 'Экранизации': { 'Есть': 'да', 'Годы основных экранизаций': [2010, 2020] } }, 0)
+  assert.equal(dated.hasAdaptation, true)
+  assert.equal(dated.bookAdaptationCount, 2)
+  assert.deepEqual(dated.dataQuality.missingFields, [])
 
   const absent = buildBookItem({ ...base, 'Экранизации': { 'Есть': 'нет', 'Годы основных экранизаций': [] } }, 0)
   assert.equal(absent.hasAdaptation, false)

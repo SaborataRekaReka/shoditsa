@@ -26,12 +26,19 @@ const isPlayerCategory = (value: string) => {
     || text.includes('кооп')
 }
 
+const contextualBookMatchValue = (hintKey: string, value: string) => {
+  if (hintKey === 'book_series') return value === 'Да' ? 'Входит в цикл' : value === 'Нет' ? 'Не входит в цикл' : value
+  if (hintKey === 'book_adaptation') return value === 'Да' ? 'Есть экранизации' : value === 'Нет' ? 'Нет экранизаций' : value
+  if (hintKey === 'book_awards') return value === 'Да' ? 'Есть премии' : value === 'Нет' ? 'Нет премий' : value
+  return value
+}
+
 export const collectMatchSummaryTags = (attempts: Attempt[], mode: TitleMode): MatchSummaryTag[] => {
   const tags: MatchSummaryTag[] = []
   const seenValues = new Set<string>()
 
   const add = (hintKey: string, label: string, value: string) => {
-    const cleanValue = value.trim()
+    const cleanValue = (mode === 'book' ? contextualBookMatchValue(hintKey, value) : value).trim()
     const normalizedValue = normalize(cleanValue)
     if (!normalizedValue || cleanValue === '—' || cleanValue === 'Нет данных' || seenValues.has(normalizedValue)) return
     seenValues.add(normalizedValue)

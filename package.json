@@ -90,6 +90,8 @@
     "data:media:animals:sounds": "node scripts/animals/enrich-sounds.mjs",
     "data:test:animals": "node --test scripts/animals/model.test.mjs",
     "data:test:books": "node --test scripts/books/build-library.test.mjs",
+    "data:audit:book-hints": "node scripts/books/audit-plot-hints.mjs",
+    "data:test:book-hints": "node --test scripts/books/audit-plot-hints.test.mjs",
     "data:enrich:games": "node scripts/games/enrich-catalog.mjs",
     "data:enrich:games:displayed-fields": "node scripts/games/enrich-displayed-fields.mjs",
     "data:enrich:games:displayed-fields:fetch": "node scripts/games/enrich-displayed-fields.mjs --fetch",

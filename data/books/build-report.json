@@ -1,12 +1,15 @@
 {
-  "generatedAt": "2026-07-31T15:01:24.332Z",
+  "generatedAt": "2026-08-01T07:17:19.455Z",
   "source": "data/books/source/books_enriched_full.json",
   "total": 277,
   "playable": 277,
   "withCovers": 277,
   "withPlotHints": 277,
+  "manualPlotHints": 277,
   "withCharacters": 257,
   "withAdaptations": 229,
+  "withKnownAdaptationCount": 214,
+  "withUnknownAdaptationCount": 15,
   "withAwards": 68,
   "normalizedGenres": {
     "Биографическое": 6,

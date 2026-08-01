@@ -409,6 +409,7 @@ describe('deterministic rules', () => {
     const books = JSON.parse(readFileSync(new URL('../../../public/data/libraries/books/items.json', import.meta.url), 'utf8')) as TitleItem[]
     const nineteenEightyFour = books.find((item) => item.id === 'book-167')!
     const harryPotter = books.find((item) => item.id === 'book-182')!
+    const shahnameh = books.find((item) => item.id === 'book-014')!
     const hints = compareTitles(nineteenEightyFour, harryPotter)
 
     expect(books).toHaveLength(277)
@@ -422,6 +423,9 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'book_adaptation_count')).toMatchObject({ status: 'close', direction: 'down' })
     expect(hints.find((hint) => hint.key === 'book_awards')).toMatchObject({ status: 'miss' })
     expect(compareTitles(harryPotter, harryPotter).every((hint) => hint.status === 'match')).toBe(true)
+    expect(shahnameh).toMatchObject({ hasAdaptation: true, bookAdaptationCount: null, bookAdaptationYears: [] })
+    expect(compareTitles(shahnameh, shahnameh).find((hint) => hint.key === 'book_adaptation')).toMatchObject({ status: 'match' })
+    expect(compareTitles(shahnameh, shahnameh).find((hint) => hint.key === 'book_adaptation_count')).toBeUndefined()
   })
   it('requires an explicit opt-in before including promo cards in the regular games pool', () => {
     const regular = {

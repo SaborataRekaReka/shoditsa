@@ -39,4 +39,21 @@ describe('match summary', () => {
       'windows',
     ])
   })
+
+  it('keeps book boolean matches distinct and understandable without field labels', () => {
+    const attempts = [{
+      titleId: 'book:guess',
+      hints: [
+        { key: 'book_series', label: 'Часть цикла', value: 'Нет', status: 'match', direction: null },
+        { key: 'book_adaptation', label: 'Экранизация', value: 'Нет', status: 'match', direction: null },
+        { key: 'book_awards', label: 'Премии', value: 'Нет', status: 'match', direction: null },
+      ],
+    }] as Attempt[]
+
+    expect(collectMatchSummaryTags(attempts, 'book').map(({ value }) => value)).toEqual([
+      'Не входит в цикл',
+      'Нет экранизаций',
+      'Нет премий',
+    ])
+  })
 })

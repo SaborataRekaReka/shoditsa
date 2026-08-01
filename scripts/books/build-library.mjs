@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url'
 
 const ROOT = process.cwd()
 const CANONICAL_SOURCE = path.join(ROOT, 'data', 'books', 'source', 'books_enriched_full.json')
+const MANUAL_HINTS_SOURCE = path.join(ROOT, 'data', 'books', 'manual', 'book-plot-hints-2026-07-31.json')
 const GENERATED_SOURCE = path.join(ROOT, 'public', 'data', 'books.generated.json')
 const REPORT_PATH = path.join(ROOT, 'data', 'books', 'build-report.json')
 
@@ -17,6 +18,25 @@ const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'))
 const writeJson = (filePath, value) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true })
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
+}
+
+const loadManualPlotHints = (filePath) => {
+  if (!fs.existsSync(filePath)) return new Map()
+  const document = readJson(filePath)
+  const entries = Array.isArray(document) ? document : document?.items
+  if (!Array.isArray(entries)) throw new Error(`Book plot hint overlay must contain an items array: ${filePath}`)
+  if (document?.count != null && Number(document.count) !== entries.length) {
+    throw new Error(`Book plot hint overlay declares ${document.count} items, got ${entries.length}`)
+  }
+  const hints = new Map()
+  for (const entry of entries) {
+    const id = String(entry?.id ?? '').trim()
+    const plotHint = String(entry?.plotHint ?? '').trim()
+    if (!id || !plotHint) throw new Error(`Book plot hint overlay contains an invalid row: ${JSON.stringify(entry)}`)
+    if (hints.has(id)) throw new Error(`Book plot hint overlay contains duplicate ID ${id}`)
+    hints.set(id, plotHint)
+  }
+  return hints
 }
 
 const compact = (values) => [...new Set(values.map((value) => String(value ?? '').trim()).filter(Boolean))]
@@ -147,7 +167,9 @@ export const buildBookItem = (raw, index) => {
     dataQuality: {
       source: ['user-provided-books-enriched-full'],
       verified: false,
-      missingFields: [],
+      missingFields: hasAdaptation && adaptationYears.length === 0
+        ? ['bookAdaptationYears', 'bookAdaptationCount']
+        : [],
     },
     bookRank: index + 1,
     bookAuthors: compact([author]),
@@ -159,10 +181,9 @@ export const buildBookItem = (raw, index) => {
     isPartOfSeries: normalizeText(raw?.['Часть цикла']) === 'да',
     hasAdaptation,
     bookAdaptationYears: adaptationYears,
-    // Some source cards only confirm that an adaptation exists without listing
-    // every release year. Preserve that fact without rendering the impossible
-    // combination "adaptation: yes / count: 0" in the comparison grid.
-    bookAdaptationCount: hasAdaptation ? Math.max(1, adaptationYears.length) : 0,
+    // The source may confirm an adaptation without providing its release years.
+    // That is an unknown count, not zero and not an invented lower bound of one.
+    bookAdaptationCount: adaptationYears.length ? adaptationYears.length : hasAdaptation ? null : 0,
     hasAwards: awards.length > 0,
     bookAwards: awards,
     bookMainCharacters: characters,
@@ -179,7 +200,8 @@ const validate = (items) => {
     ids.add(item.id)
     if (!item.posterUrl) issues.push(`${item.id}: missing cover`)
     if (!item.plotHint) issues.push(`${item.id}: missing plot hint`)
-    if (item.hasAdaptation && item.bookAdaptationCount < 1) issues.push(`${item.id}: adaptation is declared but count is zero`)
+    if (item.hasAdaptation && item.bookAdaptationYears.length === 0 && item.bookAdaptationCount !== null) issues.push(`${item.id}: adaptation count must be unknown when release years are missing`)
+    if (item.hasAdaptation && item.bookAdaptationYears.length > 0 && item.bookAdaptationCount !== item.bookAdaptationYears.length) issues.push(`${item.id}: adaptation count does not match release years`)
     if (!item.hasAdaptation && item.bookAdaptationCount !== 0) issues.push(`${item.id}: adaptation count exists without an adaptation`)
     const normalizedHint = normalizeText(item.plotHint)
     for (const title of [item.titleRu, item.titleOriginal]) {
@@ -201,7 +223,14 @@ const main = () => {
 
   const raw = readJson(CANONICAL_SOURCE)
   if (!Array.isArray(raw)) throw new Error('Book source root must be an array')
-  const items = raw.map(buildBookItem)
+  const manualPlotHints = loadManualPlotHints(MANUAL_HINTS_SOURCE)
+  const sourceIds = new Set(raw.map((entry) => String(entry?.['ID книги'] ?? '').trim()))
+  const unknownManualIds = [...manualPlotHints.keys()].filter((id) => !sourceIds.has(id))
+  if (unknownManualIds.length) throw new Error(`Book plot hint overlay contains unknown IDs: ${unknownManualIds.join(', ')}`)
+  const items = raw.map(buildBookItem).map((item) => {
+    const plotHint = manualPlotHints.get(item.id)
+    return plotHint ? { ...item, description: plotHint, plotHint } : item
+  })
   const issues = validate(items)
   if (issues.length) throw new Error(`Book library validation failed:\n${issues.slice(0, 30).join('\n')}`)
 
@@ -213,8 +242,11 @@ const main = () => {
     playable: items.filter((item) => item.allowedInGame && item.contentStatus === 'ready').length,
     withCovers: items.filter((item) => item.posterUrl).length,
     withPlotHints: items.filter((item) => item.plotHint).length,
+    manualPlotHints: manualPlotHints.size,
     withCharacters: items.filter((item) => item.bookMainCharacters.length).length,
     withAdaptations: items.filter((item) => item.hasAdaptation).length,
+    withKnownAdaptationCount: items.filter((item) => item.hasAdaptation && item.bookAdaptationCount != null).length,
+    withUnknownAdaptationCount: items.filter((item) => item.hasAdaptation && item.bookAdaptationCount == null).length,
     withAwards: items.filter((item) => item.hasAwards).length,
     normalizedGenres: Object.fromEntries([...new Set(items.flatMap((item) => item.bookGenres))].sort().map((genre) => [genre, items.filter((item) => item.bookGenres.includes(genre)).length])),
   })

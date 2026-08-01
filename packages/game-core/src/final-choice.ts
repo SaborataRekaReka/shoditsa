@@ -195,7 +195,13 @@ export const FINAL_CHOICE_MODE_CONFIG: Record<TitleMode, ModeConfig> = {
       fact('origin', ['book_country', 'book_language'], 'categorical', 'Происхождение', (item) => compact([item.bookCountry, item.bookOriginalLanguage]) || null),
       fact('genres', ['book_genres'], 'categorical', 'Жанры', (item) => compact(item.bookGenres ?? [], 3) || null),
       fact('publication', ['book_year'], 'numeric', 'Год публикации', (item) => item.bookPublicationYear != null ? String(item.bookPublicationYear) : null),
-      fact('adaptations', ['book_adaptation', 'book_adaptation_count'], 'additional', 'Экранизации', (item) => item.hasAdaptation == null ? null : item.hasAdaptation ? `${item.bookAdaptationCount ?? 0} экранизаций` : 'Нет экранизаций'),
+      fact('adaptations', ['book_adaptation', 'book_adaptation_count'], 'additional', 'Экранизации', (item) => item.hasAdaptation == null
+        ? null
+        : !item.hasAdaptation
+          ? 'Нет экранизаций'
+          : item.bookAdaptationCount == null
+            ? 'Экранизации есть, количество неизвестно'
+            : `${item.bookAdaptationCount} экранизаций`),
     ],
     weights: { origin: 1.1, genres: 1.25, publication: 1, adaptations: 0.8 },
   },

@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-08-01T06:57:30.975Z",
+  "counts": {
+    "source": 277,
+    "hints": 277,
+    "clean": 277,
+    "flagged": 0,
+    "missing": 0,
+    "nearDuplicates": 0
+  },
+  "byCode": {},
+  "nearDuplicates": [],
+  "issues": []
+}
