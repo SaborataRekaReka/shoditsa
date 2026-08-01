@@ -17,21 +17,13 @@ import { authErrorMessage } from '../auth/auth-helpers'
 import { useAuthSession } from '../auth/use-auth-session'
 import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import { AccountAccessPanel } from './AccountAccessPanel'
+import { PROFILE_TABS, type ProfileTab } from './profile-tabs'
 import { archiveItemToSavedGame, isCatalogArchiveItem, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from '../server-runtime/adapters'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import './ProfileScreen.css'
 
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const modeIcon = (mode: TitleMode) => { const Icon = MODE_PRESENTATION[mode].icon; return <Icon /> }
-
-export type ProfileTab = 'overview' | 'stats' | 'achievements' | 'settings'
-
-export const PROFILE_TABS: Array<{ id: ProfileTab; label: string }> = [
-  { id: 'overview', label: 'Обзор' },
-  { id: 'stats', label: 'Статистика' },
-  { id: 'achievements', label: 'Достижения' },
-  { id: 'settings', label: 'Настройки' },
-]
 
 const profileTabFromLocation = (): ProfileTab => {
   if (typeof window === 'undefined') return 'overview'

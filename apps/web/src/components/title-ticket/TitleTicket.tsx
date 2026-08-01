@@ -17,7 +17,7 @@ export function AdmissionTitleTicket({
   details,
   className = '',
   stubClassName = '',
-  eager = false,
+  eager = true,
 }: {
   id: string
   mode: string
@@ -39,7 +39,10 @@ export function AdmissionTitleTicket({
         src={posterUrl}
         alt=""
         aria-hidden="true"
+        width="480"
+        height="1200"
         decoding="async"
+        loading={eager ? 'eager' : 'lazy'}
         fetchPriority={eager ? 'high' : undefined}
       />
       <span>{stubLabel}</span>

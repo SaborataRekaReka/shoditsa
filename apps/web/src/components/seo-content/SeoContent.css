@@ -236,6 +236,11 @@
 .ticket-search-summary p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
 .ticket-search-summary > a { width: fit-content; margin-top: 12px; padding: 7px 10px; border: 1px solid rgba(var(--ticket-search-accent-rgb), .45); border-radius: 999px; color: var(--ticket-search-accent); display: inline-flex; align-items: center; gap: 7px; font-size: 10px; font-weight: 800; text-decoration: none; }
 .ticket-search-summary > a:hover { border-color: var(--ticket-search-accent); background: rgba(var(--ticket-search-accent-rgb), .07); }
+.ticket-search-summary__related { margin-top: 13px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px 10px; }
+.ticket-search-summary__related > span { color: var(--color-paper-muted-2); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.ticket-search-summary__related > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.ticket-search-summary__related a { padding: 5px 8px; border: 1px solid rgba(var(--ticket-search-accent-rgb), .24); border-radius: 999px; color: var(--ticket-search-accent); font-size: 9px; font-weight: 800; text-decoration: none; }
+.ticket-search-summary__related a:hover { border-color: var(--ticket-search-accent); background: rgba(var(--ticket-search-accent-rgb), .07); }
 
 .admit-ticket--dossier .admit-ticket__stub {
   background:

@@ -16,6 +16,18 @@ import { LEGAL_DOCUMENT_SLUGS } from '../../apps/web/src/features/legal/legal'
 
 const distRoot = resolve('dist')
 const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club'] as const
+const TITLE_POSTER_PATHS: Partial<Record<GameSeoContent['mode'], string>> = {
+  movie: '/images/title-posters/movie-ticket-poster.avif',
+  series: '/images/title-posters/series-ticket-poster.avif',
+  anime: '/images/title-posters/anime-ticket-poster.avif',
+  game: '/images/title-posters/game-ticket-poster.avif',
+  city: '/images/title-posters/city-ticket-poster.avif',
+  music: '/images/title-posters/music-ticket-poster.avif',
+  diagnosis: '/images/title-posters/diagnosis-ticket-poster.avif',
+  animal: '/images/title-posters/animal-ticket-poster.avif',
+  book: '/images/title-posters/book-ticket-poster-v2.avif',
+  danetki: '/images/title-posters/danetki-ticket-poster.avif',
+}
 const escapeHtml = (value: string) => value
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -38,6 +50,11 @@ const upsertCanonical = (html: string, href: string) => {
     : html.replace('</head>', `  ${tag}\n</head>`)
 }
 
+const addImagePreload = (html: string, href: string) => html.replace(
+  '</head>',
+  `  <link rel="preload" as="image" href="${escapeHtml(href)}" type="image/avif" fetchpriority="high" />\n</head>`,
+)
+
 const setJsonLd = (html: string, value: unknown) => {
   const json = JSON.stringify(value).replace(/</g, '\\u003c')
   const script = `<script type="application/ld+json" id="seo-json-ld">${json}</script>`
@@ -50,8 +67,14 @@ const renderGameLinks = (currentMode?: GameSeoContent['mode']) => INDEXABLE_GAME
   .filter((game) => game.mode !== currentMode)
   .map((game) => `<a href="${game.canonicalPath}">${escapeHtml(game.internalLinkLabel ?? game.shortName)}</a>`)
   .join('')
+const renderRelatedGameLinks = (content: GameSeoContent) => content.relatedModes?.length
+  ? `<nav class="ticket-search-summary__related" aria-label="Похожие игры"><span>Попробуйте также</span><div>${content.relatedModes.map((mode) => {
+      const related = INDEXABLE_GAME_SEO.find((game) => game.mode === mode)
+      return related ? `<a href="${related.canonicalPath}">${escapeHtml(related.internalLinkLabel ?? related.shortName)}</a>` : ''
+    }).join('')}</div></nav>`
+  : ''
 const renderSearchSummary = (content: GameSeoContent) => content.searchSummary
-  ? `<section class="ticket-search-summary ticket-search-summary--${content.mode}" aria-labelledby="search-summary-${content.mode}"><span>Играть онлайн · без спойлеров</span><h2 id="search-summary-${content.mode}">${escapeHtml(content.searchSummary.heading)}</h2><div>${content.searchSummary.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${content.searchSummary.action ? `<a href="${escapeHtml(content.searchSummary.action.href)}">${escapeHtml(content.searchSummary.action.label)}<span aria-hidden="true">↗</span></a>` : ''}</section>`
+  ? `<section class="ticket-search-summary ticket-search-summary--${content.mode}" aria-labelledby="search-summary-${content.mode}"><span>Играть онлайн · без спойлеров</span><h2 id="search-summary-${content.mode}">${escapeHtml(content.searchSummary.heading)}</h2><div>${content.searchSummary.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${content.searchSummary.action ? `<a href="${escapeHtml(content.searchSummary.action.href)}">${escapeHtml(content.searchSummary.action.label)}<span aria-hidden="true">↗</span></a>` : ''}${renderRelatedGameLinks(content)}</section>`
   : ''
 const renderHubGuideSummary = () => `<summary class="hub-guide__summary"><span class="hub-guide__summary-title"><span aria-hidden="true">▤</span><span><strong class="hub-guide__closed-label">Как устроены ежедневные игры</strong><strong class="hub-guide__open-label">Путеводитель по «Сходится!»</strong></span></span><small>формат · подсказки · все режимы</small><span class="hub-guide__summary-chevron" aria-hidden="true">⌄</span></summary>`
 
@@ -81,11 +104,16 @@ const renderLaunchControls = (content: GameSeoContent) => {
   return `<div class="game-launch-controls game-launch-controls--${content.mode} ${option ? 'has-option' : 'is-action-only'} game-launch-controls--static"><span class="game-launch-controls__action"><a class="ui-button ui-button--primary play-button game-launch-controls__play" href="${escapeHtml(content.canonicalPath)}#game">▶ Начать игру</a></span>${option}</div>`
 }
 
-const renderAdmissionTicketFallback = (content: GameSeoContent) => `<article class="admit-ticket admit-ticket--dossier" aria-labelledby="ticket-${content.mode}"><div class="admit-ticket__stub"><span>ВХОД</span><strong>ОДИН</strong><small>${escapeHtml(content.shortName)}</small><em>10 попыток</em><i></i></div><div class="admit-ticket__body"><div class="ticket-kicker"><span>Ежедневная премьера</span><i></i><small>полночный сеанс</small></div><h1 id="ticket-${content.mode}">${escapeHtml(content.mode === 'game' || content.mode === 'danetki' || content.mode === 'connections' || content.mode === 'book' ? content.heading : `Ежедневная игра: ${content.shortName.toLocaleLowerCase('ru-RU')}`)}</h1><p>${escapeHtml(content.lead)}</p>${renderLaunchControls(content)}</div>${renderArtifactDossier(content)}</article>`
+const renderPosterImage = (content: GameSeoContent, className: string) => {
+  const src = TITLE_POSTER_PATHS[content.mode]
+  return src ? `<img class="${className}" src="${src}" alt="" width="480" height="1200" decoding="async" fetchpriority="high">` : ''
+}
 
-const renderConcertTicketFallback = (content: GameSeoContent) => `<article class="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music"><div class="concert-ticket__main"><div class="concert-ticket__head"><div class="concert-ticket__brand"><span class="concert-ticket__kicker">♪ Концерт дня</span><h1 id="ticket-music">${escapeHtml(content.heading)}</h1><p class="concert-ticket__venue">Главная сцена · ежедневный сеанс</p></div><div class="concert-ticket__when"><strong>СЕГОДНЯ</strong><small>21:45</small></div></div><p class="concert-ticket__lead">${escapeHtml(content.lead)}</p><div class="concert-ticket__meta" aria-hidden="true"><span><i>GATE</i><b>10</b></span><span><i>SEAT</i><b>A15</b></span><span><i>ROW</i><b>07</b></span></div><div class="concert-ticket__barcode" aria-hidden="true"></div>${renderLaunchControls(content)}</div><div class="concert-ticket__stub" aria-hidden="true"><span class="concert-ticket__stub-kicker">Концерт дня</span><strong>Артист дня</strong><small>Главная сцена</small><em>21:45</em><span class="concert-ticket__stub-no">№ 001</span><div class="concert-ticket__barcode concert-ticket__barcode--v"></div></div>${renderArtifactDossier(content)}</article>`
+const renderAdmissionTicketFallback = (content: GameSeoContent) => `<article class="admit-ticket admit-ticket--dossier" aria-labelledby="ticket-${content.mode}"><div class="admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--${content.mode}" aria-hidden="true">${renderPosterImage(content, 'admit-ticket__stub-art')}<span>ВХОД</span><strong>ОДИН</strong><small>${escapeHtml(content.shortName)}</small><em>10 попыток</em><i></i></div><div class="admit-ticket__body"><div class="ticket-kicker"><span>Ежедневная премьера</span><i></i><small>полночный сеанс</small></div><h1 id="ticket-${content.mode}">${escapeHtml(content.mode === 'game' || content.mode === 'danetki' || content.mode === 'connections' || content.mode === 'book' ? content.heading : `Ежедневная игра: ${content.shortName.toLocaleLowerCase('ru-RU')}`)}</h1><p>${escapeHtml(content.lead)}</p>${renderLaunchControls(content)}</div>${renderArtifactDossier(content)}</article>`
 
-const renderDiagnosisChartFallback = (content: GameSeoContent) => `<article class="med-chart med-chart--dossier" aria-labelledby="ticket-diagnosis"><div class="med-chart__stub"><span class="med-chart__cross" aria-hidden="true"><i></i><i></i></span><span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № 001</small><em>СЕГОДНЯ</em></div><div class="med-chart__body"><div class="med-chart__kicker"><span>Амбулаторная карта</span><i></i><small>анонимный пациент</small></div><h1 id="ticket-diagnosis">Ежедневная игра: диагнозы</h1><p>${escapeHtml(content.lead)}</p>${renderLaunchControls(content)}</div>${renderArtifactDossier(content)}</article>`
+const renderConcertTicketFallback = (content: GameSeoContent) => `<article class="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music"><div class="concert-ticket__main"><div class="concert-ticket__head"><div class="concert-ticket__brand"><span class="concert-ticket__kicker">♪ Концерт дня</span><h1 id="ticket-music">${escapeHtml(content.heading)}</h1><p class="concert-ticket__venue">Главная сцена · ежедневный сеанс</p></div><div class="concert-ticket__when"><strong>СЕГОДНЯ</strong><small>21:45</small></div></div><p class="concert-ticket__lead">${escapeHtml(content.lead)}</p><div class="concert-ticket__meta" aria-hidden="true"><span><i>GATE</i><b>10</b></span><span><i>SEAT</i><b>A15</b></span><span><i>ROW</i><b>07</b></span></div><div class="concert-ticket__barcode" aria-hidden="true"></div>${renderLaunchControls(content)}</div><div class="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">${renderPosterImage(content, 'concert-ticket__stub-art')}<span class="concert-ticket__stub-kicker">Концерт дня</span><strong>Артист дня</strong><small>Главная сцена</small><em>21:45</em><span class="concert-ticket__stub-no">№ 001</span><div class="concert-ticket__barcode concert-ticket__barcode--v"></div></div>${renderArtifactDossier(content)}</article>`
+
+const renderDiagnosisChartFallback = (content: GameSeoContent) => `<article class="med-chart med-chart--dossier" aria-labelledby="ticket-diagnosis"><div class="med-chart__stub med-chart__stub--poster" aria-hidden="true">${renderPosterImage(content, 'med-chart__stub-art')}<span class="med-chart__cross" aria-hidden="true"><i></i><i></i></span><span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № 001</small><em>СЕГОДНЯ</em></div><div class="med-chart__body"><div class="med-chart__kicker"><span>Амбулаторная карта</span><i></i><small>анонимный пациент</small></div><h1 id="ticket-diagnosis">Ежедневная игра: диагнозы</h1><p>${escapeHtml(content.lead)}</p>${renderLaunchControls(content)}</div>${renderArtifactDossier(content)}</article>`
 
 const renderGameArtifactFallback = (content: GameSeoContent) => {
   const artifact = content.mode === 'music'
@@ -120,6 +148,7 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
   html = upsertMeta(html, 'name', 'twitter:image:alt', `${content.heading} — ${SITE_NAME}`)
   html = upsertCanonical(html, canonicalUrl)
   html = setJsonLd(html, structuredDataForSeoRoute(route, SITE_ORIGIN))
+  if ('mode' in content && TITLE_POSTER_PATHS[content.mode]) html = addImagePreload(html, TITLE_POSTER_PATHS[content.mode]!)
   html = html.replace(/<div id="root">[^]*?<\/div>\s*<noscript>/i, `<div id="root">${fallback}</div>\n    <noscript>`)
   const isGamePage = content.canonicalPath.startsWith('/games/')
   const requiredFragments = [
@@ -140,7 +169,8 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
 
 const renderSitemap = () => {
   const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO, ...INDEXABLE_UTILITY_PATHS.map((canonicalPath) => ({ canonicalPath })), ...LEGAL_DOCUMENT_SLUGS.map((slug) => ({ canonicalPath: `/legal/${slug}` }))]
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((page) => `  <url><loc>${escapeXml(new URL(page.canonicalPath, `${SITE_ORIGIN}/`).toString())}</loc></url>`).join('\n')}\n</urlset>\n`
+  const lastmod = new Date().toISOString().slice(0, 10)
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((page) => `  <url><loc>${escapeXml(new URL(page.canonicalPath, `${SITE_ORIGIN}/`).toString())}</loc><lastmod>${lastmod}</lastmod></url>`).join('\n')}\n</urlset>\n`
 }
 
 const renderRobots = () => `User-agent: *

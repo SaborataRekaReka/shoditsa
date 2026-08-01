@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameResponse, GameSessionSnapshot, GameStartBody, HintResponse, PublicContentItem } from '@shoditsa/contracts'
@@ -53,7 +53,7 @@ import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeU
 import { nextDailyMode } from './features/daily-route/daily-route'
 import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion } from './features/economy/completion'
 import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, nextStreakMilestoneReward } from './features/economy/economy-rules'
-import { ECONOMY_CHANGE_EVENT, EconomyView } from './features/economy/EconomyView'
+import { ECONOMY_CHANGE_EVENT } from './features/economy/economy-event'
 import { GameResult } from './features/result/GameResult'
 import { FinalChoicePanel } from './features/game-session/FinalChoicePanel'
 import { FINAL_CHOICE_DURATION_SECONDS, finalChoiceSecondsRemaining } from './features/game-session/final-choice-countdown'
@@ -120,32 +120,33 @@ import { AdmissionTitleTicket, DiagnosisTitleCard, MusicTitleTicket, TicketKicke
 import { ControlButton, DialogSurface, InlineAlert, SegmentedProgress, Tabs, TextInput } from './components/ui'
 import { SearchCombobox } from './components/search-combobox'
 import { trackClientEvent } from './app/client-events'
-import { ClubScreen } from './features/commerce/ClubScreen'
-import { PurchaseReturnScreen } from './features/commerce/PurchaseReturnScreen'
-import { SpecialDetailScreen, SpecialsScreen } from './features/commerce/SpecialsScreen'
-import { CreateGameScreen } from './features/private-games/CreateGameScreen'
-import { FriendsRoomScreen } from './features/friends-room/FriendsRoomScreen'
-import { FriendsRoomIntroScreen } from './features/friends-room/FriendsRoomIntroScreen'
 import { canCreateFriendsRoom, canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
-import { LegalScreen } from './features/legal/LegalScreen'
 import { SESSION_RENDERER_BY_ENGINE } from './features/game-session/session-renderers'
-import { DanetkiJoinPage, DanetkiLobbyPage } from './features/danetki/DanetkiEntryPages'
-import { ConnectionsTitleScreen } from './features/connections/ConnectionsTitleScreen'
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
 import { DtfLeaderboard } from './features/dtf-comments/DtfLeaderboard'
 import { dtfShareText } from './features/dtf-comments/dtf-sharing'
 import { UserBadgeList } from './components/user-badges/UserBadgeList'
-import { RewatchScreen } from './features/archive/RewatchScreen'
 import { AnamnesisModal, EconomyAwardPanel, ResumeSessionsView, RulesView, StatsView } from './features/player-modals/PlayerModalViews'
-import { PROFILE_TABS, ProfileScreen, type ProfileTab } from './features/profile/ProfileScreen'
+import { PROFILE_TABS, type ProfileTab } from './features/profile/profile-tabs'
 import { TitlePoster as Poster } from './components/title-poster'
 import { defaultDiagnosisSystemIcon, diagnosisSystemIconByKey, normalizeDiagnosisSystemKey } from './features/game-session/diagnosis-presentation'
 import './features/home/HomeScreen.css'
-import './features/home/CodapressHomePreview.css'
 import './features/title/TitleScreen.css'
-import './features/review/ReviewScreen.css'
-import './features/game-session/GameSession.css'
 import { dayNumber } from './game/day-number'
+
+const ClubScreen = lazy(() => import('./features/commerce/ClubScreen').then((module) => ({ default: module.ClubScreen })))
+const PurchaseReturnScreen = lazy(() => import('./features/commerce/PurchaseReturnScreen').then((module) => ({ default: module.PurchaseReturnScreen })))
+const SpecialsScreen = lazy(() => import('./features/commerce/SpecialsScreen').then((module) => ({ default: module.SpecialsScreen })))
+const SpecialDetailScreen = lazy(() => import('./features/commerce/SpecialsScreen').then((module) => ({ default: module.SpecialDetailScreen })))
+const CreateGameScreen = lazy(() => import('./features/private-games/CreateGameScreen').then((module) => ({ default: module.CreateGameScreen })))
+const FriendsRoomScreen = lazy(() => import('./features/friends-room/FriendsRoomScreen').then((module) => ({ default: module.FriendsRoomScreen })))
+const FriendsRoomIntroScreen = lazy(() => import('./features/friends-room/FriendsRoomIntroScreen').then((module) => ({ default: module.FriendsRoomIntroScreen })))
+const LegalScreen = lazy(() => import('./features/legal/LegalScreen').then((module) => ({ default: module.LegalScreen })))
+const DanetkiJoinPage = lazy(() => import('./features/danetki/DanetkiEntryPages').then((module) => ({ default: module.DanetkiJoinPage })))
+const DanetkiLobbyPage = lazy(() => import('./features/danetki/DanetkiEntryPages').then((module) => ({ default: module.DanetkiLobbyPage })))
+const ConnectionsTitleScreen = lazy(() => import('./features/connections/ConnectionsTitleScreen').then((module) => ({ default: module.ConnectionsTitleScreen })))
+const RewatchScreen = lazy(() => import('./features/archive/RewatchScreen').then((module) => ({ default: module.RewatchScreen })))
+const ProfileScreen = lazy(() => import('./features/profile/ProfileScreen').then((module) => ({ default: module.ProfileScreen })))
 
 const normalizeTextMatch = (value: string) => value
   .normalize('NFKD')
@@ -160,15 +161,15 @@ const modeIcon = (mode: TitleMode) => {
 }
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
-  movie: 'images/title-posters/movie-ticket-poster.webp',
-  series: 'images/title-posters/series-ticket-poster.webp',
-  anime: 'images/title-posters/anime-ticket-poster.webp',
-  game: 'images/title-posters/game-ticket-poster.webp',
-  city: 'images/title-posters/city-ticket-poster.webp',
-  music: 'images/title-posters/music-ticket-poster.webp',
-  diagnosis: 'images/title-posters/diagnosis-ticket-poster.webp',
-  animal: 'images/title-posters/animal-ticket-poster.webp',
-  book: 'images/title-posters/book-ticket-poster-v2.webp',
+  movie: 'images/title-posters/movie-ticket-poster.avif',
+  series: 'images/title-posters/series-ticket-poster.avif',
+  anime: 'images/title-posters/anime-ticket-poster.avif',
+  game: 'images/title-posters/game-ticket-poster.avif',
+  city: 'images/title-posters/city-ticket-poster.avif',
+  music: 'images/title-posters/music-ticket-poster.avif',
+  diagnosis: 'images/title-posters/diagnosis-ticket-poster.avif',
+  animal: 'images/title-posters/animal-ticket-poster.avif',
+  book: 'images/title-posters/book-ticket-poster-v2.avif',
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId) as TitleMode[])
@@ -4095,6 +4096,13 @@ function GameApp() {
     : typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('tab')
       ? 'profile'
       : initialPlayerRoute.screen)
+  useEffect(() => {
+    if (screen === 'game') void import('./features/game-session/GameSession.css')
+    if (screen === 'review') void import('./features/review/ReviewScreen.css')
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === 'codapress') {
+      void import('./features/home/CodapressHomePreview.css')
+    }
+  }, [screen])
   const [transition, setTransition] = useState<'idle' | 'title-to-game'>('idle')
   const [mode, setMode] = useState<TitleMode>(() => (
     challenge?.mode ?? (isCatalogGuessModeId(initialPlayerRoute.mode) ? initialPlayerRoute.mode : 'movie')
@@ -5381,5 +5389,5 @@ function GameApp() {
 }
 
 export default function App() {
-  return <GameApp />
+  return <Suspense fallback={<main className="loading" role="status"><Sparkles /> Загружаем экран…</main>}><GameApp /></Suspense>
 }

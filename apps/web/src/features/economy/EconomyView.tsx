@@ -13,6 +13,7 @@ import {
 } from '../../storage'
 import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
+import { ECONOMY_CHANGE_EVENT } from './economy-event'
 import { ServerEconomyView } from './ServerEconomyView'
 import { ControlButton, TextInput } from '../../components/ui'
 import './EconomyView.css'
@@ -20,8 +21,6 @@ import './EconomyView.css'
 const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
 const TICKET_PROMO_AWARD = 50
 const TICKET_PROMO_LIMIT = 3
-
-export const ECONOMY_CHANGE_EVENT = 'seans:economy-change'
 
 export function EconomyView() {
   return SERVER_RUNTIME ? <ServerEconomyView /> : <LocalEconomyView />

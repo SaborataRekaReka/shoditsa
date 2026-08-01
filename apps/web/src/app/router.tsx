@@ -8,7 +8,6 @@ import {
   useRouterState,
 } from '@tanstack/react-router'
 import App from '../App'
-import { LoginScreen } from '../features/auth/LoginScreen'
 import { SERVER_RUNTIME } from '../hooks/use-server-runtime'
 import { AlertTriangle, Sparkles } from 'lucide-react'
 import { applyRuntimeSeo } from './seo'
@@ -16,6 +15,7 @@ import { CookieConsentBanner } from '../features/legal/CookieConsentBanner'
 
 const AdminApp = import.meta.env.MODE === 'yandex' ? null : lazy(() => import('../admin/AdminApp'))
 const UiKitScreen = lazy(() => import('../features/ui-kit/UiKitScreen'))
+const LoginScreen = lazy(() => import('../features/auth/LoginScreen').then((module) => ({ default: module.LoginScreen })))
 
 const RootView = () => {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
@@ -24,7 +24,7 @@ const RootView = () => {
 }
 const PlayerLayout = () => <><App /><Outlet /></>
 const RouteMarker = () => null
-const LoginRoute = ({ mode }: { mode: 'login' | 'register' }) => <LoginScreen mode={mode} />
+const LoginRoute = ({ mode }: { mode: 'login' | 'register' }) => <Suspense fallback={<main className="loading"><Sparkles /> Загружаем вход…</main>}><LoginScreen mode={mode} /></Suspense>
 const AdminRoute = () => {
   if (!AdminApp) return <main className="loading loading--error" role="alert"><AlertTriangle /><h1>Раздел недоступен</h1><p>Административная панель не включается в сборку Яндекс Игр.</p><a href="#/">Вернуться в игру</a></main>
   return <Suspense fallback={<main className="loading"><Sparkles /> Загружаем административную панель…</main>}><AdminApp /></Suspense>

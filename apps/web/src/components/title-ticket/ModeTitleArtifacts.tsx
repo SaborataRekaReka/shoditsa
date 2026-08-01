@@ -24,7 +24,7 @@ export function DiagnosisTitleCard({
 }) {
   return <section className="med-chart med-chart--dossier" aria-labelledby={id}>
     <div className="med-chart__stub med-chart__stub--poster" aria-hidden="true">
-      <img className="med-chart__stub-art" src={posterUrl} alt="" decoding="async" />
+      <img className="med-chart__stub-art" src={posterUrl} alt="" width="480" height="1200" decoding="async" loading="eager" fetchPriority="high" />
       <span className="med-chart__cross"><i /><i /></span>
       <span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № {dayNumber}</small><em>{dateLabel}</em>
       <svg className="med-chart__pulse" viewBox="0 0 120 28" preserveAspectRatio="none">
@@ -63,7 +63,7 @@ export function MusicTitleTicket({
 }) {
   return <section className="concert-ticket concert-ticket--dossier" aria-labelledby={id}>
     <div className="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">
-      <img className="concert-ticket__stub-art" src={posterUrl} alt="" decoding="async" />
+      <img className="concert-ticket__stub-art" src={posterUrl} alt="" width="480" height="1200" decoding="async" loading="eager" fetchPriority="high" />
       <span className="concert-ticket__stub-kicker">Концерт дня</span>
       <strong>Артист дня</strong>
       <small>Главная сцена</small>

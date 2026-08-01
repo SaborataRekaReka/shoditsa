@@ -65,6 +65,13 @@ const GameSearchSummary = ({ mode }: { mode: SeoGameMode }) => {
       href={summary.action.href}
       onClick={() => trackMetrikaGoal('seo_search_action_clicked', { mode, destination: summary.action?.href })}
     >{summary.action.label}<span aria-hidden="true">↗</span></a>}
+    {!!content.relatedModes?.length && <nav className="ticket-search-summary__related" aria-label="Похожие игры">
+      <span>Попробуйте также</span>
+      <div>{content.relatedModes.map((relatedMode) => {
+        const related: GameSeoContent = GAME_SEO[relatedMode]
+        return <a key={related.mode} href={related.canonicalPath}>{related.internalLinkLabel ?? related.shortName}</a>
+      })}</div>
+    </nav>}
   </section>
 }
 

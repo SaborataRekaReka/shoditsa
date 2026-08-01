@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, DoorOpen, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api, queryKeys } from '../../api/client'
-import { EconomyView } from '../../features/economy/EconomyView'
 import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
 import { canCreateFriendsRoom, canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/friends-room/friends-room-access'
 import { toLegacyAttendance, toLegacyWallet } from '../../features/server-runtime/adapters'
@@ -16,6 +15,8 @@ import { DialogSurface } from '../ui/DialogSurface'
 import { ActionButton } from '../ui/UiControls'
 import { HeaderRoomMenu } from './HeaderRoomMenu'
 import './AppShell.css'
+
+const EconomyView = lazy(() => import('../../features/economy/EconomyView').then((module) => ({ default: module.EconomyView })))
 
 export { useDialogFocusTrap } from '../ui/DialogSurface'
 export { ActionButton } from '../ui/UiControls'
@@ -284,7 +285,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         <UserRound /><span>Профиль</span>
       </button>
     </nav>}
-    {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><EconomyView /></Modal>}
+    {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><Suspense fallback={<div className="loading" role="status">Загружаем кассу…</div>}><EconomyView /></Suspense></Modal>}
   </>
 }
 
@@ -310,11 +311,13 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
         <div>
           <a href="/games/movie">Кино</a>
           <a href="/games/series">Сериалы</a>
-          <a href="/games/anime">Аниме</a>
-          <a href="/games/game">Игры</a>
+          <a href="/games/anime">Угадай аниме</a>
+          <a href="/games/game">Угадай видеоигру</a>
           <a href="/games/city">Города</a>
-          <a href="/games/music">Музыка</a>
-          <a href="/games/diagnosis">Диагнозы</a>
+          <a href="/games/music">Угадай исполнителя</a>
+          <a href="/games/diagnosis">Угадай диагноз</a>
+          <a href="/games/animal">Угадай животное</a>
+          <a href="/games/book">Угадай книгу</a>
           <a href="/games/danetki">Данетки</a>
           <a href="/games/connections">Связи</a>
         </div>

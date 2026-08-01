@@ -1,10 +1,11 @@
-import { useState, type ReactNode } from 'react'
+import { lazy, Suspense, useState, type ReactNode } from 'react'
 import { ArrowRight, Check, Copy, RotateCcw, SlidersHorizontal, Swords, X } from 'lucide-react'
 import { ControlButton } from '../../components/ui'
-import { TipCheckoutTrigger } from '../commerce/TipCheckout'
 import { formatTickets } from '../economy/economy-rules'
 import type { ChallengeResult } from '../challenge/challenge'
 import './ResultActionBar.css'
+
+const TipCheckoutTrigger = lazy(() => import('../commerce/TipCheckout').then((module) => ({ default: module.TipCheckoutTrigger })))
 
 export function ResultActionBar({
   nextLabel,
@@ -109,7 +110,7 @@ export function ResultActionBar({
         {copied ? <Check /> : <Copy />}
         {copied && <span className="result-copy__tooltip" role="status">Скопировано</span>}
       </ControlButton>}
-      {showTip && <TipCheckoutTrigger className="result-tip" label="Жетон кассиру" hint="99 · 299 · 699 ₽" />}
+      {showTip && <Suspense fallback={null}><TipCheckoutTrigger className="result-tip" label="Жетон кассиру" hint="99 · 299 · 699 ₽" /></Suspense>}
       {afterMeta && <div className="result-after-actions__meta">{afterMeta}</div>}
     </div>
     {replayNoticeOpen && <div className="result-replay-notice result-card__wide" role="status" aria-label={paidReplay ? 'Повторная игра' : 'Лимит игр на сегодня'}>
