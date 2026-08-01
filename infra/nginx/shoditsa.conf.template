@@ -89,12 +89,43 @@ server {
     }
 
     # Personal, transactional and in-progress routes are useful to players but
-    # must not create thin or private documents in the search index.
-    location ~ ^/(play|sessions|archive|profile|review|login|register)(/|$) {
+    # must not create thin or private documents in the search index. Keep this
+    # allow-list explicit so a made-up path cannot inherit the SPA's HTTP 200.
+    # BEGIN SHODITSA_EXPLICIT_SPA_ROUTES
+    location = / {
+        try_files /index.html =404;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location ~ ^/(archive|profile|login|register)$ {
         try_files /index.html =404;
         add_header X-Robots-Tag "noindex, follow, noarchive" always;
         add_header Cache-Control "no-cache" always;
     }
+
+    location ~ ^/(play/(movie|series|anime|game|music|diagnosis|city|animal|book|connections)|sessions/[^/]+|review/music|purchase/return|danetki/join/[^/]+|specials/[^/]+)$ {
+        try_files /index.html =404;
+        add_header X-Robots-Tag "noindex, follow, noarchive" always;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location ~ ^/legal/(terms|tariffs|privacy|personal-data-consent|refunds|contacts)$ {
+        try_files /index.html =404;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location = /create-a-game {
+        try_files /index.html =404;
+        add_header X-Robots-Tag "noindex, follow, noarchive" always;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location = /ui-kit {
+        try_files /index.html =404;
+        add_header X-Robots-Tag "noindex, nofollow, noarchive" always;
+        add_header Cache-Control "no-cache" always;
+    }
+    # END SHODITSA_EXPLICIT_SPA_ROUTES
 
     location = /admin {
         try_files /index.html =404;
@@ -109,6 +140,6 @@ server {
     }
 
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri =404;
     }
 }

@@ -83,12 +83,13 @@ jobs:
           REMOTE_UPLOAD_DIR="${DEPLOY_ROOT}/incoming"
           REMOTE_ARCHIVE="${REMOTE_UPLOAD_DIR}/shoditsa-web-${GITHUB_SHA}.tar.gz"
           REMOTE_API_IMAGE="${REMOTE_UPLOAD_DIR}/shoditsa-api-${GITHUB_SHA}.tar.gz"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' REMOTE_UPLOAD_DIR='$REMOTE_UPLOAD_DIR' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE_PREPARE'
+          REMOTE_NGINX_PATCH="${REMOTE_UPLOAD_DIR}/patch-nginx-not-found-${GITHUB_SHA}.sh"
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' REMOTE_UPLOAD_DIR='$REMOTE_UPLOAD_DIR' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' REMOTE_NGINX_PATCH='$REMOTE_NGINX_PATCH' bash -s" <<'REMOTE_PREPARE'
           set -euo pipefail
           install -d -m 700 "$REMOTE_UPLOAD_DIR"
           mkdir -p "$DEPLOY_ROOT/releases"
-          find "$REMOTE_UPLOAD_DIR" -maxdepth 1 -type f \( -name 'shoditsa-web-*.tar.gz' -o -name 'shoditsa-api-*.tar.gz' \) -mtime +1 -delete
-          rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE"
+          find "$REMOTE_UPLOAD_DIR" -maxdepth 1 -type f \( -name 'shoditsa-web-*.tar.gz' -o -name 'shoditsa-api-*.tar.gz' -o -name 'patch-nginx-not-found-*.sh' \) -mtime +1 -delete
+          rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE" "$REMOTE_NGINX_PATCH"
           AVAILABLE_KB="$(df -Pk "$DEPLOY_ROOT" | awk 'NR == 2 { print $4 }')"
           if [ "$AVAILABLE_KB" -lt 1048576 ]; then
             echo "At least 1 GiB of free space is required before uploading a release; ${AVAILABLE_KB} KiB available" >&2
@@ -97,11 +98,12 @@ jobs:
           REMOTE_PREPARE
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
           scp -P "$DEPLOY_PORT" release-api-image.tar.gz "$REMOTE:$REMOTE_API_IMAGE"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' bash -s" <<'REMOTE'
+          scp -P "$DEPLOY_PORT" scripts/deploy/patch-nginx-not-found.sh "$REMOTE:$REMOTE_NGINX_PATCH"
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' REMOTE_NGINX_PATCH='$REMOTE_NGINX_PATCH' bash -s" <<'REMOTE'
           set -euo pipefail
           API_DEPLOY_ROLLBACK_ARMED=0
           cleanup_uploads() {
-            rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE"
+            rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE" "$REMOTE_NGINX_PATCH"
           }
           trap cleanup_uploads EXIT
           trap 'status=$?; failed_line=$LINENO; failed_command=$BASH_COMMAND; if [ "${API_DEPLOY_ROLLBACK_ARMED:-0}" -eq 1 ] && declare -F rollback_api >/dev/null; then rollback_api || true; fi; echo "remote deploy failed at line ${failed_line}: ${failed_command} (exit ${status})" >&2; exit "$status"' ERR
@@ -402,6 +404,8 @@ jobs:
               fi
               HOST_NGINX_CHANGED=1
             fi
+            bash "$REMOTE_NGINX_PATCH" "$NGINX_CONFIG"
+            HOST_NGINX_CHANGED=1
             if [ "$HOST_NGINX_CHANGED" -eq 1 ]; then
               if ! nginx -t; then
                 cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
@@ -409,6 +413,10 @@ jobs:
                 exit 1
               fi
               systemctl reload nginx
+            fi
+            if ! nginx -T 2>&1 | grep -F 'BEGIN SHODITSA_EXPLICIT_SPA_ROUTES' >/dev/null; then
+              echo "Host Nginx did not activate the unknown-page 404 fallback" >&2
+              exit 1
             fi
           elif command -v docker >/dev/null 2>&1; then
             mapfile -t NGINX_CONTAINERS < <(
@@ -487,6 +495,27 @@ jobs:
               NGINX_ROUTE_CHANGED=1
             fi
 
+            if [ -z "$NGINX_ROUTE_CONFIG" ]; then
+              mapfile -t NGINX_ROUTE_CONFIGS < <(
+                while IFS= read -r source; do
+                  if [ -f "$source" ]; then
+                    grep -IlE 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$source" 2>/dev/null || true
+                  elif [ -d "$source" ]; then
+                    grep -RIlE --exclude='*.pre-*' 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$source" 2>/dev/null || true
+                  fi
+                done < <(docker inspect --format '{{range .Mounts}}{{println .Source}}{{end}}' "$NGINX_CONTAINER")
+              )
+              if [ "${#NGINX_ROUTE_CONFIGS[@]}" -ne 1 ]; then
+                echo "Expected exactly one mounted Docker Nginx game route config, found ${#NGINX_ROUTE_CONFIGS[@]}" >&2
+                exit 1
+              fi
+              NGINX_ROUTE_CONFIG="${NGINX_ROUTE_CONFIGS[0]}"
+              NGINX_ROUTE_BACKUP="${NGINX_ROUTE_CONFIG}.pre-not-found-route"
+              cp -a "$NGINX_ROUTE_CONFIG" "$NGINX_ROUTE_BACKUP"
+            fi
+            bash "$REMOTE_NGINX_PATCH" "$NGINX_ROUTE_CONFIG"
+            NGINX_ROUTE_CHANGED=1
+
             COMPOSE_BACKUP="${COMPOSE_FILES}.pre-shoditsa-release-root"
             COMPOSE_CHANGED=0
             if ! grep -Fq "${CURRENT_ROOT}:/var/www/shoditsa:ro" "$COMPOSE_FILES"; then
@@ -536,6 +565,11 @@ jobs:
             fi
             if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*book[^)]*\)\$' >/dev/null; then
               echo "Docker Nginx did not activate the Books SEO route" >&2
+              rollback_compose
+              exit 1
+            fi
+            if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -F 'BEGIN SHODITSA_EXPLICIT_SPA_ROUTES' >/dev/null; then
+              echo "Docker Nginx did not activate the unknown-page 404 fallback" >&2
               rollback_compose
               exit 1
             fi

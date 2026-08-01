@@ -42,8 +42,13 @@ for (const mode of [...manifest.playableModes, 'danetki']) {
 
 const invalidGame = await fetchResponse(`/games/not-a-mode?smoke=${Date.now()}`)
 if (invalidGame.status !== 404) throw new Error(`Unknown game route returned HTTP ${invalidGame.status} instead of 404`)
+const invalidRootPage = await fetchResponse(`/this-page-must-not-exist-${Date.now()}`)
+if (invalidRootPage.status !== 404) throw new Error(`Unknown root page returned HTTP ${invalidRootPage.status} instead of 404`)
 const profileResponse = await fetchResponse(`/profile?smoke=${Date.now()}`)
+if (!profileResponse.ok) throw new Error(`Known private profile route returned HTTP ${profileResponse.status}`)
 if (!String(profileResponse.headers.get('x-robots-tag')).includes('noindex')) throw new Error('Private profile route is missing X-Robots-Tag: noindex')
+const legalResponse = await fetchResponse(`/legal/terms?smoke=${Date.now()}`)
+if (!legalResponse.ok) throw new Error(`Known legal route returned HTTP ${legalResponse.status}`)
 
 const meta = JSON.parse(await fetchText(`/api/v1/meta?smoke=${Date.now()}`))
 if (meta.buildSha !== expectedSha) throw new Error(`Production API SHA ${meta.buildSha ?? 'missing'} does not match expected main SHA ${expectedSha}`)
