@@ -99,6 +99,7 @@ export const HintChoiceBodySchema = Type.Object({
   hintKey: Type.Union([
     Type.Literal('plot'),
     Type.Literal('info'),
+    Type.Literal('fact'),
     Type.Literal('silhouette'),
     Type.Literal('sound'),
   ]),

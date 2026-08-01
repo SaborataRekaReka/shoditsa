@@ -36,12 +36,12 @@ describe('API schemas', () => {
     expect(Value.Check(PrivateGameOrderBodySchema, { ...valid, price: 100 })).toBe(false)
   })
   it('rejects invalid attempts', () => expect(Value.Check(AttemptBodySchema, { itemId: '' })).toBe(false))
-  it('accepts text and animal-media hints, but not facts', () => {
+  it('accepts text, fact and animal-media hints', () => {
     expect(Value.Check(HintChoiceBodySchema, { checkpoint: 5, hintKey: 'info' })).toBe(true)
     expect(Value.Check(HintChoiceBodySchema, { checkpoint: 5, hintKey: 'plot' })).toBe(true)
     expect(Value.Check(HintChoiceBodySchema, { checkpoint: 5, hintKey: 'silhouette' })).toBe(true)
     expect(Value.Check(HintChoiceBodySchema, { checkpoint: 8, hintKey: 'sound' })).toBe(true)
-    expect(Value.Check(HintChoiceBodySchema, { checkpoint: 8, hintKey: 'fact' })).toBe(false)
+    expect(Value.Check(HintChoiceBodySchema, { checkpoint: 8, hintKey: 'fact' })).toBe(true)
   })
   it('bounds search limits', () => expect(Value.Check(CatalogSearchQuerySchema, { mode: 'movie', q: 'a', limit: 21 })).toBe(false))
   it('requires explicit consent for a legacy import', () => {

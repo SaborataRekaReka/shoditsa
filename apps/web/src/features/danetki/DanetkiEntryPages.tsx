@@ -83,7 +83,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
         <div className="title-game-mark">
           <span><Sparkles aria-hidden="true" /></span>
           <i>Игра дня · совместное расследование</i>
-          <h1>Данетки</h1>
+          <h1>Данетки онлайн</h1>
         </div>
         <time dateTime={date}>{displayDate}</time>
         <p>Раскройте необычную историю вопросами, на которые ведущий может ответить «да» или «нет».</p>
@@ -100,8 +100,8 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
         details={<GameArtifactSeoDetails mode="danetki" />}
       >
           <TicketKicker title="Данетка дня" detail="ИИ-ведущий на связи" />
-          <h2 id="ticket-danetki">Ваше расследование</h2>
-          <p>Одна новая Данетка в день бесплатна. Создатель получает +10 билетов после завершения.</p>
+          <h2 id="ticket-danetki">Игра с ИИ-ведущим</h2>
+          <p>Одна новая данетка в день доступна бесплатно. ИИ-ведущий отвечает «да» или «нет», а обязательная регистрация для одиночной игры не нужна.</p>
           {onContinue && <ActionButton type="button" variant="secondary" className="danetki-title-continue" onClick={onContinue}><Clock3 /> Продолжить расследование</ActionButton>}
           <GameLaunchControls
             mode="danetki"

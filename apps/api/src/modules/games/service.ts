@@ -316,10 +316,31 @@ const isRuntimeAnimalSound = (value: unknown): value is string => (
   typeof value === 'string' && /^\/audio\/animals\/[a-f0-9]{24}\.ogg$/.test(value)
 )
 
+const safeMusicTrackHint = (answer: TitleItem) => {
+  const answerNames = [answer.titleRu, answer.titleOriginal, ...(answer.alternativeTitles ?? [])]
+    .map(normalizeHintMatch)
+    .filter((value) => value.length >= 3)
+  return (answer.topTracks ?? [])
+    .map((track) => cleanHintText(track.title))
+    .find((track) => track && !answerNames.some((name) => normalizeHintMatch(track).includes(name))) ?? ''
+}
+
 export const buildHintOptions = (answer: TitleItem, choices: ExistingHintChoice[], attempts: Array<{ hints: Hint[] }> = [], seed = ''): BuiltHintOption[] => {
   const options: BuiltHintOption[] = []
   const evidence = revealedAttemptEvidence(attempts)
   const copy = CATALOG_HINT_COPY[answer.mode]
+
+  if (answer.mode === 'music' && !choices.some((choice) => choice.hintKey === 'fact')) {
+    const track = safeMusicTrackHint(answer)
+    if (track) {
+      options.push({
+        key: 'fact',
+        title: 'Песня-подсказка',
+        subtitle: 'Название известного трека без имени исполнителя',
+        value: `Известная песня: ${cropHintText(track, 100)}`,
+      })
+    }
+  }
 
   if (answer.mode === 'animal') {
     if (isRuntimeAnimalSilhouette(answer.silhouetteUrl) && !choices.some((choice) => choice.hintKey === 'silhouette')) {
@@ -613,6 +634,7 @@ export const buildSessionSnapshot = async (tx: Transaction | Database, session: 
     hintChoices: isPromptSession ? [] : choices.filter((choice) => (
       choice.hintKey === 'plot'
       || choice.hintKey === 'info'
+      || choice.hintKey === 'fact'
       || choice.hintKey === 'silhouette'
       || choice.hintKey === 'sound'
     )),

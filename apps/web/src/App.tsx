@@ -292,7 +292,7 @@ const LEGACY_ASSIST_HINT_MAP: Record<string, AssistHintKey> = {
 }
 const assistHintTitle = (key: AssistHintKey, mode?: TitleMode) => {
   if (key === 'plot') return mode ? CATALOG_HINT_COPY[mode].plotOptionTitle : 'Сюжетная подсказка'
-  if (key === 'fact') return 'Интересный факт'
+  if (key === 'fact') return mode === 'music' ? 'Песня-подсказка' : 'Интересный факт'
   if (key === 'silhouette') return 'Силуэт'
   if (key === 'sound') return 'Голос животного'
   return mode ? CATALOG_HINT_COPY[mode].optionTitle : 'Неоткрытая информация'
@@ -850,8 +850,27 @@ const renderUnopenedLocalInfo = (item: TitleItem, candidate: string, attempts: A
   return remaining.length ? `${label}: ${remaining.join(', ')}` : ''
 }
 
+const safeMusicTrackHintValue = (item: TitleItem) => {
+  const answerNames = [item.titleRu, item.titleOriginal, ...(item.alternativeTitles ?? [])]
+    .map(normalizeTextMatch)
+    .filter((value) => value.length >= 3)
+  return (item.topTracks ?? [])
+    .map((entry) => cleanHintText(entry.title))
+    .find((track) => track && !answerNames.some((name) => normalizeTextMatch(track).includes(name))) ?? ''
+}
+
 const buildAssistHints = (item: TitleItem, choices: HintChoice[], attempts: Attempt[] = []): AssistHintView[] => {
   const out: AssistHintView[] = []
+  if (item.mode === 'music' && !choices.some((choice) => choice.key === 'fact')) {
+    const track = safeMusicTrackHintValue(item)
+    if (track) out.push({
+      key: 'fact',
+      title: 'Песня-подсказка',
+      subtitle: 'Название известного трека без имени исполнителя',
+      body: `Известная песня: ${cropHintText(track, 100)}`,
+      available: true,
+    })
+  }
   if (item.mode === 'animal') {
     if (isAnimalSilhouetteAsset(item.silhouetteUrl) && !choices.some((choice) => choice.key === 'silhouette')) {
       out.push({
@@ -911,6 +930,7 @@ const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): Assis
   const infoCandidates = buildInfoHintCandidates(item)
   let infoIndex = 0
   let plotOpened = false
+  let factOpened = false
 
   for (const choice of [...choices].sort((a, b) => a.round - b.round)) {
     if (choice.key === 'silhouette' && item.mode === 'animal' && isAnimalSilhouetteAsset(item.silhouetteUrl)) {
@@ -927,6 +947,17 @@ const buildRevealedAssistHints = (item: TitleItem, choices: HintChoice[]): Assis
         title: `Подсказка после ${choice.round} попыток`,
         subtitle: 'Голос животного',
         value: { kind: 'sound', url: item.soundUrl, soundType: item.soundType ?? null, attribution: item.soundAttribution ?? null },
+        available: true,
+      })
+    } else if (choice.key === 'fact' && item.mode === 'music' && !factOpened) {
+      factOpened = true
+      const track = safeMusicTrackHintValue(item)
+      if (!track) continue
+      out.push({
+        key: 'fact',
+        title: `Подсказка после ${choice.round} попыток`,
+        subtitle: 'Песня-подсказка',
+        body: `Известная песня: ${cropHintText(track, 100)}`,
         available: true,
       })
     } else if (choice.key === 'plot' && plotBody && !plotOpened) {
@@ -1713,7 +1744,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
                 details={<GameArtifactSeoDetails mode={mode} />}
               >
                 <TicketKicker title="Ежедневная премьера" detail="полночный сеанс" />
-                <h2 id={`ticket-${mode}`}>Ежедневная игра: {modeMeta(mode).lower}</h2>
+                <h2 id={`ticket-${mode}`}>{mode === 'game' ? 'Игра «Угадай видеоигру»' : `Ежедневная игра: ${modeMeta(mode).lower}`}</h2>
                 <p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p>
                 {launchControls}
               </AdmissionTitleTicket>}
@@ -4087,6 +4118,7 @@ function GameApp() {
   const applyingRouteRef = useRef(false)
   const lastRoutePathRef = useRef(routeLocation.pathname)
   const lastTrackedScreenRef = useRef<AppScreen | null>(null)
+  const lastTrackedSeoLandingRef = useRef<string | null>(null)
   const adminDailySaltRef = useRef(0)
   const globalDailySaltRef = useRef(0)
   const effectiveDailySalt = globalDailySalt + adminDailySalt
@@ -4527,6 +4559,23 @@ function GameApp() {
       date,
     })
   }, [screen, mode, period, date])
+
+  useEffect(() => {
+    const landingMode = routeLocation.pathname === '/games/game'
+      ? 'game'
+      : routeLocation.pathname === '/games/music'
+        ? 'music'
+        : routeLocation.pathname === '/games/danetki'
+          ? 'danetki'
+          : null
+    if (!landingMode || lastTrackedSeoLandingRef.current === routeLocation.pathname) return
+    lastTrackedSeoLandingRef.current = routeLocation.pathname
+    trackMetrikaGoal('seo_game_landing_view', {
+      mode: landingMode,
+      route: routeLocation.pathname,
+      referrer: document.referrer ? new URL(document.referrer).hostname : 'direct',
+    })
+  }, [routeLocation.pathname])
 
   useEffect(() => {
     if (!SERVER_RUNTIME || screen === 'game' || !serverSessionId) return

@@ -75,12 +75,12 @@ export function MusicTitleTicket({
       <div className="concert-ticket__head">
         <div className="concert-ticket__brand">
           <span className="concert-ticket__kicker"><Music2 /> Концерт дня</span>
-          <h2 id={id}>Артист дня</h2>
+          <h2 id={id}>Игра «Угадай исполнителя»</h2>
           <p className="concert-ticket__venue">Главная сцена · сеанс №{dayNumber}</p>
         </div>
         <div className="concert-ticket__when"><strong>{dateLabel}</strong><small>21:45</small></div>
       </div>
-      <p className="concert-ticket__lead">Каждый ответ сравнит страну, эпоху, формат и жанры. По мере попыток откроются история артиста, похожие исполнители, альбом и главный хит.</p>
+      <p className="concert-ticket__lead">Каждый ответ сравнит страну, эпоху, формат и жанры. После пятой и восьмой попыток можно открыть известную песню, историю артиста или другой музыкальный факт.</p>
       <div className="concert-ticket__meta" aria-hidden="true">
         <span><i>GATE</i><b>10</b></span>
         <span><i>SEAT</i><b>A15</b></span>

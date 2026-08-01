@@ -20,7 +20,8 @@ import {
   Stethoscope,
   Tv,
 } from 'lucide-react'
-import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, type SeoGameMode } from '../../app/seo-content'
+import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, type GameSeoContent, type SeoGameMode } from '../../app/seo-content'
+import { trackMetrikaGoal } from '../../app/metrics'
 import './SeoContent.css'
 
 const GUIDE_ICONS = {
@@ -44,11 +45,28 @@ const DANETKI_RULES = {
   modeNote: 'В совместной комнате все участники видят один диалог, подсказки и итоговую версию в реальном времени.',
 }
 
+const INDEXABLE_GAME_CONTENT = INDEXABLE_GAME_SEO as readonly GameSeoContent[]
+
 const GuideSummary = ({ title, openTitle, note, expanded, controls }: { title: string; openTitle: string; note: string; expanded: boolean; controls: string }) => <summary className="hub-guide__summary" role="button" aria-expanded={expanded} aria-controls={controls}>
   <span className="hub-guide__summary-title"><BookOpenText aria-hidden="true" /><span><strong className="hub-guide__closed-label">{title}</strong><strong className="hub-guide__open-label">{openTitle}</strong></span></span>
   <small>{note}</small>
   <ChevronDown className="hub-guide__summary-chevron" aria-hidden="true" />
 </summary>
+
+const GameSearchSummary = ({ mode }: { mode: SeoGameMode }) => {
+  const content: GameSeoContent = GAME_SEO[mode]
+  const summary = content.searchSummary
+  if (!summary) return null
+  return <section className={`ticket-search-summary ticket-search-summary--${mode}`} aria-labelledby={`search-summary-${mode}`}>
+    <span>Играть онлайн · без спойлеров</span>
+    <h2 id={`search-summary-${mode}`}>{summary.heading}</h2>
+    <div>{summary.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+    {summary.action && <a
+      href={summary.action.href}
+      onClick={() => trackMetrikaGoal('seo_search_action_clicked', { mode, destination: summary.action?.href })}
+    >{summary.action.label}<span aria-hidden="true">↗</span></a>}
+  </section>
+}
 
 export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
   const content = GAME_SEO[mode]
@@ -57,7 +75,9 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
   const ModeIcon = GUIDE_ICONS[mode]
   const scrollPosition = useRef<number | null>(null)
   const [open, setOpen] = useState(false)
-  return <details
+  return <>
+    <GameSearchSummary mode={mode} />
+    <details
     className={`artifact-dossier ticket-dossier ticket-dossier--${mode}`}
     open={open}
     onToggle={(event) => {
@@ -163,10 +183,11 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
 
       <nav className="ticket-dossier__links" aria-label="Другие ежедневные игры">
         <span><Sparkles aria-hidden="true" /> {presentation.linksLabel}</span>
-        <div>{INDEXABLE_GAME_SEO.filter((game) => game.mode !== mode).map((game) => <a key={game.mode} href={game.canonicalPath}>{game.shortName}</a>)}</div>
+        <div>{INDEXABLE_GAME_CONTENT.filter((game) => game.mode !== mode).map((game) => <a key={game.mode} href={game.canonicalPath}>{game.internalLinkLabel ?? game.shortName}</a>)}</div>
       </nav>
     </div>
-  </details>
+    </details>
+  </>
 }
 
 export function HomeSeoContent() {
@@ -185,7 +206,7 @@ export function HomeSeoContent() {
         </section>
         <nav className="hub-guide__game-links" aria-label="Все ежедневные игры">
           <span><Route aria-hidden="true" /> Все игровые маршруты</span>
-          <div>{INDEXABLE_GAME_SEO.map((game) => <a key={game.mode} href={game.canonicalPath}>{game.shortName}</a>)}</div>
+          <div>{INDEXABLE_GAME_CONTENT.map((game) => <a key={game.mode} href={game.canonicalPath}>{game.internalLinkLabel ?? game.shortName}</a>)}</div>
         </nav>
       </div>
     </div>

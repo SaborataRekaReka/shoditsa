@@ -568,4 +568,27 @@ describe('server hint options', () => {
       expect(plotOption?.subtitle).toBe(CATALOG_HINT_COPY[mode].plotOptionSubtitle)
     }
   })
+
+  it('offers a known track as a dedicated music hint without exposing the artist name', () => {
+    const answer = {
+      id: 'music:test',
+      mode: 'music',
+      titleRu: 'Тестовый артист',
+      titleOriginal: 'Test Artist',
+      alternativeTitles: [],
+      popularityScore: 100,
+      topTracks: [
+        { rank: 1, title: 'Test Artist feat. Someone', source: 'lastfm' },
+        { rank: 2, title: 'Безопасное название песни', source: 'lastfm' },
+      ],
+    } as TitleItem
+
+    const options = buildHintOptions(answer, [])
+    const track = options.find((option) => option.key === 'fact')
+    expect(track).toMatchObject({
+      title: 'Песня-подсказка',
+      value: 'Известная песня: Безопасное название песни',
+    })
+    expect(buildHintOptions(answer, [{ hintKey: 'fact' }]).some((option) => option.key === 'fact')).toBe(false)
+  })
 })

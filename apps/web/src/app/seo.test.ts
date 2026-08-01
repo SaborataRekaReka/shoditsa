@@ -90,6 +90,21 @@ describe('search index contract', () => {
     expect(GAME_SEO.diagnosis.description).not.toContain('лечение')
   })
 
+  it('publishes visible search-intent summaries for the three recovery pages', () => {
+    expect(GAME_SEO.danetki.internalLinkLabel).toBe('Данетки онлайн')
+    expect(GAME_SEO.danetki.searchSummary?.heading).toContain('Данетки онлайн')
+    expect(GAME_SEO.danetki.searchSummary?.paragraphs.join(' ').length).toBeGreaterThanOrEqual(400)
+
+    expect(GAME_SEO.music.internalLinkLabel).toBe('Угадай исполнителя')
+    expect(GAME_SEO.music.searchSummary?.heading).toContain('по песне')
+    expect(GAME_SEO.music.searchSummary?.paragraphs.join(' ').length).toBeGreaterThanOrEqual(400)
+
+    expect(GAME_SEO.game.internalLinkLabel).toBe('Угадай видеоигру')
+    expect(GAME_SEO.game.searchSummary?.heading).toContain('комментариям')
+    expect(GAME_SEO.game.searchSummary?.action?.href).toBe('/specials/dtf-game-comments-25-v1')
+    expect(GAME_SEO.game.searchSummary?.paragraphs.join(' ').length).toBeGreaterThanOrEqual(400)
+  })
+
   it('targets the book guessing intent with a dedicated social image', () => {
     const route = seoRouteFromPathname('/games/book')
     const data = structuredDataForSeoRoute(route) as { '@graph': Array<Record<string, unknown>> }

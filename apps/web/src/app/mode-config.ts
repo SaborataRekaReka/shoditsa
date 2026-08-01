@@ -48,7 +48,7 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     emptyArticle: 'любого',
   },
   game: {
-    title: 'Игры',
+    title: 'Угадай видеоигру',
     plural: 'Игры',
     subject: 'игру',
     subjectGenitive: 'игры',
@@ -70,7 +70,7 @@ export const MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     emptyArticle: 'любого',
   },
   music: {
-    title: 'Музыка',
+    title: 'Угадай исполнителя',
     plural: 'Музыка',
     subject: 'артиста',
     subjectGenitive: 'артиста',
