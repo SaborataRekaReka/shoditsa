@@ -101,8 +101,17 @@ describe('search index contract', () => {
 
     expect(GAME_SEO.game.internalLinkLabel).toBe('Угадай видеоигру')
     expect(GAME_SEO.game.searchSummary?.heading).toContain('комментариям')
-    expect(GAME_SEO.game.searchSummary?.action?.href).toBe('/specials/dtf-game-comments-25-v1')
+    expect(GAME_SEO.game.searchSummary?.action?.href).toBe('/games/game-comments')
     expect(GAME_SEO.game.searchSummary?.paragraphs.join(' ').length).toBeGreaterThanOrEqual(400)
+  })
+
+  it('publishes the comment-game landing as a canonical indexable application', () => {
+    const route = seoRouteFromPathname('/games/game-comments')
+    const data = structuredDataForSeoRoute(route) as { '@graph': Array<Record<string, unknown>> }
+
+    expect(route.canonicalPath).toBe('/games/game-comments')
+    expect(route.indexable).toBe(true)
+    expect(data['@graph'].some((entry) => entry['@type'] === 'WebApplication')).toBe(true)
   })
 
   it('targets the book guessing intent with a dedicated social image', () => {

@@ -250,6 +250,7 @@ const sourceChecks = [
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
       ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*animal[^)]*book[^)]*connections[^)]*danetki[^)]*\)\$/],
+      ['comment-game landing route', /location\s+~\s+\^\/games\/\([^)]*game-comments[^)]*\)\$/],
       ['immutable opaque animal media', /location\s+~\*\s+"\^\/\(images\/animals\/silhouettes\|audio\/animals\)\/\[a-f0-9\]\{24\}\\\.\(webp\|ogg\)\$"\s*\{[^]*max-age=31536000,\s*immutable/],
       ['friends room SPA refresh route', /location\s+=\s+\/games\/together\s*\{[^}]*try_files\s+\/index\.html\s+=404/s],
       ['private route noindex header', /X-Robots-Tag\s+"noindex, follow, noarchive"/],
@@ -257,6 +258,7 @@ const sourceChecks = [
       ['unknown routes return a real 404', /location\s+\/\s*\{[^}]*try_files\s+\$uri\s+=404/s],
       ['known SPA routes use an explicit allow-list', /location\s+~\s+\^\/\(play\/\(movie\|series\|anime\|game\|music\|diagnosis\|city\|animal\|book\|connections\)\|sessions\/\[\^\/\]\+\|review\/music/],
       ['legal routes use an explicit allow-list', /location\s+~\s+\^\/legal\/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$/],
+      ['legal routes use route-specific HTML', /location\s+~\s+\^\/legal\/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$\s*\{[^}]*try_files\s+\/seo\$uri\.html\s+=404/s],
       ['legacy city dataset 404', /location\s+\^~\s+\/city-content\/\s*\{[^}]*return\s+404/s],
     ],
   },

@@ -1,5 +1,6 @@
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
 import {
+  COMMENT_GAME_SEO,
   DEFAULT_SOCIAL_IMAGE_PATH,
   GAME_SEO,
   HOME_SEO,
@@ -49,6 +50,13 @@ const utilitySeo = (pathname: string): SeoRoute | null => {
   }
   if (pathname === '/club') return {
     kind: 'utility', title: 'Клуб «Сходится!» — архив игр и свободная игра', description: 'Клубный доступ к архиву ежедневных выпусков и свободной игре без ожидания нового раунда.', canonicalPath: '/club', heading: 'Клуб «Сходится!»', lead: 'Архив ежедневных выпусков, свободная игра и клубные спецпоказы с управляемым автопродлением.', paragraphs: ['Возвращайтесь к играм с первого дня работы сервиса и выбирайте удобный срок доступа.', 'Ежедневные игры, подсказки и заработанные билеты остаются бесплатными для всех пользователей.'], robots: INDEXABLE_ROBOTS, indexable: true, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  if (pathname === COMMENT_GAME_SEO.canonicalPath) return {
+    ...COMMENT_GAME_SEO,
+    kind: 'utility',
+    robots: INDEXABLE_ROBOTS,
+    indexable: true,
+    imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }
   if (pathname.startsWith('/specials/')) return {
     kind: 'utility', title: 'Спецпоказ — Сходится!', description: 'Тематический игровой спецпоказ.', canonicalPath: pathname, heading: 'Спецпоказ', lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
@@ -149,6 +157,22 @@ export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN
         '@type': 'WebApplication', '@id': applicationId, name: SITE_NAME, url: `${siteUrl}/`, description: route.description, applicationCategory: 'GameApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', inLanguage: SITE_LANGUAGE, isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
         featureList: Object.values(GAME_SEO).map((game) => game.heading),
+      },
+    ],
+  }
+
+  if (route.canonicalPath === COMMENT_GAME_SEO.canonicalPath) return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite', '@id': websiteId, url: `${siteUrl}/`, name: SITE_NAME, alternateName: 'Сходится', inLanguage: SITE_LANGUAGE,
+      },
+      {
+        '@type': 'WebPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, image: imageUrl, inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId }, mainEntity: { '@id': `${canonicalUrl}#game` },
+      },
+      {
+        '@type': 'WebApplication', '@id': `${canonicalUrl}#game`, name: route.heading, url: canonicalUrl, description: route.description, image: imageUrl, applicationCategory: 'GameApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', inLanguage: SITE_LANGUAGE, isAccessibleForFree: true,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
       },
     ],
   }

@@ -37,6 +37,7 @@ const playerLayoutRoute = createRoute({ getParentRoute: () => rootRoute, id: 'pl
 const playerRoutes = [
   createRoute({ getParentRoute: () => playerLayoutRoute, path: '/', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'games/$mode', component: RouteMarker }),
+  createRoute({ getParentRoute: () => playerLayoutRoute, path: 'games/game-comments', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'games/together', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'play/$mode', component: RouteMarker }),
   createRoute({ getParentRoute: () => playerLayoutRoute, path: 'sessions/$sessionId', component: RouteMarker }),

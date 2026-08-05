@@ -35,6 +35,8 @@ describe('typed player routes', () => {
     expect(pathnameForPlayerRoute({ screen: 'legal', legalDocument: 'tariffs' })).toBe('/legal/tariffs')
     expect(playerRouteFromPathname('/legal/not-a-document')).toEqual({ screen: 'hub' })
     expect(playerRouteFromPathname('/games/danetki')).toEqual({ screen: 'danetki' })
+    expect(playerRouteFromPathname('/games/game-comments')).toEqual({ screen: 'game-comments' })
+    expect(pathnameForPlayerRoute({ screen: 'game-comments' })).toBe('/games/game-comments')
     expect(playerRouteFromPathname('/games/together')).toEqual({ screen: 'friends-intro' })
     expect(playerRouteFromLocation('/games/together', '?new=1')).toEqual({ screen: 'friends-room' })
     expect(playerRouteFromLocation('/games/together', '?room=AB234')).toEqual({ screen: 'friends-room' })
