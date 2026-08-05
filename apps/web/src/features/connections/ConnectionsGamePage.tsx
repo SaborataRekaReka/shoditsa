@@ -575,6 +575,27 @@ export function ConnectionsResult({
       showCopy={false}
     />
 
+    <section className="connections-result__groups" aria-label="Категории этого раунда">
+      <header>
+        <div>
+          <span>Решение</span>
+          <strong>Как сошлись слова</strong>
+        </div>
+        <small>{state.solvedGroups.length} категории</small>
+      </header>
+      <div className="connections-result__groups-grid">
+        {state.solvedGroups.map((group, index) => (
+          <article key={group.color} className={`connections-result__group connections-result__group--${group.color}`}>
+            <span className="connections-result__group-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <strong>{group.title}</strong>
+              <small>{group.tiles.map((tile) => tile.label).join(' · ')}</small>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
     <details className="reward-breakdown connections-result__reward">
       <summary role="button" aria-controls={rewardId} onKeyDown={toggleDetailsOnKey}>
         <span className="connections-result__reward-icon" aria-hidden="true"><Ticket /></span>

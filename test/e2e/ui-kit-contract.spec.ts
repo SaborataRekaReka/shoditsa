@@ -140,6 +140,36 @@ test('result actions and leaderboard retain their mobile composition', async ({ 
   })
 })
 
+test('connections result keeps all category names readable across breakpoints', async ({ page }) => {
+  const result = page.locator('.ui-kit-connections-result .connections-result')
+  const groups = result.locator('.connections-result__group')
+  await result.scrollIntoViewIfNeeded()
+
+  await expect(result.locator('.connections-result__groups')).toBeVisible()
+  await expect(groups).toHaveCount(4)
+  for (const title of ['Оканчиваются на «-ай»', 'Можно открыть ключом', 'Виды волн', 'Скрытая связь']) {
+    await expect(groups.getByText(title, { exact: true })).toBeVisible()
+  }
+
+  const desktopColumns = await result.locator('.connections-result__groups-grid').evaluate((element) => (
+    getComputedStyle(element).gridTemplateColumns.split(' ').length
+  ))
+  expect(desktopColumns).toBe(2)
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await result.scrollIntoViewIfNeeded()
+  const mobileContract = await result.evaluate((element) => {
+    const grid = element.querySelector<HTMLElement>('.connections-result__groups-grid')!
+    const cards = [...element.querySelectorAll<HTMLElement>('.connections-result__group')]
+    return {
+      columns: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+      cardsFit: cards.every((card) => card.scrollWidth === card.clientWidth && card.scrollHeight === card.clientHeight),
+      pageFits: document.documentElement.scrollWidth <= window.innerWidth,
+    }
+  })
+  expect(mobileContract).toEqual({ columns: 1, cardsFit: true, pageFits: true })
+})
+
 test('standard game result keeps primary actions together and copy in the utility row', async ({ page }) => {
   await page.setViewportSize({ width: 999, height: 792 })
   const result = page.locator('#result-actions .result-card')
