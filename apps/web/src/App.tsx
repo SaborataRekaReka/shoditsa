@@ -4492,7 +4492,6 @@ function GameApp() {
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
-    if (target.screen === 'game-comments') return navigate({ to: '/games/game-comments', replace })
     if (target.screen === 'friends-intro') return navigate({ to: '/games/together', replace })
     if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
     if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
@@ -5307,7 +5306,7 @@ function GameApp() {
 
     {screen === 'specials' && <SpecialsScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {(screen === 'special' || screen === 'game-comments') && <SpecialDetailScreen packId={screen === 'game-comments' ? DTF_COMMENTS_PACK_ID : playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(session) => activateServerSession(session, 'hub')} />}
+    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(session) => activateServerSession(session, 'hub')} />}
 
     {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

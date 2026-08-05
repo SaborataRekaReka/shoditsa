@@ -2,7 +2,6 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import {
   DEFAULT_SOCIAL_IMAGE_PATH,
-  COMMENT_GAME_SEO,
   GAME_GUIDE_PRESENTATION,
   HOME_SEO,
   INDEXABLE_GAME_SEO,
@@ -16,7 +15,7 @@ import { seoRouteFromPathname, structuredDataForSeoRoute } from '../../apps/web/
 import { LEGAL_DOCUMENT_SLUGS } from '../../apps/web/src/features/legal/legal'
 
 const distRoot = resolve('dist')
-const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club', COMMENT_GAME_SEO.canonicalPath] as const
+const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club'] as const
 const TITLE_POSTER_PATHS: Partial<Record<GameSeoContent['mode'], string>> = {
   movie: '/images/title-posters/movie-ticket-poster.avif',
   series: '/images/title-posters/series-ticket-poster.avif',
@@ -67,7 +66,6 @@ const renderParagraphs = (content: SeoPageContent) => content.paragraphs.map((pa
 const renderGameLinks = (currentMode?: GameSeoContent['mode']) => INDEXABLE_GAME_SEO
   .filter((game) => game.mode !== currentMode)
   .map((game) => `<a href="${game.canonicalPath}">${escapeHtml(game.internalLinkLabel ?? game.shortName)}</a>`)
-  .concat('<a href="/games/game-comments">Угадай игру по комментариям</a>')
   .join('')
 const renderRelatedGameLinks = (content: GameSeoContent) => content.relatedModes?.length
   ? `<nav class="ticket-search-summary__related" aria-label="Похожие игры"><span>Попробуйте также</span><div>${content.relatedModes.map((mode) => {
@@ -81,12 +79,7 @@ const renderSearchSummary = (content: GameSeoContent) => content.searchSummary
 const renderHubGuideSummary = () => `<summary class="hub-guide__summary"><span class="hub-guide__summary-title"><span aria-hidden="true">▤</span><span><strong class="hub-guide__closed-label">Как устроены ежедневные игры</strong><strong class="hub-guide__open-label">Путеводитель по «Сходится!»</strong></span></span><small>формат · подсказки · все режимы</small><span class="hub-guide__summary-chevron" aria-hidden="true">⌄</span></summary>`
 
 const renderHomeFallback = () => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><div class="hub-hero__facts" aria-label="Об игре"><span><strong>11 игр</strong></span><span><strong>1 загадка в день</strong></span><span><strong>10 попыток</strong></span></div><h1>${escapeHtml(HOME_SEO.heading)}</h1><p>${escapeHtml(HOME_SEO.lead)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="#hub-guide">Узнать больше</a><a class="ui-button ui-button--secondary" href="/games/movie">Играть сейчас</a></div></div><div class="hub-hero__visual" aria-hidden="true"><img src="/images/hero.webp" alt="" width="1122" height="913"></div></section><details class="hub-guide" id="hub-guide">${renderHubGuideSummary()}<div class="hub-guide__drawer"><header class="hub-guide__intro"><span>Путеводитель · без спойлеров</span><h2>${escapeHtml(HOME_SEO.heading)}</h2><p>${escapeHtml(HOME_SEO.lead)}</p></header><div class="hub-guide__content"><section class="hub-guide__story" aria-label="О платформе">${renderParagraphs(HOME_SEO)}</section><nav class="hub-guide__game-links" aria-label="Все ежедневные игры"><span>↗ Все игровые маршруты</span><div>${renderGameLinks()}</div></nav></div></div></details></article></main>`
-const renderUtilityFallback = (content: SeoPageContent) => {
-  const action = content.canonicalPath === COMMENT_GAME_SEO.canonicalPath
-    ? { href: '/specials/dtf-game-comments-25-v1', label: 'Играть по комментариям' }
-    : { href: content.canonicalPath, label: 'Открыть страницу' }
-  return `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead || content.description)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="${escapeHtml(action.href)}">${escapeHtml(action.label)}</a><a class="ui-button ui-button--secondary" href="/">К играм</a></div></div></section><details class="hub-guide" open><summary class="hub-guide__summary"><span class="hub-guide__summary-title"><strong>Подробнее</strong></span></summary><div class="hub-guide__drawer"><header class="hub-guide__intro"><h2>${escapeHtml(content.heading)}</h2><p>${escapeHtml(content.lead || content.description)}</p></header><div class="hub-guide__content"><section class="hub-guide__story">${renderParagraphs(content)}</section></div></div></details></article></main>`
-}
+const renderUtilityFallback = (content: SeoPageContent) => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead || content.description)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="${escapeHtml(content.canonicalPath)}">Открыть страницу</a><a class="ui-button ui-button--secondary" href="/">К играм</a></div></div></section><details class="hub-guide" open><summary class="hub-guide__summary"><span class="hub-guide__summary-title"><strong>Подробнее</strong></span></summary><div class="hub-guide__drawer"><header class="hub-guide__intro"><h2>${escapeHtml(content.heading)}</h2><p>${escapeHtml(content.lead || content.description)}</p></header><div class="hub-guide__content"><section class="hub-guide__story">${renderParagraphs(content)}</section></div></div></details></article></main>`
 
 const renderArtifactDossier = (content: GameSeoContent) => {
   const presentation = GAME_GUIDE_PRESENTATION[content.mode]

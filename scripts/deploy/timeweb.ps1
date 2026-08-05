@@ -123,16 +123,11 @@ if command -v nginx >/dev/null 2>&1; then
     fi
     HOST_NGINX_CHANGED=1
   fi
-  if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_CONFIG"; then
-    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*danetki[^)]*\)\$' "$NGINX_CONFIG"; then
-      echo "Host Nginx is missing the canonical game SEO route allowlist" >&2
+  if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_CONFIG"; then
+    sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*game-comments[^)]*\)\$/ s/game-comments\|//g' "$NGINX_CONFIG"
+    if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_CONFIG"; then
       cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
-      exit 1
-    fi
-    sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/game-comments|danetki/' "$NGINX_CONFIG"
-    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_CONFIG"; then
-      cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
-      echo "Could not add the comment-game landing to the host Nginx route" >&2
+      echo "Could not remove the private comment-game landing from the host Nginx route" >&2
       exit 1
     fi
     HOST_NGINX_CHANGED=1
@@ -187,7 +182,7 @@ elif command -v docker >/dev/null 2>&1; then
   NGINX_ROUTE_CHANGED=0
   if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null \
     || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' >/dev/null \
-    || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' >/dev/null \
+    || docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' >/dev/null \
     || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null; then
     mapfile -t NGINX_ROUTE_CONFIGS < <(
       while IFS= read -r source; do
@@ -211,8 +206,8 @@ elif command -v docker >/dev/null 2>&1; then
     if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
       sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/animal|danetki/' "$NGINX_ROUTE_CONFIG"
     fi
-    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
-      sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*danetki[^)]*\)\$/ s/danetki/game-comments|danetki/' "$NGINX_ROUTE_CONFIG"
+    if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
+      sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*game-comments[^)]*\)\$/ s/game-comments\|//g' "$NGINX_ROUTE_CONFIG"
     fi
     if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_ROUTE_CONFIG"; then
       sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/legal\/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{/,/^[[:space:]]*}/ s#try_files[[:space:]]+/index\.html[[:space:]]+=404;#try_files /seo$uri.html =404;#' "$NGINX_ROUTE_CONFIG"
@@ -227,9 +222,9 @@ elif command -v docker >/dev/null 2>&1; then
       echo "Could not add Animals to the mounted Docker Nginx route" >&2
       exit 1
     fi
-    if ! grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
+    if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
       cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
-      echo "Could not add the comment-game landing to the mounted Docker Nginx route" >&2
+      echo "Could not remove the private comment-game landing from the mounted Docker Nginx route" >&2
       exit 1
     fi
     if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_ROUTE_CONFIG"; then
@@ -270,8 +265,8 @@ elif command -v docker >/dev/null 2>&1; then
     rollback_nginx_route
     exit 1
   fi
-  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' >/dev/null; then
-    echo "Docker Nginx did not activate the comment-game SEO route" >&2
+  if docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' >/dev/null; then
+    echo "Docker Nginx still exposes the private comment-game SEO route" >&2
     rollback_nginx_route
     exit 1
   fi

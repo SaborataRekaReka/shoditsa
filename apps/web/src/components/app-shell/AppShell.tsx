@@ -313,7 +313,6 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
           <a href="/games/series">Сериалы</a>
           <a href="/games/anime">Угадай аниме</a>
           <a href="/games/game">Угадай видеоигру</a>
-          <a href="/games/game-comments">Игра по комментариям</a>
           <a href="/games/city">Города</a>
           <a href="/games/music">Угадай исполнителя</a>
           <a href="/games/diagnosis">Угадай диагноз</a>
