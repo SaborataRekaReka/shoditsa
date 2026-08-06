@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
 import {
+  BookOpen,
   CalendarDays,
   ChevronDown,
+  PawPrint,
   Save,
   Send,
   Ticket,
@@ -183,10 +185,16 @@ export function GameResult(props: Props) {
     />
     {props.mode === 'diagnosis' && <section className="diagnosis-result-funnel result-card__wide" aria-label="Что дальше">
       <div className="diagnosis-result-funnel__copy">
-        <strong>Новый пациент — завтра</strong>
-        <span>Вернитесь завтра или сыграйте в архиве.</span>
+        <strong>Продолжить играть</strong>
+        <span>Новый пациент — завтра, а другие загадки доступны сейчас.</span>
       </div>
       <div className="diagnosis-result-funnel__actions">
+        <a className="diagnosis-result-funnel__primary" href="/games/animal" onClick={() => trackDiagnosisGoal('nextGame', { placement: 'result-related', destination: 'animal' })}>
+          <PawPrint aria-hidden="true" /> Угадай животное
+        </a>
+        <a href="/games/book" onClick={() => trackDiagnosisGoal('nextGame', { placement: 'result-related', destination: 'book' })}>
+          <BookOpen aria-hidden="true" /> Угадай книгу
+        </a>
         {!authLoading && isGuest && <a href="/register" onClick={() => trackDiagnosisGoal('save', { placement: 'result' })}>
           <Save aria-hidden="true" /> Сохранить прогресс
         </a>}

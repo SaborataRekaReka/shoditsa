@@ -133,6 +133,13 @@ export const normalizeSiteUrl = (value: string | undefined) => {
   }
 }
 
+export const seoRouteForRuntime = (pathname: string, canonicalPathOverride?: string): SeoRoute => {
+  const route = seoRouteFromPathname(pathname)
+  return canonicalPathOverride
+    ? { ...route, canonicalPath: normalizeSeoPathname(canonicalPathOverride) }
+    : route
+}
+
 export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN) => {
   const canonicalUrl = new URL(route.canonicalPath, `${siteUrl}/`).toString()
   const imageUrl = new URL(route.imagePath, `${siteUrl}/`).toString()
@@ -219,11 +226,14 @@ const ensureJsonLdScript = () => {
   return script
 }
 
-export const applyRuntimeSeo = (pathname = typeof window === 'undefined' ? '/' : window.location.pathname) => {
+export const applyRuntimeSeo = (
+  pathname = typeof window === 'undefined' ? '/' : window.location.pathname,
+  canonicalPathOverride?: string,
+) => {
   if (typeof window === 'undefined') return
 
   const siteUrl = normalizeSiteUrl(import.meta.env.VITE_SITE_URL)
-  const routeSeo = seoRouteFromPathname(pathname)
+  const routeSeo = seoRouteForRuntime(pathname, canonicalPathOverride)
   const canonicalUrl = new URL(routeSeo.canonicalPath, `${siteUrl}/`).toString()
   const imageUrl = new URL(routeSeo.imagePath, `${siteUrl}/`).toString()
 

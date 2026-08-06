@@ -39,8 +39,9 @@ import {
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
-import { trackDiagnosisGoal } from './app/diagnosis-analytics'
+import { trackDiagnosisGoal, trackDiagnosisSessionStart } from './app/diagnosis-analytics'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
+import { applyRuntimeSeo } from './app/seo'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
 import { apiErrorMessage } from './api/error-message'
@@ -3626,6 +3627,14 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   useEffect(() => {
     if (!session) return
     setGameMatchStripOpen(true)
+    applyRuntimeSeo(window.location.pathname, `/games/${session.mode}`)
+    if (session.mode === 'diagnosis') {
+      trackDiagnosisSessionStart(session.id, {
+        period: session.period,
+        kind: session.kind,
+        status: session.status,
+      })
+    }
   }, [session?.id, session?.mode])
 
   useEffect(() => {
@@ -5174,7 +5183,7 @@ function GameApp() {
     }
     if (transition === 'title-to-game') return
     trackMetrikaGoal('start_session', { mode, period })
-    if (mode === 'diagnosis') trackDiagnosisGoal('start', { period })
+    if (mode === 'diagnosis' && !SERVER_RUNTIME) trackDiagnosisGoal('start', { period, entry: 'local-session' })
     if (SERVER_RUNTIME) {
       if (!isPlayableModeId(mode)) {
         setServerActionError('Этот игровой режим ещё не опубликован')

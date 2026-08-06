@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS } from './seo-content'
-import { normalizeSeoPathname, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
+import { normalizeSeoPathname, seoRouteForRuntime, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
 
 describe('search index contract', () => {
   it('publishes one unique, indexable landing page for every canonical game mode', () => {
@@ -87,7 +87,18 @@ describe('search index contract', () => {
     expect(GAME_SEO.diagnosis.description).toContain('угадайте болезнь')
     expect(GAME_SEO.diagnosis.description).toContain('игровой диагноз')
     expect(GAME_SEO.diagnosis.lead).toContain('Игра «Поставь диагноз»')
+    expect(GAME_SEO.diagnosis.searchSummary?.heading).toContain('по симптомам')
+    expect(GAME_SEO.diagnosis.searchSummary?.paragraphs.join(' ')).toContain('медицинский квиз')
+    expect(GAME_SEO.diagnosis.searchSummary?.paragraphs.join(' ')).toContain('Поставь диагноз')
     expect(GAME_SEO.diagnosis.description).not.toContain('лечение')
+  })
+
+  it('points a loaded session at its public game while keeping it out of the index', () => {
+    const route = seoRouteForRuntime('/sessions/id-1', '/games/diagnosis')
+
+    expect(route.canonicalPath).toBe('/games/diagnosis')
+    expect(route.indexable).toBe(false)
+    expect(route.robots).toContain('noindex')
   })
 
   it('publishes visible search-intent summaries for the three recovery pages', () => {
