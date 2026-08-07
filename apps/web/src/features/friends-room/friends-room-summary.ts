@@ -10,6 +10,7 @@ const modeLabels: Record<PlayableCatalogGuessModeId, string> = {
   diagnosis: 'Диагнозы',
   animal: 'Животные',
   book: 'Книги',
+  character: 'Персонажи',
 }
 
 export const friendsRoomSummaryTitle = (room: FriendsRoomSummary) => {

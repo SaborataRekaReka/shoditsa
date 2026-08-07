@@ -12,6 +12,7 @@ const sharedByMode: Record<PlayableCatalogGuessModeId, Partial<TitleItem>> = {
   diagnosis: { bodySystems: ['Дыхательная система'], keySymptoms: ['Кашель'], icdGroup: 'J00–J99', diseaseTypes: ['Инфекционное'] },
   animal: { taxonomicClass: 'Млекопитающие', animalOrder: 'Хищные', animalFamily: 'Кошачьи', habitats: ['Саванна'], animalContinents: ['Африка'], bodyMassKg: 100 },
   book: { bookAuthors: ['Автор'], bookCountry: 'Россия', bookOriginalLanguage: 'русский', bookPublicationYear: 2014, bookGenres: ['роман'], isPartOfSeries: false, hasAdaptation: true, bookAdaptationCount: 1, hasAwards: false },
+  character: { characterEra: 'XIX век', characterEraOrder: 6, characterSourceTypes: ['Роман'], characterOriginCultures: ['Русская литература'], characterNature: 'Человек', characterGender: 'Мужчина', characterAgeGroup: 'Взрослый', characterRoles: ['Главный герой'], characterArchetypes: ['Исследователь'], characterAbilities: ['Дедукция'], characterSettings: ['Город'] },
 }
 
 const title = (mode: PlayableCatalogGuessModeId, id: string): TitleItem => ({

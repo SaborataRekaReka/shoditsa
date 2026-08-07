@@ -71,6 +71,9 @@ export const FRIENDS_ROOM_PACK_VARIANTS = {
   book: [
     { id: 'all', label: 'Весь каталог', description: '277 известных книг разных эпох и жанров' },
   ],
+  character: [
+    { id: 'all', label: 'Весь каталог', description: '20 узнаваемых персонажей первого набора' },
+  ],
 } as const satisfies Record<Static<typeof PlayableCatalogGuessModeSchema>, readonly FriendsRoomPackVariant[]>
 
 export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
@@ -83,6 +86,7 @@ export const FRIENDS_ROOM_DEFAULT_PACK_VARIANTS = {
   diagnosis: 'all',
   animal: 'all',
   book: 'all',
+  character: 'all',
 } as const satisfies Record<Static<typeof PlayableCatalogGuessModeSchema>, string>
 
 export type FriendsRoomPackSelection = {

@@ -149,7 +149,7 @@ const sourceChecks = [
     path: 'packages/contracts/src/game-modes.ts',
     required: [
       ['canonical content modes', /CONTENT_MODE_IDS\s*=\s*\[[^\]]*'danetki'[^\]]*'animal'[^\]]*'book'[^\]]*'character'[^\]]*\]\s*as const/],
-      ['canonical playable modes', /PLAYABLE_MODE_IDS\s*=\s*\[[^\]]*'movie'[^\]]*'series'[^\]]*'anime'[^\]]*'game'[^\]]*'music'[^\]]*'diagnosis'[^\]]*'city'[^\]]*'animal'[^\]]*'book'[^\]]*\]\s*as const/],
+      ['canonical playable modes', /PLAYABLE_MODE_IDS\s*=\s*\[[^\]]*'movie'[^\]]*'series'[^\]]*'anime'[^\]]*'game'[^\]]*'music'[^\]]*'diagnosis'[^\]]*'city'[^\]]*'animal'[^\]]*'book'[^\]]*'character'[^\]]*\]\s*as const/],
       ['city manifest entry', /city:\s*\{/],
       ['animal manifest entry', /animal:\s*\{/],
       ['book manifest entry', /book:\s*\{/],

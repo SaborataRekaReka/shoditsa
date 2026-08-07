@@ -74,6 +74,7 @@ const modePrompt: Record<PlayableCatalogGuessModeId, string> = {
   diagnosis: 'Какой диагноз соответствует этим признакам?',
   animal: 'Какое животное соответствует этим признакам?',
   book: 'Какая книга соответствует этим признакам?',
+  character: 'Какой персонаж соответствует этим признакам?',
 }
 
 const clean = (value: unknown) => String(value ?? '').replace(/\s+/g, ' ').trim()
