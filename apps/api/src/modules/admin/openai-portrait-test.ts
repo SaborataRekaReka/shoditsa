@@ -14,7 +14,7 @@ type PortraitSpec = {
   description: string
 }
 
-export type OpenAiPortraitTestItem = PortraitSpec & PersistedPortrait
+export type OpenAiPortraitTestItem = PortraitSpec & PersistedPortrait & { storage: 'media' | 'memory' }
 export type OpenAiPortraitTestJob = {
   id: string
   status: 'queued' | 'running' | 'completed' | 'failed'
@@ -27,6 +27,7 @@ export type OpenAiPortraitTestJob = {
   completedAt: string | null
   items: OpenAiPortraitTestItem[]
   error: string | null
+  warning: string | null
 }
 
 const PORTRAITS: readonly PortraitSpec[] = [
@@ -61,7 +62,7 @@ const jobs = new Map<string, OpenAiPortraitTestJob>()
 let activeJobId: string | null = null
 
 const cleanJobs = () => {
-  const cutoff = Date.now() - 24 * 60 * 60 * 1000
+  const cutoff = Date.now() - 60 * 60 * 1000
   for (const [id, job] of jobs) {
     if (new Date(job.createdAt).getTime() < cutoff && id !== activeJobId) jobs.delete(id)
   }
@@ -131,8 +132,19 @@ const runJob = async (options: {
   try {
     const settled = await Promise.allSettled(PORTRAITS.map(async (portrait) => {
       const base64 = await requestPortrait({ apiKey: options.apiKey, dispatcher, portrait })
-      const persisted = await options.persist({ base64, fileName: `${portrait.id}.webp` })
-      return { ...portrait, ...persisted }
+      try {
+        const persisted = await options.persist({ base64, fileName: `${portrait.id}.webp` })
+        return { ...portrait, ...persisted, storage: 'media' as const }
+      } catch {
+        return {
+          ...portrait,
+          url: `data:image/webp;base64,${base64}`,
+          width: 1024,
+          height: 1536,
+          bytes: Buffer.byteLength(base64, 'base64'),
+          storage: 'memory' as const,
+        }
+      }
     }))
     job.items = settled.flatMap((result) => result.status === 'fulfilled' ? [result.value] : [])
     const failures = settled.flatMap((result) => result.status === 'rejected' ? [safeError(result.reason)] : [])
@@ -141,6 +153,9 @@ const runJob = async (options: {
       job.error = `${failures.length} of ${job.count} portraits failed: ${failures.join('; ')}`.slice(0, 500)
     } else {
       job.status = 'completed'
+      if (job.items.some((item) => item.storage === 'memory')) {
+        job.warning = 'Media storage is unavailable; portraits are kept in protected process memory for one hour.'
+      }
     }
   } catch (error) {
     job.status = 'failed'
@@ -172,6 +187,7 @@ export const startOpenAiPortraitTest = (options: {
     completedAt: null,
     items: [],
     error: null,
+    warning: null,
   }
   jobs.set(job.id, job)
   activeJobId = job.id

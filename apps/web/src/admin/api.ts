@@ -152,8 +152,9 @@ export type OpenAiPortraitTest = {
   estimatedOutputCostUsd: 0.025
   createdAt: string
   completedAt: string | null
-  items: Array<{ id: string; title: string; description: string; url: string; width: number; height: number; bytes: number }>
+  items: Array<{ id: string; title: string; description: string; url: string; width: number; height: number; bytes: number; storage: 'media' | 'memory' }>
   error: string | null
+  warning: string | null
 }
 
 export type ConnectionsImportPreview = {
