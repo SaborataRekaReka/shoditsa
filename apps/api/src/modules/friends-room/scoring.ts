@@ -41,7 +41,6 @@ const MODE_WEIGHTS: Record<PlayableCatalogGuessModeId, Record<string, number>> =
   diagnosis: { course: 45, contagiousness: 45, typical_age: 40, risk_factors: 60 },
   animal: { animal_class: 25, animal_order: 55, animal_family: 70, body_coverings: 30, habitats: 35, animal_continents: 25, diets: 35, locomotion: 25, reproduction: 30, body_mass: 35, leg_count: 25 },
   book: { book_authors: 90, book_country: 45, book_language: 45, book_year: 30, book_genres: 35, book_series: 20, book_adaptation: 25, book_adaptation_count: 25, book_awards: 25 },
-  character: { character_era: 35, character_source_types: 45, character_origin_cultures: 50, character_nature: 60, character_gender: 20, character_age_group: 25, character_roles: 35, character_archetypes: 45, character_abilities: 35, character_settings: 30 },
 }
 
 const statusFactor = (hint: Hint): { status: ScoreStatus; factor: number } | null => {
