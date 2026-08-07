@@ -530,6 +530,7 @@ describe('server hint options', () => {
       diagnosis: { bodySystems: ['Нервная система'] },
       animal: { taxonomicClass: 'Млекопитающие' },
       book: { bookAuthors: ['Автор'] },
+      character: { characterNature: 'Человек' },
     } as const
 
     for (const mode of CATALOG_GUESS_MODE_IDS) {

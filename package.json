@@ -80,6 +80,8 @@
     "data:build:animal": "node scripts/animals/build-animal.mjs",
     "data:build:animals": "node scripts/animals/build-batch.mjs",
     "data:build:books": "node scripts/books/build-library.mjs",
+    "data:build:characters": "node scripts/characters/build-library.mjs",
+    "data:characters:prepare-portraits": "node scripts/characters/prepare-portraits.mjs",
     "data:backfill:animals": "node scripts/animals/backfill-derived-criteria.mjs",
     "data:names:animals": "node scripts/animals/apply-editorial-names.mjs",
     "data:review:animals": "node scripts/animals/build-review-queue.mjs",

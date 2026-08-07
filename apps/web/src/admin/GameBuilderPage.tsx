@@ -286,7 +286,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
   const cast = currentData.cast
   const today = new Date()
   const prettyToday = new Intl.DateTimeFormat('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }).format(today)
-  const gameSubject: Record<ContentMode, string> = { movie: 'фильм', series: 'сериал', anime: 'аниме', game: 'игру', music: 'артиста', diagnosis: 'диагноз', city: 'город', animal: 'животное', book: 'книгу', danetki: 'данетку', connections: 'раунд связей' }
+  const gameSubject: Record<ContentMode, string> = { movie: 'фильм', series: 'сериал', anime: 'аниме', game: 'игру', music: 'артиста', diagnosis: 'диагноз', city: 'город', animal: 'животное', book: 'книгу', character: 'персонажа', danetki: 'данетку', connections: 'раунд связей' }
   const nativeDrop = (targetKey: string) => ({
     onDragOver: (event: DragEvent<HTMLElement>) => { event.preventDefault(); event.dataTransfer.dropEffect = 'copy' },
     onDrop: (event: DragEvent<HTMLElement>) => { event.preventDefault(); const fieldId = event.dataTransfer.getData('application/x-shoditsa-json-field') || event.dataTransfer.getData('text/plain'); if (fieldId) setTargetMapping(targetKey, fieldId) },

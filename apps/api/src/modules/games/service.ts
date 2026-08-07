@@ -252,6 +252,19 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
     ])
   }
 
+  if (answer.mode === 'character') {
+    return presentInfoCandidates([
+      infoListCandidate('character_source_types', 'Источник', answer.characterSourceTypes ?? [], 2),
+      infoListCandidate('character_origin_cultures', 'Культура', answer.characterOriginCultures ?? [], 2),
+      infoScalarCandidate('character_nature', 'Природа', answer.characterNature),
+      infoListCandidate('character_roles', 'Роль', answer.characterRoles ?? [], 2),
+      infoListCandidate('character_archetypes', 'Архетип', answer.characterArchetypes ?? [], 2),
+      infoListCandidate('character_abilities', 'Способности', answer.characterAbilities ?? [], 3),
+      infoListCandidate('character_settings', 'Мир', answer.characterSettings ?? [], 3),
+      infoListCandidate(null, 'Знаковые предметы', answer.iconicObjects ?? [], 2),
+    ])
+  }
+
   if (answer.mode === 'anime') {
     return presentInfoCandidates([
       answer.animeKind ? infoScalarCandidate('anime_kind', 'Формат', answer.animeKind) : null,

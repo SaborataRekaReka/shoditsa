@@ -42,7 +42,7 @@ function emit_explicit_routes() {
   print "        add_header Cache-Control \"no-cache\" always;"
   print "    }"
   print ""
-  print "    location ~ ^/(play/(movie|series|anime|game|music|diagnosis|city|animal|book|connections)|sessions/[^/]+|review/music|purchase/return|danetki/join/[^/]+|specials/[^/]+)$ {"
+  print "    location ~ ^/(play/(movie|series|anime|game|music|diagnosis|city|animal|book|character|connections)|sessions/[^/]+|review/music|purchase/return|danetki/join/[^/]+|specials/[^/]+)$ {"
   print "        try_files /index.html =404;"
   print "        add_header X-Robots-Tag \"noindex, follow, noarchive\" always;"
   print "        add_header Cache-Control \"no-cache\" always;"

@@ -77,5 +77,8 @@
   "animalGeneratedAt": "2026-07-31T07:18:52.344Z",
   "bookCount": 277,
   "bookSource": "data/books/source/books_enriched_full.json",
-  "bookGeneratedAt": "2026-07-31T13:50:36.357Z"
+  "bookGeneratedAt": "2026-07-31T13:50:36.357Z",
+  "characterCount": 20,
+  "characterSource": "data/characters/seeds/characters.v1.json",
+  "characterGeneratedAt": "2026-08-08T00:00:00.000Z"
 }

@@ -172,6 +172,7 @@ const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   diagnosis: 'images/title-posters/diagnosis-ticket-poster.avif',
   animal: 'images/title-posters/animal-ticket-poster.avif',
   book: 'images/title-posters/book-ticket-poster-v2.avif',
+  character: 'images/title-posters/character-ticket-poster.webp',
 }
 const PERIOD_UNLOCK_ORDER: PeriodKey[] = ['all', 'from_2020', 'from_2010', 'from_2000', 'from_1990', 'from_1980', 'from_1960']
 const UNLOCKABLE_PERIOD_MODES = new Set<TitleMode>(PERIOD_UNLOCKABLE_MODE_IDS.filter(isCatalogGuessModeId) as TitleMode[])
@@ -2691,6 +2692,29 @@ function BookAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   </article>
 }
 
+function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+  const score = attemptProgressStats(attempt.hints)
+  return <article className="attempt-card attempt-card--character">
+    <div className="attempt-card__header">
+      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <Poster item={item} />
+      <div className="attempt-card__identity">
+        <span className="attempt-label">Попытка {index + 1}</span>
+        <h2>{item.titleRu}</h2>
+        <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || item.characterSourceWork || 'Персонаж'}</span></p>
+        <div className="gm-genres">
+          {item.characterSourceWork && <span className="gm-genre">{item.characterSourceWork}</span>}
+          {item.characterEra && <span className="gm-genre">{item.characterEra}</span>}
+        </div>
+      </div>
+    </div>
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+    <div className="attempt-clue-grid character-attempt__clues">
+      {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
+    </div>
+  </article>
+}
+
 const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
   movie: AttemptCard,
   series: AttemptCard,
@@ -2701,6 +2725,7 @@ const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {
   diagnosis: DiagnosisAttemptCard,
   animal: AnimalAttemptCard,
   book: BookAttemptCard,
+  character: CharacterAttemptCard,
 }
 
 function ModeAttemptCard(props: Parameters<typeof AttemptCard>[0]) {

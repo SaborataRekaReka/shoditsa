@@ -7,6 +7,7 @@ import {
   ChevronDown,
   CircleHelp,
   Database,
+  Drama,
   Film,
   Flower2,
   Gamepad2,
@@ -34,6 +35,7 @@ const GUIDE_ICONS = {
   diagnosis: Stethoscope,
   animal: PawPrint,
   book: BookOpen,
+  character: Drama,
   connections: Grid2X2,
   danetki: ScanSearch,
 } satisfies Record<SeoGameMode, LucideIcon>

@@ -15,7 +15,7 @@ export const DAILY_MODE_LABELS = Object.fromEntries(
 ) as Record<FullHouseModeId, string>
 
 const MODE_ACCUSATIVE: Record<TitleMode, string> = {
-  movie: 'кино', series: 'сериалы', anime: 'аниме', game: 'игры', city: 'города', music: 'музыку', diagnosis: 'диагнозы', animal: 'животных', book: 'книги',
+  movie: 'кино', series: 'сериалы', anime: 'аниме', game: 'игры', city: 'города', music: 'музыку', diagnosis: 'диагнозы', animal: 'животных', book: 'книги', character: 'персонажей',
 }
 
 const newestFirst = (left: SavedGame, right: SavedGame) => right.updatedAt - left.updatedAt

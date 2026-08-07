@@ -1,5 +1,5 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book', 'character'] as const
 // Every listed runtime is available in the player application. Full-house
 // participation remains a separate capability below.
 export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'animal', 'book', 'connections', 'danetki'] as const
@@ -13,7 +13,7 @@ export type GameModeCapabilities = {
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'danetki' | 'connections'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'characters' | 'danetki' | 'connections'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
@@ -77,12 +77,16 @@ export const GAME_MODE_MANIFEST = {
     engine: 'catalog_guess', label: 'Книги', dailyLabel: 'Книга', shareIcon: '📚', dataDir: 'books', dailyOrder: 9,
     countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
   },
+  character: {
+    engine: 'catalog_guess', label: 'Персонажи', dailyLabel: 'Персонаж', shareIcon: '🎭', dataDir: 'characters', dailyOrder: 10,
+    countsTowardFullHouse: true, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted', 'local'],
+  },
   danetki: {
-    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 11,
+    engine: 'danetki_chat', label: 'Данетки', dailyLabel: 'Данетка', shareIcon: '❓', dataDir: 'danetki', dailyOrder: 12,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: true, variants: [], runtimes: ['hosted'],
   },
   connections: {
-    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 10,
+    engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 11,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city', 'animal', 'book']
+const REQUIRED_MODES = ['movie', 'series', 'anime', 'game', 'diagnosis', 'city', 'animal', 'book', 'character']
 const CITY_RANK_KEYS = ['economy', 'humanCapital', 'qualityOfLife', 'ecology', 'governance']
 
 const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -118,6 +118,30 @@ const validateBooks = (items, file) => {
   return errors
 }
 
+const validateCharacters = async (items, rootDir, file) => {
+  const errors = []
+  if (items.length !== 20) errors.push(`${file}: character runtime roster must contain exactly 20 items, found ${items.length}`)
+  const listFields = ['characterSourceTypes', 'characterOriginCultures', 'characterRoles', 'characterArchetypes', 'characterAbilities', 'characterSettings']
+  const scalarFields = ['characterEra', 'characterNature', 'characterGender', 'characterAgeGroup', 'characterSourceWork']
+  for (const item of items) {
+    if (!isObject(item) || item.mode !== 'character') continue
+    for (const key of listFields) if (!Array.isArray(item[key]) || !item[key].length) errors.push(`${file}: character ${item.id ?? '(unknown)'} must have ${key}`)
+    for (const key of scalarFields) if (typeof item[key] !== 'string' || !item[key].trim()) errors.push(`${file}: character ${item.id ?? '(unknown)'} must have ${key}`)
+    if (!Number.isFinite(item.characterEraOrder)) errors.push(`${file}: character ${item.id ?? '(unknown)'} must have characterEraOrder`)
+    if (typeof item.plotHint !== 'string' || !item.plotHint.trim()) errors.push(`${file}: character ${item.id ?? '(unknown)'} must have a plot hint`)
+    if (typeof item.posterUrl !== 'string' || !item.posterUrl.startsWith('/images/characters/portraits/')) {
+      errors.push(`${file}: character ${item.id ?? '(unknown)'} must have a local portrait`)
+    } else {
+      try {
+        await fs.access(path.join(rootDir, 'public', item.posterUrl.replace(/^\/+/, '')))
+      } catch {
+        errors.push(`${file}: character ${item.id ?? '(unknown)'} portrait is missing: ${item.posterUrl}`)
+      }
+    }
+  }
+  return errors
+}
+
 const validateVignetteMap = (json, file) => {
   if (!Array.isArray(json)) return [`${file}: root must be an array`]
   return json.flatMap((entry) => {
@@ -131,7 +155,7 @@ const validateVignetteMap = (json, file) => {
 
 const validateSource = (json, file) => {
   if (!isObject(json)) return [`${file}: root must be object`]
-  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount', 'animalCount', 'bookCount']
+  const numericKeys = ['movieCount', 'seriesCount', 'animeCount', 'gameCount', 'diagnosisCount', 'animalCount', 'bookCount', 'characterCount']
   return numericKeys
     .filter((key) => json[key] != null && typeof json[key] !== 'number')
     .map((key) => `${file}: ${key} must be number when present`)
@@ -148,6 +172,7 @@ export const validateGeneratedData = async (rootDir) => {
     cities: 'cities.generated.json',
     animals: 'animals.generated.json',
     books: 'books.generated.json',
+    characters: 'characters.generated.json',
     vignettes: 'diagnosis-case-vignettes.by-id.json',
     source: 'source.json',
   }
@@ -163,6 +188,7 @@ export const validateGeneratedData = async (rootDir) => {
     cities: [path.join(dataDir, 'libraries', 'cities', 'items.json'), path.join(dataDir, files.cities)],
     animals: [path.join(dataDir, 'libraries', 'animals', 'items.json'), path.join(dataDir, files.animals)],
     books: [path.join(dataDir, 'libraries', 'books', 'items.json'), path.join(dataDir, files.books)],
+    characters: [path.join(dataDir, 'libraries', 'characters', 'items.json'), path.join(dataDir, files.characters)],
   }
 
   for (const [datasetName, locations] of Object.entries(datasetLocations)) {
@@ -174,6 +200,9 @@ export const validateGeneratedData = async (rootDir) => {
     }
     if (datasetName === 'books' && Array.isArray(json)) {
       errors.push(...validateBooks(json, fileLabel || datasetName))
+    }
+    if (datasetName === 'characters' && Array.isArray(json)) {
+      errors.push(...await validateCharacters(json, rootDir, fileLabel || datasetName))
     }
   }
 

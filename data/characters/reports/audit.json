@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-08-07T20:25:51.986Z",
+  "expected": 20,
+  "total": 20,
+  "playable": 20,
+  "dailyEligible": 20,
+  "criteriaCoverage": {
+    "characterEra": 20,
+    "characterSourceTypes": 20,
+    "characterOriginCultures": 20,
+    "characterNature": 20,
+    "characterGender": 20,
+    "characterAgeGroup": 20,
+    "characterRoles": 20,
+    "characterArchetypes": 20,
+    "characterAbilities": 20,
+    "characterSettings": 20
+  },
+  "difficulty": {
+    "easy": 14,
+    "medium": 6,
+    "hard": 0
+  },
+  "rights": {
+    "public_domain_source_reviewed": 20
+  },
+  "issues": []
+}

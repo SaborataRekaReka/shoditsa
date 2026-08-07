@@ -199,6 +199,29 @@ export const FINAL_CHOICE_MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     ],
     weights: { origin: 1.1, genres: 1.25, publication: 1, adaptations: 0.8 },
   },
+  character: {
+    primaryMeta: (item) => compact([item.characterSourceWork, item.characterEra]) || 'Источник не указан',
+    facts: [
+      fact('origin', ['character_source_types', 'character_origin_cultures'], 'categorical', 'Происхождение', (item) => compact([
+        compact(item.characterSourceTypes ?? [], 2),
+        compact(item.characterOriginCultures ?? [], 2),
+      ]) || null),
+      fact('identity', ['character_nature', 'character_gender', 'character_age_group'], 'categorical', 'Образ', (item) => compact([
+        item.characterNature,
+        item.characterGender,
+        item.characterAgeGroup,
+      ], 3) || null),
+      fact('role', ['character_roles', 'character_archetypes'], 'categorical', 'Роль', (item) => compact([
+        compact(item.characterRoles ?? [], 2),
+        compact(item.characterArchetypes ?? [], 2),
+      ]) || null),
+      fact('abilities', ['character_abilities', 'character_settings'], 'additional', 'Способности и мир', (item) => compact([
+        compact(item.characterAbilities ?? [], 2),
+        compact(item.characterSettings ?? [], 2),
+      ]) || null),
+    ],
+    weights: { origin: 1.05, identity: 1.05, role: 1.2, abilities: 1.1 },
+  },
 }
 
 const hashValue = (input: string) => {

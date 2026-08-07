@@ -193,6 +193,15 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: 'Жанры', present: (payload) => hasContentValue(payload.bookGenres) },
     { label: 'Обложка', present: (payload) => hasTextValue(payload.posterUrl) },
   ],
+  character: [
+    { label: 'Произведение', present: (payload) => hasTextValue(payload.characterSourceWork) },
+    { label: 'Эпоха', present: (payload) => hasTextValue(payload.characterEra) },
+    { label: 'Источник', present: (payload) => hasContentValue(payload.characterSourceTypes) },
+    { label: 'Культура', present: (payload) => hasContentValue(payload.characterOriginCultures) },
+    { label: 'Роль', present: (payload) => hasContentValue(payload.characterRoles) },
+    { label: 'Способности', present: (payload) => hasContentValue(payload.characterAbilities) },
+    { label: 'Портрет', present: (payload) => hasTextValue(payload.posterUrl) },
+  ],
   danetki: [
     { label: 'Русское название', present: (payload) => hasTextValue(payload.titleRu) },
     { label: 'Условие', present: (payload) => hasTextValue(payload.condition) },

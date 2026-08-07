@@ -1667,6 +1667,49 @@ export const compareBooks = (guess: TitleItem, answer: TitleItem): Hint[] => {
   ]
 }
 
+export const compareCharacters = (guess: TitleItem, answer: TitleItem): Hint[] => {
+  const scalarHint = (key: string, label: string, guessValue: string | null | undefined, answerValue: string | null | undefined): Hint => ({
+    key,
+    label,
+    value: knownComparisonText(guessValue) ?? 'Нет данных',
+    status: scalar(guessValue, answerValue),
+    direction: null,
+  })
+  const listHint = (key: string, label: string, guessValues: string[] | undefined, answerValues: string[] | undefined): Hint => {
+    const comparableGuess = knownComparisonValues(guessValues)
+    const comparableAnswer = knownComparisonValues(answerValues)
+    return {
+      key,
+      label,
+      value: list(comparableGuess),
+      status: setStatus(comparableGuess, comparableAnswer),
+      direction: null,
+      matchedValues: overlaps(comparableGuess, comparableAnswer),
+    }
+  }
+  const eraOrder = numeric(guess.characterEraOrder, answer.characterEraOrder, 0, 1)
+  const eraHint: Hint = {
+    key: 'character_era',
+    label: 'Эпоха',
+    value: knownComparisonText(guess.characterEra) ?? 'Нет данных',
+    status: scalar(guess.characterEra, answer.characterEra) === 'match' ? 'match' : eraOrder.status,
+    direction: scalar(guess.characterEra, answer.characterEra) === 'match' ? null : eraOrder.direction,
+  }
+
+  return [
+    eraHint,
+    listHint('character_source_types', 'Источник', guess.characterSourceTypes, answer.characterSourceTypes),
+    listHint('character_origin_cultures', 'Культура', guess.characterOriginCultures, answer.characterOriginCultures),
+    scalarHint('character_nature', 'Природа', guess.characterNature, answer.characterNature),
+    scalarHint('character_gender', 'Пол', guess.characterGender, answer.characterGender),
+    scalarHint('character_age_group', 'Возраст', guess.characterAgeGroup, answer.characterAgeGroup),
+    listHint('character_roles', 'Роль', guess.characterRoles, answer.characterRoles),
+    listHint('character_archetypes', 'Архетип', guess.characterArchetypes, answer.characterArchetypes),
+    listHint('character_abilities', 'Способности', guess.characterAbilities, answer.characterAbilities),
+    listHint('character_settings', 'Мир', guess.characterSettings, answer.characterSettings),
+  ]
+}
+
 export type GameModeRules = {
   pool: (items: TitleItem[], variantKey: string | null) => TitleItem[]
   compare: (guess: TitleItem, answer: TitleItem) => Hint[]
@@ -1684,6 +1727,7 @@ export const GAME_MODE_RULES: Record<TitleMode, GameModeRules> = {
   diagnosis: { pool: unchangedPool, compare: compareDiagnoses },
   animal: { pool: unchangedPool, compare: compareAnimals },
   book: { pool: unchangedPool, compare: compareBooks },
+  character: { pool: unchangedPool, compare: compareCharacters },
 }
 
 export const compareTitles = (guess: TitleItem, answer: TitleItem): Hint[] => {

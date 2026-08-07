@@ -26,6 +26,7 @@ const TITLE_POSTER_PATHS: Partial<Record<GameSeoContent['mode'], string>> = {
   diagnosis: '/images/title-posters/diagnosis-ticket-poster.avif',
   animal: '/images/title-posters/animal-ticket-poster.avif',
   book: '/images/title-posters/book-ticket-poster-v2.avif',
+  character: '/images/title-posters/character-ticket-poster.webp',
   danetki: '/images/title-posters/danetki-ticket-poster.avif',
 }
 const escapeHtml = (value: string) => value

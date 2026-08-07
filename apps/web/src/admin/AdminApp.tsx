@@ -813,6 +813,17 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Экранизации', ['bookAdaptationYears']],
       ['Премии', ['bookAwards']],
     ],
+    character: [
+      ['Произведение', ['characterSourceWork']],
+      ['Автор', ['characterSourceAuthor']],
+      ['Эпоха', ['characterEra']],
+      ['Источник', ['characterSourceTypes']],
+      ['Культура', ['characterOriginCultures']],
+      ['Природа', ['characterNature']],
+      ['Возраст', ['characterAgeGroup']],
+      ['Роли', ['characterRoles']],
+      ['Способности', ['characterAbilities']],
+    ],
     danetki: [
       ['Условие', ['condition']],
       ['Разгадка', ['solution']],
@@ -2793,6 +2804,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'bodyCoverings', 'habitats', 'animalContinents', 'diets', 'locomotion', 'reproduction', 'legCount', 'bodyMassKg', 'soundUrl', 'silhouetteUrl', 'rangeMapUrl', 'mediaAttribution'],
   book: ['bookAuthors', 'bookCountry', 'bookOriginalLanguage', 'bookPublicationYear', 'bookGenres', 'bookGenresRaw', 'isPartOfSeries', 'hasAdaptation', 'bookAdaptationYears', 'bookAdaptationCount', 'hasAwards', 'bookAwards', 'bookMainCharacters', 'bookCoverSourceUrl'],
+  character: ['characterSourceWork', 'characterSourceAuthor', 'characterFirstAppearanceYear', 'characterEra', 'characterEraOrder', 'characterSourceTypes', 'characterOriginCultures', 'characterNature', 'characterGender', 'characterAgeGroup', 'characterRoles', 'characterArchetypes', 'characterAbilities', 'characterSettings', 'iconicObjects', 'rightsStatus', 'characterSources'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['locale', 'difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'popularityScore'],
 }

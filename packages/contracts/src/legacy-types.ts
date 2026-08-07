@@ -336,6 +336,26 @@ export type TitleItem = {
   bookMainCharacters?: string[]
   bookCoverSourceUrl?: string | null
 
+  characterRank?: number | null
+  characterDifficulty?: 'easy' | 'medium' | 'hard' | string
+  characterSourceWork?: string
+  characterSourceAuthor?: string
+  characterFirstAppearanceYear?: number | null
+  characterEra?: string
+  characterEraOrder?: number | null
+  characterSourceTypes?: string[]
+  characterOriginCultures?: string[]
+  characterNature?: string
+  characterGender?: string
+  characterAgeGroup?: string
+  characterRoles?: string[]
+  characterArchetypes?: string[]
+  characterAbilities?: string[]
+  characterSettings?: string[]
+  iconicObjects?: string[]
+  rightsStatus?: string
+  characterSources?: Array<{ label: string; url: string }>
+
   country?: string
   countryFlagUrl?: string | null
   continent?: string

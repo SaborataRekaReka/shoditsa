@@ -87,4 +87,12 @@ export const CATALOG_HINT_COPY = {
     modalTitle: 'Подсказка о книге',
     loadingText: 'Ищем неоткрытые сведения о книге',
   },
+  character: {
+    plotOptionTitle: 'История персонажа',
+    plotOptionSubtitle: 'Краткое описание роли и событий без имени персонажа и прямых спойлеров',
+    optionTitle: 'Неоткрытый признак персонажа',
+    optionSubtitle: 'Источник, эпоха, происхождение, роль или способность, которые ещё не раскрывались',
+    modalTitle: 'Подсказка о персонаже',
+    loadingText: 'Ищем неоткрытый признак персонажа',
+  },
 } as const satisfies Record<CatalogGuessModeId, CatalogHintCopy>
