@@ -10,8 +10,16 @@ if [ ! -f "$CONFIG_PATH" ]; then
 fi
 
 if grep -Fq "$MARKER" "$CONFIG_PATH"; then
-  if grep -Fq 'try_files $uri $uri/ /index.html;' "$CONFIG_PATH"; then
-    echo "Explicit SPA route marker exists but the legacy catch-all fallback is still active" >&2
+  # A host config may contain several virtual hosts (for example, Shoditsa
+  # and Repeto). A legacy SPA fallback in another server block must not block
+  # a Shoditsa release or be rewritten by this patch.
+  if awk -v marker="$MARKER" '
+    index($0, marker) { in_target_server = 1; next }
+    in_target_server && /^[^[:space:]]*}[[:space:]]*$/ { exit found ? 0 : 1 }
+    in_target_server && index($0, "try_files $uri $uri/ /index.html;") { found = 1 }
+    END { if (in_target_server) exit found ? 0 : 1 }
+  ' "$CONFIG_PATH"; then
+    echo "Explicit SPA route marker exists but the Shoditsa legacy catch-all fallback is still active" >&2
     exit 1
   fi
   exit 0
