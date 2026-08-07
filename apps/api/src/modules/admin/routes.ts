@@ -49,6 +49,7 @@ import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironmen
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
 import { inspectReleaseContent } from './release-content-service.js'
+import { getOpenAiPortraitTest, startOpenAiPortraitTest } from './openai-portrait-test.js'
 import { createCloudPaymentsProvider } from '../commerce/providers/cloudpayments.js'
 import {
   assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, normalizationContextOptions,
@@ -1591,6 +1592,51 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
   app.get('/api/v1/admin/integrations', async (request, reply) => {
     await admin(request, reply, deps)
     return { items: await integrationStatuses(deps.db) }
+  })
+  app.post('/api/v1/admin/integrations/openai/portrait-test', {
+    schema: { body: Type.Object({ confirmation: Type.Literal(true) }, { additionalProperties: false }) },
+    config: { rateLimit: { max: 2, timeWindow: '1 hour' } },
+  }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const environment = await loadIntegrationEnvironment(deps.db, deps.config)
+    if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    const task = startOpenAiPortraitTest({
+      apiKey: environment.OPENAI_API_KEY,
+      proxyUrl: environment.MUSIC_OUTBOUND_PROXY_URL,
+      persist: async ({ base64, fileName }) => persistAdminMedia({ base64, fileName, contentType: 'image/webp', purpose: 'posterUrl' }, deps.config),
+    })
+    if (task.started && task.completion) {
+      void task.completion.then(async (job) => {
+        await deps.db.insert(auditLog).values({
+          actorUserId: actor.id,
+          action: 'integration.openai.portrait-test',
+          entityType: 'openai_portrait_test',
+          entityId: job.id,
+          before: null,
+          after: {
+            status: job.status,
+            model: job.model,
+            quality: job.quality,
+            size: job.size,
+            requested: job.count,
+            completed: job.items.length,
+            urls: job.items.map((item) => item.url),
+            error: job.error,
+          },
+          reason: 'Fixed five-image low-quality portrait test',
+          requestId: request.id,
+        })
+      }).catch((error) => request.log.error({ err: error, portraitTestId: task.job.id }, 'Could not audit OpenAI portrait test'))
+    }
+    return reply.code(202).send({ ...task.job, reusedActiveJob: !task.started })
+  })
+  app.get('/api/v1/admin/integrations/openai/portrait-test/:id', {
+    schema: { params: Type.Object({ id: UuidSchema }, { additionalProperties: false }) },
+  }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const job = getOpenAiPortraitTest((request.params as { id: string }).id)
+    if (!job) throw new ApiError(404, 'OPENAI_PORTRAIT_TEST_NOT_FOUND', 'Тест генерации не найден или уже истёк')
+    return job
   })
   app.put('/api/v1/admin/integrations/:key', { schema: { params: IntegrationKeyParamsSchema, body: IntegrationSecretUpdateBodySchema } }, async (request, reply) => {
     const actor = await admin(request, reply, deps); const key = (request.params as { key: IntegrationKey }).key; const body = request.body as IntegrationSecretUpdateBody
