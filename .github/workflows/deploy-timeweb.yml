@@ -90,7 +90,60 @@ jobs:
           mkdir -p "$DEPLOY_ROOT/releases"
           find "$REMOTE_UPLOAD_DIR" -maxdepth 1 -type f \( -name 'shoditsa-web-*.tar.gz' -o -name 'shoditsa-api-*.tar.gz' -o -name 'patch-nginx-not-found-*.sh' \) -mtime +1 -delete
           rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE" "$REMOTE_NGINX_PATCH"
+
+          # Failed releases can leave incomplete stage directories and old API
+          # images behind. Reclaim only Shoditsa-owned, reproducible artifacts:
+          # never touch the database, shared media, volumes, active containers,
+          # or the current web release. Prefer to retain one rollback image and
+          # remove it only if the host still cannot meet the upload floor.
+          RESOLVED_DEPLOY_ROOT="$(readlink -m "$DEPLOY_ROOT")"
+          RELEASES_DIR="$(readlink -m "$DEPLOY_ROOT/releases")"
+          case "$RELEASES_DIR" in
+            "$RESOLVED_DEPLOY_ROOT"/releases) ;;
+            *) echo "Refusing to clean unexpected releases path: $RELEASES_DIR" >&2; exit 1 ;;
+          esac
+          find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -name '.stage-*' -mmin +10 -print -exec rm -rf -- {} +
+
+          mapfile -t REFERENCED_API_IMAGES < <(docker ps -a --format '{{.Image}}' | awk '/^shoditsa-api:/ && !seen[$0]++')
+          ROLLBACK_IMAGE=''
+          while IFS= read -r image; do
+            [ -n "$image" ] || continue
+            referenced=0
+            for protected in "${REFERENCED_API_IMAGES[@]}"; do
+              if [ "$image" = "$protected" ]; then referenced=1; break; fi
+            done
+            if [ "$referenced" -eq 1 ]; then continue; fi
+            if [ -z "$ROLLBACK_IMAGE" ]; then ROLLBACK_IMAGE="$image"; continue; fi
+            docker image rm "$image" >/dev/null 2>&1 || true
+          done < <(docker images --format '{{.Repository}}:{{.Tag}}' shoditsa-api)
+
           AVAILABLE_KB="$(df -Pk "$DEPLOY_ROOT" | awk 'NR == 2 { print $4 }')"
+          if [ "$AVAILABLE_KB" -lt 1048576 ]; then
+            CURRENT_RELEASE="$(readlink -f "$DEPLOY_ROOT/current" 2>/dev/null || true)"
+            INACTIVE_RELEASES_KEPT=0
+            while IFS= read -r candidate; do
+              [ -n "$candidate" ] || continue
+              candidate_name="$(basename "$candidate")"
+              [[ "$candidate_name" =~ ^[0-9a-f]{40}$ ]] || continue
+              resolved_candidate="$(readlink -f "$candidate")"
+              case "$resolved_candidate" in
+                "$RELEASES_DIR"/*) ;;
+                *) echo "Refusing to clean unexpected release path: $resolved_candidate" >&2; exit 1 ;;
+              esac
+              if [ "$resolved_candidate" = "$CURRENT_RELEASE" ]; then continue; fi
+              if [ "$INACTIVE_RELEASES_KEPT" -lt 2 ]; then
+                INACTIVE_RELEASES_KEPT=$((INACTIVE_RELEASES_KEPT + 1))
+                continue
+              fi
+              rm -rf -- "$resolved_candidate"
+            done < <(find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -nr | cut -d' ' -f2-)
+            AVAILABLE_KB="$(df -Pk "$DEPLOY_ROOT" | awk 'NR == 2 { print $4 }')"
+          fi
+          if [ "$AVAILABLE_KB" -lt 1048576 ] && [ -n "$ROLLBACK_IMAGE" ]; then
+            docker image rm "$ROLLBACK_IMAGE" >/dev/null 2>&1 || true
+            AVAILABLE_KB="$(df -Pk "$DEPLOY_ROOT" | awk 'NR == 2 { print $4 }')"
+          fi
+          echo "Free space after scoped release cleanup: ${AVAILABLE_KB} KiB"
           if [ "$AVAILABLE_KB" -lt 1048576 ]; then
             echo "At least 1 GiB of free space is required before uploading a release; ${AVAILABLE_KB} KiB available" >&2
             exit 1
