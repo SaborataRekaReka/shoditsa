@@ -142,6 +142,20 @@ export type ContentExchangePreview = {
   items: Array<{ id: string; mode: ContentMode; status: 'create' | 'update' | 'unchanged' | 'conflict' | 'invalid'; title: string; changedFields: string[]; conflicts: string[]; issues: Array<Record<string, unknown>>; message: string | null }>
 }
 
+export type OpenAiPortraitTest = {
+  id: string
+  status: 'queued' | 'running' | 'completed' | 'failed'
+  model: 'gpt-image-2'
+  quality: 'low'
+  size: '1024x1536'
+  count: 5
+  estimatedOutputCostUsd: 0.025
+  createdAt: string
+  completedAt: string | null
+  items: Array<{ id: string; title: string; description: string; url: string; width: number; height: number; bytes: number }>
+  error: string | null
+}
+
 export type ConnectionsImportPreview = {
   version: 1
   locale: string
@@ -263,6 +277,8 @@ export const adminApi = {
   deletePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`, { method: 'DELETE', body: json({ confirmation: true }) }),
   cleanupPipelineRuns: (keepLatest = 30) => request<Record<string, unknown>>('/admin/pipeline-runs/cleanup', { method: 'POST', body: json({ confirmation: true, keepLatest }) }),
   integrations: () => request<{ items: Array<Record<string, unknown>> }>('/admin/integrations'),
+  startOpenAiPortraitTest: () => request<OpenAiPortraitTest>('/admin/integrations/openai/portrait-test', { method: 'POST', body: json({ confirmation: true }) }),
+  openAiPortraitTest: (id: string) => request<OpenAiPortraitTest>(`/admin/integrations/openai/portrait-test/${encodeURIComponent(id)}`),
   connectionsRounds: () => request<{ items: ConnectionsRoundAdminItem[] }>('/admin/connections/rounds'),
   connectionsImportPreview: (document: Record<string, unknown>) => request<ConnectionsImportPreview>('/admin/connections/import/preview', { method: 'POST', body: json(document), timeoutMs: 60_000 }),
   connectionsImportApply: (document: Record<string, unknown>, reason: string) => request<{ summary: { staged: number }; results: Array<Record<string, unknown>>; workspaceId: string }>('/admin/connections/import/apply', { method: 'POST', body: json({ document, reason }), timeoutMs: 120_000 }),

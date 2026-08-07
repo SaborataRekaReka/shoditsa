@@ -5237,6 +5237,18 @@ function SystemPage({ notify }: { notify: (tone: Notice['tone'], text: string) =
 function IntegrationsPage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const integrations = useQuery({ queryKey: ['admin', 'integrations'], queryFn: adminApi.integrations })
   const [values, setValues] = useState<Record<string, string>>({})
+  const [portraitTestId, setPortraitTestId] = useState<string | null>(null)
+  const portraitTest = useQuery({
+    queryKey: ['admin', 'integrations', 'openai-portrait-test', portraitTestId],
+    enabled: Boolean(portraitTestId),
+    queryFn: () => adminApi.openAiPortraitTest(portraitTestId!),
+    refetchInterval: (query) => ['completed', 'failed'].includes(query.state.data?.status ?? '') ? false : 2_000,
+  })
+  const startPortraitTest = useMutation({
+    mutationFn: adminApi.startOpenAiPortraitTest,
+    onSuccess: (job) => { setPortraitTestId(job.id); notify('info', 'Генерация пяти портретов запущена') },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const save = useMutation({
     mutationFn: ({ key, value }: { key: string; value: string }) => adminApi.saveIntegration(key, value),
     onSuccess: (_, variables) => { setValues((current) => ({ ...current, [variables.key]: '' })); notify('success', 'Настройка зашифрована и сохранена'); void client.invalidateQueries({ queryKey: ['admin', 'integrations'] }) },
@@ -5249,6 +5261,7 @@ function IntegrationsPage({ notify }: { notify: (tone: Notice['tone'], text: str
   })
   return <><PageHead eyebrow="Зашифрованное хранилище" title="API-интеграции" description="Ключи платёжных, музыкальных и контентных сервисов в одном месте. Исходные секреты никогда не возвращаются в браузер." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void integrations.refetch()}><RefreshCw />Обновить</button>} />
     <div className="admin-integration-banner"><ShieldCheck /><div><strong>AES-256-GCM · write-only</strong><p>После сохранения сервер показывает только маску и источник настройки. Секрет расшифровывается только на сервере непосредственно перед обращением к соответствующему API.</p></div></div>
+    <section className="admin-panel admin-portrait-test"><header><div><span>GPT Image 2 · low</span><h2>Тест портретов персонажей</h2></div><Status value={portraitTest.data?.status ?? 'neutral'}>{portraitTest.data?.status === 'completed' ? 'Готово' : portraitTest.data?.status === 'failed' ? 'Ошибка' : portraitTestId ? 'Генерация' : 'Не запускался'}</Status></header><p>Пять фиксированных портретов 1024×1536. Оценка стоимости вывода — около $0.025 за весь запуск; ключ остаётся на сервере.</p><button className="admin-btn admin-btn--primary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 5 портретов GPT Image 2 в качестве low? Оценка стоимости вывода: $0.025.')) startPortraitTest.mutate() }}><WandSparkles />{startPortraitTest.isPending || portraitTest.data?.status === 'running' ? 'Генерация…' : 'Сгенерировать 5 портретов'}</button>{portraitTest.data?.error && <p className="admin-portrait-test__error">{portraitTest.data.error}</p>}{portraitTest.data?.items.length ? <div className="admin-portrait-test__grid">{portraitTest.data.items.map((item) => <a key={item.id} href={item.url} target="_blank" rel="noreferrer"><img src={item.url} alt={item.title} /><span><strong>{item.title}</strong><small>{item.width}×{item.height} · {Math.ceil(item.bytes / 1024)} КБ</small></span></a>)}</div> : null}</section>
     <div className="admin-integrations-grid">{integrations.isLoading ? <Loading /> : integrations.data?.items.map((raw) => { const item = record(raw); const value = values[String(item.key)] ?? ''; const busy = save.isPending && save.variables?.key === item.key; return <section key={String(item.key)} className="admin-integration-card"><header><span><KeyRound /></span><div><small>{title(item.provider)}</small><h2>{title(item.title)}</h2></div><Status value={item.configured ? 'active' : item.required ? 'failed' : 'neutral'}>{item.configured ? 'Настроено' : item.required ? 'Обязательно' : 'Необязательно'}</Status></header><p>{title(item.description)}</p><div className="admin-integration-current"><span>Текущее значение</span><code>{item.maskedValue || 'Не задано'}</code><small>{item.source === 'admin' ? 'Сохранено в зашифрованном хранилище' : item.source === 'environment' ? 'Получено из переменной окружения' : 'Провайдер будет пропущен или использует публичный режим'}</small></div><label className="admin-field"><span>Новое значение</span><input type={item.secret ? 'password' : 'text'} autoComplete="new-password" value={value} onChange={(event) => setValues((current) => ({ ...current, [String(item.key)]: event.target.value }))} placeholder={item.configured ? 'Введите только для замены' : 'Вставьте значение'} /></label><footer><button className="admin-btn admin-btn--primary" disabled={!value.trim() || busy} onClick={() => save.mutate({ key: String(item.key), value: value.trim() })}><Save />Сохранить</button>{item.source === 'admin' && <button className="admin-btn admin-btn--secondary" onClick={() => remove.mutate(String(item.key))}><Trash2 />Удалить override</button>}</footer></section> })}</div>
   </>
 }
