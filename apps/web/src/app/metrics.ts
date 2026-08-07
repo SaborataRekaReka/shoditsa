@@ -8,8 +8,18 @@ type RefactorMetric = {
 type MetrikaParamValue = string | number | boolean
 const METRIKA_COUNTER_ID = 110517987
 const METRIKA_SCRIPT_ID = 'yandex-metrika-script'
+const ANALYTICS_ENTRY_STORAGE_KEY = 'shoditsa:analytics-entry:v1'
 export const ANALYTICS_CONSENT_STORAGE_KEY = 'shoditsa:analytics-consent:v1'
 export type AnalyticsConsent = 'accepted' | 'rejected'
+
+type AnalyticsEntry = {
+  url: string
+  path: string
+  referrer: string
+  referrerHost: string
+  source: 'organic_search' | 'direct' | 'referral'
+  searchEngine: string
+}
 
 declare global {
   interface Window {
@@ -22,6 +32,62 @@ declare global {
 
 type MetrikaStub = ((...args: unknown[]) => void) & { a?: unknown[][]; l?: number }
 
+const searchEngineFromHost = (hostname: string) => {
+  const host = hostname.toLowerCase().replace(/^www\./, '')
+  if (host === 'yandex.ru' || host.includes('.yandex.') || host.startsWith('yandex.')) return 'yandex'
+  if (host === 'google.com' || host.endsWith('.google.com') || host.startsWith('google.')) return 'google'
+  if (host === 'bing.com' || host.endsWith('.bing.com')) return 'bing'
+  if (host === 'duckduckgo.com' || host.endsWith('.duckduckgo.com')) return 'duckduckgo'
+  if (host === 'go.mail.ru') return 'mailru'
+  return ''
+}
+
+const readAnalyticsEntry = (): AnalyticsEntry | null => {
+  if (typeof window === 'undefined') return null
+  try {
+    const value = JSON.parse(window.sessionStorage.getItem(ANALYTICS_ENTRY_STORAGE_KEY) ?? 'null') as Partial<AnalyticsEntry> | null
+    if (!value?.url || !value.path || !value.source) return null
+    return {
+      url: value.url,
+      path: value.path,
+      referrer: value.referrer ?? '',
+      referrerHost: value.referrerHost ?? '',
+      source: value.source,
+      searchEngine: value.searchEngine ?? '',
+    }
+  } catch {
+    return null
+  }
+}
+
+export const captureAnalyticsEntry = () => {
+  if (typeof window === 'undefined') return
+  let referrerHost = ''
+  try { referrerHost = document.referrer ? new URL(document.referrer).hostname : '' } catch { /* ignore invalid referrers */ }
+  if (referrerHost === window.location.hostname && readAnalyticsEntry()) return
+  const searchEngine = searchEngineFromHost(referrerHost)
+  const entry: AnalyticsEntry = {
+    url: window.location.href,
+    path: window.location.pathname,
+    referrer: document.referrer,
+    referrerHost,
+    source: searchEngine ? 'organic_search' : document.referrer ? 'referral' : 'direct',
+    searchEngine,
+  }
+  try { window.sessionStorage.setItem(ANALYTICS_ENTRY_STORAGE_KEY, JSON.stringify(entry)) } catch { /* ignore unavailable storage */ }
+}
+
+const analyticsEntryParams = (): Record<string, MetrikaParamValue> => {
+  const entry = readAnalyticsEntry()
+  if (!entry) return {}
+  return {
+    entry_path: entry.path,
+    entry_source: entry.source,
+    ...(entry.searchEngine ? { entry_search_engine: entry.searchEngine } : {}),
+    ...(entry.referrerHost ? { entry_referrer_host: entry.referrerHost } : {}),
+  }
+}
+
 export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
   if (typeof window === 'undefined') return null
   const value = window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)
@@ -30,6 +96,7 @@ export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
 
 export const initMetrika = () => {
   if (typeof window === 'undefined' || window.__SHODITSA_METRIKA_INITIALIZED__) return
+  const entry = readAnalyticsEntry()
   const stub: MetrikaStub = (window.ym as MetrikaStub | undefined) ?? ((...args: unknown[]) => {
     stub.a = stub.a ?? []
     stub.a.push(args)
@@ -51,8 +118,8 @@ export const initMetrika = () => {
     webvisor: false,
     clickmap: true,
     ecommerce: 'dataLayer',
-    referrer: document.referrer,
-    url: window.location.href,
+    referrer: entry?.referrer ?? document.referrer,
+    url: entry?.url ?? window.location.href,
     accurateTrackBounce: true,
     trackLinks: true,
   })
@@ -109,7 +176,7 @@ export const initMetrikaDataLayer = () => {
 
 export const trackMetrikaGoal = (goal: string, meta?: Record<string, unknown>) => {
   if (!canUseMetrika()) return
-  const params = normalizeMetrikaParams(meta)
+  const params = normalizeMetrikaParams({ ...analyticsEntryParams(), ...(meta ?? {}) })
   try {
     if (params) {
       window.ym?.(METRIKA_COUNTER_ID, 'reachGoal', goal, params)

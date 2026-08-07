@@ -65,10 +65,10 @@ export function ConnectionsTitleScreen({
         <div className="title-game-mark">
           <span aria-hidden="true"><Waypoints /></span>
           <i>Игра дня · №{dayNumber(date)}</i>
-          <h1>Связи</h1>
+          <h1>Connections на русском</h1>
         </div>
         <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
-        <p>Русскоязычная головоломка: соберите 16 слов в четыре группы по смыслу или форме</p>
+        <p>Игра «Связи» онлайн бесплатно: объедините 16 слов в четыре группы по смыслу или форме</p>
 
         <AdmissionTitleTicket
           id="ticket-connections"
@@ -85,6 +85,12 @@ export function ConnectionsTitleScreen({
           <TicketKicker title="Ежедневная загадка" detail="новая сетка в полночь" />
           <h2 id="ticket-connections">Connections на русском: игра «Связи»</h2>
           <p>Найдите четыре скрытые связи и соберите по четыре слова в каждую группу. Можно допустить <strong>4 ошибки</strong>.</p>
+          <div className="connections-title__facts" aria-label="Коротко о правилах">
+            <span><strong>16</strong> слов</span>
+            <span><strong>4</strong> группы</span>
+            <span><strong>4</strong> ошибки</span>
+          </div>
+          <p className="connections-title__promise">Бесплатно · без регистрации · новая сетка каждый день</p>
           <GameLaunchControls
             mode="connections"
             action={<ActionButton

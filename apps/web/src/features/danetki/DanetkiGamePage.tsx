@@ -5,6 +5,7 @@ import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, DoorOpen, 
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
+import { trackGameCompleteOnce } from '../../app/game-analytics'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
@@ -51,6 +52,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   const previousMessageCount = useRef(state.messages.length)
   const sendKey = useRef<string | null>(null)
   const completionTracked = useRef(false)
+  const previousSessionStatus = useRef(session.status)
   const limitTracked = useRef(false)
 
   const refresh = async () => client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
@@ -93,6 +95,17 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   }, [state.messages.length])
 
   useEffect(() => {
+    const completedNow = previousSessionStatus.current === 'playing' && session.status !== 'playing'
+    previousSessionStatus.current = session.status
+    if (completedNow) {
+      trackGameCompleteOnce(sessionId, {
+        mode: 'danetki',
+        kind: session.kind,
+        outcome: session.status,
+        attempts: state.questionCount,
+        room_mode: state.roomMode,
+      })
+    }
     if (session.status === 'playing' || completionTracked.current) return
     completionTracked.current = true
     const balanceBefore = runtime.dashboard?.wallet.balance ?? 0

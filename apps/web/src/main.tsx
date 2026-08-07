@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from '@tanstack/react-router'
-import { initMetrikaDataLayer, initMetrikaFromStoredConsent, initWebVitalsObservers, markAppBootStart } from './app/metrics'
+import { captureAnalyticsEntry, initMetrikaDataLayer, initMetrikaFromStoredConsent, initWebVitalsObservers, markAppBootStart } from './app/metrics'
 import { AppErrorBoundary } from './components/app-shell/AppErrorBoundary'
 import './styles.css'
 import { initClientEvents } from './app/client-events'
@@ -11,6 +11,7 @@ import { initReleaseUpdateWatcher } from './app/release-update'
 import { appRouter } from './app/router'
 
 markAppBootStart()
+captureAnalyticsEntry()
 initMetrikaDataLayer()
 initMetrikaFromStoredConsent()
 initWebVitalsObservers()

@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { api, ApiClientError, queryKeys } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
+import { trackGameCompleteOnce, trackNextGameStart } from '../../app/game-analytics'
 import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
@@ -162,6 +163,15 @@ export function ConnectionsGamePage({
       }
       if (response.result === 'one_away') trackClientEvent('connections_one_away', common, { gameSessionId: sessionId })
       if (response.result === 'correct') trackClientEvent('connections_group_solved', common, { gameSessionId: sessionId })
+      if (next.status !== 'playing') {
+        trackGameCompleteOnce(sessionId, {
+          mode: 'connections',
+          kind: response.session.kind,
+          outcome: next.status,
+          attempts: next.guesses.length,
+          mistakes: next.mistakesUsed,
+        })
+      }
       await refreshRelated()
     },
     onError: async (error) => {
@@ -465,7 +475,14 @@ export function ConnectionsGamePage({
             nextMode={nextMode}
             onCopy={() => void copyResult()}
             onChallenge={() => void shareChallenge()}
-            onNext={() => nextMode ? onPlayNext(nextMode) : onHome()}
+            onNext={() => {
+              if (nextMode) {
+                trackNextGameStart('connections', nextMode, { outcome: state.status })
+                onPlayNext(nextMode)
+                return
+              }
+              onHome()
+            }}
             onArchive={onArchive}
             onReport={async (reason, comment) => {
               await api.contentReport({ sessionId, reason, comment: comment || undefined })

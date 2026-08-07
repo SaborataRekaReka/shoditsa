@@ -20,6 +20,59 @@
   fill: none;
 }
 
+.connections-title .title-game-mark h1 {
+  max-width: min(760px, 92vw);
+  font-size: clamp(2.35rem, 7vw, 5.6rem);
+  line-height: .94;
+  text-align: center;
+}
+
+.connections-title__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.connections-title__facts span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--mode-connections-brand) 48%, var(--color-paper-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mode-connections-brand) 12%, transparent);
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+.connections-title__facts strong {
+  font-size: 1rem;
+}
+
+.connections-title__ticket .connections-title__promise {
+  margin-top: 10px;
+  color: var(--color-paper-muted);
+  font-size: .82rem;
+  font-weight: 650;
+}
+
+@media (max-width: 520px) {
+  .connections-title .title-game-mark h1 {
+    max-width: 94vw;
+    font-size: clamp(2.1rem, 11vw, 3.2rem);
+  }
+
+  .connections-title__facts {
+    gap: 6px;
+  }
+
+  .connections-title__facts span {
+    padding: 6px 8px;
+    font-size: .74rem;
+  }
+}
+
 @media (min-width: 720px) and (max-height: 820px) {
   .connections-title .title-stage time {
     margin-top: 24px;

@@ -40,6 +40,7 @@ import {
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { trackDiagnosisGoal, trackDiagnosisSessionStart } from './app/diagnosis-analytics'
+import { trackGameCompleteOnce, trackGameStartOnce, trackNextGameStart } from './app/game-analytics'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { applyRuntimeSeo } from './app/seo'
 import { publicAssetUrl } from './app/public-asset'
@@ -2832,6 +2833,15 @@ function Game({
     const openedRounds = new Set(restoredChoices.map((choice) => choice.round))
     const restoredDismissedRounds = answerChanged ? [] : sanitizeDismissedRounds(saved, openedRounds)
 
+    if (restoredStatus === 'playing') {
+      trackGameStartOnce(key, {
+        mode,
+        period: effectivePeriod,
+        kind: freePlayLaunch === null ? 'daily' : 'free_play',
+        state: saved ? 'resumed' : 'new',
+      })
+    }
+
     dispatchSession({
       type: 'reset',
       payload: {
@@ -3067,6 +3077,15 @@ function Game({
     if (nextStatus === 'lost') {
       trackMetrikaGoal('game_lost', { mode, period: effectivePeriod, attempts: nextAttempts.length })
     }
+    if (nextStatus !== 'playing') {
+      trackGameCompleteOnce(key, {
+        mode,
+        period: effectivePeriod,
+        kind: freePlayLaunch === null ? 'daily' : 'free_play',
+        attempts: nextAttempts.length,
+        outcome: nextStatus,
+      })
+    }
     if (mode === 'diagnosis' && nextStatus !== 'playing') {
       trackDiagnosisGoal('complete', {
         period: effectivePeriod,
@@ -3217,6 +3236,7 @@ function Game({
         opponentAttempts={challenge?.opponentAttempts}
         onNext={() => {
           if (mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: effectivePeriod, outcome: status })
+          if (nextMode) trackNextGameStart(mode, nextMode, { outcome: status })
           if (routeCompleted) onHome()
           else onPlayNext(nextMode)
         }}
@@ -3474,6 +3494,14 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       if (response.session.status === 'lost' || response.session.status === 'expired') {
         trackMetrikaGoal('game_lost', { ...attemptAnalytics, attempts: response.session.attemptsCount })
       }
+      if (['won', 'lost', 'expired'].includes(response.session.status)) {
+        trackGameCompleteOnce(sessionId, {
+          ...attemptAnalytics,
+          attempts: response.session.attemptsCount,
+          outcome: response.session.status,
+          kind: session?.kind ?? 'unknown',
+        })
+      }
       if (session?.mode === 'diagnosis' && ['won', 'lost', 'expired'].includes(response.session.status)) {
         trackDiagnosisGoal('complete', {
           period: session.period,
@@ -3553,6 +3581,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       } else {
         trackMetrikaGoal('game_lost', finalChoiceAnalytics)
       }
+      trackGameCompleteOnce(sessionId, {
+        ...finalChoiceAnalytics,
+        outcome: response.session.status,
+        kind: session?.kind ?? 'unknown',
+      })
       if (session?.mode === 'diagnosis') {
         trackDiagnosisGoal('complete', {
           ...finalChoiceAnalytics,
@@ -3628,6 +3661,14 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     if (!session) return
     setGameMatchStripOpen(true)
     applyRuntimeSeo(window.location.pathname, `/games/${session.mode}`)
+    if (session.status === 'playing' || session.status === 'final_choice') {
+      trackGameStartOnce(session.id, {
+        mode: session.mode,
+        period: session.period,
+        kind: session.kind,
+        state: session.attemptsCount > 0 ? 'resumed' : 'new',
+      })
+    }
     if (session.mode === 'diagnosis') {
       trackDiagnosisSessionStart(session.id, {
         period: session.period,
@@ -3967,6 +4008,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           }
         : () => {
             if (session.mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: session.period, outcome: session.status })
+            if (nextMode) trackNextGameStart(session.mode, nextMode, { outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
           }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReplay={onReplay} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
