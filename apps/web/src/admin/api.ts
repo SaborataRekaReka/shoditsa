@@ -148,8 +148,8 @@ export type OpenAiPortraitTest = {
   model: 'gpt-image-2'
   quality: 'low'
   size: '1024x1536'
-  count: 5
-  estimatedOutputCostUsd: 0.025
+  count: number
+  estimatedOutputCostUsd: number
   createdAt: string
   completedAt: string | null
   items: Array<{ id: string; title: string; description: string; url: string; width: number; height: number; bytes: number; storage: 'media' | 'memory' }>
@@ -278,7 +278,7 @@ export const adminApi = {
   deletePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`, { method: 'DELETE', body: json({ confirmation: true }) }),
   cleanupPipelineRuns: (keepLatest = 30) => request<Record<string, unknown>>('/admin/pipeline-runs/cleanup', { method: 'POST', body: json({ confirmation: true, keepLatest }) }),
   integrations: () => request<{ items: Array<Record<string, unknown>> }>('/admin/integrations'),
-  startOpenAiPortraitTest: () => request<OpenAiPortraitTest>('/admin/integrations/openai/portrait-test', { method: 'POST', body: json({ confirmation: true }) }),
+  startOpenAiPortraitTest: (portraitId?: 'sherlock-holmes') => request<OpenAiPortraitTest>('/admin/integrations/openai/portrait-test', { method: 'POST', body: json({ confirmation: true, ...(portraitId ? { portraitId } : {}) }) }),
   openAiPortraitTest: (id: string) => request<OpenAiPortraitTest>(`/admin/integrations/openai/portrait-test/${encodeURIComponent(id)}`),
   connectionsRounds: () => request<{ items: ConnectionsRoundAdminItem[] }>('/admin/connections/rounds'),
   connectionsImportPreview: (document: Record<string, unknown>) => request<ConnectionsImportPreview>('/admin/connections/import/preview', { method: 'POST', body: json(document), timeoutMs: 60_000 }),

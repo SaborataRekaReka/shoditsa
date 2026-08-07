@@ -1594,15 +1594,17 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
     return { items: await integrationStatuses(deps.db) }
   })
   app.post('/api/v1/admin/integrations/openai/portrait-test', {
-    schema: { body: Type.Object({ confirmation: Type.Literal(true) }, { additionalProperties: false }) },
-    config: { rateLimit: { max: 2, timeWindow: '1 hour' } },
+    schema: { body: Type.Object({ confirmation: Type.Literal(true), portraitId: Type.Optional(Type.Literal('sherlock-holmes')) }, { additionalProperties: false }) },
+    config: { rateLimit: { max: 6, timeWindow: '1 hour' } },
   }, async (request, reply) => {
     const actor = await admin(request, reply, deps)
+    const body = request.body as { confirmation: true; portraitId?: 'sherlock-holmes' }
     const environment = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
     const task = startOpenAiPortraitTest({
       apiKey: environment.OPENAI_API_KEY,
       proxyUrl: environment.MUSIC_OUTBOUND_PROXY_URL,
+      portraitIds: body.portraitId ? [body.portraitId] : undefined,
       persist: async ({ base64, fileName }) => persistAdminMedia({ base64, fileName, contentType: 'image/webp', purpose: 'posterUrl' }, deps.config),
     })
     if (task.started && task.completion) {
@@ -1628,7 +1630,7 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
             error: job.error,
             warning: job.warning,
           },
-          reason: 'Fixed five-image low-quality portrait test',
+          reason: `Fixed ${job.count}-image low-quality portrait test`,
           requestId: request.id,
         })
       }).catch((error) => request.log.error({ err: error, portraitTestId: task.job.id }, 'Could not audit OpenAI portrait test'))

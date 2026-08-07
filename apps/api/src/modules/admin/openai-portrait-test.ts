@@ -21,8 +21,8 @@ export type OpenAiPortraitTestJob = {
   model: 'gpt-image-2'
   quality: 'low'
   size: '1024x1536'
-  count: 5
-  estimatedOutputCostUsd: 0.025
+  count: number
+  estimatedOutputCostUsd: number
   createdAt: string
   completedAt: string | null
   items: OpenAiPortraitTestItem[]
@@ -34,27 +34,27 @@ const PORTRAITS: readonly PortraitSpec[] = [
   {
     id: 'sherlock-holmes',
     title: 'Шерлок Холмс',
-    description: 'Victorian consulting detective, lean face, sharp observant eyes, dark wavy hair, tailored charcoal coat and waistcoat.',
+    description: 'Victorian consulting detective, about 50 years old. Invented non-celebrity face with a long aquiline nose, square chin, warm brown eyes, straight ash-brown hair receding at the temples, and lightly weathered skin. Tailored charcoal coat and waistcoat. Avoid the young, pale, high-cheekboned, curly-black-haired screen-detective look.',
   },
   {
     id: 'alice',
     title: 'Алиса',
-    description: 'Curious young Victorian literary heroine, practical pale-blue dress, expressive thoughtful gaze, subtle surreal garden atmosphere.',
+    description: 'Curious twelve-year-old Victorian literary heroine with an invented non-celebrity face, chestnut-brown bobbed hair, hazel eyes, and a practical moss-green day dress with restrained cream details. Expressive thoughtful gaze and subtle surreal garden atmosphere. No blue dress, white pinafore, or black hair bow.',
   },
   {
     id: 'count-dracula',
     title: 'Граф Дракула',
-    description: 'Aristocratic Transylvanian count from the original gothic novel, severe features, black formal evening coat, controlled ominous presence.',
+    description: 'Aristocratic Transylvanian count from the original gothic novel, visibly older, with an invented gaunt face, high bridge of the nose, iron-grey swept-back hair, long pale moustache, bushy eyebrows, and a controlled ominous presence. Black formal evening coat without theatrical red lining.',
   },
   {
     id: 'robin-hood',
     title: 'Робин Гуд',
-    description: 'Legendary English outlaw and skilled archer, weathered green wool clothing, confident humane expression, Sherwood forest atmosphere.',
+    description: 'Legendary English outlaw and skilled archer in his late thirties, with an invented weathered face, slightly crooked nose, short auburn-brown hair, light stubble, and a confident humane expression. Practical olive and russet wool clothing, no feathered cap, Sherwood forest atmosphere.',
   },
   {
     id: 'captain-nemo',
     title: 'Капитан Немо',
-    description: 'Mysterious nineteenth-century submarine captain from the original novel, dignified dark beard, naval-inspired coat, deep-ocean atmosphere.',
+    description: 'Mysterious nineteenth-century South Asian prince, engineer, and submarine captain from the original novels, about 50 years old, with an invented non-celebrity face, copper-brown skin, strong nose, intense dark eyes, and a full salt-and-pepper beard. Restrained naval-inspired coat and deep-ocean atmosphere.',
   },
 ] as const
 
@@ -80,8 +80,12 @@ const safeError = (error: unknown) => {
 const portraitPrompt = (portrait: PortraitSpec) => [
   `Create an original vertical character portrait of ${portrait.title}.`,
   portrait.description,
-  'Base the interpretation only on the public-domain literary or folklore source. Do not imitate any film, television, game, comic, animation adaptation, actor, celebrity, existing illustration, poster, costume design, franchise logo, or studio style.',
-  'Art direction: premium editorial storybook portrait, painterly realism with visible brush texture, elegant dramatic lighting, deep jewel-tone background with restrained gold accents, expressive face, waist-up centered composition, visually cohesive collectible card series.',
+  'Treat the character name only as narrative context, never as a visual reference. Invent the facial identity from scratch as a fictional person who is not recognizable as any real person, performer, actor, or celebrity. Follow the supplied physical traits instead of converging on the best-known screen portrayal.',
+  'Base the interpretation only on the public-domain literary or folklore source. Do not imitate any film, television, game, comic, or animation adaptation; any actor or celebrity; any existing illustration, poster, costume design, franchise logo, or studio style. Do not reproduce a recognizable performer\'s facial geometry, hairline, eyes, nose, mouth, or signature styling.',
+  'For characters with famous adaptations, deliberately diverge from their familiar screen image in at least four visible ways: age, face shape, nose or jaw, eye colour, hair colour or texture, hairline, clothing silhouette, and palette.',
+  'Art direction: use the established Shoditsa visual language — a graphic editorial manga character illustration combined with a retro investigative scrapbook collage. Crisp hand-inked linework with varied black strokes, restrained cel shading, subtle watercolour washes, screen-print halftone, cross-hatching, and visible aged-paper grain. Use a limited palette of warm ivory, charcoal black, forest green, mustard ochre, muted coral, and dusty blue.',
+  'Composition: an expressive waist-up character with a clean readable silhouette, slightly off-centre three-quarter pose, and age-appropriate facial proportions. Behind the character, use a sparse full-bleed collage of torn paper, taped archival cards, simple grids, diagram marks, and two or three story-specific symbolic objects. Keep the face and silhouette dominant; the collage must not become a busy poster.',
+  'Do not use photorealism, oil-paint impasto, cinematic photography, glossy 3D rendering, airbrushed skin, or a generic polished fantasy-book-cover look. Do not give every character the same youthful anime face.',
   'The result must contain only the artwork: no frame, no card UI, no typography, no letters, no numbers, no signature, no logo, and no watermark.',
 ].join(' ')
 
@@ -124,13 +128,14 @@ const runJob = async (options: {
   job: OpenAiPortraitTestJob
   apiKey: string
   proxyUrl?: string
+  portraits: readonly PortraitSpec[]
   persist: (input: { base64: string; fileName: string }) => Promise<PersistedPortrait>
 }) => {
   const { job } = options
   job.status = 'running'
   const dispatcher = options.proxyUrl ? new ProxyAgent(options.proxyUrl) : null
   try {
-    const settled = await Promise.allSettled(PORTRAITS.map(async (portrait) => {
+    const settled = await Promise.allSettled(options.portraits.map(async (portrait) => {
       const base64 = await requestPortrait({ apiKey: options.apiKey, dispatcher, portrait })
       try {
         const persisted = await options.persist({ base64, fileName: `${portrait.id}.webp` })
@@ -171,18 +176,22 @@ const runJob = async (options: {
 export const startOpenAiPortraitTest = (options: {
   apiKey: string
   proxyUrl?: string
+  portraitIds?: readonly string[]
   persist: (input: { base64: string; fileName: string }) => Promise<PersistedPortrait>
 }) => {
   cleanJobs()
   if (activeJobId) return { job: jobs.get(activeJobId)!, started: false, completion: null }
+  const requestedIds = new Set(options.portraitIds ?? [])
+  const portraits = requestedIds.size ? PORTRAITS.filter((portrait) => requestedIds.has(portrait.id)) : PORTRAITS
+  if (!portraits.length) throw new Error('At least one known portrait id is required')
   const job: OpenAiPortraitTestJob = {
     id: randomUUID(),
     status: 'queued',
     model: 'gpt-image-2',
     quality: 'low',
     size: '1024x1536',
-    count: 5,
-    estimatedOutputCostUsd: 0.025,
+    count: portraits.length,
+    estimatedOutputCostUsd: Number((portraits.length * 0.005).toFixed(3)),
     createdAt: new Date().toISOString(),
     completedAt: null,
     items: [],
@@ -191,7 +200,7 @@ export const startOpenAiPortraitTest = (options: {
   }
   jobs.set(job.id, job)
   activeJobId = job.id
-  const completion = runJob({ ...options, job })
+  const completion = runJob({ ...options, portraits, job })
   return { job, started: true, completion }
 }
 
