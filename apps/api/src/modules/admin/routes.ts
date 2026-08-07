@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { constants } from 'node:fs'
+import { access, mkdir, writeFile } from 'node:fs/promises'
 import { extname, join } from 'node:path'
 import sharp from 'sharp'
 import { and, asc, desc, eq, gt, gte, ilike, inArray, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm'
@@ -1603,17 +1604,27 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
     return { items: await integrationStatuses(deps.db) }
   })
   app.post('/api/v1/admin/integrations/openai/portrait-test', {
-    schema: { body: Type.Object({ confirmation: Type.Literal(true), portraitId: Type.Optional(Type.Literal('sherlock-holmes')) }, { additionalProperties: false }) },
+    schema: { body: Type.Object({
+      confirmation: Type.Literal(true),
+      portraitId: Type.Optional(Type.Literal('sherlock-holmes')),
+      portraitBatch: Type.Optional(Type.Literal('character-expansion-50')),
+    }, { additionalProperties: false }) },
     config: { rateLimit: { max: 6, timeWindow: '1 hour' } },
   }, async (request, reply) => {
     const actor = await admin(request, reply, deps)
-    const body = request.body as { confirmation: true; portraitId?: 'sherlock-holmes' }
+    const body = request.body as { confirmation: true; portraitId?: 'sherlock-holmes'; portraitBatch?: 'character-expansion-50' }
+    if (body.portraitId && body.portraitBatch) throw new ApiError(422, 'OPENAI_PORTRAIT_SELECTION_INVALID', 'Выберите один портрет или пакет, но не оба варианта')
     const environment = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    if (body.portraitBatch) {
+      await mkdir(deps.config.mediaRoot, { recursive: true })
+      await access(deps.config.mediaRoot, constants.W_OK).catch(() => { throw new ApiError(409, 'MEDIA_STORAGE_NOT_WRITABLE', 'Хранилище медиа недоступно для пакетной генерации') })
+    }
     const task = startOpenAiPortraitTest({
       apiKey: environment.OPENAI_API_KEY,
       proxyUrl: environment.MUSIC_OUTBOUND_PROXY_URL,
       portraitIds: body.portraitId ? [body.portraitId] : undefined,
+      portraitBatch: body.portraitBatch,
       persist: async ({ base64, fileName }) => persistAdminMedia({ base64, fileName, contentType: 'image/webp', purpose: 'posterUrl' }, deps.config),
     })
     if (task.started && task.completion) {

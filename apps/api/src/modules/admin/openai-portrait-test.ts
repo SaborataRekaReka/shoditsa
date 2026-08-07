@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { fetch as undiciFetch, ProxyAgent } from 'undici'
 
 type PersistedPortrait = {
@@ -12,6 +14,11 @@ type PortraitSpec = {
   id: string
   title: string
   description: string
+}
+
+type ExpansionPortraitSource = {
+  batchId?: unknown
+  items?: Array<{ id?: unknown; titleRu?: unknown; portraitDescription?: unknown }>
 }
 
 export type OpenAiPortraitTestItem = PortraitSpec & PersistedPortrait & { storage: 'media' | 'memory' }
@@ -58,6 +65,25 @@ const PORTRAITS: readonly PortraitSpec[] = [
   },
 ] as const
 
+const expansionPortraits = () => {
+  const source = JSON.parse(readFileSync(resolve('data/characters/seeds/characters.expansion50.json'), 'utf8')) as ExpansionPortraitSource
+  if (source.batchId !== 'character-expansion-50' || !Array.isArray(source.items) || source.items.length !== 50) {
+    throw new Error('Character expansion portrait source must contain exactly 50 items')
+  }
+  const portraits = source.items.map((item, index): PortraitSpec => {
+    const canonicalId = String(item.id ?? '')
+    const id = canonicalId.replace(/^character:/, '')
+    const title = String(item.titleRu ?? '').trim()
+    const description = String(item.portraitDescription ?? '').trim()
+    if (!/^character:[a-z0-9-]+$/.test(canonicalId) || !title || description.length < 80) {
+      throw new Error(`Invalid character portrait source row ${index + 1}`)
+    }
+    return { id, title, description }
+  })
+  if (new Set(portraits.map((portrait) => portrait.id)).size !== portraits.length) throw new Error('Character portrait ids must be unique')
+  return portraits
+}
+
 const jobs = new Map<string, OpenAiPortraitTestJob>()
 let activeJobId: string | null = null
 
@@ -77,6 +103,8 @@ const safeError = (error: unknown) => {
   return message.replace(/sk-[A-Za-z0-9_-]+/g, '[redacted]').slice(0, 500)
 }
 
+const delay = (milliseconds: number) => new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds))
+
 const portraitPrompt = (portrait: PortraitSpec) => [
   `Create an original vertical character portrait of ${portrait.title}.`,
   portrait.description,
@@ -85,6 +113,7 @@ const portraitPrompt = (portrait: PortraitSpec) => [
   'For characters with famous adaptations, deliberately diverge from their familiar screen image in at least four visible ways: age, face shape, nose or jaw, eye colour, hair colour or texture, hairline, clothing silhouette, and palette.',
   'Art direction: use the established Shoditsa visual language — a graphic editorial manga character illustration combined with a retro investigative scrapbook collage. Crisp hand-inked linework with varied black strokes, restrained cel shading, subtle watercolour washes, screen-print halftone, cross-hatching, and visible aged-paper grain. Use a limited palette of warm ivory, charcoal black, forest green, mustard ochre, muted coral, and dusty blue.',
   'Composition: an expressive waist-up character with a clean readable silhouette, slightly off-centre three-quarter pose, and age-appropriate facial proportions. Behind the character, use a sparse full-bleed collage of torn paper, taped archival cards, simple grids, diagram marks, and two or three story-specific symbolic objects. Keep the face and silhouette dominant; the collage must not become a busy poster.',
+  'Where the character description explicitly calls for adult beauty or sensual magnetism, make it tasteful, emotionally convincing, source-appropriate and non-explicit through gaze, posture, silhouette, fabric and lighting. Keep the character fully clothed in opaque period-appropriate garments: no nudity, lingerie, transparent fabric, fetish styling or pornographic framing. Never sexualize a child, adolescent, childlike character or animal.',
   'Do not use photorealism, oil-paint impasto, cinematic photography, glossy 3D rendering, airbrushed skin, or a generic polished fantasy-book-cover look. Do not give every character the same youthful anime face.',
   'The result must contain only the artwork: no frame, no card UI, no typography, no letters, no numbers, no signature, no logo, and no watermark.',
 ].join(' ')
@@ -94,34 +123,58 @@ const requestPortrait = async (options: {
   dispatcher: ProxyAgent | null
   portrait: PortraitSpec
 }) => {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), 5 * 60 * 1000)
-  try {
-    const response = await undiciFetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${options.apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gpt-image-2',
-        prompt: portraitPrompt(options.portrait),
-        n: 1,
-        size: '1024x1536',
-        quality: 'low',
-        background: 'opaque',
-        output_format: 'webp',
-        output_compression: 90,
-      }),
-      signal: controller.signal,
-      ...(options.dispatcher ? { dispatcher: options.dispatcher } : {}),
-    })
-    const payload = record(await response.json())
-    if (!response.ok) throw new Error(String(record(payload.error).message ?? `OpenAI HTTP ${response.status}`))
-    const first = Array.isArray(payload.data) ? record(payload.data[0]) : {}
-    const base64 = typeof first.b64_json === 'string' ? first.b64_json : ''
-    if (!base64) throw new Error('OpenAI image response contains no image data')
-    return base64
-  } finally {
-    clearTimeout(timer)
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 5 * 60 * 1000)
+    try {
+      const response = await undiciFetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${options.apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gpt-image-2',
+          prompt: portraitPrompt(options.portrait),
+          n: 1,
+          size: '1024x1536',
+          quality: 'low',
+          background: 'opaque',
+          output_format: 'webp',
+          output_compression: 90,
+        }),
+        signal: controller.signal,
+        ...(options.dispatcher ? { dispatcher: options.dispatcher } : {}),
+      })
+      const payload = record(await response.json())
+      if (!response.ok) {
+        const error = new Error(String(record(payload.error).message ?? `OpenAI HTTP ${response.status}`))
+        if (attempt < 3 && (response.status === 408 || response.status === 409 || response.status === 429 || response.status >= 500)) {
+          await delay(1_500 * attempt)
+          continue
+        }
+        throw error
+      }
+      const first = Array.isArray(payload.data) ? record(payload.data[0]) : {}
+      const base64 = typeof first.b64_json === 'string' ? first.b64_json : ''
+      if (!base64) throw new Error('OpenAI image response contains no image data')
+      return base64
+    } finally {
+      clearTimeout(timer)
+    }
   }
+  throw new Error('OpenAI image request exhausted all attempts')
+}
+
+const settleWithConcurrency = async <T, R>(items: readonly T[], concurrency: number, worker: (item: T) => Promise<R>) => {
+  const results = Array<PromiseSettledResult<R>>(items.length)
+  let nextIndex = 0
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const index = nextIndex
+      nextIndex += 1
+      try { results[index] = { status: 'fulfilled', value: await worker(items[index]!) } }
+      catch (reason) { results[index] = { status: 'rejected', reason } }
+    }
+  }))
+  return results
 }
 
 const runJob = async (options: {
@@ -135,13 +188,15 @@ const runJob = async (options: {
   job.status = 'running'
   const dispatcher = options.proxyUrl ? new ProxyAgent(options.proxyUrl) : null
   try {
-    const settled = await Promise.allSettled(options.portraits.map(async (portrait) => {
+    const settled = await settleWithConcurrency(options.portraits, 4, async (portrait) => {
       const base64 = await requestPortrait({ apiKey: options.apiKey, dispatcher, portrait })
       try {
         const persisted = await options.persist({ base64, fileName: `${portrait.id}.webp` })
-        return { ...portrait, ...persisted, storage: 'media' as const }
+        const item = { ...portrait, ...persisted, storage: 'media' as const }
+        job.items.push(item)
+        return item
       } catch {
-        return {
+        const item = {
           ...portrait,
           url: `data:image/webp;base64,${base64}`,
           width: 1024,
@@ -149,8 +204,10 @@ const runJob = async (options: {
           bytes: Buffer.byteLength(base64, 'base64'),
           storage: 'memory' as const,
         }
+        job.items.push(item)
+        return item
       }
-    }))
+    })
     job.items = settled.flatMap((result) => result.status === 'fulfilled' ? [result.value] : [])
     const failures = settled.flatMap((result) => result.status === 'rejected' ? [safeError(result.reason)] : [])
     if (failures.length) {
@@ -177,12 +234,14 @@ export const startOpenAiPortraitTest = (options: {
   apiKey: string
   proxyUrl?: string
   portraitIds?: readonly string[]
+  portraitBatch?: 'character-expansion-50'
   persist: (input: { base64: string; fileName: string }) => Promise<PersistedPortrait>
 }) => {
   cleanJobs()
   if (activeJobId) return { job: jobs.get(activeJobId)!, started: false, completion: null }
   const requestedIds = new Set(options.portraitIds ?? [])
-  const portraits = requestedIds.size ? PORTRAITS.filter((portrait) => requestedIds.has(portrait.id)) : PORTRAITS
+  const sourcePortraits = options.portraitBatch === 'character-expansion-50' ? expansionPortraits() : PORTRAITS
+  const portraits = requestedIds.size ? sourcePortraits.filter((portrait) => requestedIds.has(portrait.id)) : sourcePortraits
   if (!portraits.length) throw new Error('At least one known portrait id is required')
   const job: OpenAiPortraitTestJob = {
     id: randomUUID(),
