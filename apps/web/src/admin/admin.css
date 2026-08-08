@@ -950,10 +950,12 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   overflow: hidden;
 }
 .admin-portrait-review__media {
+  --portrait-media-pad-x: 64px;
+  --portrait-media-pad-y: 18px;
   position: relative;
   min-width: 0;
   min-height: 0;
-  padding: 18px 64px;
+  padding: var(--portrait-media-pad-y) var(--portrait-media-pad-x);
   background:
     radial-gradient(circle at 50% 28%, rgba(106, 183, 128, .13), transparent 44%),
     linear-gradient(135deg, rgba(255,255,255,.025) 25%, transparent 25%) 0 0 / 22px 22px,
@@ -963,7 +965,16 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   place-items: center;
   overflow: hidden;
 }
-.admin-portrait-review__media > img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 13px; object-fit: contain; filter: drop-shadow(0 20px 38px rgba(0,0,0,.42)); }
+.admin-portrait-review__media > img {
+  position: absolute;
+  top: var(--portrait-media-pad-y);
+  left: var(--portrait-media-pad-x);
+  width: calc(100% - var(--portrait-media-pad-x) - var(--portrait-media-pad-x));
+  height: calc(100% - var(--portrait-media-pad-y) - var(--portrait-media-pad-y));
+  border-radius: 13px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 38px rgba(0,0,0,.42));
+}
 .admin-portrait-review__fallback { color: var(--color-muted-2); display: grid; place-items: center; gap: 10px; text-align: center; }
 .admin-portrait-review__fallback svg { width: 52px; height: 52px; }
 .admin-portrait-review__nav {
@@ -1152,7 +1163,7 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-review-footer .ui-button--primary.is-active { box-shadow: inset 0 0 0 2px rgba(255,255,255,.3); }
 @media (max-width: 980px) {
   .admin-portrait-review { grid-template-columns: minmax(0, 1fr) 260px; }
-  .admin-portrait-review__media { padding-inline: 54px; }
+  .admin-portrait-review__media { --portrait-media-pad-x: 54px; }
   .admin-portrait-review__info { padding: 17px; }
   .admin-attempt-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-moderation-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1496,7 +1507,7 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-content-preview-modal.is-image-review { height: 95dvh; max-height: 95dvh; }
   .admin-content-preview-modal.is-image-review .admin-modal__body--image-review { max-height: calc(95dvh - 205px); overflow: auto; }
   .admin-portrait-review { height: auto; grid-template-columns: minmax(0, 1fr); overflow: visible; }
-  .admin-portrait-review__media { min-height: min(54dvh, 470px); padding: 14px 52px; }
+  .admin-portrait-review__media { --portrait-media-pad-x: 52px; --portrait-media-pad-y: 14px; min-height: min(54dvh, 470px); }
   .admin-portrait-review__info { min-height: 340px; border-top: 1px solid var(--color-line); border-left: 0; overflow: visible; }
   .admin-modal--moderation > .admin-review-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px max(10px, env(safe-area-inset-bottom)); }
   .admin-attempt-card .admin-attempt-card__header { grid-template-columns: 22px 64px minmax(0, 1fr); gap: 9px; }
