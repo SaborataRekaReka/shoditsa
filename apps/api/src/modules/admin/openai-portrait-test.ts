@@ -165,16 +165,23 @@ const compositionBriefFor = (id: string) => {
   ].join(' ')
 }
 
+const youngCharacterPattern = /\b(child|boy|girl|adolescent|teen|schoolgirl|schoolboy|youngster|non-sensual)\b|реб[её]нок|подрост|юный|мальчик|девочк/i
+const portraitDescriptionForPrompt = (portrait: PortraitSpec) => portrait.description
+  .replace(/strictly non-sensual|non-sensual/gi, 'wholesome, age-appropriate and adventurous')
+const ageDirectionForPrompt = (portrait: PortraitSpec) => youngCharacterPattern.test(portrait.description)
+  ? 'This is a young character: keep the portrayal wholesome and clearly age-appropriate, with practical opaque period clothing, neutral body language, and no glamour styling.'
+  : 'Where the character description explicitly calls for adult beauty or sensual magnetism, make it tasteful, emotionally convincing, source-appropriate and non-explicit through gaze, posture, silhouette, fabric and lighting. Keep the character fully clothed in opaque period-appropriate garments: no nudity, lingerie, transparent fabric, fetish styling or pornographic framing.'
+
 const portraitPrompt = (portrait: PortraitSpec) => [
   `Create an original vertical character portrait of ${portrait.title}.`,
-  portrait.description,
+  portraitDescriptionForPrompt(portrait),
   'Treat the character name only as narrative context, never as a visual reference. For a human or humanlike character, invent the facial identity from scratch as a fictional person who is not recognizable as any real person, performer, actor, or celebrity. For an animal, spirit, monster, object or other nonhuman character, invent original anatomy, markings and silhouette without copying a known adaptation. Follow the supplied physical traits instead of converging on the best-known screen portrayal.',
   'Base the interpretation only on the public-domain literary or folklore source. Do not imitate any film, television, game, comic, or animation adaptation; any actor or celebrity; any existing illustration, poster, costume design, franchise logo, or studio style. Do not reproduce a recognizable performer\'s facial geometry, hairline, eyes, nose, mouth, or signature styling.',
   'For characters with famous adaptations, deliberately diverge from their familiar screen image in at least four visible ways: age, face shape, nose or jaw, eye colour, hair colour or texture, hairline, clothing silhouette, and palette.',
   'Art direction: use the established Shoditsa visual language — a graphic editorial manga character illustration combined with a retro investigative scrapbook collage. Crisp hand-inked linework with varied black strokes, restrained cel shading, subtle watercolour washes, screen-print halftone, cross-hatching, and visible aged-paper grain. Use a limited palette of warm ivory, charcoal black, forest green, mustard ochre, muted coral, and dusty blue.',
   `Unique composition brief for this character: ${compositionBriefFor(portrait.id)} Adapt bodily instructions to the character's actual anatomy; do not add extra people or creatures merely to fill the scene.`,
   'Composition system: vary portrait crop, camera height, gaze direction, body angle, gesture, implied movement, foreground depth, weather and time of day. The result may range from close waist-up to three-quarter body when the unique brief calls for it. Behind and around the character, use a sparse full-bleed story-specific environment integrated with torn paper, taped archival cards, simple grids and diagram marks. Keep the face or defining silhouette dominant; the collage must not become a busy poster.',
-  'Where the character description explicitly calls for adult beauty or sensual magnetism, make it tasteful, emotionally convincing, source-appropriate and non-explicit through gaze, posture, silhouette, fabric and lighting. Keep the character fully clothed in opaque period-appropriate garments: no nudity, lingerie, transparent fabric, fetish styling or pornographic framing. Never sexualize a child, adolescent, childlike character or animal.',
+  ageDirectionForPrompt(portrait),
   'Do not use photorealism, oil-paint impasto, cinematic photography, glossy 3D rendering, airbrushed skin, or a generic polished fantasy-book-cover look. Do not give every character the same youthful anime face.',
   'The result must contain only the artwork: no frame, no card UI, no typography, no letters, no numbers, no signature, no logo, and no watermark.',
 ].join(' ')
