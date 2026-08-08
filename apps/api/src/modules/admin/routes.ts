@@ -50,7 +50,7 @@ import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironmen
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
 import { inspectReleaseContent } from './release-content-service.js'
-import { getOpenAiPortraitTest, startOpenAiPortraitTest } from './openai-portrait-test.js'
+import { getOpenAiPortraitTest, startOpenAiPortraitTest, type OpenAiPortraitBatch } from './openai-portrait-test.js'
 import { createCloudPaymentsProvider } from '../commerce/providers/cloudpayments.js'
 import {
   assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, normalizationContextOptions,
@@ -1607,12 +1607,15 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
     schema: { body: Type.Object({
       confirmation: Type.Literal(true),
       portraitId: Type.Optional(Type.Literal('sherlock-holmes')),
-      portraitBatch: Type.Optional(Type.Literal('character-expansion-50')),
+      portraitBatch: Type.Optional(Type.Union([
+        Type.Literal('character-expansion-50'),
+        Type.Literal('character-expansion-330'),
+      ])),
     }, { additionalProperties: false }) },
     config: { rateLimit: { max: 6, timeWindow: '1 hour' } },
   }, async (request, reply) => {
     const actor = await admin(request, reply, deps)
-    const body = request.body as { confirmation: true; portraitId?: 'sherlock-holmes'; portraitBatch?: 'character-expansion-50' }
+    const body = request.body as { confirmation: true; portraitId?: 'sherlock-holmes'; portraitBatch?: OpenAiPortraitBatch }
     if (body.portraitId && body.portraitBatch) throw new ApiError(422, 'OPENAI_PORTRAIT_SELECTION_INVALID', 'Выберите один портрет или пакет, но не оба варианта')
     const environment = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')

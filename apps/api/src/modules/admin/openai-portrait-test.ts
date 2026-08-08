@@ -21,6 +21,8 @@ type ExpansionPortraitSource = {
   items?: Array<{ id?: unknown; titleRu?: unknown; portraitDescription?: unknown }>
 }
 
+export type OpenAiPortraitBatch = 'character-expansion-50' | 'character-expansion-330'
+
 export type OpenAiPortraitTestItem = PortraitSpec & PersistedPortrait & { storage: 'media' | 'memory' }
 export type OpenAiPortraitTestJob = {
   id: string
@@ -65,10 +67,16 @@ const PORTRAITS: readonly PortraitSpec[] = [
   },
 ] as const
 
-const expansionPortraits = () => {
-  const source = JSON.parse(readFileSync(resolve('data/characters/seeds/characters.expansion50.json'), 'utf8')) as ExpansionPortraitSource
-  if (source.batchId !== 'character-expansion-50' || !Array.isArray(source.items) || source.items.length !== 50) {
-    throw new Error('Character expansion portrait source must contain exactly 50 items')
+const portraitBatchConfig: Record<OpenAiPortraitBatch, { file: string; count: number }> = {
+  'character-expansion-50': { file: 'characters.expansion50.json', count: 50 },
+  'character-expansion-330': { file: 'characters.expansion330.json', count: 330 },
+}
+
+const expansionPortraits = (batch: OpenAiPortraitBatch) => {
+  const config = portraitBatchConfig[batch]
+  const source = JSON.parse(readFileSync(resolve('data/characters/seeds', config.file), 'utf8')) as ExpansionPortraitSource
+  if (source.batchId !== batch || !Array.isArray(source.items) || source.items.length !== config.count) {
+    throw new Error(`Character expansion portrait source must contain exactly ${config.count} items for ${batch}`)
   }
   const portraits = source.items.map((item, index): PortraitSpec => {
     const canonicalId = String(item.id ?? '')
@@ -108,7 +116,7 @@ const delay = (milliseconds: number) => new Promise((resolveDelay) => setTimeout
 const portraitPrompt = (portrait: PortraitSpec) => [
   `Create an original vertical character portrait of ${portrait.title}.`,
   portrait.description,
-  'Treat the character name only as narrative context, never as a visual reference. Invent the facial identity from scratch as a fictional person who is not recognizable as any real person, performer, actor, or celebrity. Follow the supplied physical traits instead of converging on the best-known screen portrayal.',
+  'Treat the character name only as narrative context, never as a visual reference. For a human or humanlike character, invent the facial identity from scratch as a fictional person who is not recognizable as any real person, performer, actor, or celebrity. For an animal, spirit, monster, object or other nonhuman character, invent original anatomy, markings and silhouette without copying a known adaptation. Follow the supplied physical traits instead of converging on the best-known screen portrayal.',
   'Base the interpretation only on the public-domain literary or folklore source. Do not imitate any film, television, game, comic, or animation adaptation; any actor or celebrity; any existing illustration, poster, costume design, franchise logo, or studio style. Do not reproduce a recognizable performer\'s facial geometry, hairline, eyes, nose, mouth, or signature styling.',
   'For characters with famous adaptations, deliberately diverge from their familiar screen image in at least four visible ways: age, face shape, nose or jaw, eye colour, hair colour or texture, hairline, clothing silhouette, and palette.',
   'Art direction: use the established Shoditsa visual language — a graphic editorial manga character illustration combined with a retro investigative scrapbook collage. Crisp hand-inked linework with varied black strokes, restrained cel shading, subtle watercolour washes, screen-print halftone, cross-hatching, and visible aged-paper grain. Use a limited palette of warm ivory, charcoal black, forest green, mustard ochre, muted coral, and dusty blue.',
@@ -182,13 +190,14 @@ const runJob = async (options: {
   apiKey: string
   proxyUrl?: string
   portraits: readonly PortraitSpec[]
+  concurrency: number
   persist: (input: { base64: string; fileName: string }) => Promise<PersistedPortrait>
 }) => {
   const { job } = options
   job.status = 'running'
   const dispatcher = options.proxyUrl ? new ProxyAgent(options.proxyUrl) : null
   try {
-    const settled = await settleWithConcurrency(options.portraits, 4, async (portrait) => {
+    const settled = await settleWithConcurrency(options.portraits, options.concurrency, async (portrait) => {
       const base64 = await requestPortrait({ apiKey: options.apiKey, dispatcher, portrait })
       try {
         const persisted = await options.persist({ base64, fileName: `${portrait.id}.webp` })
@@ -234,13 +243,13 @@ export const startOpenAiPortraitTest = (options: {
   apiKey: string
   proxyUrl?: string
   portraitIds?: readonly string[]
-  portraitBatch?: 'character-expansion-50'
+  portraitBatch?: OpenAiPortraitBatch
   persist: (input: { base64: string; fileName: string }) => Promise<PersistedPortrait>
 }) => {
   cleanJobs()
   if (activeJobId) return { job: jobs.get(activeJobId)!, started: false, completion: null }
   const requestedIds = new Set(options.portraitIds ?? [])
-  const sourcePortraits = options.portraitBatch === 'character-expansion-50' ? expansionPortraits() : PORTRAITS
+  const sourcePortraits = options.portraitBatch ? expansionPortraits(options.portraitBatch) : PORTRAITS
   const portraits = requestedIds.size ? sourcePortraits.filter((portrait) => requestedIds.has(portrait.id)) : sourcePortraits
   if (!portraits.length) throw new Error('At least one known portrait id is required')
   const job: OpenAiPortraitTestJob = {
@@ -259,7 +268,7 @@ export const startOpenAiPortraitTest = (options: {
   }
   jobs.set(job.id, job)
   activeJobId = job.id
-  const completion = runJob({ ...options, portraits, job })
+  const completion = runJob({ ...options, portraits, job, concurrency: options.portraitBatch === 'character-expansion-330' ? 6 : 4 })
   return { job, started: true, completion }
 }
 
