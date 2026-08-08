@@ -36,7 +36,7 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-brand { height: 48px; padding: 0 11px; display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
 .admin-brand img { width: 132px; max-height: 32px; filter: brightness(0) invert(1); }
 .admin-brand > span { padding: 3px 6px; border: 1px solid #55574f; border-radius: 5px; color: var(--a-primary); font: 700 9px/1 Inter, sans-serif; letter-spacing: .12em; }
-.admin-sidebar nav { flex: 1; margin-top: 25px; display: flex; flex-direction: column; gap: 3px; }
+.admin-sidebar nav { min-height: 0; margin-top: 25px; padding-right: 2px; display: flex; flex: 1; flex-direction: column; gap: 3px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #4c4e47 transparent; }
 .admin-sidebar nav button { position: relative; width: 100%; height: 42px; padding: 0 12px; border: 0; border-radius: 9px; color: #bdbeb6; background: transparent; display: flex; align-items: center; gap: 11px; font-weight: 600; text-align: left; cursor: pointer; transition: .15s ease; }
 .admin-sidebar nav button:hover { color: #fff; background: #2d2e2a; }
 .admin-sidebar nav button.is-active { color: var(--a-ink); background: var(--a-primary); }
@@ -45,8 +45,8 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-nav-group { display: grid; gap: 3px; }
 .admin-sidebar nav .admin-nav-group > button .admin-nav-group__chevron { width: 14px; height: 14px; margin-left: auto; transition: transform .16s ease; }
 .admin-nav-group.is-open > button .admin-nav-group__chevron { transform: rotate(180deg); }
-.admin-nav-group__children { max-height: 0; padding-left: 12px; display: grid; gap: 2px; overflow: hidden; opacity: 0; transition: max-height .18s ease, opacity .14s ease, padding .18s ease; }
-.admin-nav-group.is-open .admin-nav-group__children { max-height: 236px; padding: 1px 0 3px 12px; opacity: 1; }
+.admin-nav-group__children { padding-left: 12px; display: none; gap: 2px; }
+.admin-nav-group.is-open .admin-nav-group__children { padding: 1px 0 3px 12px; display: grid; }
 .admin-sidebar nav .admin-nav-group__children button { height: 31px; padding: 0 10px 0 28px; border-radius: 7px; color: #9fa198; font-size: 12px; font-weight: 600; }
 .admin-sidebar nav .admin-nav-group__children button::before { content: ''; position: absolute; left: 11px; width: 7px; height: 7px; border: 1px solid currentColor; border-radius: 50%; opacity: .7; }
 .admin-sidebar nav .admin-nav-group__children button.is-active { color: var(--a-primary); background: #2d2e2a; }
@@ -1259,15 +1259,6 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-drawer { width: calc(100vw - 270px); }
 }
 @media (max-width: 1180px) {
-  .admin-sidebar { width: 76px; padding-left: 8px; padding-right: 8px; }
-  .admin-brand { justify-content: center; padding: 0; }
-  .admin-brand img { width: 31px; object-fit: cover; object-position: left; }
-  .admin-brand > span, .admin-sidebar nav button span, .admin-sidebar footer { display: none; }
-  .admin-sidebar nav button { justify-content: center; padding: 0; }
-  .admin-sidebar nav button i { position: absolute; right: 11px; }
-  .admin-main { padding-left: 76px; }
-  .admin-topbar { left: 76px; }
-  .admin-drawer { left: 76px; width: auto; }
   .admin-topbar-user div { display: none; }
   .admin-topbar-user { padding-left: 10px; grid-template-columns: 32px; }
   .admin-report-context { grid-template-columns: repeat(2,1fr); }
@@ -1281,6 +1272,20 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-release-preview > p { grid-column: 1 / -1; }
   .admin-economy-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .admin-economy-targets { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 960px) {
+  .admin-sidebar { width: 76px; padding-left: 8px; padding-right: 8px; }
+  .admin-brand { justify-content: center; padding: 0; }
+  .admin-brand img { width: 31px; object-fit: cover; object-position: left; }
+  .admin-brand > span, .admin-sidebar nav button span, .admin-sidebar footer { display: none; }
+  .admin-sidebar nav { margin-top: 16px; }
+  .admin-sidebar nav button { justify-content: center; padding: 0; }
+  .admin-sidebar nav button i { position: absolute; right: 11px; }
+  .admin-sidebar nav .admin-nav-group > button .admin-nav-group__chevron,
+  .admin-sidebar .admin-nav-group__children { display: none; }
+  .admin-main { padding-left: 76px; }
+  .admin-topbar { left: 76px; }
+  .admin-drawer { left: 76px; width: auto; }
 }
 @media (max-width: 640px) {
   .admin-toolbar--users .admin-search { min-width: 100%; flex-basis: 100%; }
@@ -1385,6 +1390,9 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-bulk .admin-tag-picker__control { background: #fff; }
 
 @media (max-width: 1180px) {
+  .admin-content-controls__main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-content-control--search { grid-column: 1 / -1; }
+  .admin-content-controls__actions { align-self: end; }
   .admin-content-results-bar { align-items: stretch; flex-direction: column; }
   .admin-content-results-bar__workspace { justify-content: flex-start; flex-wrap: wrap; }
   .admin-content-results-bar__group--display { flex: 1 1 520px; }
@@ -1399,9 +1407,6 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-content-local-filters .admin-btn { justify-self: start; }
   .admin-bulk-tags[open] > div { grid-template-columns: minmax(0, 1fr) auto; }
   .admin-bulk-tags[open] > div > button:last-child { grid-column: 2; }
-  .admin-content-controls__main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .admin-content-control--search { grid-column: 1 / -1; }
-  .admin-content-controls__actions { align-self: end; }
   .admin-content-facet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
