@@ -278,7 +278,7 @@ export const adminApi = {
   deletePipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`, { method: 'DELETE', body: json({ confirmation: true }) }),
   cleanupPipelineRuns: (keepLatest = 30) => request<Record<string, unknown>>('/admin/pipeline-runs/cleanup', { method: 'POST', body: json({ confirmation: true, keepLatest }) }),
   integrations: () => request<{ items: Array<Record<string, unknown>> }>('/admin/integrations'),
-  startOpenAiPortraitTest: (selection?: { portraitId?: 'sherlock-holmes'; portraitBatch?: 'character-expansion-50' }) => request<OpenAiPortraitTest>('/admin/integrations/openai/portrait-test', { method: 'POST', body: json({ confirmation: true, ...selection }) }),
+  startOpenAiPortraitTest: (selection?: { portraitId?: 'sherlock-holmes'; portraitBatch?: 'character-expansion-50' | 'character-expansion-330' }) => request<OpenAiPortraitTest>('/admin/integrations/openai/portrait-test', { method: 'POST', body: json({ confirmation: true, ...selection }) }),
   openAiPortraitTest: (id: string) => request<OpenAiPortraitTest>(`/admin/integrations/openai/portrait-test/${encodeURIComponent(id)}`),
   connectionsRounds: () => request<{ items: ConnectionsRoundAdminItem[] }>('/admin/connections/rounds'),
   connectionsImportPreview: (document: Record<string, unknown>) => request<ConnectionsImportPreview>('/admin/connections/import/preview', { method: 'POST', body: json(document), timeoutMs: 60_000 }),
