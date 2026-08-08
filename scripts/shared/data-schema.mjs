@@ -120,7 +120,7 @@ const validateBooks = (items, file) => {
 
 const validateCharacters = async (items, rootDir, file) => {
   const errors = []
-  if (items.length !== 70) errors.push(`${file}: character runtime roster must contain exactly 70 items, found ${items.length}`)
+  if (items.length !== 400) errors.push(`${file}: character runtime roster must contain exactly 400 items, found ${items.length}`)
   const listFields = ['characterSourceTypes', 'characterOriginCultures', 'characterRoles', 'characterArchetypes', 'characterAbilities', 'characterSettings']
   const scalarFields = ['characterEra', 'characterNature', 'characterGender', 'characterAgeGroup', 'characterSourceWork']
   for (const item of items) {

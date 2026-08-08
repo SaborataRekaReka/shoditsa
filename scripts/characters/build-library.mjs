@@ -4,12 +4,15 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const BASE_SOURCE = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.v1.json')
-const EXPANSION_SOURCE = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion50.json')
+const EXPANSION_SOURCES = [
+  { file: path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion50.json'), batchId: 'character-expansion-50', count: 50 },
+  { file: path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion330.json'), batchId: 'character-expansion-330', count: 330 },
+]
 const GENERATED = path.join(ROOT, 'data', 'characters', 'generated', 'items.json')
 const REPORT = path.join(ROOT, 'data', 'characters', 'reports', 'audit.json')
 const RUNTIME = path.join(ROOT, 'public', 'data', 'libraries', 'characters', 'items.json')
 const SOURCE_META = path.join(ROOT, 'public', 'data', 'source.json')
-const EXPECTED = 70
+const EXPECTED = 400
 
 const normalize = (value) => String(value ?? '')
   .normalize('NFKC')
@@ -26,18 +29,20 @@ const writeJson = (file, value) => {
 
 const loadSource = () => {
   const base = JSON.parse(fs.readFileSync(BASE_SOURCE, 'utf8'))
-  const expansion = JSON.parse(fs.readFileSync(EXPANSION_SOURCE, 'utf8'))
   if (!Array.isArray(base)) throw new Error('Base character source root must be an array')
-  if (expansion?.batchId !== 'character-expansion-50' || !Array.isArray(expansion?.items) || expansion.items.length !== 50) {
-    throw new Error('Character expansion source must contain the character-expansion-50 batch with exactly 50 items')
-  }
-  if (!expansion.sources || typeof expansion.sources !== 'object' || Array.isArray(expansion.sources)) {
-    throw new Error('Character expansion source bundles are missing')
-  }
-  const expanded = expansion.items.map((item) => {
-    const sources = expansion.sources[item.sourceKey]
-    if (!Array.isArray(sources) || !sources.length) throw new Error(`${item.id ?? 'unknown'}: sourceKey ${item.sourceKey ?? 'missing'} is unresolved`)
-    return { ...item, sources }
+  const expanded = EXPANSION_SOURCES.flatMap(({ file, batchId, count }) => {
+    const expansion = JSON.parse(fs.readFileSync(file, 'utf8'))
+    if (expansion?.batchId !== batchId || !Array.isArray(expansion?.items) || expansion.items.length !== count) {
+      throw new Error(`Character expansion source must contain the ${batchId} batch with exactly ${count} items`)
+    }
+    if (!expansion.sources || typeof expansion.sources !== 'object' || Array.isArray(expansion.sources)) {
+      throw new Error(`Character expansion source bundles are missing for ${batchId}`)
+    }
+    return expansion.items.map((item) => {
+      const sources = expansion.sources[item.sourceKey]
+      if (!Array.isArray(sources) || !sources.length) throw new Error(`${item.id ?? 'unknown'}: sourceKey ${item.sourceKey ?? 'missing'} is unresolved`)
+      return { ...item, sources }
+    })
   })
   return [...base, ...expanded]
 }
@@ -169,7 +174,7 @@ const main = () => {
   })
   const sourceMeta = JSON.parse(fs.readFileSync(SOURCE_META, 'utf8'))
   sourceMeta.characterCount = items.length
-  sourceMeta.characterSource = 'data/characters/seeds/characters.v1.json + data/characters/seeds/characters.expansion50.json'
+  sourceMeta.characterSource = 'data/characters/seeds/characters.v1.json + data/characters/seeds/characters.expansion50.json + data/characters/seeds/characters.expansion330.json'
   sourceMeta.characterGeneratedAt = generatedAt
   writeJson(SOURCE_META, sourceMeta)
   console.log(`characters: ${items.length} playable cards written to ${path.relative(ROOT, RUNTIME)}`)

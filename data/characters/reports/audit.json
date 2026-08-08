@@ -1,28 +1,28 @@
 {
-  "generatedAt": "2026-08-08T05:29:43.645Z",
-  "expected": 70,
-  "total": 70,
-  "playable": 70,
-  "dailyEligible": 69,
+  "generatedAt": "2026-08-08T08:48:50.454Z",
+  "expected": 400,
+  "total": 400,
+  "playable": 400,
+  "dailyEligible": 366,
   "criteriaCoverage": {
-    "characterEra": 70,
-    "characterSourceTypes": 70,
-    "characterOriginCultures": 70,
-    "characterNature": 70,
-    "characterGender": 70,
-    "characterAgeGroup": 70,
-    "characterRoles": 70,
-    "characterArchetypes": 70,
-    "characterAbilities": 70,
-    "characterSettings": 70
+    "characterEra": 400,
+    "characterSourceTypes": 400,
+    "characterOriginCultures": 400,
+    "characterNature": 400,
+    "characterGender": 400,
+    "characterAgeGroup": 400,
+    "characterRoles": 400,
+    "characterArchetypes": 400,
+    "characterAbilities": 400,
+    "characterSettings": 400
   },
   "difficulty": {
-    "easy": 48,
-    "medium": 22,
-    "hard": 0
+    "easy": 250,
+    "medium": 117,
+    "hard": 33
   },
   "rights": {
-    "public_domain_source_reviewed": 70
+    "public_domain_source_reviewed": 400
   },
   "issues": []
 }
