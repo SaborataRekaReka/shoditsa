@@ -181,7 +181,7 @@ export function GameResult(props: Props) {
       replayAccessSource={props.replayAccessSource}
       showTip={props.won}
       showCopy
-      showReplayGate={props.completedToday !== undefined}
+      showReplayGate={Boolean(props.onReplay) || props.completedToday !== undefined}
     />
     {props.mode === 'diagnosis' && <section className="diagnosis-result-funnel result-card__wide" aria-label="Что дальше">
       <div className="diagnosis-result-funnel__copy">
