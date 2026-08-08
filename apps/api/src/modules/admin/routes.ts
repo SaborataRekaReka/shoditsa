@@ -414,9 +414,9 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
     const workspace = await getOrCreateWorkspace(deps.db, actor)
     const effectivePayload = sql<Record<string, unknown>>`coalesce((select cwc.after_payload from content_workspace_changes cwc where cwc.workspace_id = ${workspace.id} and cwc.item_id = ${contentItemVersions.itemId} limit 1), ${contentItemVersions.payload})`
     const openQualityIssueExists = sql`exists (select 1 from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open')`
-    const previewReviewIssueExists = sql`exists (select 1 from content_review_decisions crd where crd.item_id = ${contentItemVersions.itemId} and crd.field = '__card_preview__' and crd.decision @> '{"approved":false}'::jsonb)`
-    const anyIssueExists = sql`(${openQualityIssueExists} or ${previewReviewIssueExists})`
-    const issuesCount = sql<number>`((select count(*) from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open') + case when ${previewReviewIssueExists} then 1 else 0 end)::int`
+    const previewReviewIssuesCount = sql<number>`(select count(distinct crd.field)::int from content_review_decisions crd where crd.item_id = ${contentItemVersions.itemId} and crd.field in ('__card_preview__', '__portrait_review__') and crd.decision @> '{"approved":false}'::jsonb)`
+    const anyIssueExists = sql`(${openQualityIssueExists} or ${previewReviewIssuesCount} > 0)`
+    const issuesCount = sql<number>`((select count(*) from content_quality_issues qi where qi.item_id = ${contentItemVersions.itemId} and qi.status = 'open') + ${previewReviewIssuesCount})::int`
     const filters = [eq(contentItemVersions.revisionId, active.id)]
     if (query.mode) filters.push(eq(contentItemVersions.mode, query.mode))
     if (query.publication === 'published') filters.push(eq(contentItemVersions.allowedInGame, true))

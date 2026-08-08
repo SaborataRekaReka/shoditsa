@@ -908,18 +908,22 @@ function ContentPreviewModal({
     queryFn: () => adminApi.contentItem(currentId),
     enabled: Boolean(currentId),
   })
+  const [previewMode, setPreviewMode] = useState<'image' | 'card'>(() => currentItem?.mode === 'character' ? 'image' : 'card')
   const [note, setNote] = useState('')
   const [reviewOverrides, setReviewOverrides] = useState<Record<string, { approved: boolean; note: string }>>({})
-  const serverReview = detail.data?.decisions.map(record).find((entry) => entry.field === '__card_preview__')
+  const imageReview = previewMode === 'image'
+  const reviewField = imageReview ? '__portrait_review__' : '__card_preview__'
+  const reviewKey = `${reviewField}:${currentId}`
+  const serverReview = detail.data?.decisions.map(record).find((entry) => entry.field === reviewField)
   const serverDecision = record(serverReview?.decision)
-  const savedReview = reviewOverrides[currentId] ?? (typeof serverDecision.approved === 'boolean'
+  const savedReview = reviewOverrides[reviewKey] ?? (typeof serverDecision.approved === 'boolean'
     ? { approved: serverDecision.approved, note: String(serverDecision.note ?? '') }
     : null)
   const reviewStatus = savedReview ? (savedReview.approved ? 'approved' : 'issue') : 'pending'
 
   useEffect(() => {
     setNote(savedReview?.note ?? '')
-  }, [currentId, savedReview?.note])
+  }, [reviewKey, savedReview?.note])
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -940,13 +944,21 @@ function ContentPreviewModal({
   }, [client, currentIndex, items])
 
   const review = useMutation({
-    mutationFn: ({ itemId, approved, reviewNote }: { itemId: string; approved: boolean; reviewNote: string }) =>
-      adminApi.reviewDecision(itemId, '__card_preview__', { approved, ...(reviewNote.trim() ? { note: reviewNote.trim() } : {}) }),
+    mutationFn: ({ itemId, field, approved, reviewNote }: { itemId: string; field: string; approved: boolean; reviewNote: string; advance: boolean }) =>
+      adminApi.reviewDecision(itemId, field, { approved, ...(reviewNote.trim() ? { note: reviewNote.trim() } : {}) }),
     onSuccess: (_, variables) => {
-      setReviewOverrides((current) => ({ ...current, [variables.itemId]: { approved: variables.approved, note: variables.reviewNote.trim() } }))
+      setReviewOverrides((current) => ({ ...current, [`${variables.field}:${variables.itemId}`]: { approved: variables.approved, note: variables.reviewNote.trim() } }))
       void client.invalidateQueries({ queryKey: ['admin', 'item', variables.itemId] })
       void client.invalidateQueries({ queryKey: ['admin', 'content'] })
-      notify(variables.approved ? 'success' : 'info', variables.approved ? 'Карточка отмечена как проверенная' : 'Проблема отмечена и сохранена')
+      const isPortrait = variables.field === '__portrait_review__'
+      notify(variables.approved ? 'success' : 'info', isPortrait
+        ? (variables.approved ? 'Портрет оставлен' : 'Портрет отмечен на перегенерацию')
+        : (variables.approved ? 'Карточка отмечена как проверенная' : 'Проблема отмечена и сохранена'))
+      if (variables.advance) {
+        const reviewedIndex = items.findIndex((item) => item.id === variables.itemId)
+        const next = items[reviewedIndex + 1]
+        if (next) onChange(next.id)
+      }
     },
     onError: (error) => notify('error', errorText(error)),
   })
@@ -955,9 +967,10 @@ function ContentPreviewModal({
     const target = items[currentIndex + direction]
     if (target) onChange(target.id)
   }
-  const submitReview = (approved: boolean) => {
+  const submitReview = (approved: boolean, options: { advance?: boolean; note?: string } = {}) => {
     if (!currentItem || review.isPending) return
-    review.mutate({ itemId: currentItem.id, approved, reviewNote: note })
+    const reviewNote = options.note ?? (imageReview && !approved ? 'Перегенерировать портрет' : note)
+    review.mutate({ itemId: currentItem.id, field: reviewField, approved, reviewNote, advance: options.advance ?? imageReview })
   }
 
   useEffect(() => {
@@ -992,15 +1005,45 @@ function ContentPreviewModal({
   ].filter(Boolean)
 
   return <div className="admin-modal-backdrop admin-modal-backdrop--moderation admin-content-preview-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <div className="admin-modal admin-modal--moderation admin-content-preview-modal" role="dialog" aria-modal="true" aria-label={`Предпросмотр ${currentItem.titleRu}`}>
+    <div className={`admin-modal admin-modal--moderation admin-content-preview-modal${imageReview ? ' is-image-review' : ''}`} role="dialog" aria-modal="true" aria-label={`Предпросмотр ${currentItem.titleRu}`}>
       <header>
-        <div><span>{MODE_LABEL[mode]} · Предпросмотр текущей выборки</span><h2>Карточка как в игре</h2></div>
+        <div><span>{MODE_LABEL[mode]} · Предпросмотр текущей выборки</span><h2>{imageReview ? 'Отбор изображений' : 'Карточка как в игре'}</h2></div>
         <div className="admin-content-preview-header-actions">
+          <div className="admin-content-preview-switch" role="tablist" aria-label="Режим предпросмотра">
+            <button type="button" role="tab" aria-selected={imageReview} className={imageReview ? 'is-active' : ''} onClick={() => setPreviewMode('image')}><ImageIcon />Изображение</button>
+            <button type="button" role="tab" aria-selected={!imageReview} className={!imageReview ? 'is-active' : ''} onClick={() => setPreviewMode('card')}><LayoutTemplate />Карточка</button>
+          </div>
           <button className="admin-content-preview-edit" onClick={() => onEdit(currentItem.id)}><SquarePen />Редактировать</button>
           <button className="admin-content-preview-close" aria-label="Закрыть предпросмотр" onClick={onClose}><X /></button>
         </div>
       </header>
-      <div className="admin-modal__body admin-modal__body--moderation">
+      <div className={`admin-modal__body admin-modal__body--moderation${imageReview ? ' admin-modal__body--image-review' : ''}`}>
+        {imageReview ? (detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} retry={() => void detail.refetch()} /> : <section className={`admin-portrait-review is-${reviewStatus}`}>
+          <div className="admin-portrait-review__media">
+            <button type="button" className="admin-portrait-review__nav is-previous" aria-label="Предыдущее изображение" onClick={() => move(-1)} disabled={currentIndex === 0 || review.isPending}><ChevronLeft /></button>
+            {poster ? <img src={poster} alt={`Портрет: ${previewValue(payload.titleRu) || currentItem.titleRu}`} /> : <div className="admin-portrait-review__fallback"><ImageIcon /><span>Изображение не загружено</span></div>}
+            <button type="button" className="admin-portrait-review__nav is-next" aria-label="Следующее изображение" onClick={() => move(1)} disabled={currentIndex >= items.length - 1 || review.isPending}><ChevronRight /></button>
+            <div className={`admin-portrait-review__status is-${reviewStatus}`}><small>Решение</small><strong>{reviewStatus === 'approved' ? 'Оставить' : reviewStatus === 'issue' ? 'Перегенерировать' : 'Не проверено'}</strong></div>
+          </div>
+          <aside className="admin-portrait-review__info">
+            <div className="admin-portrait-review__progress-head"><span>Портрет {currentIndex + 1} из {items.length}</span><strong>{Math.round(((currentIndex + 1) / items.length) * 100)}%</strong></div>
+            <div className="admin-portrait-review__progress" aria-hidden="true"><i style={{ width: `${((currentIndex + 1) / items.length) * 100}%` }} /></div>
+            <span className="admin-portrait-review__eyebrow">{MODE_LABEL[mode]} · визуальный контроль</span>
+            <h2>{previewValue(payload.titleRu) || currentItem.titleRu}</h2>
+            {originalTitle && <p>{originalTitle}</p>}
+            <dl>
+              <div><dt>Статус</dt><dd>{reviewStatus === 'approved' ? 'Оставить' : reviewStatus === 'issue' ? 'На перегенерацию' : 'Ожидает решения'}</dd></div>
+              <div><dt>ID</dt><dd>{currentItem.id}</dd></div>
+            </dl>
+            <div className="admin-portrait-review__keys">
+              <strong>Быстрая проверка</strong>
+              <p><kbd>X</kbd><span>На перегенерацию и дальше</span></p>
+              <p><kbd>C</kbd><span>Оставить и дальше</span></p>
+              <p><kbd>←</kbd><kbd>→</kbd><span>Листать без решения</span></p>
+            </div>
+            {poster && <a className="admin-portrait-review__original" href={poster} target="_blank" rel="noreferrer noopener"><ExternalLink />Открыть оригинал</a>}
+          </aside>
+        </section>) : <>
         <section className="review-stats admin-review-stats">
           <article><small>Позиция</small><strong>{currentIndex + 1}/{items.length}</strong></article>
           <article><small>Загружено в таблице</small><strong>{items.length}</strong></article>
@@ -1047,11 +1090,12 @@ function ContentPreviewModal({
             <article><small>Репорты / качество</small><strong>{currentItem.reportsCount} / {currentItem.issuesCount}</strong></article>
           </section>
         </>}
+        </>}
       </div>
       <footer className="admin-review-footer">
         <button className="ui-button ui-button--ghost" onClick={() => move(-1)} disabled={currentIndex === 0 || review.isPending}><ChevronLeft />Назад<span className="keycap-hint keycap-hint--inline" aria-hidden="true">←</span></button>
-        <button className={`ui-button ui-button--secondary admin-content-preview-issue ${reviewStatus === 'issue' ? 'is-active' : ''}`} onClick={() => submitReview(false)} disabled={review.isPending}><Bug />Есть проблема<span className="keycap-hint keycap-hint--inline" aria-hidden="true">X</span></button>
-        <button className={`ui-button ui-button--primary ${reviewStatus === 'approved' ? 'is-active' : ''}`} onClick={() => submitReview(true)} disabled={review.isPending}><BadgeCheck />Всё в порядке<span className="keycap-hint keycap-hint--inline" aria-hidden="true">C</span></button>
+        <button className={`ui-button ui-button--secondary admin-content-preview-issue ${reviewStatus === 'issue' ? 'is-active' : ''}`} onClick={() => submitReview(false)} disabled={review.isPending}>{imageReview ? <RotateCcw /> : <Bug />}{imageReview ? 'На перегенерацию' : 'Есть проблема'}<span className="keycap-hint keycap-hint--inline" aria-hidden="true">X</span></button>
+        <button className={`ui-button ui-button--primary ${reviewStatus === 'approved' ? 'is-active' : ''}`} onClick={() => submitReview(true)} disabled={review.isPending}><BadgeCheck />{imageReview ? 'Оставить' : 'Всё в порядке'}<span className="keycap-hint keycap-hint--inline" aria-hidden="true">C</span></button>
         <button className="ui-button ui-button--ghost" onClick={() => move(1)} disabled={currentIndex >= items.length - 1 || review.isPending}>Дальше<ChevronRight /><span className="keycap-hint keycap-hint--inline" aria-hidden="true">→</span></button>
       </footer>
     </div>

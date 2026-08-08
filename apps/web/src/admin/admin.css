@@ -901,7 +901,7 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 }
 .admin-review-poster-fallback { color: #f3f4ec; background: #2c2d29; display: grid; place-items: center; }
 .admin-review-poster-fallback svg { width: 24px; height: 24px; }
-.admin-review-footer { min-height: 62px; padding: 9px 17px; border-top: 1px solid var(--color-line); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.admin-modal--moderation > .admin-review-footer { min-height: 62px; padding: 9px 17px; border-top: 1px solid var(--color-line); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .admin-review-footer .ui-button {
   width: 100%;
   min-height: 44px;
@@ -916,11 +916,98 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   font-size: 10px;
 }
 .admin-content-preview-modal { width: min(1040px, 100%); }
+.admin-content-preview-modal.is-image-review { width: min(1180px, 100%); }
+.admin-content-preview-modal.is-image-review .admin-modal__body--image-review {
+  max-height: calc(100vh - 205px);
+  padding: 12px;
+  overflow: hidden;
+}
 .admin-content-preview-header-actions { display: flex; align-items: center; gap: 8px; }
 .admin-content-preview-header-actions > button { min-height: 36px; padding: 0 11px; border: 1px solid var(--color-line); border-radius: 10px; color: var(--color-text); background: rgba(255,255,255,.03); display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .admin-content-preview-header-actions > button:hover { border-color: var(--color-line-strong); background: rgba(255,255,255,.07); }
 .admin-content-preview-header-actions svg { width: 15px; }
 .admin-content-preview-header-actions .admin-content-preview-close { width: 36px; padding: 0; }
+.admin-content-preview-switch { padding: 3px; border: 1px solid var(--color-line); border-radius: 11px; background: rgba(0,0,0,.18); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; }
+.admin-content-preview-switch button { min-height: 30px; padding: 0 9px; border: 0; border-radius: 8px; color: var(--color-muted-2); background: transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+.admin-content-preview-switch button:hover { color: var(--color-text); background: rgba(255,255,255,.04); }
+.admin-content-preview-switch button.is-active { color: var(--color-ink); background: var(--color-primary); }
+.admin-content-preview-switch button svg { width: 14px; height: 14px; }
+.admin-portrait-review {
+  min-width: 0;
+  min-height: 0;
+  height: min(660px, calc(100vh - 229px));
+  border: 1px solid var(--color-line-strong);
+  border-radius: 16px;
+  background: var(--color-surface);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  overflow: hidden;
+}
+.admin-portrait-review__media {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding: 18px 64px;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(106, 183, 128, .13), transparent 44%),
+    linear-gradient(135deg, rgba(255,255,255,.025) 25%, transparent 25%) 0 0 / 22px 22px,
+    linear-gradient(315deg, rgba(255,255,255,.025) 25%, transparent 25%) 0 0 / 22px 22px,
+    #0d110f;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.admin-portrait-review__media > img { width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 13px; object-fit: contain; filter: drop-shadow(0 20px 38px rgba(0,0,0,.42)); }
+.admin-portrait-review__fallback { color: var(--color-muted-2); display: grid; place-items: center; gap: 10px; text-align: center; }
+.admin-portrait-review__fallback svg { width: 52px; height: 52px; }
+.admin-portrait-review__nav {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  width: 44px;
+  height: 58px;
+  padding: 0;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 12px;
+  color: var(--color-text);
+  background: rgba(18, 23, 20, .88);
+  box-shadow: 0 10px 28px rgba(0,0,0,.24);
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.admin-portrait-review__nav:hover:not(:disabled) { border-color: var(--color-primary); color: var(--color-primary); }
+.admin-portrait-review__nav:disabled { opacity: .28; cursor: default; }
+.admin-portrait-review__nav svg { width: 20px; height: 20px; }
+.admin-portrait-review__nav.is-previous { left: 12px; }
+.admin-portrait-review__nav.is-next { right: 12px; }
+.admin-portrait-review__status { position: absolute; z-index: 2; top: 14px; right: 14px; min-width: 136px; padding: 8px 10px; border: 1px solid var(--color-line-strong); border-radius: 11px; background: rgba(18,23,20,.9); box-shadow: 0 8px 24px rgba(0,0,0,.22); display: grid; gap: 2px; text-align: right; }
+.admin-portrait-review__status small { color: var(--color-muted-2); font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.admin-portrait-review__status strong { color: var(--color-text); font-size: 12px; }
+.admin-portrait-review__status.is-approved { border-color: rgba(100,190,127,.68); background: rgba(35,91,53,.9); }
+.admin-portrait-review__status.is-issue { border-color: rgba(221,111,103,.72); background: rgba(108,42,39,.92); }
+.admin-portrait-review__info { min-width: 0; min-height: 0; padding: 22px; border-left: 1px solid var(--color-line); background: linear-gradient(180deg, rgba(35,42,37,.96), rgba(22,27,24,.96)); display: flex; flex-direction: column; overflow: auto; }
+.admin-portrait-review__progress-head { color: var(--color-muted-2); display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; font-weight: 700; }
+.admin-portrait-review__progress-head strong { color: var(--color-primary); }
+.admin-portrait-review__progress { height: 5px; margin: 8px 0 25px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+.admin-portrait-review__progress i { height: 100%; border-radius: inherit; background: var(--color-primary); display: block; transition: width .18s ease; }
+.admin-portrait-review__eyebrow { color: var(--color-primary); font-size: 10px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+.admin-portrait-review__info h2 { margin: 8px 0 0; color: var(--color-text); font: 500 34px/1.03 Oswald, sans-serif; text-transform: uppercase; overflow-wrap: anywhere; }
+.admin-portrait-review__info > p { margin: 6px 0 0; color: var(--color-muted); font-size: 13px; overflow-wrap: anywhere; }
+.admin-portrait-review__info dl { margin: 22px 0 0; display: grid; gap: 7px; }
+.admin-portrait-review__info dl > div { min-width: 0; padding: 9px 10px; border: 1px solid var(--color-line); border-radius: 10px; background: rgba(255,255,255,.025); display: grid; gap: 3px; }
+.admin-portrait-review__info dt { color: var(--color-muted-2); font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.admin-portrait-review__info dd { margin: 0; color: var(--color-text); font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
+.admin-portrait-review__keys { margin-top: auto; padding-top: 22px; display: grid; gap: 7px; }
+.admin-portrait-review__keys > strong { margin-bottom: 2px; color: var(--color-muted-2); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.admin-portrait-review__keys p { margin: 0; display: grid; grid-template-columns: 24px 24px minmax(0, 1fr); align-items: center; gap: 5px; }
+.admin-portrait-review__keys p:nth-of-type(-n+2) span { grid-column: 2 / -1; }
+.admin-portrait-review__keys kbd { min-width: 24px; height: 24px; padding: 0 5px; border: 1px solid var(--color-line-strong); border-bottom-width: 2px; border-radius: 6px; color: var(--color-text); background: rgba(255,255,255,.05); display: grid; place-items: center; font: 700 10px/1 monospace; }
+.admin-portrait-review__keys span { color: var(--color-muted); font-size: 11px; }
+.admin-portrait-review__original { margin-top: 16px; color: var(--color-primary); display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 750; text-decoration: none; }
+.admin-portrait-review__original:hover { text-decoration: underline; }
+.admin-portrait-review__original svg { width: 13px; height: 13px; }
 .admin-content-preview-status.is-approved { border-color: rgba(100, 190, 127, .55); background: rgba(62, 135, 84, .18); }
 .admin-content-preview-status.is-approved strong { color: #a9ddb8; }
 .admin-content-preview-status.is-issue { border-color: rgba(221, 111, 103, .58); background: rgba(142, 53, 49, .2); }
@@ -1058,6 +1145,9 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-content-preview-issue.is-active { color: #ffd0cc; border-color: rgba(221, 111, 103, .72); background: rgba(142, 53, 49, .3); }
 .admin-review-footer .ui-button--primary.is-active { box-shadow: inset 0 0 0 2px rgba(255,255,255,.3); }
 @media (max-width: 980px) {
+  .admin-portrait-review { grid-template-columns: minmax(0, 1fr) 260px; }
+  .admin-portrait-review__media { padding-inline: 54px; }
+  .admin-portrait-review__info { padding: 17px; }
   .admin-attempt-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-moderation-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-content-preview-review > div { grid-template-columns: 1fr; }
@@ -1391,7 +1481,17 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-modal-backdrop--moderation { padding: 0; align-items: flex-end; }
   .admin-modal--moderation { width: 100dvw; max-height: 95dvh; border-radius: 14px 14px 0 0; }
   .admin-modal--moderation .admin-modal__body--moderation { max-height: calc(95dvh - 196px); padding: 12px; }
-  .admin-review-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px max(10px, env(safe-area-inset-bottom)); }
+  .admin-content-preview-modal.is-image-review > header { align-items: flex-start; flex-wrap: wrap; }
+  .admin-content-preview-modal.is-image-review > header > div:first-child { min-width: 0; flex: 1; }
+  .admin-content-preview-modal.is-image-review > header > div:first-child > span { display: none; }
+  .admin-content-preview-modal.is-image-review .admin-content-preview-header-actions { width: 100%; }
+  .admin-content-preview-modal.is-image-review .admin-content-preview-switch { flex: 1; }
+  .admin-content-preview-modal.is-image-review .admin-content-preview-edit { display: none; }
+  .admin-content-preview-modal.is-image-review .admin-modal__body--image-review { max-height: calc(95dvh - 205px); overflow: auto; }
+  .admin-portrait-review { height: auto; grid-template-columns: minmax(0, 1fr); overflow: visible; }
+  .admin-portrait-review__media { min-height: min(54dvh, 470px); padding: 14px 52px; }
+  .admin-portrait-review__info { min-height: 340px; border-top: 1px solid var(--color-line); border-left: 0; overflow: visible; }
+  .admin-modal--moderation > .admin-review-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px 12px max(10px, env(safe-area-inset-bottom)); }
   .admin-attempt-card .admin-attempt-card__header { grid-template-columns: 22px 64px minmax(0, 1fr); gap: 9px; }
   .admin-attempt-card .review-card__poster { width: 64px; height: 90px; }
   .admin-attempt-card .review-approval-badge { grid-column: 2 / -1; justify-self: stretch; }
