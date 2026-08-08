@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Компактные карточки персонажей</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+    <style>
+      :root {
+        --char: var(--mode-character-brand, #a97852);
+        --char-soft: color-mix(in srgb, var(--char) 14%, var(--color-surface));
+        --yes: var(--color-primary, #57b777);
+        --yes-soft: color-mix(in srgb, var(--yes) 11%, var(--color-surface));
+        --near: var(--color-accent, #d6a546);
+        --near-soft: color-mix(in srgb, var(--near) 10%, var(--color-surface));
+      }
+      * { box-sizing: border-box; }
+      body { min-width: 320px; margin: 0; padding: 12px 10px 34px; background: var(--color-bg); color: var(--color-text); }
+      button { font: inherit; }
+      .page { width: min(760px, 100%); margin: 0 auto; }
+      .page-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 2px 8px; }
+      .page-top h1 { margin: 0; font: 500 18px Oswald, sans-serif; }
+      .page-top p { margin: 0; color: var(--color-muted); font-size: 9px; }
+
+      .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px; padding: 3px; border: 1px solid var(--color-line); border-radius: 11px; background: var(--color-surface); }
+      .tabs button { min-height: 32px; padding: 4px 8px; border: 0; border-radius: 8px; background: transparent; color: var(--color-muted); cursor: pointer; font-size: 10px; font-weight: 750; }
+      .tabs button[aria-selected="true"] { color: var(--color-text); background: var(--char-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--char) 42%, transparent); }
+      .tabs b { margin-right: 5px; color: var(--char); font: 500 12px Oswald, sans-serif; }
+      .idea { display: none; }
+      .idea.active { display: block; animation: in .18s ease both; }
+      @keyframes in { from { opacity: .4; transform: translateY(3px); } }
+      .idea-note { margin: 0 2px 6px; color: var(--color-muted); font-size: 9px; }
+
+      .card { overflow: hidden; border: 1px solid var(--color-line-strong); border-radius: 17px; background: var(--color-surface); box-shadow: 3px 3px 0 var(--color-shadow); }
+      .portrait { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 24%; filter: saturate(.9) contrast(1.02); }
+      .portrait-wrap { position: relative; overflow: hidden; border: 1px solid color-mix(in srgb, var(--char) 47%, var(--color-line)); background: var(--char-soft); }
+      .portrait-wrap::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 24px rgba(0,0,0,.2); pointer-events: none; }
+      .name small { display: block; margin-bottom: 1px; color: var(--char); font-size: 8px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+      .name h2 { margin: 0; font: 500 22px/1.05 Oswald, sans-serif; }
+      .score { min-width: 126px; }
+      .score-text { margin-bottom: 4px; color: var(--color-muted); font-size: 8px; text-align: right; }
+      .score-text b { color: var(--yes); font: 500 14px Oswald, sans-serif; }
+      .meter { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; }
+      .meter i { height: 3px; border-radius: 99px; background: var(--color-surface-3); }
+      .meter .yes { background: var(--yes); }
+      .meter .near { background: var(--near); }
+
+      .pill { display: inline-flex; align-items: center; min-height: 21px; padding: 2px 6px; border: 1px solid var(--color-line-strong); border-radius: 7px; color: var(--color-text); background: color-mix(in srgb, var(--color-surface-2) 72%, transparent); font-size: 9px; font-weight: 650; line-height: 1.2; }
+      .pill.yes { border-color: color-mix(in srgb, var(--yes) 55%, transparent); background: var(--yes-soft); color: var(--color-success-text); }
+      .pill.near { border-color: color-mix(in srgb, var(--near) 50%, transparent); background: var(--near-soft); color: var(--color-warning-text); }
+      .pill.icon-only { width: 25px; padding: 2px; justify-content: center; font-size: 14px; line-height: 1; }
+      .pill.icon-only svg { width: 14px; height: 14px; display: block; fill: none; stroke: currentColor; stroke-width: 2.35; stroke-linecap: round; stroke-linejoin: round; }
+      .pill.role-icon { width: 30px; min-height: 25px; }
+      .pill.role-icon img { width: 19px; height: 19px; display: block; }
+      .pill.role-badge { width: auto; padding: 2px 7px 2px 4px; gap: 4px; font-size: 9px; }
+      .pill.role-badge img { flex: 0 0 auto; width: 17px; height: 17px; }
+      .pills { display: flex; flex-wrap: wrap; gap: 3px; }
+      .mark { width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; font-size: 9px; font-style: normal; font-weight: 900; color: var(--color-muted-2); background: var(--color-surface-3); }
+      .mark.yes { color: var(--yes); background: var(--yes-soft); }
+      .mark.near { color: var(--near); background: var(--near-soft); }
+
+      /* 1 — портрет и очень плотная сетка */
+      .compact-head { display: grid; grid-template-columns: 52px minmax(0,1fr) auto; gap: 9px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--color-line); background: linear-gradient(100deg, var(--char-soft), transparent 42%); }
+      .compact-head .portrait-wrap { width: 52px; height: 60px; border-radius: 10px; }
+      .fact-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .fact { min-width: 0; min-height: 43px; padding: 6px 9px; border-right: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); display: grid; grid-template-columns: 66px minmax(0,1fr) 17px; gap: 5px; align-items: center; }
+      .fact:nth-child(2n) { border-right: 0; }
+      .fact:nth-last-child(-n+2) { border-bottom: 0; }
+      .fact > label { color: var(--color-muted); font-size: 7px; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+      .fact > strong { min-width: 0; font-size: 10px; line-height: 1.25; }
+      .fact.yes { background: linear-gradient(90deg, var(--yes-soft), transparent 74%); }
+      .fact.near { background: linear-gradient(90deg, var(--near-soft), transparent 74%); }
+      .fact.yes > label { color: var(--color-success-text); }
+      .fact.near > label { color: var(--color-warning-text); }
+      .arrow { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-left: 3px; border-radius: 5px; color: var(--near); background: var(--near-soft); font-size: 11px; }
+
+      /* 2 — портрет как якорь, всё разложено по результату */
+      .signal-card { display: grid; grid-template-columns: 112px minmax(0,1fr); min-height: 272px; }
+      .identity { position: relative; min-width: 0; padding: 9px; border-right: 1px solid var(--color-line); background: linear-gradient(180deg, var(--char-soft), transparent); }
+      .identity .portrait-wrap { height: 148px; border-radius: 12px; }
+      .identity .name { margin-top: 8px; }
+      .identity .name h2 { font-size: 18px; }
+      .attempt { position: absolute; right: 8px; top: 8px; z-index: 2; min-width: 23px; height: 23px; padding: 0 5px; border: 1px solid color-mix(in srgb, var(--char) 55%, transparent); border-radius: 7px; color: var(--char); background: color-mix(in srgb, var(--color-surface) 90%, transparent); display: grid; place-items: center; font: 500 11px Oswald, sans-serif; }
+      .identity .score { min-width: 0; margin-top: 9px; }
+      .identity .score-text { text-align: left; }
+      .signals { display: grid; grid-template-columns: .88fr 1.1fr 1.35fr; min-width: 0; }
+      .signal-column { min-width: 0; padding: 9px; border-right: 1px solid var(--color-line); }
+      .signal-column:last-child { border-right: 0; }
+      .signal-column.yes { background: linear-gradient(180deg, var(--yes-soft), transparent 70%); }
+      .signal-column.near { background: linear-gradient(180deg, var(--near-soft), transparent 70%); }
+      .signal-title { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; }
+      .signal-title strong { font: 500 13px Oswald, sans-serif; }
+      .signal-title small { color: var(--color-muted-2); font-size: 7px; }
+      .signal-item { padding: 6px 0; border-top: 1px solid var(--color-line); }
+      .signal-item label { display: block; margin-bottom: 3px; color: var(--color-muted-2); font-size: 7px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+      .signal-item strong { font-size: 9px; line-height: 1.25; }
+
+      /* 3 — портрет и краткий вывод, детали вторым слоем */
+      .summary-card { display: grid; grid-template-columns: 118px minmax(0,1fr); }
+      .summary-portrait { position: relative; min-height: 244px; overflow: hidden; border-right: 1px solid color-mix(in srgb, var(--char) 38%, var(--color-line)); background: var(--char-soft); }
+      .summary-portrait .portrait-wrap { position: absolute; inset: 0; height: auto; border: 0; border-radius: 0; }
+      .summary-portrait .portrait { object-position: 48% center; }
+      .summary-portrait::before { content: ''; position: absolute; z-index: 1; inset: 0; background: linear-gradient(180deg, rgba(8,11,8,.02) 42%, rgba(8,11,8,.46) 100%); pointer-events: none; }
+      .summary-portrait .attempt { left: 8px; right: auto; top: 8px; }
+      .summary-body { min-width: 0; }
+      .summary-top { display: grid; grid-template-columns: minmax(0,1fr) 128px; gap: 10px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--color-line); }
+      .summary-top h2 { margin: 0; font: 500 19px/1.05 Oswald, sans-serif; }
+      .summary-main { padding: 9px 10px; }
+      .summary-line { display: grid; grid-template-columns: 82px minmax(0,1fr); gap: 7px; align-items: start; padding: 6px 0; border-top: 1px solid var(--color-line); }
+      .summary-line:first-child { padding-top: 0; border-top: 0; }
+      .summary-line label { padding-top: 4px; color: var(--color-muted); font-size: 7px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+      .summary-line--yes label { color: var(--color-success-text); }
+      .summary-line--near label { color: var(--color-warning-text); }
+      .summary-misses { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 4px; margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--color-line); }
+      .summary-miss { min-width: 0; padding: 5px 6px; border-radius: 6px; background: var(--color-surface-2); }
+      .summary-miss label { display: block; margin-bottom: 2px; color: var(--color-muted-2); font-size: 6px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+      .summary-miss span { display: block; color: var(--color-muted); font-size: 7px; line-height: 1.3; }
+
+      .legend { display: flex; justify-content: center; gap: 12px; margin-top: 7px; color: var(--color-muted-2); font-size: 7px; }
+      .legend span { display: flex; align-items: center; gap: 4px; }
+      .legend i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-muted-2); }
+      .legend .yes { background: var(--yes); }
+      .legend .near { background: var(--near); }
+
+      @media (max-width: 600px) {
+        .page-top p { display: none; }
+        .score { min-width: 102px; }
+        .fact { grid-template-columns: 54px minmax(0,1fr) 17px; padding-inline: 6px; }
+        .signal-card { grid-template-columns: 86px minmax(0,1fr); }
+        .identity { padding: 6px; }
+        .identity .portrait-wrap { height: 116px; }
+        .signals { grid-template-columns: 1fr 1fr; }
+        .signal-column:last-child { grid-column: 1 / -1; border-top: 1px solid var(--color-line); display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0 6px; }
+        .signal-column:last-child .signal-title { grid-column: 1 / -1; }
+        .summary-card { grid-template-columns: 98px minmax(0,1fr); }
+      }
+
+      @media (max-width: 430px) {
+        body { padding-inline: 6px; }
+        .tabs button { padding-inline: 3px; }
+        .compact-head { grid-template-columns: 46px minmax(0,1fr); }
+        .compact-head .portrait-wrap { width: 46px; height: 54px; }
+        .compact-head .score { grid-column: 1 / -1; display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 6px; width: 100%; }
+        .compact-head .score-text { margin: 0; text-align: left; }
+        .fact-grid { grid-template-columns: 1fr; }
+        .fact, .fact:nth-child(2n), .fact:nth-last-child(-n+2) { min-height: 38px; border-right: 0; border-bottom: 1px solid var(--color-line); }
+        .fact:last-child { border-bottom: 0; }
+        .signal-card { grid-template-columns: 78px minmax(0,1fr); }
+        .signals { grid-template-columns: 1fr; }
+        .signal-column, .signal-column:last-child { grid-column: auto; border-right: 0; border-top: 1px solid var(--color-line); display: block; }
+        .summary-card { grid-template-columns: 86px minmax(0,1fr); }
+        .summary-top { grid-template-columns: 1fr; gap: 4px; }
+        .summary-line { grid-template-columns: 66px minmax(0,1fr); }
+        .summary-misses { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="page-top">
+        <h1>Компактная карточка попытки</h1>
+        <p>Один портрет · те же десять признаков · без лишней высоты</p>
+      </div>
+      <nav class="tabs" aria-label="Варианты карточки">
+        <button type="button" data-view="grid" aria-selected="true"><b>01</b> Сетка</button>
+        <button type="button" data-view="signals" aria-selected="false"><b>02</b> Сигналы</button>
+        <button type="button" data-view="summary" aria-selected="false"><b>03</b> Вывод</button>
+      </nav>
+
+      <section class="idea active" id="grid">
+        <p class="idea-note">Самый привычный вариант: портрет в шапке, ниже — плотные строки в две колонки.</p>
+        <article class="card">
+          <header class="compact-head">
+            <div class="portrait-wrap"><img class="portrait" src="/images/characters/portraits/captain-nemo.webp" alt="Капитан Немо" /></div>
+            <div class="name"><small>03 · попытка 3</small><h2>Капитан Немо</h2></div>
+            <div class="score"><div class="score-text"><b>2</b> точно · 2 частично</div><div class="meter"><i class="yes"></i><i class="yes"></i><i class="near"></i><i class="near"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          </header>
+          <div class="fact-grid">
+            <div class="fact near"><label>Эпоха</label><strong>XIX век <i class="arrow">↓</i></strong><i class="mark near">≈</i></div>
+            <div class="fact"><label>Источник</label><div class="pills"><span class="pill">Роман</span><span class="pill">Научная фантастика</span></div><i class="mark">×</i></div>
+            <div class="fact yes"><label>Природа</label><strong>Человек</strong><i class="mark yes">✓</i></div>
+            <div class="fact yes"><label>Пол</label><strong>Мужчина</strong><i class="mark yes">✓</i></div>
+            <div class="fact"><label>Культура</label><div class="pills"><span class="pill">Французская</span><span class="pill">Южная Азия</span></div><i class="mark">×</i></div>
+            <div class="fact"><label>Возраст</label><strong>Взрослый</strong><i class="mark">×</i></div>
+            <div class="fact near"><label>Роль</label><div class="pills"><span class="pill yes">Главный герой ✓</span><span class="pill">Антигерой</span></div><i class="mark near">½</i></div>
+            <div class="fact"><label>Архетип</label><div class="pills"><span class="pill">Капитан</span><span class="pill">Инженер</span><span class="pill">Изгнанник</span></div><i class="mark">×</i></div>
+            <div class="fact near"><label>Способности</label><div class="pills"><span class="pill">Инженер</span><span class="pill">Лидер</span><span class="pill yes">Без сверхсил ✓</span></div><i class="mark near">½</i></div>
+            <div class="fact"><label>Мир</label><div class="pills"><span class="pill">Море</span><span class="pill">Техника</span><span class="pill">Путешествие</span></div><i class="mark">×</i></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="idea" id="signals">
+        <p class="idea-note">Портрет слева, а признаки сразу разложены по пользе для следующего хода.</p>
+        <article class="card signal-card">
+          <aside class="identity">
+            <span class="attempt">03</span>
+            <div class="portrait-wrap"><img class="portrait" src="/images/characters/portraits/captain-nemo.webp" alt="Капитан Немо" /></div>
+            <div class="name"><small>Попытка 3</small><h2>Капитан Немо</h2></div>
+            <div class="score"><div class="score-text"><b>2</b> точно · 2 частично</div><div class="meter"><i class="yes"></i><i class="yes"></i><i class="near"></i><i class="near"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          </aside>
+          <div class="signals">
+            <section class="signal-column yes"><div class="signal-title"><i class="mark yes">✓</i><div><strong>Точно</strong><small>2 признака</small></div></div><div class="signal-item"><label>Природа</label><strong>Человек</strong></div><div class="signal-item"><label>Пол</label><strong>Мужчина</strong></div></section>
+            <section class="signal-column near"><div class="signal-title"><i class="mark near">≈</i><div><strong>Рядом</strong><small>2 поля</small></div></div><div class="signal-item"><label>Эпоха</label><strong>XIX век <i class="arrow">↓</i></strong></div><div class="signal-item"><label>Роль</label><div class="pills"><span class="pill yes">Главный герой</span><span class="pill">Антигерой</span></div></div><div class="signal-item"><label>Способности</label><div class="pills"><span class="pill yes">Без сверхсил</span><span class="pill">Инженер</span></div></div></section>
+            <section class="signal-column"><div class="signal-title"><i class="mark">×</i><div><strong>Мимо</strong><small>6 признаков</small></div></div><div class="signal-item"><label>Источник</label><strong>Роман · Фантастика</strong></div><div class="signal-item"><label>Культура</label><strong>Французская · Южная Азия</strong></div><div class="signal-item"><label>Возраст</label><strong>Взрослый</strong></div><div class="signal-item"><label>Архетип</label><strong>Капитан · Инженер · Изгнанник</strong></div><div class="signal-item"><label>Мир</label><strong>Море · Техника · Путешествие</strong></div></section>
+          </div>
+        </article>
+      </section>
+
+      <section class="idea" id="summary">
+        <p class="idea-note">Самая маленькая версия: сначала игровой вывод, неудачные детали — одной приглушённой строкой.</p>
+        <article class="card summary-card">
+          <aside class="summary-portrait"><span class="attempt">03</span><div class="portrait-wrap"><img class="portrait" src="/images/characters/portraits/captain-nemo.webp" alt="Капитан Немо" /></div></aside>
+          <div class="summary-body">
+            <header class="summary-top"><h2>Капитан Немо</h2><div class="score"><div class="meter"><i class="yes"></i><i class="yes"></i><i class="near"></i><i class="near"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></header>
+            <div class="summary-main">
+              <div class="summary-line summary-line--yes"><label>Совпало</label><div class="pills"><span class="pill yes">Человек ✓</span><span class="pill yes icon-only" title="Мужчина" aria-label="Мужчина"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9.5" cy="14.5" r="5.5"/><path d="M13.5 10.5 20 4M15 4h5v5"/></svg></span></div></div>
+              <div class="summary-line summary-line--near"><label>Эпоха</label><div class="pills"><span class="pill near">XIX век ↓</span></div></div>
+              <div class="summary-line summary-line--near"><label>Роль</label><div class="pills"><span class="pill yes role-badge" title="Главный герой"><img src="https://api.iconify.design/game-icons/angel-outfit.svg?color=%2381d39c" alt="" /><span>Главный</span></span><span class="pill role-badge" title="Антигерой"><img src="https://api.iconify.design/game-icons/devil-mask.svg?color=%23aaa395" alt="" /><span>Антигерой</span></span></div></div>
+              <div class="summary-line summary-line--near"><label>Способности</label><div class="pills"><span class="pill yes">Без сверхспособностей ✓</span><span class="pill">Инженерный талант</span><span class="pill">Лидерство</span></div></div>
+              <div class="summary-misses">
+                <div class="summary-miss"><label>Источник</label><span>Роман · Научная фантастика</span></div>
+                <div class="summary-miss"><label>Культура</label><span>Французская литература · Южная Азия</span></div>
+                <div class="summary-miss"><label>Возраст</label><span>Взрослый</span></div>
+                <div class="summary-miss"><label>Архетип</label><span>Капитан · Инженер · Изгнанник</span></div>
+                <div class="summary-miss"><label>Мир</label><span>Море · Техника · Вымышленное путешествие</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <div class="legend"><span><i class="yes"></i> точно</span><span><i class="near"></i> рядом / частично</span><span><i></i> мимо</span></div>
+    </main>
+    <script>
+      const buttons = [...document.querySelectorAll('.tabs button')];
+      const ideas = [...document.querySelectorAll('.idea')];
+      buttons.forEach((button) => button.addEventListener('click', () => {
+        buttons.forEach((item) => item.setAttribute('aria-selected', String(item === button)));
+        ideas.forEach((idea) => idea.classList.toggle('active', idea.id === button.dataset.view));
+      }));
+    </script>
+  </body>
+</html>
