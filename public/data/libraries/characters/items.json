@@ -2622,5 +2622,6718 @@
         ]
       }
     }
+  },
+  {
+    "id": "character:ilya-muromets",
+    "mode": "character",
+    "titleRu": "Илья Муромец",
+    "titleOriginal": "Ilya Muromets",
+    "alternativeTitles": [
+      "Илья Муромец",
+      "Илья Иванович",
+      "Богатырь из Мурома"
+    ],
+    "aliases": [
+      "Илья Муромец",
+      "Илья Иванович",
+      "Богатырь из Мурома"
+    ],
+    "acceptedAnswers": [
+      "Илья Муромец",
+      "Ilya Muromets",
+      "Илья Иванович",
+      "Богатырь из Мурома"
+    ],
+    "popularityScore": 0.97,
+    "recognitionScore": 97,
+    "guessabilityScore": 96,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/ilya-muromets.webp",
+    "plotHint": "Прославленный богатырь после долгой неподвижности получает силу, покидает родной дом и защищает русские земли от разбойников и чудовищ.",
+    "description": "Прославленный богатырь после долгой неподвижности получает силу, покидает родной дом и защищает русские земли от разбойников и чудовищ.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 21,
+    "characterSourceWork": "Русские былины",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Былина",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Воин",
+      "Защитник"
+    ],
+    "characterArchetypes": [
+      "Богатырь",
+      "Защитник"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Стойкость",
+      "Верховая езда"
+    ],
+    "characterSettings": [
+      "Русь",
+      "Дорога",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Копьё",
+      "Щит",
+      "Боевой конь"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — русские былины",
+        "url": "https://ru.wikisource.org/wiki/Категория:Былины"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Категория:Былины"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:dobrynya-nikitich",
+    "mode": "character",
+    "titleRu": "Добрыня Никитич",
+    "titleOriginal": "Dobrynya Nikitich",
+    "alternativeTitles": [
+      "Добрыня Никитич",
+      "Добрыня",
+      "Добрынюшка"
+    ],
+    "aliases": [
+      "Добрыня Никитич",
+      "Добрыня",
+      "Добрынюшка"
+    ],
+    "acceptedAnswers": [
+      "Добрыня Никитич",
+      "Dobrynya Nikitich",
+      "Добрыня",
+      "Добрынюшка"
+    ],
+    "popularityScore": 0.87,
+    "recognitionScore": 88,
+    "guessabilityScore": 90,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/dobrynya-nikitich.webp",
+    "plotHint": "Учтивый и образованный богатырь сочетает воинское мастерство с дипломатией, играет на гуслях и вступает в поединок с огнедышащим противником.",
+    "description": "Учтивый и образованный богатырь сочетает воинское мастерство с дипломатией, играет на гуслях и вступает в поединок с огнедышащим противником.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 22,
+    "characterSourceWork": "Русские былины",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Былина",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Воин",
+      "Дипломат"
+    ],
+    "characterArchetypes": [
+      "Богатырь",
+      "Дипломат"
+    ],
+    "characterAbilities": [
+      "Фехтование",
+      "Красноречие",
+      "Музыка"
+    ],
+    "characterSettings": [
+      "Русь",
+      "Дворец",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Меч",
+      "Гусли",
+      "Змеиный след"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — русские былины",
+        "url": "https://ru.wikisource.org/wiki/Категория:Былины"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Категория:Былины"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:alyosha-popovich",
+    "mode": "character",
+    "titleRu": "Алёша Попович",
+    "titleOriginal": "Alyosha Popovich",
+    "alternativeTitles": [
+      "Алеша Попович",
+      "Алёша Попович",
+      "Алёша",
+      "Олёша Попович"
+    ],
+    "aliases": [
+      "Алеша Попович",
+      "Алёша Попович",
+      "Алёша",
+      "Олёша Попович"
+    ],
+    "acceptedAnswers": [
+      "Алёша Попович",
+      "Alyosha Popovich",
+      "Алеша Попович",
+      "Алёша",
+      "Олёша Попович"
+    ],
+    "popularityScore": 0.86,
+    "recognitionScore": 89,
+    "guessabilityScore": 88,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/alyosha-popovich.webp",
+    "plotHint": "Самый молодой из знаменитых богатырей побеждает не только силой, но и насмешкой, находчивостью и ловушками, обращая самоуверенность противника против него самого.",
+    "description": "Самый молодой из знаменитых богатырей побеждает не только силой, но и насмешкой, находчивостью и ловушками, обращая самоуверенность противника против него самого.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 23,
+    "characterSourceWork": "Русские былины",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Былина",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Воин",
+      "Трикстер"
+    ],
+    "characterArchetypes": [
+      "Богатырь",
+      "Трикстер"
+    ],
+    "characterAbilities": [
+      "Хитрость",
+      "Ловкость",
+      "Фехтование"
+    ],
+    "characterSettings": [
+      "Русь",
+      "Дорога",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Лук",
+      "Меч",
+      "Золотая гривна"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — русские былины",
+        "url": "https://ru.wikisource.org/wiki/Категория:Былины"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Категория:Былины"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:koschei-the-deathless",
+    "mode": "character",
+    "titleRu": "Кощей Бессмертный",
+    "titleOriginal": "Koschei the Deathless",
+    "alternativeTitles": [
+      "Кощей Бессмертный",
+      "Кащей Бессмертный",
+      "Кощей",
+      "Кащей"
+    ],
+    "aliases": [
+      "Кощей Бессмертный",
+      "Кащей Бессмертный",
+      "Кощей",
+      "Кащей"
+    ],
+    "acceptedAnswers": [
+      "Кощей Бессмертный",
+      "Koschei the Deathless",
+      "Кащей Бессмертный",
+      "Кощей",
+      "Кащей"
+    ],
+    "popularityScore": 0.96,
+    "recognitionScore": 98,
+    "guessabilityScore": 97,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/koschei-the-deathless.webp",
+    "plotHint": "Иссохший властитель скрывает собственную смерть внутри цепочки вложенных предметов и удерживает пленников в далёком царстве, полагаясь на магию и тайну.",
+    "description": "Иссохший властитель скрывает собственную смерть внутри цепочки вложенных предметов и удерживает пленников в далёком царстве, полагаясь на магию и тайну.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 24,
+    "characterSourceWork": "Народные русские сказки",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Бессмертный колдун",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Антагонист",
+      "Похититель",
+      "Правитель"
+    ],
+    "characterArchetypes": [
+      "Колдун",
+      "Тюремщик"
+    ],
+    "characterAbilities": [
+      "Бессмертие",
+      "Колдовство",
+      "Прятать жизнь"
+    ],
+    "characterSettings": [
+      "Замок",
+      "Подземный мир",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Игла",
+      "Яйцо",
+      "Сундук"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — Народные русские сказки А. Н. Афанасьева",
+        "url": "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:ivan-tsarevich",
+    "mode": "character",
+    "titleRu": "Иван-царевич",
+    "titleOriginal": "Ivan Tsarevich",
+    "alternativeTitles": [
+      "Иван царевич",
+      "Иван-царевич",
+      "Царевич Иван"
+    ],
+    "aliases": [
+      "Иван царевич",
+      "Иван-царевич",
+      "Царевич Иван"
+    ],
+    "acceptedAnswers": [
+      "Иван-царевич",
+      "Ivan Tsarevich",
+      "Иван царевич",
+      "Царевич Иван"
+    ],
+    "popularityScore": 0.94,
+    "recognitionScore": 95,
+    "guessabilityScore": 94,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/ivan-tsarevich.webp",
+    "plotHint": "Младший царский сын отправляется за чудесной птицей, нарушает предупреждения, но благодаря верному зверю проходит испытания и возвращает утраченное.",
+    "description": "Младший царский сын отправляется за чудесной птицей, нарушает предупреждения, но благодаря верному зверю проходит испытания и возвращает утраченное.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 25,
+    "characterSourceWork": "Народные русские сказки",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Путешественник",
+      "Спаситель"
+    ],
+    "characterArchetypes": [
+      "Царевич",
+      "Искатель"
+    ],
+    "characterAbilities": [
+      "Смелость",
+      "Верность",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Лес",
+      "Дорога",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Жар-птица",
+      "Серый волк",
+      "Золотое перо"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — Народные русские сказки А. Н. Афанасьева",
+        "url": "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:vasilisa-the-wise",
+    "mode": "character",
+    "titleRu": "Василиса Премудрая",
+    "titleOriginal": "Vasilisa the Wise",
+    "alternativeTitles": [
+      "Василиса Премудрая",
+      "Василиса",
+      "Царевна-лягушка",
+      "Василиса-царевна"
+    ],
+    "aliases": [
+      "Василиса Премудрая",
+      "Василиса",
+      "Царевна-лягушка",
+      "Василиса-царевна"
+    ],
+    "acceptedAnswers": [
+      "Василиса Премудрая",
+      "Vasilisa the Wise",
+      "Василиса",
+      "Царевна-лягушка",
+      "Василиса-царевна"
+    ],
+    "popularityScore": 0.93,
+    "recognitionScore": 96,
+    "guessabilityScore": 94,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/vasilisa-the-wise.webp",
+    "plotHint": "Мудрая царевна скрыта под звериным обликом, выполняет невозможные задания лучше соперниц и вынуждена исчезнуть после нетерпеливого поступка мужа.",
+    "description": "Мудрая царевна скрыта под звериным обликом, выполняет невозможные задания лучше соперниц и вынуждена исчезнуть после нетерпеливого поступка мужа.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 26,
+    "characterSourceWork": "Народные русские сказки",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Заколдованный человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Помощник",
+      "Испытатель"
+    ],
+    "characterArchetypes": [
+      "Царевна",
+      "Мудрая дева"
+    ],
+    "characterAbilities": [
+      "Колдовство",
+      "Превращение",
+      "Мастерство"
+    ],
+    "characterSettings": [
+      "Дворец",
+      "Болото",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Лягушачья кожа",
+      "Стрела",
+      "Вышитое полотно"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — Народные русские сказки А. Н. Афанасьева",
+        "url": "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Народные_русские_сказки_(Афанасьев)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:zmey-gorynych",
+    "mode": "character",
+    "titleRu": "Змей Горыныч",
+    "titleOriginal": "Zmey Gorynych",
+    "alternativeTitles": [
+      "Змей Горыныч",
+      "Горыныч",
+      "Трёхголовый змей",
+      "Трехголовый змей"
+    ],
+    "aliases": [
+      "Змей Горыныч",
+      "Горыныч",
+      "Трёхголовый змей",
+      "Трехголовый змей"
+    ],
+    "acceptedAnswers": [
+      "Змей Горыныч",
+      "Zmey Gorynych",
+      "Горыныч",
+      "Трёхголовый змей",
+      "Трехголовый змей"
+    ],
+    "popularityScore": 0.92,
+    "recognitionScore": 97,
+    "guessabilityScore": 96,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/zmey-gorynych.webp",
+    "plotHint": "Многоголовое крылатое чудовище прилетает из-за гор, извергает пламя и похищает людей, становясь главным противником богатыря в поединке.",
+    "description": "Многоголовое крылатое чудовище прилетает из-за гор, извергает пламя и похищает людей, становясь главным противником богатыря в поединке.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 27,
+    "characterSourceWork": "Русские былины и сказки",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Былина",
+      "Сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Дракон",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Антагонист",
+      "Похититель",
+      "Чудовище"
+    ],
+    "characterArchetypes": [
+      "Дракон",
+      "Страж"
+    ],
+    "characterAbilities": [
+      "Полёт",
+      "Огненное дыхание",
+      "Сверхсила"
+    ],
+    "characterSettings": [
+      "Горы",
+      "Русь",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Три головы",
+      "Огонь",
+      "Каменная гора"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — русские былины",
+        "url": "https://ru.wikisource.org/wiki/Категория:Былины"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Категория:Былины"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:sadko",
+    "mode": "character",
+    "titleRu": "Садко",
+    "titleOriginal": "Sadko",
+    "alternativeTitles": [
+      "Садко",
+      "Садко-гусляр",
+      "Новгородский гусляр"
+    ],
+    "aliases": [
+      "Садко",
+      "Садко-гусляр",
+      "Новгородский гусляр"
+    ],
+    "acceptedAnswers": [
+      "Садко",
+      "Sadko",
+      "Садко-гусляр",
+      "Новгородский гусляр"
+    ],
+    "popularityScore": 0.82,
+    "recognitionScore": 83,
+    "guessabilityScore": 85,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/sadko.webp",
+    "plotHint": "Бедный новгородский музыкант получает богатство после необычного пари, снаряжает корабли и оказывается гостем властителя морских глубин.",
+    "description": "Бедный новгородский музыкант получает богатство после необычного пари, снаряжает корабли и оказывается гостем властителя морских глубин.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 28,
+    "characterSourceWork": "Новгородские былины",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Былина",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Музыкант",
+      "Путешественник"
+    ],
+    "characterArchetypes": [
+      "Гусляр",
+      "Купец"
+    ],
+    "characterAbilities": [
+      "Музыка",
+      "Красноречие",
+      "Предприимчивость"
+    ],
+    "characterSettings": [
+      "Море",
+      "Город",
+      "Подводный мир"
+    ],
+    "iconicObjects": [
+      "Гусли",
+      "Корабль",
+      "Золотая рыба"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — русские былины",
+        "url": "https://ru.wikisource.org/wiki/Категория:Былины"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Категория:Былины"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:solovey-razboynik",
+    "mode": "character",
+    "titleRu": "Соловей-разбойник",
+    "titleOriginal": "Nightingale the Robber",
+    "alternativeTitles": [
+      "Соловей Разбойник",
+      "Соловей-разбойник",
+      "Соловей Рахманович",
+      "Одихмантьев сын"
+    ],
+    "aliases": [
+      "Соловей Разбойник",
+      "Соловей-разбойник",
+      "Соловей Рахманович",
+      "Одихмантьев сын"
+    ],
+    "acceptedAnswers": [
+      "Соловей-разбойник",
+      "Nightingale the Robber",
+      "Соловей Разбойник",
+      "Соловей Рахманович",
+      "Одихмантьев сын"
+    ],
+    "popularityScore": 0.79,
+    "recognitionScore": 82,
+    "guessabilityScore": 84,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/solovey-razboynik.webp",
+    "plotHint": "Разбойник преграждает прямую дорогу к столице и свистом валит деревья и людей, пока проезжий богатырь не сбивает его с высокого дуба.",
+    "description": "Разбойник преграждает прямую дорогу к столице и свистом валит деревья и людей, пока проезжий богатырь не сбивает его с высокого дуба.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 29,
+    "characterSourceWork": "Илья Муромец и Соловей-разбойник",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Фольклорная традиция",
+    "characterEraOrder": 1,
+    "characterSourceTypes": [
+      "Былина",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Русский фольклор",
+      "Славянская культура"
+    ],
+    "characterNature": "Человек-чудовище",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Разбойник",
+      "Чудовище"
+    ],
+    "characterArchetypes": [
+      "Разбойник",
+      "Страж дороги"
+    ],
+    "characterAbilities": [
+      "Губительный свист",
+      "Сверхсила",
+      "Звуковая атака"
+    ],
+    "characterSettings": [
+      "Лес",
+      "Дорога",
+      "Русь"
+    ],
+    "iconicObjects": [
+      "Дуб",
+      "Птичье перо",
+      "Разбитые деревья"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — русские былины",
+        "url": "https://ru.wikisource.org/wiki/Категория:Былины"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Категория:Былины"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Категория:Былины"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:snegurochka",
+    "mode": "character",
+    "titleRu": "Снегурочка",
+    "titleOriginal": "The Snow Maiden",
+    "alternativeTitles": [
+      "Снегурочка",
+      "Snow Maiden",
+      "Снежная дева",
+      "Дочь Мороза и Весны"
+    ],
+    "aliases": [
+      "Снегурочка",
+      "Snow Maiden",
+      "Снежная дева",
+      "Дочь Мороза и Весны"
+    ],
+    "acceptedAnswers": [
+      "Снегурочка",
+      "The Snow Maiden",
+      "Snow Maiden",
+      "Снежная дева",
+      "Дочь Мороза и Весны"
+    ],
+    "popularityScore": 0.91,
+    "recognitionScore": 97,
+    "guessabilityScore": 95,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/snegurochka.webp",
+    "plotHint": "Дочь зимнего холода и весеннего тепла приходит к людям, желая узнать любовь, но пробуждённое чувство делает солнечный свет для неё смертельным.",
+    "description": "Дочь зимнего холода и весеннего тепла приходит к людям, желая узнать любовь, но пробуждённое чувство делает солнечный свет для неё смертельным.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 30,
+    "characterSourceWork": "Снегурочка",
+    "characterSourceAuthor": "Александр Островский и народная традиция",
+    "characterFirstAppearanceYear": 1873,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Пьеса-сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Русская литература",
+      "Славянская культура"
+    ],
+    "characterNature": "Волшебное существо",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Изгнанник",
+      "Жертва"
+    ],
+    "characterArchetypes": [
+      "Снежная дева",
+      "Искатель любви"
+    ],
+    "characterAbilities": [
+      "Холод",
+      "Связь с природой",
+      "Бессмертие"
+    ],
+    "characterSettings": [
+      "Лес",
+      "Север",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Венок",
+      "Талый снег",
+      "Солнечный луч"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Викитека — Снегурочка А. Н. Островского",
+        "url": "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterSourceTypes": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterOriginCultures": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterNature": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterGender": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterAgeGroup": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterRoles": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterArchetypes": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterAbilities": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ],
+        "characterSettings": [
+          "https://ru.wikisource.org/wiki/Снегурочка_(Островский)"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:zeus",
+    "mode": "character",
+    "titleRu": "Зевс",
+    "titleOriginal": "Zeus",
+    "alternativeTitles": [
+      "Зевс",
+      "Zeus",
+      "Громовержец",
+      "Юпитер"
+    ],
+    "aliases": [
+      "Зевс",
+      "Zeus",
+      "Громовержец",
+      "Юпитер"
+    ],
+    "acceptedAnswers": [
+      "Зевс",
+      "Zeus",
+      "Громовержец",
+      "Юпитер"
+    ],
+    "popularityScore": 0.99,
+    "recognitionScore": 99,
+    "guessabilityScore": 98,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/zeus.webp",
+    "plotHint": "Верховный небесный правитель побеждает прежнее поколение богов, распоряжается громом и неоднократно меняет облик, вмешиваясь в судьбы смертных.",
+    "description": "Верховный небесный правитель побеждает прежнее поколение богов, распоряжается громом и неоднократно меняет облик, вмешиваясь в судьбы смертных.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 31,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Правитель",
+      "Испытатель",
+      "Антигерой"
+    ],
+    "characterArchetypes": [
+      "Громовержец",
+      "Царь богов"
+    ],
+    "characterAbilities": [
+      "Молнии",
+      "Превращение",
+      "Бессмертие"
+    ],
+    "characterSettings": [
+      "Олимп",
+      "Античный мир",
+      "Небо"
+    ],
+    "iconicObjects": [
+      "Молния",
+      "Орёл",
+      "Дуб"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:athena",
+    "mode": "character",
+    "titleRu": "Афина",
+    "titleOriginal": "Athena",
+    "alternativeTitles": [
+      "Афина",
+      "Athena",
+      "Афина Паллада",
+      "Паллада",
+      "Минерва"
+    ],
+    "aliases": [
+      "Афина",
+      "Athena",
+      "Афина Паллада",
+      "Паллада",
+      "Минерва"
+    ],
+    "acceptedAnswers": [
+      "Афина",
+      "Athena",
+      "Афина Паллада",
+      "Паллада",
+      "Минерва"
+    ],
+    "popularityScore": 0.96,
+    "recognitionScore": 97,
+    "guessabilityScore": 97,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/athena.webp",
+    "plotHint": "Богиня разумной войны и ремёсел рождается необычным способом, покровительствует изобретательным героям и выигрывает спор за город подарком мирного дерева.",
+    "description": "Богиня разумной войны и ремёсел рождается необычным способом, покровительствует изобретательным героям и выигрывает спор за город подарком мирного дерева.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 32,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Наставник",
+      "Воин",
+      "Защитник"
+    ],
+    "characterArchetypes": [
+      "Богиня мудрости",
+      "Стратег"
+    ],
+    "characterAbilities": [
+      "Стратегия",
+      "Бессмертие",
+      "Покровительство героям"
+    ],
+    "characterSettings": [
+      "Олимп",
+      "Античный мир",
+      "Город"
+    ],
+    "iconicObjects": [
+      "Шлем",
+      "Сова",
+      "Щит"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:aphrodite",
+    "mode": "character",
+    "titleRu": "Афродита",
+    "titleOriginal": "Aphrodite",
+    "alternativeTitles": [
+      "Афродита",
+      "Aphrodite",
+      "Венера",
+      "Киприда"
+    ],
+    "aliases": [
+      "Афродита",
+      "Aphrodite",
+      "Венера",
+      "Киприда"
+    ],
+    "acceptedAnswers": [
+      "Афродита",
+      "Aphrodite",
+      "Венера",
+      "Киприда"
+    ],
+    "popularityScore": 0.95,
+    "recognitionScore": 98,
+    "guessabilityScore": 97,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/aphrodite.webp",
+    "plotHint": "Богиня любви возникает из морской стихии, обладает поясом неотразимого влечения и получает спорный приз, который приводит великие царства к войне.",
+    "description": "Богиня любви возникает из морской стихии, обладает поясом неотразимого влечения и получает спорный приз, который приводит великие царства к войне.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 33,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Правитель",
+      "Испытатель",
+      "Покровитель"
+    ],
+    "characterArchetypes": [
+      "Богиня любви",
+      "Соблазнитель"
+    ],
+    "characterAbilities": [
+      "Чары",
+      "Бессмертие",
+      "Власть над влечением"
+    ],
+    "characterSettings": [
+      "Олимп",
+      "Море",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Раковина",
+      "Голубь",
+      "Золотое яблоко"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:hades",
+    "mode": "character",
+    "titleRu": "Аид",
+    "titleOriginal": "Hades",
+    "alternativeTitles": [
+      "Аид",
+      "Hades",
+      "Гадес",
+      "Плутон",
+      "Владыка подземного мира"
+    ],
+    "aliases": [
+      "Аид",
+      "Hades",
+      "Гадес",
+      "Плутон",
+      "Владыка подземного мира"
+    ],
+    "acceptedAnswers": [
+      "Аид",
+      "Hades",
+      "Гадес",
+      "Плутон",
+      "Владыка подземного мира"
+    ],
+    "popularityScore": 0.94,
+    "recognitionScore": 97,
+    "guessabilityScore": 96,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/hades.webp",
+    "plotHint": "Суровый правитель царства умерших редко покидает свои владения, хранит непреложные законы границы миров и однажды забирает себе живую супругу.",
+    "description": "Суровый правитель царства умерших редко покидает свои владения, хранит непреложные законы границы миров и однажды забирает себе живую супругу.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 34,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Правитель",
+      "Судья",
+      "Похититель"
+    ],
+    "characterArchetypes": [
+      "Владыка мёртвых",
+      "Подземный царь"
+    ],
+    "characterAbilities": [
+      "Бессмертие",
+      "Невидимость",
+      "Власть над мёртвыми"
+    ],
+    "characterSettings": [
+      "Подземный мир",
+      "Дворец",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Шлем-невидимка",
+      "Кипарис",
+      "Цербер"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:persephone",
+    "mode": "character",
+    "titleRu": "Персефона",
+    "titleOriginal": "Persephone",
+    "alternativeTitles": [
+      "Персефона",
+      "Persephone",
+      "Кора",
+      "Прозерпина",
+      "Царица подземного мира"
+    ],
+    "aliases": [
+      "Персефона",
+      "Persephone",
+      "Кора",
+      "Прозерпина",
+      "Царица подземного мира"
+    ],
+    "acceptedAnswers": [
+      "Персефона",
+      "Persephone",
+      "Кора",
+      "Прозерпина",
+      "Царица подземного мира"
+    ],
+    "popularityScore": 0.89,
+    "recognitionScore": 91,
+    "guessabilityScore": 92,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/persephone.webp",
+    "plotHint": "Дочь богини плодородия оказывается в царстве мёртвых, пробует несколько зёрен и с тех пор делит год между матерью и подземным супругом.",
+    "description": "Дочь богини плодородия оказывается в царстве мёртвых, пробует несколько зёрен и с тех пор делит год между матерью и подземным супругом.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 35,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Гимн"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Правитель",
+      "Жертва",
+      "Посредник"
+    ],
+    "characterArchetypes": [
+      "Подземная царица",
+      "Дева весны"
+    ],
+    "characterAbilities": [
+      "Бессмертие",
+      "Связь с растениями",
+      "Переход между мирами"
+    ],
+    "characterSettings": [
+      "Подземный мир",
+      "Поле",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Гранат",
+      "Нарцисс",
+      "Факел"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:achilles",
+    "mode": "character",
+    "titleRu": "Ахиллес",
+    "titleOriginal": "Achilles",
+    "alternativeTitles": [
+      "Ахиллес",
+      "Achilles",
+      "Ахилл",
+      "Пелид"
+    ],
+    "aliases": [
+      "Ахиллес",
+      "Achilles",
+      "Ахилл",
+      "Пелид"
+    ],
+    "acceptedAnswers": [
+      "Ахиллес",
+      "Achilles",
+      "Ахилл",
+      "Пелид"
+    ],
+    "popularityScore": 0.93,
+    "recognitionScore": 96,
+    "guessabilityScore": 94,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/achilles.webp",
+    "plotHint": "Величайший воин осаждающего войска отказывается сражаться из-за унижения, возвращается после гибели ближайшего друга и сам движется к предсказанной смерти.",
+    "description": "Величайший воин осаждающего войска отказывается сражаться из-за унижения, возвращается после гибели ближайшего друга и сам движется к предсказанной смерти.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 36,
+    "characterSourceWork": "Илиада",
+    "characterSourceAuthor": "Гомер",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Эпос",
+      "Миф"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Полубог",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Воин",
+      "Антигерой"
+    ],
+    "characterArchetypes": [
+      "Непобедимый воин",
+      "Трагический герой"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Скорость",
+      "Фехтование"
+    ],
+    "characterSettings": [
+      "Поле боя",
+      "Море",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Копьё",
+      "Щит",
+      "Пятка"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:medusa",
+    "mode": "character",
+    "titleRu": "Медуза Горгона",
+    "titleOriginal": "Medusa",
+    "alternativeTitles": [
+      "Медуза",
+      "Medusa",
+      "Горгона Медуза",
+      "Медуса"
+    ],
+    "aliases": [
+      "Медуза",
+      "Medusa",
+      "Горгона Медуза",
+      "Медуса"
+    ],
+    "acceptedAnswers": [
+      "Медуза Горгона",
+      "Medusa",
+      "Медуза",
+      "Горгона Медуза",
+      "Медуса"
+    ],
+    "popularityScore": 0.92,
+    "recognitionScore": 98,
+    "guessabilityScore": 97,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/medusa.webp",
+    "plotHint": "Единственная смертная среди трёх чудовищных сестёр обращает взглянувших на неё в камень, поэтому герой приближается к ней, пользуясь отражением.",
+    "description": "Единственная смертная среди трёх чудовищных сестёр обращает взглянувших на неё в камень, поэтому герой приближается к ней, пользуясь отражением.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 37,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Горгона",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Жертва",
+      "Чудовище"
+    ],
+    "characterArchetypes": [
+      "Проклятая дева",
+      "Страж"
+    ],
+    "characterAbilities": [
+      "Окаменяющий взгляд",
+      "Змеиные волосы",
+      "Сверхсила"
+    ],
+    "characterSettings": [
+      "Остров",
+      "Храм",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Змеи",
+      "Каменные статуи",
+      "Зеркальный щит"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:circe",
+    "mode": "character",
+    "titleRu": "Цирцея",
+    "titleOriginal": "Circe",
+    "alternativeTitles": [
+      "Цирцея",
+      "Circe",
+      "Кирка",
+      "Волшебница Ээи"
+    ],
+    "aliases": [
+      "Цирцея",
+      "Circe",
+      "Кирка",
+      "Волшебница Ээи"
+    ],
+    "acceptedAnswers": [
+      "Цирцея",
+      "Circe",
+      "Кирка",
+      "Волшебница Ээи"
+    ],
+    "popularityScore": 0.86,
+    "recognitionScore": 88,
+    "guessabilityScore": 89,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/circe.webp",
+    "plotHint": "Островная волшебница превращает незваных гостей в животных с помощью питья, но после сопротивления их предводителя становится его союзницей и советницей.",
+    "description": "Островная волшебница превращает незваных гостей в животных с помощью питья, но после сопротивления их предводителя становится его союзницей и советницей.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 38,
+    "characterSourceWork": "Одиссея",
+    "characterSourceAuthor": "Гомер",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Эпос",
+      "Миф"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Испытатель",
+      "Антагонист",
+      "Помощник"
+    ],
+    "characterArchetypes": [
+      "Волшебница",
+      "Соблазнитель"
+    ],
+    "characterAbilities": [
+      "Колдовство",
+      "Превращение",
+      "Зельеварение"
+    ],
+    "characterSettings": [
+      "Остров",
+      "Дворец",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Кубок",
+      "Ткацкий станок",
+      "Лев"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:prometheus",
+    "mode": "character",
+    "titleRu": "Прометей",
+    "titleOriginal": "Prometheus",
+    "alternativeTitles": [
+      "Прометей",
+      "Prometheus",
+      "Титан Прометей",
+      "Похититель огня"
+    ],
+    "aliases": [
+      "Прометей",
+      "Prometheus",
+      "Титан Прометей",
+      "Похититель огня"
+    ],
+    "acceptedAnswers": [
+      "Прометей",
+      "Prometheus",
+      "Титан Прометей",
+      "Похититель огня"
+    ],
+    "popularityScore": 0.9,
+    "recognitionScore": 94,
+    "guessabilityScore": 93,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/prometheus.webp",
+    "plotHint": "Титан становится покровителем людей, тайно приносит им запретный небесный дар и за неповиновение оказывается прикован к скале для ежедневной казни.",
+    "description": "Титан становится покровителем людей, тайно приносит им запретный небесный дар и за неповиновение оказывается прикован к скале для ежедневной казни.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 39,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Трагедия"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Титан",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Бунтарь",
+      "Помощник",
+      "Жертва"
+    ],
+    "characterArchetypes": [
+      "Похититель огня",
+      "Мученик"
+    ],
+    "characterAbilities": [
+      "Предвидение",
+      "Бессмертие",
+      "Созидание"
+    ],
+    "characterSettings": [
+      "Горы",
+      "Олимп",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Огонь",
+      "Цепи",
+      "Орёл"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:minotaur",
+    "mode": "character",
+    "titleRu": "Минотавр",
+    "titleOriginal": "Minotaur",
+    "alternativeTitles": [
+      "Минотавр",
+      "Minotaur",
+      "Астерион",
+      "Астерий"
+    ],
+    "aliases": [
+      "Минотавр",
+      "Minotaur",
+      "Астерион",
+      "Астерий"
+    ],
+    "acceptedAnswers": [
+      "Минотавр",
+      "Minotaur",
+      "Астерион",
+      "Астерий"
+    ],
+    "popularityScore": 0.91,
+    "recognitionScore": 97,
+    "guessabilityScore": 96,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/minotaur.webp",
+    "plotHint": "Существо с человеческим телом и бычьей головой скрыто в запутанном сооружении, куда регулярно отправляют жертв, пока один герой не входит туда с нитью.",
+    "description": "Существо с человеческим телом и бычьей головой скрыто в запутанном сооружении, куда регулярно отправляют жертв, пока один герой не входит туда с нитью.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 40,
+    "characterSourceWork": "Древнегреческие мифы",
+    "characterSourceAuthor": "Античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Миф",
+      "Легенда"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Человек-зверь",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Жертва",
+      "Чудовище"
+    ],
+    "characterArchetypes": [
+      "Лабиринтное чудовище",
+      "Пленник"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Острый слух",
+      "Выносливость"
+    ],
+    "characterSettings": [
+      "Лабиринт",
+      "Остров",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Лабиринт",
+      "Рога",
+      "Красная нить"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:loki",
+    "mode": "character",
+    "titleRu": "Локи",
+    "titleOriginal": "Loki",
+    "alternativeTitles": [
+      "Локи",
+      "Loki",
+      "Лофт",
+      "Бог хитрости"
+    ],
+    "aliases": [
+      "Локи",
+      "Loki",
+      "Лофт",
+      "Бог хитрости"
+    ],
+    "acceptedAnswers": [
+      "Локи",
+      "Loki",
+      "Лофт",
+      "Бог хитрости"
+    ],
+    "popularityScore": 0.98,
+    "recognitionScore": 99,
+    "guessabilityScore": 98,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/loki.webp",
+    "plotHint": "Непредсказуемый спутник богов то спасает их хитрыми планами, то создаёт катастрофы, меняет обличья и в конце становится причиной гибели любимого всеми существа.",
+    "description": "Непредсказуемый спутник богов то спасает их хитрыми планами, то создаёт катастрофы, меняет обличья и в конце становится причиной гибели любимого всеми существа.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 41,
+    "characterSourceWork": "Старшая и Младшая Эдда",
+    "characterSourceAuthor": "Северная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Средневековье",
+    "characterEraOrder": 2,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Скандинавская культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Трикстер",
+      "Антагонист",
+      "Помощник"
+    ],
+    "characterArchetypes": [
+      "Трикстер",
+      "Оборотень"
+    ],
+    "characterAbilities": [
+      "Превращение",
+      "Хитрость",
+      "Колдовство"
+    ],
+    "characterSettings": [
+      "Асгард",
+      "Север",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Сеть",
+      "Огонь",
+      "Змей"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Prose Edda",
+        "url": "https://www.gutenberg.org/ebooks/18947"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/18947"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:thor",
+    "mode": "character",
+    "titleRu": "Тор",
+    "titleOriginal": "Thor",
+    "alternativeTitles": [
+      "Тор",
+      "Thor",
+      "Донар",
+      "Громовник"
+    ],
+    "aliases": [
+      "Тор",
+      "Thor",
+      "Донар",
+      "Громовник"
+    ],
+    "acceptedAnswers": [
+      "Тор",
+      "Thor",
+      "Донар",
+      "Громовник"
+    ],
+    "popularityScore": 0.97,
+    "recognitionScore": 99,
+    "guessabilityScore": 98,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/thor.webp",
+    "plotHint": "Рыжебородый защитник богов и людей носит короткорукий молот, ездит в колеснице и предпочитает прямую силу сложным уловкам великанов.",
+    "description": "Рыжебородый защитник богов и людей носит короткорукий молот, ездит в колеснице и предпочитает прямую силу сложным уловкам великанов.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 42,
+    "characterSourceWork": "Старшая и Младшая Эдда",
+    "characterSourceAuthor": "Северная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Средневековье",
+    "characterEraOrder": 2,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Скандинавская культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Воин",
+      "Защитник",
+      "Главный герой"
+    ],
+    "characterArchetypes": [
+      "Громовержец",
+      "Защитник"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Молнии",
+      "Бессмертие"
+    ],
+    "characterSettings": [
+      "Асгард",
+      "Север",
+      "Легендарный мир"
+    ],
+    "iconicObjects": [
+      "Молот",
+      "Железные рукавицы",
+      "Колесница"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Prose Edda",
+        "url": "https://www.gutenberg.org/ebooks/18947"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/18947"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:freyja",
+    "mode": "character",
+    "titleRu": "Фрейя",
+    "titleOriginal": "Freyja",
+    "alternativeTitles": [
+      "Фрейя",
+      "Freyja",
+      "Фрея",
+      "Ванадис"
+    ],
+    "aliases": [
+      "Фрейя",
+      "Freyja",
+      "Фрея",
+      "Ванадис"
+    ],
+    "acceptedAnswers": [
+      "Фрейя",
+      "Freyja",
+      "Фрея",
+      "Ванадис"
+    ],
+    "popularityScore": 0.88,
+    "recognitionScore": 91,
+    "guessabilityScore": 91,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/freyja.webp",
+    "plotHint": "Северная богиня любви и колдовства владеет драгоценным ожерельем, летает в соколином облике и принимает в своих чертогах часть павших воинов.",
+    "description": "Северная богиня любви и колдовства владеет драгоценным ожерельем, летает в соколином облике и принимает в своих чертогах часть павших воинов.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 43,
+    "characterSourceWork": "Старшая и Младшая Эдда",
+    "characterSourceAuthor": "Северная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Средневековье",
+    "characterEraOrder": 2,
+    "characterSourceTypes": [
+      "Миф",
+      "Эпос"
+    ],
+    "characterOriginCultures": [
+      "Скандинавская культура"
+    ],
+    "characterNature": "Божество",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Бессмертный",
+    "characterRoles": [
+      "Правитель",
+      "Воин",
+      "Покровитель"
+    ],
+    "characterArchetypes": [
+      "Богиня любви",
+      "Валькирия"
+    ],
+    "characterAbilities": [
+      "Колдовство",
+      "Полёт",
+      "Бессмертие"
+    ],
+    "characterSettings": [
+      "Асгард",
+      "Поле боя",
+      "Север"
+    ],
+    "iconicObjects": [
+      "Ожерелье",
+      "Соколиный плащ",
+      "Кошачья колесница"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Prose Edda",
+        "url": "https://www.gutenberg.org/ebooks/18947"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/18947"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/18947"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:helen-of-troy",
+    "mode": "character",
+    "titleRu": "Елена Троянская",
+    "titleOriginal": "Helen of Troy",
+    "alternativeTitles": [
+      "Елена Троянская",
+      "Helen of Troy",
+      "Елена Прекрасная",
+      "Елена Спартанская"
+    ],
+    "aliases": [
+      "Елена Троянская",
+      "Helen of Troy",
+      "Елена Прекрасная",
+      "Елена Спартанская"
+    ],
+    "acceptedAnswers": [
+      "Елена Троянская",
+      "Helen of Troy",
+      "Елена Прекрасная",
+      "Елена Спартанская"
+    ],
+    "popularityScore": 0.87,
+    "recognitionScore": 92,
+    "guessabilityScore": 91,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/helen-of-troy.webp",
+    "plotHint": "Спартанская царица оказывается в чужом городе, а спор о её побеге или похищении собирает огромный флот и становится поводом для десятилетней войны.",
+    "description": "Спартанская царица оказывается в чужом городе, а спор о её побеге или похищении собирает огромный флот и становится поводом для десятилетней войны.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 44,
+    "characterSourceWork": "Илиада и древнегреческие мифы",
+    "characterSourceAuthor": "Гомер и античная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Античность",
+    "characterEraOrder": 0,
+    "characterSourceTypes": [
+      "Эпос",
+      "Миф"
+    ],
+    "characterOriginCultures": [
+      "Древнегреческая культура"
+    ],
+    "characterNature": "Полубог",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Правитель",
+      "Жертва",
+      "Посредник"
+    ],
+    "characterArchetypes": [
+      "Царица",
+      "Роковая красавица"
+    ],
+    "characterAbilities": [
+      "Красота",
+      "Дипломатия",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Дворец",
+      "Поле боя",
+      "Античный мир"
+    ],
+    "iconicObjects": [
+      "Корабли",
+      "Веретено",
+      "Троянская стена"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Bulfinch’s Mythology: The Age of Fable",
+        "url": "https://www.gutenberg.org/ebooks/4928"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/4928"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/4928"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:edmond-dantes",
+    "mode": "character",
+    "titleRu": "Эдмон Дантес",
+    "titleOriginal": "Edmond Dantès",
+    "alternativeTitles": [
+      "Эдмон Дантес",
+      "Edmond Dantes",
+      "Edmond Dantès",
+      "Граф Монте-Кристо",
+      "Аббат Бузони",
+      "Лорд Уилмор"
+    ],
+    "aliases": [
+      "Эдмон Дантес",
+      "Edmond Dantes",
+      "Edmond Dantès",
+      "Граф Монте-Кристо",
+      "Аббат Бузони",
+      "Лорд Уилмор"
+    ],
+    "acceptedAnswers": [
+      "Эдмон Дантес",
+      "Edmond Dantès",
+      "Edmond Dantes",
+      "Граф Монте-Кристо",
+      "Аббат Бузони",
+      "Лорд Уилмор"
+    ],
+    "popularityScore": 0.95,
+    "recognitionScore": 96,
+    "guessabilityScore": 96,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/edmond-dantes.webp",
+    "plotHint": "Молодого моряка ложно обвиняют перед свадьбой; годы заключения и тайное сокровище превращают его в загадочного богача, методично воздающего врагам.",
+    "description": "Молодого моряка ложно обвиняют перед свадьбой; годы заключения и тайное сокровище превращают его в загадочного богача, методично воздающего врагам.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 45,
+    "characterSourceWork": "Граф Монте-Кристо",
+    "characterSourceAuthor": "Александр Дюма",
+    "characterFirstAppearanceYear": 1844,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Приключения"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Антигерой",
+      "Мститель"
+    ],
+    "characterArchetypes": [
+      "Узник",
+      "Таинственный аристократ"
+    ],
+    "characterAbilities": [
+      "Маскировка",
+      "Стратегия",
+      "Богатство"
+    ],
+    "characterSettings": [
+      "Европа",
+      "Море",
+      "Тюрьма"
+    ],
+    "iconicObjects": [
+      "Карта сокровищ",
+      "Чёрный плащ",
+      "Перстень"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Count of Monte Cristo",
+        "url": "https://www.gutenberg.org/ebooks/1184"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1184"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1184"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:athos",
+    "mode": "character",
+    "titleRu": "Атос",
+    "titleOriginal": "Athos",
+    "alternativeTitles": [
+      "Атос",
+      "Athos",
+      "Граф де Ла Фер",
+      "Оливье де Ла Фер"
+    ],
+    "aliases": [
+      "Атос",
+      "Athos",
+      "Граф де Ла Фер",
+      "Оливье де Ла Фер"
+    ],
+    "acceptedAnswers": [
+      "Атос",
+      "Athos",
+      "Граф де Ла Фер",
+      "Оливье де Ла Фер"
+    ],
+    "popularityScore": 0.88,
+    "recognitionScore": 93,
+    "guessabilityScore": 91,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/athos.webp",
+    "plotHint": "Самый старший и сдержанный из друзей-мушкетёров скрывает знатное происхождение и тяжёлую историю брака, оставаясь для молодых товарищей нравственным ориентиром.",
+    "description": "Самый старший и сдержанный из друзей-мушкетёров скрывает знатное происхождение и тяжёлую историю брака, оставаясь для молодых товарищей нравственным ориентиром.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 46,
+    "characterSourceWork": "Три мушкетёра",
+    "characterSourceAuthor": "Александр Дюма",
+    "characterFirstAppearanceYear": 1844,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Приключения"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Помощник",
+      "Воин",
+      "Наставник"
+    ],
+    "characterArchetypes": [
+      "Мушкетёр",
+      "Разочарованный аристократ"
+    ],
+    "characterAbilities": [
+      "Фехтование",
+      "Лидерство",
+      "Самообладание"
+    ],
+    "characterSettings": [
+      "Европа",
+      "Дворец",
+      "Дорога"
+    ],
+    "iconicObjects": [
+      "Шпага",
+      "Кубок",
+      "Печать графа"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Three Musketeers",
+        "url": "https://www.gutenberg.org/ebooks/1257"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1257"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:milady-de-winter",
+    "mode": "character",
+    "titleRu": "Миледи де Винтер",
+    "titleOriginal": "Milady de Winter",
+    "alternativeTitles": [
+      "Миледи де Винтер",
+      "Milady de Winter",
+      "Анна де Бёйль",
+      "Графиня де Ла Фер",
+      "Леди Кларик"
+    ],
+    "aliases": [
+      "Миледи де Винтер",
+      "Milady de Winter",
+      "Анна де Бёйль",
+      "Графиня де Ла Фер",
+      "Леди Кларик"
+    ],
+    "acceptedAnswers": [
+      "Миледи де Винтер",
+      "Milady de Winter",
+      "Анна де Бёйль",
+      "Графиня де Ла Фер",
+      "Леди Кларик"
+    ],
+    "popularityScore": 0.89,
+    "recognitionScore": 93,
+    "guessabilityScore": 92,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/milady-de-winter.webp",
+    "plotHint": "Опасная агентка кардинала меняет имена и страны, использует обаяние как оружие и скрывает на плече знак преступного прошлого, связывающий её с одним из мушкетёров.",
+    "description": "Опасная агентка кардинала меняет имена и страны, использует обаяние как оружие и скрывает на плече знак преступного прошлого, связывающий её с одним из мушкетёров.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 47,
+    "characterSourceWork": "Три мушкетёра",
+    "characterSourceAuthor": "Александр Дюма",
+    "characterFirstAppearanceYear": 1844,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Приключения"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Шпион",
+      "Соблазнитель"
+    ],
+    "characterArchetypes": [
+      "Роковая женщина",
+      "Тайный агент"
+    ],
+    "characterAbilities": [
+      "Манипуляция",
+      "Маскировка",
+      "Яды"
+    ],
+    "characterSettings": [
+      "Европа",
+      "Дворец",
+      "Тюрьма"
+    ],
+    "iconicObjects": [
+      "Лилия-клеймо",
+      "Яд",
+      "Запечатанное письмо"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Three Musketeers",
+        "url": "https://www.gutenberg.org/ebooks/1257"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1257"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1257"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:jean-valjean",
+    "mode": "character",
+    "titleRu": "Жан Вальжан",
+    "titleOriginal": "Jean Valjean",
+    "alternativeTitles": [
+      "Жан Вальжан",
+      "Jean Valjean",
+      "Мадлен",
+      "Господин Мадлен",
+      "Урбен Фабр"
+    ],
+    "aliases": [
+      "Жан Вальжан",
+      "Jean Valjean",
+      "Мадлен",
+      "Господин Мадлен",
+      "Урбен Фабр"
+    ],
+    "acceptedAnswers": [
+      "Жан Вальжан",
+      "Jean Valjean",
+      "Мадлен",
+      "Господин Мадлен",
+      "Урбен Фабр"
+    ],
+    "popularityScore": 0.9,
+    "recognitionScore": 93,
+    "guessabilityScore": 92,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/jean-valjean.webp",
+    "plotHint": "Осуждённый за кражу хлеба человек после неожиданного милосердия меняет жизнь, становится уважаемым горожанином и много лет защищает осиротевшую девочку.",
+    "description": "Осуждённый за кражу хлеба человек после неожиданного милосердия меняет жизнь, становится уважаемым горожанином и много лет защищает осиротевшую девочку.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 48,
+    "characterSourceWork": "Отверженные",
+    "characterSourceAuthor": "Виктор Гюго",
+    "characterFirstAppearanceYear": 1862,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Социальная драма"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Пожилой",
+    "characterRoles": [
+      "Главный герой",
+      "Изгнанник",
+      "Спаситель"
+    ],
+    "characterArchetypes": [
+      "Бывший каторжник",
+      "Приёмный отец"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Милосердие",
+      "Маскировка"
+    ],
+    "characterSettings": [
+      "Европа",
+      "Город",
+      "Тюрьма"
+    ],
+    "iconicObjects": [
+      "Серебряные подсвечники",
+      "Жёлтый паспорт",
+      "Телега"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Les Misérables",
+        "url": "https://www.gutenberg.org/ebooks/135"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/135"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/135"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:inspector-javert",
+    "mode": "character",
+    "titleRu": "Инспектор Жавер",
+    "titleOriginal": "Inspector Javert",
+    "alternativeTitles": [
+      "Инспектор Жавер",
+      "Inspector Javert",
+      "Жавер",
+      "Полицейский Жавер"
+    ],
+    "aliases": [
+      "Инспектор Жавер",
+      "Inspector Javert",
+      "Жавер",
+      "Полицейский Жавер"
+    ],
+    "acceptedAnswers": [
+      "Инспектор Жавер",
+      "Inspector Javert",
+      "Жавер",
+      "Полицейский Жавер"
+    ],
+    "popularityScore": 0.82,
+    "recognitionScore": 85,
+    "guessabilityScore": 87,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/inspector-javert.webp",
+    "plotHint": "Сын заключённой посвящает себя закону и десятилетиями преследует бывшего каторжника, пока проявленное к нему милосердие не разрушает его картину мира.",
+    "description": "Сын заключённой посвящает себя закону и десятилетиями преследует бывшего каторжника, пока проявленное к нему милосердие не разрушает его картину мира.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 49,
+    "characterSourceWork": "Отверженные",
+    "characterSourceAuthor": "Виктор Гюго",
+    "characterFirstAppearanceYear": 1862,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Социальная драма"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Преследователь",
+      "Судья"
+    ],
+    "characterArchetypes": [
+      "Инспектор",
+      "Фанатик закона"
+    ],
+    "characterAbilities": [
+      "Наблюдательность",
+      "Упорство",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Европа",
+      "Город",
+      "Тюрьма"
+    ],
+    "iconicObjects": [
+      "Полицейский жетон",
+      "Наручники",
+      "Мост"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Les Misérables",
+        "url": "https://www.gutenberg.org/ebooks/135"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/135"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/135"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/135"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:quasimodo",
+    "mode": "character",
+    "titleRu": "Квазимодо",
+    "titleOriginal": "Quasimodo",
+    "alternativeTitles": [
+      "Квазимодо",
+      "Quasimodo",
+      "Горбун из Нотр-Дама",
+      "Звонарь Нотр-Дама"
+    ],
+    "aliases": [
+      "Квазимодо",
+      "Quasimodo",
+      "Горбун из Нотр-Дама",
+      "Звонарь Нотр-Дама"
+    ],
+    "acceptedAnswers": [
+      "Квазимодо",
+      "Quasimodo",
+      "Горбун из Нотр-Дама",
+      "Звонарь Нотр-Дама"
+    ],
+    "popularityScore": 0.91,
+    "recognitionScore": 96,
+    "guessabilityScore": 95,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/quasimodo.webp",
+    "plotHint": "Глухой звонарь, выросший среди башен собора, терпит насмешки толпы, но проявляет преданность и силу, спасая преследуемую девушку в своём каменном убежище.",
+    "description": "Глухой звонарь, выросший среди башен собора, терпит насмешки толпы, но проявляет преданность и силу, спасая преследуемую девушку в своём каменном убежище.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 50,
+    "characterSourceWork": "Собор Парижской Богоматери",
+    "characterSourceAuthor": "Виктор Гюго",
+    "characterFirstAppearanceYear": 1831,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Изгнанник",
+      "Защитник"
+    ],
+    "characterArchetypes": [
+      "Звонарь",
+      "Одинокий хранитель"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Лазание",
+      "Стойкость"
+    ],
+    "characterSettings": [
+      "Собор",
+      "Город",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Колокол",
+      "Верёвка",
+      "Каменная химера"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Notre-Dame de Paris",
+        "url": "https://www.gutenberg.org/ebooks/2610"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/2610"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/2610"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:victor-frankenstein",
+    "mode": "character",
+    "titleRu": "Виктор Франкенштейн",
+    "titleOriginal": "Victor Frankenstein",
+    "alternativeTitles": [
+      "Виктор Франкенштейн",
+      "Victor Frankenstein",
+      "Доктор Франкенштейн",
+      "Франкенштейн"
+    ],
+    "aliases": [
+      "Виктор Франкенштейн",
+      "Victor Frankenstein",
+      "Доктор Франкенштейн",
+      "Франкенштейн"
+    ],
+    "acceptedAnswers": [
+      "Виктор Франкенштейн",
+      "Victor Frankenstein",
+      "Доктор Франкенштейн",
+      "Франкенштейн"
+    ],
+    "popularityScore": 0.89,
+    "recognitionScore": 94,
+    "guessabilityScore": 88,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/victor-frankenstein.webp",
+    "plotHint": "Молодой исследователь открывает способ оживлять материю, в ужасе отвергает результат своего труда и начинает разрушительную погоню за созданным существом.",
+    "description": "Молодой исследователь открывает способ оживлять материю, в ужасе отвергает результат своего труда и начинает разрушительную погоню за созданным существом.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 51,
+    "characterSourceWork": "Франкенштейн, или Современный Прометей",
+    "characterSourceAuthor": "Мэри Шелли",
+    "characterFirstAppearanceYear": 1818,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика",
+      "Научная фантастика"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Учёный",
+      "Антигерой"
+    ],
+    "characterArchetypes": [
+      "Безумный учёный",
+      "Создатель"
+    ],
+    "characterAbilities": [
+      "Научный талант",
+      "Одержимость",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Лаборатория",
+      "Европа",
+      "Север"
+    ],
+    "iconicObjects": [
+      "Гальваническая батарея",
+      "Записная книжка",
+      "Лёд"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Frankenstein",
+        "url": "https://www.gutenberg.org/ebooks/84"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/84"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/84"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:frankensteins-creature",
+    "mode": "character",
+    "titleRu": "Чудовище Франкенштейна",
+    "titleOriginal": "Frankenstein’s Creature",
+    "alternativeTitles": [
+      "Монстр Франкенштейна",
+      "Frankenstein's Monster",
+      "Frankenstein’s Creature",
+      "Создание Франкенштейна",
+      "Демон"
+    ],
+    "aliases": [
+      "Монстр Франкенштейна",
+      "Frankenstein's Monster",
+      "Frankenstein’s Creature",
+      "Создание Франкенштейна",
+      "Демон"
+    ],
+    "acceptedAnswers": [
+      "Чудовище Франкенштейна",
+      "Frankenstein’s Creature",
+      "Монстр Франкенштейна",
+      "Frankenstein's Monster",
+      "Создание Франкенштейна",
+      "Демон"
+    ],
+    "popularityScore": 0.96,
+    "recognitionScore": 99,
+    "guessabilityScore": 96,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/frankensteins-creature.webp",
+    "plotHint": "Оживлённое из частей человеческих тел существо самостоятельно учится речи и состраданию, но постоянное отвержение толкает его к мести своему создателю.",
+    "description": "Оживлённое из частей человеческих тел существо самостоятельно учится речи и состраданию, но постоянное отвержение толкает его к мести своему создателю.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 52,
+    "characterSourceWork": "Франкенштейн, или Современный Прометей",
+    "characterSourceAuthor": "Мэри Шелли",
+    "characterFirstAppearanceYear": 1818,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика",
+      "Научная фантастика"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Искусственное существо",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Изгнанник",
+      "Жертва"
+    ],
+    "characterArchetypes": [
+      "Созданное существо",
+      "Одинокий изгнанник"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Выносливость",
+      "Быстрое обучение"
+    ],
+    "characterSettings": [
+      "Европа",
+      "Дикая природа",
+      "Север"
+    ],
+    "iconicObjects": [
+      "Огонь",
+      "Книга",
+      "Лёд"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Frankenstein",
+        "url": "https://www.gutenberg.org/ebooks/84"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/84"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/84"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/84"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:doctor-jekyll-mr-hyde",
+    "mode": "character",
+    "titleRu": "Доктор Джекил и мистер Хайд",
+    "titleOriginal": "Dr Jekyll and Mr Hyde",
+    "alternativeTitles": [
+      "Доктор Джекилл и мистер Хайд",
+      "Dr. Jekyll and Mr. Hyde",
+      "Генри Джекил",
+      "Эдвард Хайд",
+      "Доктор Джекил"
+    ],
+    "aliases": [
+      "Доктор Джекилл и мистер Хайд",
+      "Dr. Jekyll and Mr. Hyde",
+      "Генри Джекил",
+      "Эдвард Хайд",
+      "Доктор Джекил"
+    ],
+    "acceptedAnswers": [
+      "Доктор Джекил и мистер Хайд",
+      "Dr Jekyll and Mr Hyde",
+      "Доктор Джекилл и мистер Хайд",
+      "Dr. Jekyll and Mr. Hyde",
+      "Генри Джекил",
+      "Эдвард Хайд",
+      "Доктор Джекил"
+    ],
+    "popularityScore": 0.9,
+    "recognitionScore": 95,
+    "guessabilityScore": 93,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/doctor-jekyll-mr-hyde.webp",
+    "plotHint": "Уважаемый врач создаёт состав, позволяющий отделить скрытые пороки в другом облике, но свобода второго «я» постепенно вытесняет первоначальную личность.",
+    "description": "Уважаемый врач создаёт состав, позволяющий отделить скрытые пороки в другом облике, но свобода второго «я» постепенно вытесняет первоначальную личность.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 53,
+    "characterSourceWork": "Странная история доктора Джекила и мистера Хайда",
+    "characterSourceAuthor": "Роберт Льюис Стивенсон",
+    "characterFirstAppearanceYear": 1886,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Повесть",
+      "Готика"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Изменённый человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Антагонист",
+      "Учёный"
+    ],
+    "characterArchetypes": [
+      "Двойная личность",
+      "Учёный"
+    ],
+    "characterAbilities": [
+      "Превращение",
+      "Химия",
+      "Сверхсила"
+    ],
+    "characterSettings": [
+      "Город",
+      "Лаборатория",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Флакон",
+      "Зеркало",
+      "Трость"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Strange Case of Dr Jekyll and Mr Hyde",
+        "url": "https://www.gutenberg.org/ebooks/43"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/43"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/43"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/43"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:dorian-gray",
+    "mode": "character",
+    "titleRu": "Дориан Грей",
+    "titleOriginal": "Dorian Gray",
+    "alternativeTitles": [
+      "Дориан Грей",
+      "Dorian Gray",
+      "Дориан"
+    ],
+    "aliases": [
+      "Дориан Грей",
+      "Dorian Gray",
+      "Дориан"
+    ],
+    "acceptedAnswers": [
+      "Дориан Грей",
+      "Dorian Gray",
+      "Дориан"
+    ],
+    "popularityScore": 0.94,
+    "recognitionScore": 97,
+    "guessabilityScore": 95,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/dorian-gray.webp",
+    "plotHint": "Юный аристократ желает сохранить внешнюю красоту, и с тех пор следы возраста и преступлений принимает скрытое изображение, а не его лицо.",
+    "description": "Юный аристократ желает сохранить внешнюю красоту, и с тех пор следы возраста и преступлений принимает скрытое изображение, а не его лицо.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 54,
+    "characterSourceWork": "Портрет Дориана Грея",
+    "characterSourceAuthor": "Оскар Уайльд",
+    "characterFirstAppearanceYear": 1890,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Проклятый человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Антигерой",
+      "Соблазнитель"
+    ],
+    "characterArchetypes": [
+      "Вечный красавец",
+      "Декадент"
+    ],
+    "characterAbilities": [
+      "Вечная молодость",
+      "Обаяние",
+      "Манипуляция"
+    ],
+    "characterSettings": [
+      "Город",
+      "Дом",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Портрет",
+      "Жёлтая книга",
+      "Белые цветы"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Picture of Dorian Gray",
+        "url": "https://www.gutenberg.org/ebooks/174"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/174"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/174"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/174"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:elizabeth-bennet",
+    "mode": "character",
+    "titleRu": "Элизабет Беннет",
+    "titleOriginal": "Elizabeth Bennet",
+    "alternativeTitles": [
+      "Элизабет Беннет",
+      "Elizabeth Bennet",
+      "Лиззи Беннет",
+      "Лиззи",
+      "Элиза Беннет"
+    ],
+    "aliases": [
+      "Элизабет Беннет",
+      "Elizabeth Bennet",
+      "Лиззи Беннет",
+      "Лиззи",
+      "Элиза Беннет"
+    ],
+    "acceptedAnswers": [
+      "Элизабет Беннет",
+      "Elizabeth Bennet",
+      "Лиззи Беннет",
+      "Лиззи",
+      "Элиза Беннет"
+    ],
+    "popularityScore": 0.93,
+    "recognitionScore": 96,
+    "guessabilityScore": 94,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/elizabeth-bennet.webp",
+    "plotHint": "Остроумная дочь небогатого помещика быстро составляет мнение о гордом знакомом, но письма и поступки заставляют её пересмотреть как его характер, так и собственную уверенность.",
+    "description": "Остроумная дочь небогатого помещика быстро составляет мнение о гордом знакомом, но письма и поступки заставляют её пересмотреть как его характер, так и собственную уверенность.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 55,
+    "characterSourceWork": "Гордость и предубеждение",
+    "characterSourceAuthor": "Джейн Остин",
+    "characterFirstAppearanceYear": 1813,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Комедия нравов"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Наблюдатель",
+      "Бунтарь"
+    ],
+    "characterArchetypes": [
+      "Остроумная героиня",
+      "Независимая дочь"
+    ],
+    "characterAbilities": [
+      "Остроумие",
+      "Наблюдательность",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Дом",
+      "Усадьба",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Письмо",
+      "Прогулочная тропа",
+      "Бальная карточка"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Pride and Prejudice",
+        "url": "https://www.gutenberg.org/ebooks/1342"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1342"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:mr-darcy",
+    "mode": "character",
+    "titleRu": "Мистер Дарси",
+    "titleOriginal": "Mr Darcy",
+    "alternativeTitles": [
+      "Мистер Дарси",
+      "Mr. Darcy",
+      "Mr Darcy",
+      "Фицуильям Дарси",
+      "Дарси"
+    ],
+    "aliases": [
+      "Мистер Дарси",
+      "Mr. Darcy",
+      "Mr Darcy",
+      "Фицуильям Дарси",
+      "Дарси"
+    ],
+    "acceptedAnswers": [
+      "Мистер Дарси",
+      "Mr Darcy",
+      "Mr. Darcy",
+      "Фицуильям Дарси",
+      "Дарси"
+    ],
+    "popularityScore": 0.94,
+    "recognitionScore": 97,
+    "guessabilityScore": 95,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/mr-darcy.webp",
+    "plotHint": "Состоятельный и замкнутый землевладелец производит неприятное первое впечатление, делает неудачное предложение и доказывает перемены поступками, о которых предпочитает молчать.",
+    "description": "Состоятельный и замкнутый землевладелец производит неприятное первое впечатление, делает неудачное предложение и доказывает перемены поступками, о которых предпочитает молчать.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 56,
+    "characterSourceWork": "Гордость и предубеждение",
+    "characterSourceAuthor": "Джейн Остин",
+    "characterFirstAppearanceYear": 1813,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Комедия нравов"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Возлюбленный",
+      "Покровитель"
+    ],
+    "characterArchetypes": [
+      "Гордый аристократ",
+      "Романтический герой"
+    ],
+    "characterAbilities": [
+      "Самообладание",
+      "Ответственность",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Усадьба",
+      "Дом",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Письмо",
+      "Перчатки",
+      "Усадебный парк"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Pride and Prejudice",
+        "url": "https://www.gutenberg.org/ebooks/1342"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1342"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1342"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:jane-eyre",
+    "mode": "character",
+    "titleRu": "Джейн Эйр",
+    "titleOriginal": "Jane Eyre",
+    "alternativeTitles": [
+      "Джейн Эйр",
+      "Jane Eyre",
+      "Джейн"
+    ],
+    "aliases": [
+      "Джейн Эйр",
+      "Jane Eyre",
+      "Джейн"
+    ],
+    "acceptedAnswers": [
+      "Джейн Эйр",
+      "Jane Eyre",
+      "Джейн"
+    ],
+    "popularityScore": 0.92,
+    "recognitionScore": 95,
+    "guessabilityScore": 94,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/jane-eyre.webp",
+    "plotHint": "Осиротевшая учительница поступает в мрачное поместье, влюбляется в его хозяина, но отказывается от счастья, когда узнаёт скрытую правду о доме.",
+    "description": "Осиротевшая учительница поступает в мрачное поместье, влюбляется в его хозяина, но отказывается от счастья, когда узнаёт скрытую правду о доме.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 57,
+    "characterSourceWork": "Джейн Эйр",
+    "characterSourceAuthor": "Шарлотта Бронте",
+    "characterFirstAppearanceYear": 1847,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Гувернантка",
+      "Бунтарь"
+    ],
+    "characterArchetypes": [
+      "Сирота",
+      "Независимая героиня"
+    ],
+    "characterAbilities": [
+      "Стойкость",
+      "Рисование",
+      "Самоуважение"
+    ],
+    "characterSettings": [
+      "Усадьба",
+      "Школа",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Грифельная доска",
+      "Рисунок",
+      "Ключ"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Jane Eyre",
+        "url": "https://www.gutenberg.org/ebooks/1260"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1260"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:edward-rochester",
+    "mode": "character",
+    "titleRu": "Эдвард Рочестер",
+    "titleOriginal": "Edward Rochester",
+    "alternativeTitles": [
+      "Эдвард Рочестер",
+      "Edward Rochester",
+      "Мистер Рочестер",
+      "Рочестер"
+    ],
+    "aliases": [
+      "Эдвард Рочестер",
+      "Edward Rochester",
+      "Мистер Рочестер",
+      "Рочестер"
+    ],
+    "acceptedAnswers": [
+      "Эдвард Рочестер",
+      "Edward Rochester",
+      "Мистер Рочестер",
+      "Рочестер"
+    ],
+    "popularityScore": 0.86,
+    "recognitionScore": 89,
+    "guessabilityScore": 89,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/edward-rochester.webp",
+    "plotHint": "Резкий и скрытный хозяин поместья испытывает гувернантку разговорами и маскарадом, однако тайна его законного брака делает предполагаемую свадьбу невозможной.",
+    "description": "Резкий и скрытный хозяин поместья испытывает гувернантку разговорами и маскарадом, однако тайна его законного брака делает предполагаемую свадьбу невозможной.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 58,
+    "characterSourceWork": "Джейн Эйр",
+    "characterSourceAuthor": "Шарлотта Бронте",
+    "characterFirstAppearanceYear": 1847,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Возлюбленный",
+      "Правитель",
+      "Антигерой"
+    ],
+    "characterArchetypes": [
+      "Мрачный хозяин",
+      "Романтический герой"
+    ],
+    "characterAbilities": [
+      "Красноречие",
+      "Воля",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Усадьба",
+      "Европа",
+      "Дом"
+    ],
+    "iconicObjects": [
+      "Чёрный конь",
+      "Свеча",
+      "Обгоревшая балка"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Jane Eyre",
+        "url": "https://www.gutenberg.org/ebooks/1260"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1260"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1260"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:phantom-of-the-opera",
+    "mode": "character",
+    "titleRu": "Призрак Оперы",
+    "titleOriginal": "The Phantom of the Opera",
+    "alternativeTitles": [
+      "Призрак Оперы",
+      "The Phantom of the Opera",
+      "Эрик",
+      "Призрак",
+      "Ангел музыки"
+    ],
+    "aliases": [
+      "Призрак Оперы",
+      "The Phantom of the Opera",
+      "Эрик",
+      "Призрак",
+      "Ангел музыки"
+    ],
+    "acceptedAnswers": [
+      "Призрак Оперы",
+      "The Phantom of the Opera",
+      "Эрик",
+      "Призрак",
+      "Ангел музыки"
+    ],
+    "popularityScore": 0.93,
+    "recognitionScore": 97,
+    "guessabilityScore": 95,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/phantom-of-the-opera.webp",
+    "plotHint": "Гениальный архитектор и музыкант тайно живёт под театром, обучает молодую певицу из-за стен и заставляет дирекцию подчиняться угрозам и ловушкам.",
+    "description": "Гениальный архитектор и музыкант тайно живёт под театром, обучает молодую певицу из-за стен и заставляет дирекцию подчиняться угрозам и ловушкам.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 59,
+    "characterSourceWork": "Призрак Оперы",
+    "characterSourceAuthor": "Гастон Леру",
+    "characterFirstAppearanceYear": 1909,
+    "characterEra": "XX век",
+    "characterEraOrder": 7,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика",
+      "Детектив"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Наставник",
+      "Изгнанник"
+    ],
+    "characterArchetypes": [
+      "Скрытый гений",
+      "Одержимый возлюбленный"
+    ],
+    "characterAbilities": [
+      "Музыка",
+      "Инженерный талант",
+      "Чревовещание"
+    ],
+    "characterSettings": [
+      "Театр",
+      "Подземный мир",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Маска",
+      "Орган",
+      "Канат"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Phantom of the Opera",
+        "url": "https://www.gutenberg.org/ebooks/175"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/175"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/175"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:christine-daae",
+    "mode": "character",
+    "titleRu": "Кристина Даэ",
+    "titleOriginal": "Christine Daaé",
+    "alternativeTitles": [
+      "Кристина Даэ",
+      "Christine Daae",
+      "Christine Daaé",
+      "Кристина",
+      "Ученица Ангела музыки"
+    ],
+    "aliases": [
+      "Кристина Даэ",
+      "Christine Daae",
+      "Christine Daaé",
+      "Кристина",
+      "Ученица Ангела музыки"
+    ],
+    "acceptedAnswers": [
+      "Кристина Даэ",
+      "Christine Daaé",
+      "Christine Daae",
+      "Кристина",
+      "Ученица Ангела музыки"
+    ],
+    "popularityScore": 0.8,
+    "recognitionScore": 84,
+    "guessabilityScore": 85,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": false,
+    "posterUrl": "/images/characters/portraits/christine-daae.webp",
+    "plotHint": "Молодая оперная певица верит, что таинственный голос связан с обещанием умершего отца, и оказывается между давним другом и скрытым наставником.",
+    "description": "Молодая оперная певица верит, что таинственный голос связан с обещанием умершего отца, и оказывается между давним другом и скрытым наставником.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 60,
+    "characterSourceWork": "Призрак Оперы",
+    "characterSourceAuthor": "Гастон Леру",
+    "characterFirstAppearanceYear": 1909,
+    "characterEra": "XX век",
+    "characterEraOrder": 7,
+    "characterSourceTypes": [
+      "Роман",
+      "Готика",
+      "Детектив"
+    ],
+    "characterOriginCultures": [
+      "Французская литература",
+      "Скандинавская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Певица",
+      "Жертва"
+    ],
+    "characterArchetypes": [
+      "Оперная певица",
+      "Ученица"
+    ],
+    "characterAbilities": [
+      "Пение",
+      "Сострадание",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Театр",
+      "Подземный мир",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Ноты",
+      "Скрипка",
+      "Зеркало"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Phantom of the Opera",
+        "url": "https://www.gutenberg.org/ebooks/175"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/175"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/175"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/175"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:carmen",
+    "mode": "character",
+    "titleRu": "Кармен",
+    "titleOriginal": "Carmen",
+    "alternativeTitles": [
+      "Кармен",
+      "Carmen",
+      "Карменсита"
+    ],
+    "aliases": [
+      "Кармен",
+      "Carmen",
+      "Карменсита"
+    ],
+    "acceptedAnswers": [
+      "Кармен",
+      "Carmen",
+      "Карменсита"
+    ],
+    "popularityScore": 0.92,
+    "recognitionScore": 97,
+    "guessabilityScore": 94,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/carmen.webp",
+    "plotHint": "Свободолюбивая работница и контрабандистка очаровывает солдата, но отказывается принадлежать кому-либо, даже когда ревность превращает его любовь в угрозу.",
+    "description": "Свободолюбивая работница и контрабандистка очаровывает солдата, но отказывается принадлежать кому-либо, даже когда ревность превращает его любовь в угрозу.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 61,
+    "characterSourceWork": "Кармен",
+    "characterSourceAuthor": "Проспер Мериме",
+    "characterFirstAppearanceYear": 1845,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Новелла",
+      "Трагедия"
+    ],
+    "characterOriginCultures": [
+      "Французская литература",
+      "Испанская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Соблазнитель",
+      "Бунтарь"
+    ],
+    "characterArchetypes": [
+      "Роковая женщина",
+      "Контрабандист"
+    ],
+    "characterAbilities": [
+      "Обаяние",
+      "Гадание",
+      "Смелость"
+    ],
+    "characterSettings": [
+      "Город",
+      "Горы",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Цветок кассии",
+      "Карты",
+      "Мантилья"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Carmen",
+        "url": "https://www.gutenberg.org/ebooks/2465"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/2465"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/2465"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:cyrano-de-bergerac",
+    "mode": "character",
+    "titleRu": "Сирано де Бержерак",
+    "titleOriginal": "Cyrano de Bergerac",
+    "alternativeTitles": [
+      "Сирано де Бержерак",
+      "Cyrano de Bergerac",
+      "Сирано"
+    ],
+    "aliases": [
+      "Сирано де Бержерак",
+      "Cyrano de Bergerac",
+      "Сирано"
+    ],
+    "acceptedAnswers": [
+      "Сирано де Бержерак",
+      "Cyrano de Bergerac",
+      "Сирано"
+    ],
+    "popularityScore": 0.88,
+    "recognitionScore": 91,
+    "guessabilityScore": 91,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/cyrano-de-bergerac.webp",
+    "plotHint": "Блистательный поэт и фехтовальщик стыдится необычной внешности и помогает красивому сопернику завоевать любимую словами, которые сам не решается подписать.",
+    "description": "Блистательный поэт и фехтовальщик стыдится необычной внешности и помогает красивому сопернику завоевать любимую словами, которые сам не решается подписать.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 62,
+    "characterSourceWork": "Сирано де Бержерак",
+    "characterSourceAuthor": "Эдмон Ростан",
+    "characterFirstAppearanceYear": 1897,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Пьеса",
+      "Романтическая драма"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Воин",
+      "Возлюбленный"
+    ],
+    "characterArchetypes": [
+      "Поэт-дуэлянт",
+      "Скрытый возлюбленный"
+    ],
+    "characterAbilities": [
+      "Фехтование",
+      "Красноречие",
+      "Поэзия"
+    ],
+    "characterSettings": [
+      "Театр",
+      "Поле боя",
+      "Европа"
+    ],
+    "iconicObjects": [
+      "Шпага",
+      "Письмо",
+      "Перо"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Cyrano de Bergerac",
+        "url": "https://www.gutenberg.org/ebooks/1254"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/1254"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/1254"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:long-john-silver",
+    "mode": "character",
+    "titleRu": "Долговязый Джон Сильвер",
+    "titleOriginal": "Long John Silver",
+    "alternativeTitles": [
+      "Долговязый Джон Сильвер",
+      "Long John Silver",
+      "Джон Сильвер",
+      "Одноногий Сильвер",
+      "Барбекю"
+    ],
+    "aliases": [
+      "Долговязый Джон Сильвер",
+      "Long John Silver",
+      "Джон Сильвер",
+      "Одноногий Сильвер",
+      "Барбекю"
+    ],
+    "acceptedAnswers": [
+      "Долговязый Джон Сильвер",
+      "Long John Silver",
+      "Джон Сильвер",
+      "Одноногий Сильвер",
+      "Барбекю"
+    ],
+    "popularityScore": 0.9,
+    "recognitionScore": 94,
+    "guessabilityScore": 93,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/long-john-silver.webp",
+    "plotHint": "Одноногий корабельный повар кажется дружелюбным наставником, но возглавляет мятежников и постоянно меняет сторону, чтобы уйти с добычей живым.",
+    "description": "Одноногий корабельный повар кажется дружелюбным наставником, но возглавляет мятежников и постоянно меняет сторону, чтобы уйти с добычей живым.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 63,
+    "characterSourceWork": "Остров сокровищ",
+    "characterSourceAuthor": "Роберт Льюис Стивенсон",
+    "characterFirstAppearanceYear": 1883,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Приключения"
+    ],
+    "characterOriginCultures": [
+      "Британская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Антагонист",
+      "Наставник",
+      "Пират"
+    ],
+    "characterArchetypes": [
+      "Харизматичный пират",
+      "Двойной агент"
+    ],
+    "characterAbilities": [
+      "Манипуляция",
+      "Лидерство",
+      "Мореплавание"
+    ],
+    "characterSettings": [
+      "Море",
+      "Остров",
+      "Корабль"
+    ],
+    "iconicObjects": [
+      "Костыль",
+      "Попугай",
+      "Карта"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Treasure Island",
+        "url": "https://www.gutenberg.org/ebooks/120"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/120"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/120"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/120"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:captain-ahab",
+    "mode": "character",
+    "titleRu": "Капитан Ахав",
+    "titleOriginal": "Captain Ahab",
+    "alternativeTitles": [
+      "Капитан Ахав",
+      "Captain Ahab",
+      "Ахав",
+      "Капитан «Пекода»"
+    ],
+    "aliases": [
+      "Капитан Ахав",
+      "Captain Ahab",
+      "Ахав",
+      "Капитан «Пекода»"
+    ],
+    "acceptedAnswers": [
+      "Капитан Ахав",
+      "Captain Ahab",
+      "Ахав",
+      "Капитан «Пекода»"
+    ],
+    "popularityScore": 0.86,
+    "recognitionScore": 89,
+    "guessabilityScore": 89,
+    "recognitionLevel": "mainstream",
+    "characterDifficulty": "medium",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/captain-ahab.webp",
+    "plotHint": "Одноногий капитан превращает китобойный рейс в личную войну против огромного белого животного, подчиняя экипаж мести вопреки штормам и предостережениям.",
+    "description": "Одноногий капитан превращает китобойный рейс в личную войну против огромного белого животного, подчиняя экипаж мести вопреки штормам и предостережениям.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 64,
+    "characterSourceWork": "Моби Дик",
+    "characterSourceAuthor": "Герман Мелвилл",
+    "characterFirstAppearanceYear": 1851,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Роман",
+      "Приключения"
+    ],
+    "characterOriginCultures": [
+      "Американская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Пожилой",
+    "characterRoles": [
+      "Антигерой",
+      "Правитель",
+      "Мститель"
+    ],
+    "characterArchetypes": [
+      "Одержимый капитан",
+      "Трагический герой"
+    ],
+    "characterAbilities": [
+      "Лидерство",
+      "Мореплавание",
+      "Одержимость"
+    ],
+    "characterSettings": [
+      "Море",
+      "Корабль",
+      "Дикая природа"
+    ],
+    "iconicObjects": [
+      "Китовая кость",
+      "Гарпун",
+      "Белый кит"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Moby-Dick",
+        "url": "https://www.gutenberg.org/ebooks/2701"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/2701"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/2701"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:beauty",
+    "mode": "character",
+    "titleRu": "Красавица",
+    "titleOriginal": "Beauty",
+    "alternativeTitles": [
+      "Красавица",
+      "Beauty",
+      "La Belle",
+      "Белль",
+      "Красавица из сказки"
+    ],
+    "aliases": [
+      "Красавица",
+      "Beauty",
+      "La Belle",
+      "Белль",
+      "Красавица из сказки"
+    ],
+    "acceptedAnswers": [
+      "Красавица",
+      "Beauty",
+      "La Belle",
+      "Белль",
+      "Красавица из сказки"
+    ],
+    "popularityScore": 0.93,
+    "recognitionScore": 98,
+    "guessabilityScore": 92,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/beauty.webp",
+    "plotHint": "Младшая дочь добровольно занимает место отца в замке страшного хозяина, постепенно замечает его доброту и возвращается в решающий момент.",
+    "description": "Младшая дочь добровольно занимает место отца в замке страшного хозяина, постепенно замечает его доброту и возвращается в решающий момент.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 65,
+    "characterSourceWork": "Красавица и Чудовище",
+    "characterSourceAuthor": "Жанна-Мари Лепренс де Бомон",
+    "characterFirstAppearanceYear": 1756,
+    "characterEra": "XVIII век",
+    "characterEraOrder": 5,
+    "characterSourceTypes": [
+      "Литературная сказка"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Спаситель",
+      "Пленник"
+    ],
+    "characterArchetypes": [
+      "Добрая дочь",
+      "Заколдованная невеста"
+    ],
+    "characterAbilities": [
+      "Сострадание",
+      "Смелость",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Замок",
+      "Дом",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Роза",
+      "Зеркало",
+      "Книга"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Beauty and the Beast",
+        "url": "https://www.gutenberg.org/ebooks/7074"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/7074"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:beast",
+    "mode": "character",
+    "titleRu": "Чудовище",
+    "titleOriginal": "The Beast",
+    "alternativeTitles": [
+      "Чудовище",
+      "The Beast",
+      "Beast",
+      "Зверь",
+      "Хозяин заколдованного замка"
+    ],
+    "aliases": [
+      "Чудовище",
+      "The Beast",
+      "Beast",
+      "Зверь",
+      "Хозяин заколдованного замка"
+    ],
+    "acceptedAnswers": [
+      "Чудовище",
+      "The Beast",
+      "Beast",
+      "Зверь",
+      "Хозяин заколдованного замка"
+    ],
+    "popularityScore": 0.92,
+    "recognitionScore": 98,
+    "guessabilityScore": 91,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/beast.webp",
+    "plotHint": "Страшный хозяин волшебного замка требует плату за сорванный цветок, но отпускает гостью к семье и едва не погибает, решив, что она не вернётся.",
+    "description": "Страшный хозяин волшебного замка требует плату за сорванный цветок, но отпускает гостью к семье и едва не погибает, решив, что она не вернётся.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 66,
+    "characterSourceWork": "Красавица и Чудовище",
+    "characterSourceAuthor": "Жанна-Мари Лепренс де Бомон",
+    "characterFirstAppearanceYear": 1756,
+    "characterEra": "XVIII век",
+    "characterEraOrder": 5,
+    "characterSourceTypes": [
+      "Литературная сказка"
+    ],
+    "characterOriginCultures": [
+      "Французская литература"
+    ],
+    "characterNature": "Заколдованный человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Правитель",
+      "Испытатель"
+    ],
+    "characterArchetypes": [
+      "Проклятый принц",
+      "Мрачный хозяин"
+    ],
+    "characterAbilities": [
+      "Сверхсила",
+      "Колдовство",
+      "Богатство"
+    ],
+    "characterSettings": [
+      "Замок",
+      "Сад",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Роза",
+      "Зеркало",
+      "Пустой пиршественный стол"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Beauty and the Beast",
+        "url": "https://www.gutenberg.org/ebooks/7074"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/7074"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/7074"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:rapunzel",
+    "mode": "character",
+    "titleRu": "Рапунцель",
+    "titleOriginal": "Rapunzel",
+    "alternativeTitles": [
+      "Рапунцель",
+      "Rapunzel",
+      "Дева из башни",
+      "Длинноволосая дева"
+    ],
+    "aliases": [
+      "Рапунцель",
+      "Rapunzel",
+      "Дева из башни",
+      "Длинноволосая дева"
+    ],
+    "acceptedAnswers": [
+      "Рапунцель",
+      "Rapunzel",
+      "Дева из башни",
+      "Длинноволосая дева"
+    ],
+    "popularityScore": 0.94,
+    "recognitionScore": 99,
+    "guessabilityScore": 97,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/rapunzel.webp",
+    "plotHint": "Девушка, отданная колдунье за растение из сада, растёт в башне без двери и опускает необычайно длинные волосы тому, кто называет условную фразу.",
+    "description": "Девушка, отданная колдунье за растение из сада, растёт в башне без двери и опускает необычайно длинные волосы тому, кто называет условную фразу.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 67,
+    "characterSourceWork": "Рапунцель",
+    "characterSourceAuthor": "Братья Гримм",
+    "characterFirstAppearanceYear": 1812,
+    "characterEra": "XIX век",
+    "characterEraOrder": 6,
+    "characterSourceTypes": [
+      "Сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Немецкий фольклор"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Женщина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Пленник",
+      "Возлюбленный"
+    ],
+    "characterArchetypes": [
+      "Дева в башне",
+      "Изгнанник"
+    ],
+    "characterAbilities": [
+      "Пение",
+      "Исцеляющие слёзы",
+      "Стойкость"
+    ],
+    "characterSettings": [
+      "Башня",
+      "Дикая природа",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Длинная коса",
+      "Башенное окно",
+      "Рапунцель-салат"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — Grimm’s Fairy Tales",
+        "url": "https://www.gutenberg.org/ebooks/2591"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/2591"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/2591"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:puss-in-boots",
+    "mode": "character",
+    "titleRu": "Кот в сапогах",
+    "titleOriginal": "Puss in Boots",
+    "alternativeTitles": [
+      "Кот в сапогах",
+      "Puss in Boots",
+      "Le Maître Chat",
+      "Господин Кот",
+      "Маркизов кот"
+    ],
+    "aliases": [
+      "Кот в сапогах",
+      "Puss in Boots",
+      "Le Maître Chat",
+      "Господин Кот",
+      "Маркизов кот"
+    ],
+    "acceptedAnswers": [
+      "Кот в сапогах",
+      "Puss in Boots",
+      "Le Maître Chat",
+      "Господин Кот",
+      "Маркизов кот"
+    ],
+    "popularityScore": 0.95,
+    "recognitionScore": 99,
+    "guessabilityScore": 98,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/puss-in-boots.webp",
+    "plotHint": "Полученный в наследство кот просит обувь и мешок, преподносит подарки королю от вымышленного маркиза и хитростью захватывает замок людоеда.",
+    "description": "Полученный в наследство кот просит обувь и мешок, преподносит подарки королю от вымышленного маркиза и хитростью захватывает замок людоеда.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 68,
+    "characterSourceWork": "Кот в сапогах",
+    "characterSourceAuthor": "Шарль Перро",
+    "characterFirstAppearanceYear": 1697,
+    "characterEra": "XVII век",
+    "characterEraOrder": 4,
+    "characterSourceTypes": [
+      "Литературная сказка",
+      "Фольклор"
+    ],
+    "characterOriginCultures": [
+      "Французская литература",
+      "Европейский фольклор"
+    ],
+    "characterNature": "Говорящее животное",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Помощник",
+      "Трикстер",
+      "Стратег"
+    ],
+    "characterArchetypes": [
+      "Хитрый слуга",
+      "Трикстер"
+    ],
+    "characterAbilities": [
+      "Красноречие",
+      "Хитрость",
+      "Охота"
+    ],
+    "characterSettings": [
+      "Дорога",
+      "Дворец",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Сапоги",
+      "Мешок",
+      "Куропатки"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Fairy Tales of Charles Perrault",
+        "url": "https://www.gutenberg.org/ebooks/29021"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/29021"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/29021"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:aladdin",
+    "mode": "character",
+    "titleRu": "Аладдин",
+    "titleOriginal": "Aladdin",
+    "alternativeTitles": [
+      "Аладдин",
+      "Aladdin",
+      "Aladdin Alaeddin",
+      "Ала ад-Дин",
+      "Владелец волшебной лампы"
+    ],
+    "aliases": [
+      "Аладдин",
+      "Aladdin",
+      "Aladdin Alaeddin",
+      "Ала ад-Дин",
+      "Владелец волшебной лампы"
+    ],
+    "acceptedAnswers": [
+      "Аладдин",
+      "Aladdin",
+      "Aladdin Alaeddin",
+      "Ала ад-Дин",
+      "Владелец волшебной лампы"
+    ],
+    "popularityScore": 0.97,
+    "recognitionScore": 99,
+    "guessabilityScore": 98,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/aladdin.webp",
+    "plotHint": "Бедный юноша оказывается заперт в подземелье обманувшим его магом и случайно узнаёт, что старый светильник способен призывать могущественного помощника.",
+    "description": "Бедный юноша оказывается заперт в подземелье обманувшим его магом и случайно узнаёт, что старый светильник способен призывать могущественного помощника.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 69,
+    "characterSourceWork": "Аладдин и волшебная лампа",
+    "characterSourceAuthor": "Народная традиция в записи Антуана Галлана",
+    "characterFirstAppearanceYear": 1712,
+    "characterEra": "XVIII век",
+    "characterEraOrder": 5,
+    "characterSourceTypes": [
+      "Сказка",
+      "Рамочный рассказ"
+    ],
+    "characterOriginCultures": [
+      "Арабская литература",
+      "Ближневосточный фольклор"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Молодой взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Путешественник",
+      "Трикстер"
+    ],
+    "characterArchetypes": [
+      "Бедный юноша",
+      "Обладатель артефакта"
+    ],
+    "characterAbilities": [
+      "Хитрость",
+      "Обаяние",
+      "Без сверхспособностей"
+    ],
+    "characterSettings": [
+      "Город",
+      "Пещера",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Масляная лампа",
+      "Кольцо",
+      "Драгоценные камни"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Arabian Nights Entertainments",
+        "url": "https://www.gutenberg.org/ebooks/3435"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/3435"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ]
+      }
+    }
+  },
+  {
+    "id": "character:sinbad-the-sailor",
+    "mode": "character",
+    "titleRu": "Синдбад-мореход",
+    "titleOriginal": "Sinbad the Sailor",
+    "alternativeTitles": [
+      "Синдбад-мореход",
+      "Sinbad the Sailor",
+      "Синдбад",
+      "Синбад-мореход"
+    ],
+    "aliases": [
+      "Синдбад-мореход",
+      "Sinbad the Sailor",
+      "Синдбад",
+      "Синбад-мореход"
+    ],
+    "acceptedAnswers": [
+      "Синдбад-мореход",
+      "Sinbad the Sailor",
+      "Синдбад",
+      "Синбад-мореход"
+    ],
+    "popularityScore": 0.89,
+    "recognitionScore": 94,
+    "guessabilityScore": 93,
+    "recognitionLevel": "mass",
+    "characterDifficulty": "easy",
+    "dailyEligible": true,
+    "posterUrl": "/images/characters/portraits/sinbad-the-sailor.webp",
+    "plotHint": "Багдадский купец семь раз отправляется в море, принимая гигантских животных за острова, выбираясь из долин драгоценностей и каждый раз возвращаясь богатым.",
+    "description": "Багдадский купец семь раз отправляется в море, принимая гигантских животных за острова, выбираясь из долин драгоценностей и каждый раз возвращаясь богатым.",
+    "contentStatus": "ready",
+    "allowedInGame": true,
+    "reviewStatus": "verified",
+    "sourceFlags": [
+      "editorial-public-domain-v1",
+      "original-ai-portrait"
+    ],
+    "characterRank": 70,
+    "characterSourceWork": "Семь путешествий Синдбада-морехода",
+    "characterSourceAuthor": "Народная традиция",
+    "characterFirstAppearanceYear": null,
+    "characterEra": "Средневековье",
+    "characterEraOrder": 2,
+    "characterSourceTypes": [
+      "Сказка",
+      "Рамочный рассказ",
+      "Приключения"
+    ],
+    "characterOriginCultures": [
+      "Арабская литература",
+      "Персидская культура"
+    ],
+    "characterNature": "Человек",
+    "characterGender": "Мужчина",
+    "characterAgeGroup": "Взрослый",
+    "characterRoles": [
+      "Главный герой",
+      "Путешественник",
+      "Рассказчик"
+    ],
+    "characterArchetypes": [
+      "Мореплаватель",
+      "Купец"
+    ],
+    "characterAbilities": [
+      "Выносливость",
+      "Красноречие",
+      "Мореплавание"
+    ],
+    "characterSettings": [
+      "Море",
+      "Остров",
+      "Волшебный мир"
+    ],
+    "iconicObjects": [
+      "Корабль",
+      "Птица рух",
+      "Алмаз"
+    ],
+    "rightsStatus": "public_domain_source_reviewed",
+    "characterSources": [
+      {
+        "label": "Project Gutenberg — The Arabian Nights Entertainments",
+        "url": "https://www.gutenberg.org/ebooks/3435"
+      }
+    ],
+    "mediaAttribution": {
+      "author": "Сходится! / OpenAI",
+      "credit": "Оригинальная иллюстрация, созданная для игры «Сходится!»",
+      "license": "Собственная AI-иллюстрация",
+      "licenseUrl": null,
+      "attributionRequired": false
+    },
+    "dataQuality": {
+      "source": [
+        "https://www.gutenberg.org/ebooks/3435"
+      ],
+      "verified": true,
+      "missingFields": [],
+      "fieldSources": {
+        "characterEra": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterSourceTypes": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterOriginCultures": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterNature": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterGender": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterAgeGroup": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterRoles": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterArchetypes": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterAbilities": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ],
+        "characterSettings": [
+          "https://www.gutenberg.org/ebooks/3435"
+        ]
+      }
+    }
   }
 ]

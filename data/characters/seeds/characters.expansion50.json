@@ -401,7 +401,7 @@
     },
     {
       "id": "character:frankensteins-creature", "slug": "frankensteins-creature", "titleRu": "Чудовище Франкенштейна", "titleOriginal": "Frankenstein’s Creature",
-      "alternativeTitles": ["Монстр Франкенштейна", "Frankenstein's Monster", "Frankenstein’s Creature"], "aliases": ["Существо", "Создание Франкенштейна", "Демон"],
+      "alternativeTitles": ["Монстр Франкенштейна", "Frankenstein's Monster", "Frankenstein’s Creature"], "aliases": ["Создание Франкенштейна", "Демон"],
       "popularityScore": 0.96, "recognitionScore": 99, "guessabilityScore": 96, "recognitionLevel": "mass", "characterDifficulty": "easy", "dailyEligible": true,
       "characterSourceWork": "Франкенштейн, или Современный Прометей", "characterSourceAuthor": "Мэри Шелли", "characterFirstAppearanceYear": 1818,
       "characterEra": "XIX век", "characterEraOrder": 6, "characterSourceTypes": ["Роман", "Готика", "Научная фантастика"], "characterOriginCultures": ["Британская литература"],

@@ -238,6 +238,12 @@ jobs:
           API_DEPLOY_ROLLBACK_ARMED=1
           sed -Ei "s#^([[:space:]]*image:[[:space:]]*)shoditsa-api:[^[:space:]]+#\1shoditsa-api:${GITHUB_SHA}#" "$API_COMPOSE_FILES"
           api_compose config --quiet
+          API_SERVICE_CONFIG="$(api_compose config | sed -n "/^  ${API_COMPOSE_SERVICE}:/,/^  [a-zA-Z0-9_-]\+:/p")"
+          if ! grep -Fq "source: ${DEPLOY_ROOT}/shared/media" <<<"$API_SERVICE_CONFIG" || ! grep -Fq 'target: /srv/shoditsa/media' <<<"$API_SERVICE_CONFIG"; then
+            echo "Shoditsa API must bind ${DEPLOY_ROOT}/shared/media to /srv/shoditsa/media" >&2
+            exit 1
+          fi
+          install -d -o 10001 -g 10001 -m 0755 "${DEPLOY_ROOT}/shared/media"
           MIGRATE_SERVICES="$(api_compose --profile migrate config --services)"
           API_SERVICES="$(api_compose config --services)"
           if ! grep -Fx 'shoditsa-migrate' <<<"$MIGRATE_SERVICES" >/dev/null; then

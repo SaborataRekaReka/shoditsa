@@ -3,11 +3,13 @@ import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
-const SOURCE = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.v1.json')
+const BASE_SOURCE = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.v1.json')
+const EXPANSION_SOURCE = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion50.json')
 const GENERATED = path.join(ROOT, 'data', 'characters', 'generated', 'items.json')
 const REPORT = path.join(ROOT, 'data', 'characters', 'reports', 'audit.json')
 const RUNTIME = path.join(ROOT, 'public', 'data', 'libraries', 'characters', 'items.json')
-const EXPECTED = 20
+const SOURCE_META = path.join(ROOT, 'public', 'data', 'source.json')
+const EXPECTED = 70
 
 const normalize = (value) => String(value ?? '')
   .normalize('NFKC')
@@ -20,6 +22,24 @@ const unique = (values) => [...new Set(values.map((value) => String(value ?? '')
 const writeJson = (file, value) => {
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`, 'utf8')
+}
+
+const loadSource = () => {
+  const base = JSON.parse(fs.readFileSync(BASE_SOURCE, 'utf8'))
+  const expansion = JSON.parse(fs.readFileSync(EXPANSION_SOURCE, 'utf8'))
+  if (!Array.isArray(base)) throw new Error('Base character source root must be an array')
+  if (expansion?.batchId !== 'character-expansion-50' || !Array.isArray(expansion?.items) || expansion.items.length !== 50) {
+    throw new Error('Character expansion source must contain the character-expansion-50 batch with exactly 50 items')
+  }
+  if (!expansion.sources || typeof expansion.sources !== 'object' || Array.isArray(expansion.sources)) {
+    throw new Error('Character expansion source bundles are missing')
+  }
+  const expanded = expansion.items.map((item) => {
+    const sources = expansion.sources[item.sourceKey]
+    if (!Array.isArray(sources) || !sources.length) throw new Error(`${item.id ?? 'unknown'}: sourceKey ${item.sourceKey ?? 'missing'} is unresolved`)
+    return { ...item, sources }
+  })
+  return [...base, ...expanded]
 }
 
 const criteria = [
@@ -129,14 +149,15 @@ const validate = (source, items) => {
 }
 
 const main = () => {
-  const source = JSON.parse(fs.readFileSync(SOURCE, 'utf8'))
+  const source = loadSource()
   const items = source.map(runtimeItem)
   const issues = validate(source, items)
   if (issues.length) throw new Error(`Character library validation failed:\n${issues.join('\n')}`)
+  const generatedAt = new Date().toISOString()
   writeJson(GENERATED, items)
   writeJson(RUNTIME, items)
   writeJson(REPORT, {
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     expected: EXPECTED,
     total: items.length,
     playable: items.filter((item) => item.allowedInGame && item.contentStatus === 'ready').length,
@@ -146,8 +167,12 @@ const main = () => {
     rights: Object.fromEntries([...new Set(items.map((item) => item.rightsStatus))].map((status) => [status, items.filter((item) => item.rightsStatus === status).length])),
     issues: [],
   })
+  const sourceMeta = JSON.parse(fs.readFileSync(SOURCE_META, 'utf8'))
+  sourceMeta.characterCount = items.length
+  sourceMeta.characterSource = 'data/characters/seeds/characters.v1.json + data/characters/seeds/characters.expansion50.json'
+  sourceMeta.characterGeneratedAt = generatedAt
+  writeJson(SOURCE_META, sourceMeta)
   console.log(`characters: ${items.length} playable cards written to ${path.relative(ROOT, RUNTIME)}`)
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) main()
-
