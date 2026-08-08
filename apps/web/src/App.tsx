@@ -2711,27 +2711,132 @@ function BookAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   </article>
 }
 
+const characterSummaryTone = (hint: Attempt['hints'][number] | undefined) => {
+  if (!hint || hint.status === 'unknown') return 'miss'
+  if (hint.status === 'match') return 'match'
+  if (hint.status === 'close' || hint.status === 'partial' || hint.direction) return 'partial'
+  return 'miss'
+}
+
+const characterSummaryValues = (hint: Attempt['hints'][number] | undefined) => {
+  if (!hint) return []
+  const values = splitHintValues(hint.value)
+  return values.length ? values : [hint.value || 'Нет данных']
+}
+
+const characterRolePresentation = (value: string) => {
+  const normalized = value.trim().toLocaleLowerCase('ru-RU')
+  if (normalized === 'главный герой') return { icon: 'hero', caption: 'Главный' }
+  if (normalized === 'главная героиня') return { icon: 'hero', caption: 'Главная' }
+  if (normalized === 'герой' || normalized === 'героиня') return { icon: 'hero', caption: value }
+  if (normalized === 'антигерой' || normalized === 'антигероиня') return { icon: 'antihero', caption: value }
+  return { icon: null, caption: value }
+}
+
+function CharacterGenderIcon({ value }: { value: string }) {
+  const normalized = normalizeTextMatch(value)
+  if (normalized === 'мужчина' || normalized === 'мужской') {
+    return <svg className="character-summary__gender" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="9.5" cy="14.5" r="5.5" />
+      <path d="M13.5 10.5 20 4M15 4h5v5" />
+    </svg>
+  }
+  if (normalized === 'женщина' || normalized === 'женский') {
+    return <svg className="character-summary__gender" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="8.5" r="5.5" />
+      <path d="M12 14v7M8.5 18h7" />
+    </svg>
+  }
+  return <span>{value}</span>
+}
+
+function CharacterSummaryTokens({ hint, compact = false }: { hint: Attempt['hints'][number] | undefined; compact?: boolean }) {
+  if (!hint) return null
+  const matchedValues = new Set((hint.matchedValues ?? []).map(normalizeTextMatch))
+  const allMatched = hint.status === 'match'
+
+  return <div className={`character-summary__tokens${compact ? ' is-compact' : ''}`}>
+    {characterSummaryValues(hint).map((value) => {
+      const matched = allMatched || matchedValues.has(normalizeTextMatch(value))
+      const role = characterRolePresentation(value)
+      const isGender = hint.key === 'character_gender'
+      return <span
+        className={`character-summary__token${matched ? ' is-match' : ''}${role?.icon ? ' has-role-icon' : ''}${isGender ? ' is-gender' : ''}`}
+        key={`${hint.key}-${value}`}
+        title={value}
+        aria-label={`${value}${matched ? ', совпало' : ''}`}
+      >
+        {role?.icon && <i className={`character-summary__role-icon is-${role.icon}`} aria-hidden="true" />}
+        {isGender ? <CharacterGenderIcon value={value} /> : <span>{role?.caption ?? value}</span>}
+        {matched && !role?.icon && !isGender && <Check aria-hidden="true" />}
+      </span>
+    })}
+    {hint.direction && <i className="character-summary__direction" aria-label={hint.direction === 'up' ? 'Искомый персонаж выше' : 'Искомый персонаж ниже'}>
+      {hint.direction === 'up' ? <ArrowUp /> : <ArrowDown />}
+    </i>}
+  </div>
+}
+
+function CharacterSummaryRow({ hint }: { hint: Attempt['hints'][number] | undefined }) {
+  if (!hint) return null
+  return <div className={`character-summary__row character-summary__row--${characterSummaryTone(hint)}`}>
+    <label>{hint.label}</label>
+    <CharacterSummaryTokens hint={hint} />
+  </div>
+}
+
+function CharacterSummaryDetail({ hint }: { hint: Attempt['hints'][number] | undefined }) {
+  if (!hint) return null
+  const matchedValues = new Set((hint.matchedValues ?? []).map(normalizeTextMatch))
+  const allMatched = hint.status === 'match'
+  return <div className={`character-summary__detail character-summary__detail--${characterSummaryTone(hint)}`}>
+    <label>{hint.label}</label>
+    <div>
+      {characterSummaryValues(hint).map((value) => <span className={allMatched || matchedValues.has(normalizeTextMatch(value)) ? 'is-match' : ''} key={`${hint.key}-${value}`}>{value}</span>)}
+    </div>
+  </div>
+}
+
+function CharacterSummaryScore({ attempt, isCorrectAttempt }: { attempt: Attempt; isCorrectAttempt: boolean }) {
+  const { matchedFields, partialFields, totalFields } = attemptProgressStats(attempt.hints)
+  const label = `Точных совпадений: ${matchedFields} из ${totalFields}; частичных: ${partialFields}`
+  return <div className={`character-summary__score${isCorrectAttempt ? ' is-correct' : ''}`} aria-label={label}>
+    {Array.from({ length: totalFields }, (_, index) => <i key={index} className={index < matchedFields ? 'exact' : index < matchedFields + partialFields ? 'partial' : ''} />)}
+  </div>
+}
+
 function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt, isAnswerReveal = false }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean; isAnswerReveal?: boolean }) {
-  const score = attemptProgressStats(attempt.hints)
-  return <article className={`attempt-card attempt-card--character${isAnswerReveal ? ' attempt-card--answer' : ''}`}>
-    <div className="attempt-card__header">
-      <span className="attempt-card__number">{isAnswerReveal ? <Check aria-hidden="true" /> : String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} />
-      <div className="attempt-card__identity">
-        <span className="attempt-label">{isAnswerReveal ? 'Правильный ответ' : `Попытка ${index + 1}`}</span>
+  const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
+  const natureHint = byKey.get('character_nature')
+  const genderHint = byKey.get('character_gender')
+  const identityMatched = natureHint?.status === 'match' && genderHint?.status === 'match'
+  const detailKeys = ['character_source_types', 'character_origin_cultures', 'character_age_group', 'character_archetypes', 'character_settings']
+
+  return <article className={`attempt-card attempt-card--character attempt-card--character-summary${isAnswerReveal ? ' attempt-card--answer' : ''}`} aria-label={`${isAnswerReveal ? 'Правильный ответ' : `Попытка ${index + 1}`}: ${item.titleRu}`}>
+    <aside className="character-summary__portrait">
+      <Poster item={item} className="character-summary__portrait-image" />
+      <span className="character-summary__number">{isAnswerReveal ? <Check aria-hidden="true" /> : String(index + 1).padStart(2, '0')}</span>
+    </aside>
+    <div className="character-summary__body">
+      <header className="character-summary__header">
         <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || item.characterSourceWork || 'Персонаж'}</span></p>
-        <div className="gm-genres">
-          {item.characterSourceWork && <span className="gm-genre">{item.characterSourceWork}</span>}
-          {item.characterEra && <span className="gm-genre">{item.characterEra}</span>}
+        <CharacterSummaryScore attempt={attempt} isCorrectAttempt={isCorrectAttempt || isAnswerReveal} />
+      </header>
+      <div className="character-summary__content">
+        {(natureHint || genderHint) && <div className={`character-summary__row character-summary__row--identity${identityMatched ? ' is-match' : ''}`}>
+          <label>{identityMatched ? 'Совпало' : 'Образ'}</label>
+          <div className="character-summary__identity-values">
+            <CharacterSummaryTokens hint={natureHint} />
+            <CharacterSummaryTokens hint={genderHint} />
+          </div>
+        </div>}
+        <CharacterSummaryRow hint={byKey.get('character_era')} />
+        <CharacterSummaryRow hint={byKey.get('character_roles')} />
+        <CharacterSummaryRow hint={byKey.get('character_abilities')} />
+        <div className="character-summary__details">
+          {detailKeys.map((key) => <CharacterSummaryDetail hint={byKey.get(key)} key={key} />)}
         </div>
       </div>
-    </div>
-    {isAnswerReveal
-      ? <div className="answer-card__summary"><Check /> Полная карточка правильного персонажа</div>
-      : <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />}
-    <div className="attempt-clue-grid character-attempt__clues">
-      {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
   </article>
 }
