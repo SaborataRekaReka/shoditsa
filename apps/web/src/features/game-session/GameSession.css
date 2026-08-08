@@ -1083,6 +1083,13 @@
 @media (max-width: 719px) {
   .game-shell,
   .game-screen-shell.game-shell.game-screen-shell--session { width: 100%; padding: 20px 14px 108px; }
+  .attempt-card--character .gm-genre {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
 }
 @media (max-width: 359px) {
   .game-shell,
