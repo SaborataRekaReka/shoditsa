@@ -1,11 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  Activity, AlertTriangle, Archive, ArrowLeft, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
+  Activity, AlertTriangle, Archive, ArrowLeft, ArrowUpDown, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
   Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
   Download, FileClock, FileJson, Filter, Grid2X2, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
   LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
-  RotateCcw, Save, Search, Settings2, ShieldCheck, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2,
+  RotateCcw, Rows3, Save, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
 import { CATALOG_HINT_COPY, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
@@ -2196,39 +2196,53 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
 
       <section className="admin-content-controls" aria-label="Поиск и фильтры карточек">
         <div className="admin-content-controls__main">
-          <label className="admin-content-search">
-            <Search />
-            <input
-              value={q}
-              onChange={(event) => { setQ(event.target.value); resetSelection() }}
-              placeholder="Найти по названию, альтернативному названию или ID"
-            />
-            {q && <button aria-label="Очистить поиск" onClick={() => { setQ(""); resetSelection() }}><X /></button>}
+          <label className="admin-content-control admin-content-control--search">
+            <span>Поиск</span>
+            <div>
+              <Search />
+              <input
+                value={q}
+                onChange={(event) => { setQ(event.target.value); resetSelection() }}
+                placeholder="Название, альтернативное название или ID"
+              />
+              {q && <button type="button" aria-label="Очистить поиск" onClick={() => { setQ(""); resetSelection() }}><X /></button>}
+            </div>
           </label>
-          {!scopedMode && <label className="admin-content-quick-filter">
+          {!scopedMode && <label className="admin-content-control admin-content-control--select">
             <span>Категория</span>
-            <select value={mode} onChange={(event) => { setMode(event.target.value); resetSelection() }}>
-              <option value="">Все категории</option>
-              {MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
-            </select>
+            <div>
+              <Grid2X2 />
+              <select value={mode} onChange={(event) => { setMode(event.target.value); resetSelection() }}>
+                <option value="">Все категории</option>
+                {MODES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}
+              </select>
+              <ChevronDown />
+            </div>
           </label>}
-          <label className="admin-content-quick-filter">
+          <label className="admin-content-control admin-content-control--select">
             <span>Публикация</span>
-            <select value={publication} onChange={(event) => { setPublication(event.target.value); resetSelection() }}>
-              <option value="all">Все карточки</option>
-              <option value="published">Опубликованные</option>
-              <option value="hidden">Скрытые</option>
-            </select>
+            <div>
+              <BadgeCheck />
+              <select value={publication} onChange={(event) => { setPublication(event.target.value); resetSelection() }}>
+                <option value="all">Все карточки</option>
+                <option value="published">Опубликованные</option>
+                <option value="hidden">Скрытые</option>
+              </select>
+              <ChevronDown />
+            </div>
           </label>
-          <button className={`admin-content-filter-toggle${filtersOpen ? ' is-open' : ''}`} aria-expanded={filtersOpen} onClick={() => setFiltersOpen((value) => !value)}>
-            <Settings2 /><span>Фильтры</span>{activeFilterChips.length > 0 && <b>{activeFilterChips.length}</b>}<ChevronDown />
-          </button>
-          {activeFilterChips.length > 0 && <button className="admin-content-reset" onClick={resetFilters}>Сбросить</button>}
+          <div className="admin-content-controls__actions">
+            <button className={`admin-content-filter-toggle${filtersOpen ? ' is-open' : ''}`} aria-expanded={filtersOpen} onClick={() => setFiltersOpen((value) => !value)}>
+              <SlidersHorizontal /><span>Все фильтры</span>{activeFilterChips.length > 0 && <b>{activeFilterChips.length}</b>}<ChevronDown />
+            </button>
+            {activeFilterChips.length > 0 && <button className="admin-content-reset" aria-label="Сбросить фильтры" title="Сбросить фильтры" onClick={resetFilters}><RotateCcw /></button>}
+          </div>
         </div>
 
         {activeFilterChips.length > 0 && <div className="admin-content-active-filters" aria-label="Активные фильтры">
-          <span>Активные</span>
+          <span>Применено</span>
           {activeFilterChips.map((filter) => <button key={filter.key} onClick={filter.clear}>{filter.label}<X /></button>)}
+          <button className="admin-content-active-filters__reset" onClick={resetFilters}>Сбросить всё</button>
         </div>}
 
         {filtersOpen && <div className="admin-content-advanced">
@@ -2263,15 +2277,29 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
       </section>
 
       <section className="admin-content-results-bar" aria-label="Настройки списка">
-        <div className="admin-content-results-bar__summary"><strong>{totalItems.toLocaleString("ru-RU")} карточек</strong><span>Загружено {sortedItems.length}</span>{(filtersPending || (items.isFetching && !items.isFetchingNextPage)) && <small><LoaderCircle />Обновляем</small>}</div>
-        <div className="admin-content-results-bar__actions">
-          <button className="admin-btn admin-btn--secondary" disabled={!totalItems || filtersPending || selectAllMatching.isPending} title="Выбирает все карточки из базы, совпавшие с текущими фильтрами" onClick={() => selectAllMatching.mutate()}>{selectAllMatching.isPending ? <LoaderCircle /> : <ListChecks />}{selectAllMatching.isPending ? "Выбираем…" : "Выбрать все"}</button>
-          <button className="admin-btn admin-btn--secondary" onClick={() => openPreview()} disabled={!sortedItems.length}><Eye />Проверить</button>
-          <label className="admin-content-sort"><span>Сортировка</span><select value={sortBy} onChange={(event) => setSortBy(event.target.value as ContentSortKey)}><optgroup label="Вся выборка"><option value="updatedAt">Дата изменения</option><option value="titleRu">Название</option><option value="id">Внутренний ID</option><option value="reportsCount">Количество репортов</option><option value="tags">Теги</option></optgroup><optgroup label="Среди загруженных"><option value="mode">Категория</option><option value="status">Статус</option><option value="source">Источник</option><option value="pipelineKey">Пайплайн</option><option value="fieldsFilled">Заполненные поля</option><option value="hasHint">Наличие подсказки</option><option value="completeness">Полнота</option><option value="issuesCount">Проблемы качества</option></optgroup></select></label>
-          <label className="admin-content-order" aria-label="Направление сортировки"><ChevronDown /><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as "asc" | "desc")}><option value="desc">По убыванию</option><option value="asc">По возрастанию</option></select></label>
-          <label className="admin-content-page-size" title="Количество карточек в одной загрузке"><ListChecks /><select aria-label="Количество карточек в одной загрузке" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100); resetSelection() }}><option value={20}>20</option><option value={40}>40</option><option value={60}>60</option><option value={100}>100</option></select></label>
-          <button className="admin-icon-btn" aria-label="Обновить список" title="Обновить" onClick={() => void items.refetch()}><RefreshCw /></button>
-          <div className="admin-view-switch" aria-label="Вид списка"><button className={view === "table" ? "is-active" : ""} onClick={() => setView("table")} aria-label="Таблица" title="Таблица"><Menu /><span>Таблица</span></button><button className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} aria-label="Карточки" title="Карточки"><Boxes /><span>Карточки</span></button></div>
+        <div className="admin-content-results-bar__summary">
+          <span className="admin-content-results-label">Результаты</span>
+          <div><strong>{totalItems.toLocaleString("ru-RU")} карточек</strong><span>Загружено {sortedItems.length}</span>{(filtersPending || (items.isFetching && !items.isFetchingNextPage)) && <small><LoaderCircle />Обновляем</small>}</div>
+        </div>
+        <div className="admin-content-results-bar__workspace">
+          <div className="admin-content-results-bar__group admin-content-results-bar__group--actions">
+            <span className="admin-content-results-label">Действия</span>
+            <div>
+              <button className="admin-btn admin-btn--secondary" disabled={!totalItems || filtersPending || selectAllMatching.isPending} title="Выбирает все карточки из базы, совпавшие с текущими фильтрами" onClick={() => selectAllMatching.mutate()}>{selectAllMatching.isPending ? <LoaderCircle /> : <ListChecks />}{selectAllMatching.isPending ? "Выбираем…" : "Выбрать все"}</button>
+              <button className="admin-btn admin-btn--secondary" onClick={() => openPreview()} disabled={!sortedItems.length}><Eye />Проверить</button>
+            </div>
+          </div>
+          <div className="admin-content-results-divider" aria-hidden="true" />
+          <div className="admin-content-results-bar__group admin-content-results-bar__group--display">
+            <span className="admin-content-results-label">Сортировка и вид</span>
+            <div>
+              <label className="admin-content-sort"><ArrowUpDown /><select aria-label="Поле сортировки" value={sortBy} onChange={(event) => setSortBy(event.target.value as ContentSortKey)}><optgroup label="Вся выборка"><option value="updatedAt">Дата изменения</option><option value="titleRu">Название</option><option value="id">Внутренний ID</option><option value="reportsCount">Количество репортов</option><option value="tags">Теги</option></optgroup><optgroup label="Среди загруженных"><option value="mode">Категория</option><option value="status">Статус</option><option value="source">Источник</option><option value="pipelineKey">Пайплайн</option><option value="fieldsFilled">Заполненные поля</option><option value="hasHint">Наличие подсказки</option><option value="completeness">Полнота</option><option value="issuesCount">Проблемы качества</option></optgroup></select><ChevronDown /></label>
+              <label className="admin-content-order"><select aria-label="Направление сортировки" value={sortOrder} onChange={(event) => setSortOrder(event.target.value as "asc" | "desc")}><option value="desc">По убыванию</option><option value="asc">По возрастанию</option></select><ChevronDown /></label>
+              <label className="admin-content-page-size" title="Количество карточек в одной загрузке"><Rows3 /><select aria-label="Количество карточек в одной загрузке" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as 20 | 40 | 60 | 100); resetSelection() }}><option value={20}>20</option><option value={40}>40</option><option value={60}>60</option><option value={100}>100</option></select><ChevronDown /></label>
+              <button className="admin-icon-btn" aria-label="Обновить список" title="Обновить" onClick={() => void items.refetch()}><RefreshCw /></button>
+              <div className="admin-view-switch" aria-label="Вид списка"><button className={view === "table" ? "is-active" : ""} onClick={() => setView("table")} aria-label="Таблица" title="Таблица"><Menu /><span>Таблица</span></button><button className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} aria-label="Карточки" title="Карточки"><Boxes /><span>Карточки</span></button></div>
+            </div>
+          </div>
         </div>
       </section>
 
