@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { constants } from 'node:fs'
-import { access, mkdir, writeFile } from 'node:fs/promises'
+import { access, mkdir, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
 import { extname, join } from 'node:path'
 import sharp from 'sharp'
 import { and, asc, desc, eq, gt, gte, ilike, inArray, isNull, lt, lte, notInArray, or, sql } from 'drizzle-orm'
@@ -50,7 +50,7 @@ import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironmen
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
 import { inspectReleaseContent } from './release-content-service.js'
-import { getOpenAiPortraitTest, startOpenAiPortraitTest, type OpenAiPortraitBatch } from './openai-portrait-test.js'
+import { getOpenAiPortraitTest, openAiPortraitBatchIds, startOpenAiPortraitTest, type OpenAiPortraitBatch } from './openai-portrait-test.js'
 import { createCloudPaymentsProvider } from '../commerce/providers/cloudpayments.js'
 import {
   assertNormalizationField, assertNormalizationTemplate, buildNormalizationCardContext, normalizationContextOptions,
@@ -96,6 +96,55 @@ const persistAdminMedia = async (body: AdminMediaUploadBody, config: AppConfig) 
   await writeFile(file, output, { flag: 'wx' }).catch((error: NodeJS.ErrnoException) => { if (error.code !== 'EEXIST') throw error })
   const base = config.publicMediaBaseUrl.replace(/\/$/, '')
   return { url: `${base}/admin/${digest.slice(0, 2)}/${digest}.webp`, width: metadata.width, height: metadata.height, bytes: output.length, digest, sourceExtension: extname(body.fileName).toLocaleLowerCase('en-US') }
+}
+type PortraitManifestMedia = { url: string; width: number; height: number; bytes: number; digest: string }
+type PortraitManifest = PortraitManifestMedia & {
+  batchId: OpenAiPortraitBatch
+  portraitId: string
+  model: 'gpt-image-2'
+  quality: 'low'
+  source: 'generated' | 'recovered'
+  createdAt: string
+}
+const portraitManifestDirectory = (config: AppConfig, batch: OpenAiPortraitBatch) => join(config.mediaRoot, 'admin', 'portrait-batches', batch)
+const portraitManifestFile = (config: AppConfig, batch: OpenAiPortraitBatch, portraitId: string) => join(portraitManifestDirectory(config, batch), `${portraitId}.json`)
+const savePortraitManifest = async (config: AppConfig, manifest: PortraitManifest) => {
+  const directory = portraitManifestDirectory(config, manifest.batchId)
+  const target = portraitManifestFile(config, manifest.batchId, manifest.portraitId)
+  const temporary = `${target}.${process.pid}.${Date.now()}.tmp`
+  await mkdir(directory, { recursive: true })
+  await writeFile(temporary, `${JSON.stringify(manifest)}\n`, { flag: 'wx' })
+  await rename(temporary, target)
+}
+const completedPortraitIds = async (config: AppConfig, batch: OpenAiPortraitBatch) => {
+  const ids = openAiPortraitBatchIds(batch)
+  const manifests = await Promise.all(ids.map(async (portraitId) => {
+    const raw = await readFile(portraitManifestFile(config, batch, portraitId), 'utf8').catch((error: NodeJS.ErrnoException) => {
+      if (error.code === 'ENOENT') return null
+      throw error
+    })
+    if (!raw) return null
+    try {
+      const manifest = JSON.parse(raw) as Partial<PortraitManifest>
+      return manifest.batchId === batch && manifest.portraitId === portraitId && typeof manifest.url === 'string' ? portraitId : null
+    } catch { return null }
+  }))
+  return new Set(manifests.filter((id): id is string => Boolean(id)))
+}
+const hashedAdminMedia = async (config: AppConfig, fileName: string) => {
+  const match = /^([0-9a-f]{64})\.webp$/.exec(fileName)
+  if (!match) throw new ApiError(422, 'PORTRAIT_RECOVERY_FILE_INVALID', 'Некорректное имя восстанавливаемого портрета')
+  const digest = match[1]!
+  const file = join(config.mediaRoot, 'admin', digest.slice(0, 2), fileName)
+  const [fileStat, metadata] = await Promise.all([
+    stat(file).catch(() => null),
+    sharp(file).metadata().catch(() => null),
+  ])
+  if (!fileStat?.isFile() || metadata?.format !== 'webp' || metadata.width !== 1024 || metadata.height !== 1536) {
+    throw new ApiError(422, 'PORTRAIT_RECOVERY_FILE_MISSING', 'Восстанавливаемый портрет отсутствует или повреждён', { fileName })
+  }
+  const base = config.publicMediaBaseUrl.replace(/\/$/, '')
+  return { file, media: { url: `${base}/admin/${digest.slice(0, 2)}/${fileName}`, width: 1024, height: 1536, bytes: fileStat.size, digest } }
 }
 const assertPipelineItemReviewable = (item: { id: string; status: string; workspaceChangeId: string | null; appliedRevisionId: string | null }) => {
   if (item.workspaceChangeId || item.appliedRevisionId || ['staged', 'published'].includes(item.status)) {
@@ -1603,6 +1652,63 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
     await admin(request, reply, deps)
     return { items: await integrationStatuses(deps.db) }
   })
+  app.post('/api/v1/admin/integrations/openai/portrait-recovery', {
+    schema: { body: Type.Object({
+      confirmation: Type.Literal(true),
+      portraitBatch: Type.Literal('character-expansion-330'),
+      mapped: Type.Array(Type.Object({
+        id: Type.String({ pattern: '^character:[a-z0-9-]+$' }),
+        file: Type.String({ pattern: '^[0-9a-f]{64}\\.webp$' }),
+      }, { additionalProperties: false }), { minItems: 87, maxItems: 87 }),
+      discard: Type.Array(Type.String({ pattern: '^[0-9a-f]{64}\\.webp$' }), { minItems: 64, maxItems: 64 }),
+    }, { additionalProperties: false }) },
+    config: { rateLimit: { max: 2, timeWindow: '1 hour' } },
+  }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const body = request.body as {
+      confirmation: true
+      portraitBatch: 'character-expansion-330'
+      mapped: Array<{ id: string; file: string }>
+      discard: string[]
+    }
+    const batchIds = openAiPortraitBatchIds(body.portraitBatch)
+    const recoverableIds = new Set(batchIds.slice(0, 157).map((id) => `character:${id}`))
+    const mappedIds = new Set(body.mapped.map((item) => item.id))
+    const allFiles = [...body.mapped.map((item) => item.file), ...body.discard]
+    if (mappedIds.size !== body.mapped.length || allFiles.length !== new Set(allFiles).size || body.mapped.some((item) => !recoverableIds.has(item.id))) {
+      throw new ApiError(422, 'PORTRAIT_RECOVERY_MAPPING_INVALID', 'Набор восстановления содержит повторы или неизвестных персонажей')
+    }
+
+    const resolved = new Map(await Promise.all(allFiles.map(async (fileName) => [fileName, await hashedAdminMedia(deps.config, fileName)] as const)))
+    const createdAt = new Date().toISOString()
+    await Promise.all(body.mapped.map(async (item) => {
+      const recovered = resolved.get(item.file)!
+      await savePortraitManifest(deps.config, {
+        batchId: body.portraitBatch,
+        portraitId: item.id.replace(/^character:/, ''),
+        model: 'gpt-image-2',
+        quality: 'low',
+        source: 'recovered',
+        createdAt,
+        ...recovered.media,
+      })
+    }))
+    await Promise.all(body.discard.map(async (fileName) => {
+      const discarded = resolved.get(fileName)!
+      await unlink(discarded.file).catch((error: NodeJS.ErrnoException) => { if (error.code !== 'ENOENT') throw error })
+    }))
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id,
+      action: 'integration.openai.portrait-recovery',
+      entityType: 'openai_portrait_recovery',
+      entityId: body.portraitBatch,
+      before: null,
+      after: { recovered: body.mapped.length, discarded: body.discard.length, rule: 'unanimous across four recovery assignments' },
+      reason: 'Recover unanimous portrait mappings and discard ambiguous orphan images',
+      requestId: request.id,
+    })
+    return reply.code(201).send({ recovered: body.mapped.length, discarded: body.discard.length, remaining: batchIds.length - body.mapped.length })
+  })
   app.post('/api/v1/admin/integrations/openai/portrait-test', {
     schema: { body: Type.Object({
       confirmation: Type.Literal(true),
@@ -1619,16 +1725,39 @@ const registerIntegrationRoutes = (app: FastifyInstance, deps: Deps) => {
     if (body.portraitId && body.portraitBatch) throw new ApiError(422, 'OPENAI_PORTRAIT_SELECTION_INVALID', 'Выберите один портрет или пакет, но не оба варианта')
     const environment = await loadIntegrationEnvironment(deps.db, deps.config)
     if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    let missingPortraitIds: string[] | undefined
     if (body.portraitBatch) {
       await mkdir(deps.config.mediaRoot, { recursive: true })
       await access(deps.config.mediaRoot, constants.W_OK).catch(() => { throw new ApiError(409, 'MEDIA_STORAGE_NOT_WRITABLE', 'Хранилище медиа недоступно для пакетной генерации') })
+      const completedIds = await completedPortraitIds(deps.config, body.portraitBatch)
+      missingPortraitIds = openAiPortraitBatchIds(body.portraitBatch).filter((id) => !completedIds.has(id))
+      if (!missingPortraitIds.length) return reply.code(200).send({ status: 'completed', count: 0, completed: completedIds.size, reusedActiveJob: false })
     }
     const task = startOpenAiPortraitTest({
       apiKey: environment.OPENAI_API_KEY,
       proxyUrl: environment.MUSIC_OUTBOUND_PROXY_URL,
-      portraitIds: body.portraitId ? [body.portraitId] : undefined,
+      portraitIds: body.portraitId ? [body.portraitId] : missingPortraitIds,
       portraitBatch: body.portraitBatch,
-      persist: async ({ base64, fileName }) => persistAdminMedia({ base64, fileName, contentType: 'image/webp', purpose: 'posterUrl' }, deps.config),
+      persist: async ({ base64, fileName }) => {
+        const media = await persistAdminMedia({ base64, fileName, contentType: 'image/webp', purpose: 'posterUrl' }, deps.config)
+        if (body.portraitBatch) {
+          const portraitId = fileName.replace(/\.webp$/, '')
+          await savePortraitManifest(deps.config, {
+            batchId: body.portraitBatch,
+            portraitId,
+            model: 'gpt-image-2',
+            quality: 'low',
+            source: 'generated',
+            createdAt: new Date().toISOString(),
+            url: media.url,
+            width: media.width,
+            height: media.height,
+            bytes: media.bytes,
+            digest: media.digest,
+          })
+        }
+        return media
+      },
     })
     if (task.started && task.completion) {
       void task.completion.then(async (job) => {
