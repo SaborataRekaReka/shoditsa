@@ -39,4 +39,19 @@ describe('match summary', () => {
       'windows',
     ])
   })
+
+  it('keeps field labels so equal-looking values remain understandable in the UI', () => {
+    const attempts = [{
+      titleId: 'character:guess',
+      hints: [
+        { key: 'character_origin_cultures', label: 'Культура', value: 'Британская', status: 'partial', direction: null, matchedValues: ['Британская'] },
+        { key: 'character_settings', label: 'Мир', value: 'Лондон', status: 'partial', direction: null, matchedValues: ['Лондон'] },
+      ],
+    }] as Attempt[]
+
+    expect(collectMatchSummaryTags(attempts, 'character').map(({ label, value }) => `${label}: ${value}`)).toEqual([
+      'Культура: Британская',
+      'Мир: Лондон',
+    ])
+  })
 })

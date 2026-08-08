@@ -3,6 +3,7 @@ import type { TitleItem, TitleMode } from '../types'
 
 type SearchItem = Pick<
   TitleItem,
+  | 'id'
   | 'mode'
   | 'titleRu'
   | 'titleOriginal'
@@ -24,7 +25,24 @@ type SearchItem = Pick<
   | 'bookPublicationYear'
   | 'characterSourceWork'
   | 'characterEra'
+  | 'alternativeTitles'
+  | 'aliases'
 >
+
+const normalizeSearchText = (value: string) => value
+  .normalize('NFKD')
+  .toLocaleLowerCase('ru-RU')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/ё/g, 'е')
+  .replace(/[^a-zа-я0-9]+/gi, ' ')
+  .trim()
+
+export const matchesUsedSearchQuery = (query: string, items: SearchItem[]) => {
+  const normalizedQuery = normalizeSearchText(query)
+  if (!normalizedQuery) return false
+  return items.some((item) => [item.titleRu, item.titleOriginal, ...(item.alternativeTitles ?? []), ...(item.aliases ?? [])]
+    .some((value) => normalizeSearchText(value ?? '') === normalizedQuery))
+}
 
 const meaningful = (values: Array<string | number | null | undefined>) =>
   values.map((value) => String(value ?? '').trim()).filter(Boolean)

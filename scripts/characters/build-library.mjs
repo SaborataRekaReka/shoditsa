@@ -13,6 +13,19 @@ const REPORT = path.join(ROOT, 'data', 'characters', 'reports', 'audit.json')
 const RUNTIME = path.join(ROOT, 'public', 'data', 'libraries', 'characters', 'items.json')
 const SOURCE_META = path.join(ROOT, 'public', 'data', 'source.json')
 const EXPECTED = 400
+const EXPANSION_330_COUNT = 330
+const CANONICAL_ERA_ORDER = new Map([
+  ['Античность', 0],
+  ['Фольклорная традиция', 1],
+  ['Средневековье', 2],
+  ['XV век', 2.5],
+  ['XVI век', 3],
+  ['XVII век', 4],
+  ['XVIII век', 5],
+  ['XIX век', 6],
+  ['XX век', 7],
+  ['XXI век', 8],
+])
 
 const normalize = (value) => String(value ?? '')
   .normalize('NFKC')
@@ -88,7 +101,7 @@ const runtimeItem = (source, index) => {
     characterSourceAuthor: source.characterSourceAuthor,
     characterFirstAppearanceYear: source.characterFirstAppearanceYear,
     characterEra: source.characterEra,
-    characterEraOrder: source.characterEraOrder,
+    characterEraOrder: CANONICAL_ERA_ORDER.get(source.characterEra) ?? source.characterEraOrder,
     characterSourceTypes: source.characterSourceTypes,
     characterOriginCultures: source.characterOriginCultures,
     characterNature: source.characterNature,
@@ -123,6 +136,8 @@ const validate = (source, items) => {
   if (source.length !== EXPECTED) issues.push(`Expected ${EXPECTED} source cards, found ${source.length}`)
   const ids = new Set()
   const aliases = new Map()
+  const expansion330Ids = new Set(items.slice(-EXPANSION_330_COUNT).map((item) => item.id))
+  const settingSignatures = new Map()
 
   for (const [index, item] of items.entries()) {
     const label = item.id || `row:${index + 1}`
@@ -132,11 +147,29 @@ const validate = (source, items) => {
     if (!item.titleRu || !item.titleOriginal) issues.push(`${label}: missing title`)
     if (!Number.isFinite(item.popularityScore)) issues.push(`${label}: popularityScore must be finite`)
     if (!Number.isFinite(item.characterEraOrder)) issues.push(`${label}: characterEraOrder must be finite`)
+    const canonicalEraOrder = CANONICAL_ERA_ORDER.get(item.characterEra)
+    if (canonicalEraOrder == null) issues.push(`${label}: visible era has no canonical order (${item.characterEra})`)
+    else if (item.characterEraOrder !== canonicalEraOrder) issues.push(`${label}: characterEraOrder ${item.characterEraOrder} contradicts visible era ${item.characterEra}`)
     if (!item.plotHint || item.plotHint.length < 80) issues.push(`${label}: plotHint is too short`)
+    if (/^Этот персонаж действует как/i.test(item.plotHint)) issues.push(`${label}: legacy plotHint template is forbidden`)
     if (!item.characterSources?.length) issues.push(`${label}: provenance is missing`)
     for (const field of criteria) {
       const value = item[field]
       if (Array.isArray(value) ? !value.length : !String(value ?? '').trim()) issues.push(`${label}: ${field} is missing`)
+    }
+    if (expansion330Ids.has(item.id)) {
+      const roleSet = unique(item.characterRoles).map(normalize).sort().join('|')
+      const archetypeSet = unique(item.characterArchetypes).map(normalize).sort().join('|')
+      if (roleSet === archetypeSet) issues.push(`${label}: roles duplicate archetypes`)
+      const roleValues = new Set(unique(item.characterRoles).map(normalize))
+      const overlappingRole = unique(item.characterArchetypes).find((value) => roleValues.has(normalize(value)))
+      if (overlappingRole) issues.push(`${label}: role duplicates archetype (${overlappingRole})`)
+      const genericSetting = item.characterSettings.find((value) => ['общество', 'театр', 'легендарный мир'].includes(normalize(value)))
+      if (genericSetting) issues.push(`${label}: generic/non-diegetic setting is forbidden (${genericSetting})`)
+      const signature = unique(item.characterSettings).map(normalize).sort().join('|')
+      const ids = settingSignatures.get(signature) ?? []
+      ids.push(item.id)
+      settingSignatures.set(signature, ids)
     }
     const normalizedHint = normalize(item.plotHint)
     for (const title of item.acceptedAnswers) {
@@ -149,6 +182,23 @@ const validate = (source, items) => {
     }
     const asset = path.join(ROOT, 'public', item.posterUrl.replace(/^\/+/, ''))
     if (!fs.existsSync(asset)) issues.push(`${label}: portrait is missing (${item.posterUrl})`)
+  }
+
+  for (const [signature, matchingIds] of settingSignatures) {
+    if (matchingIds.length > 12) issues.push(`characterSettings cluster is too broad (${matchingIds.length} cards: ${signature}; ${matchingIds.slice(0, 5).join(', ')})`)
+  }
+
+  const comparable = (item, field) => Array.isArray(item[field])
+    ? unique(item[field]).map(normalize).sort().join('|')
+    : normalize(item[field])
+  for (let leftIndex = 0; leftIndex < items.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < items.length; rightIndex += 1) {
+      const left = items[leftIndex]
+      const right = items[rightIndex]
+      if (criteria.every((field) => comparable(left, field) === comparable(right, field))) {
+        issues.push(`${left.id} and ${right.id}: all ten visible comparison fields are identical`)
+      }
+    }
   }
   return issues
 }

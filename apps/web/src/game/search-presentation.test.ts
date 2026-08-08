@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { TitleItem } from '../types'
-import { searchEmptyMessage, searchMediaAlt, searchResultMeta } from './search-presentation'
+import { matchesUsedSearchQuery, searchEmptyMessage, searchMediaAlt, searchResultMeta } from './search-presentation'
 
 const item = (overrides: Partial<TitleItem>): TitleItem => ({
   id: 'test',
@@ -49,5 +49,18 @@ describe('search presentation contract', () => {
     expect(searchEmptyMessage('game')).toContain('игра не найдена')
     expect(searchEmptyMessage('game', true)).not.toContain('другой режим')
     expect(searchEmptyMessage('music')).toBe('Ничего не найдено.')
+  })
+
+  it('recognizes an already used character by an exact title or alias', () => {
+    const used = [item({
+      id: 'character:odysseus',
+      mode: 'character',
+      titleRu: 'Одиссей',
+      titleOriginal: 'Odysseus',
+      aliases: ['Улисс'],
+    })]
+
+    expect(matchesUsedSearchQuery('  Улисс ', used)).toBe(true)
+    expect(matchesUsedSearchQuery('Одис', used)).toBe(false)
   })
 })

@@ -1,0 +1,184 @@
+{
+  "checkedAt": "2026-08-08T14:31:31.454Z",
+  "total": 330,
+  "issueCount": 17,
+  "actionableCount": 0,
+  "acceptedFalsePositiveCount": 17,
+  "issues": [],
+  "acceptedFalsePositives": [
+    {
+      "id": "character:apollo",
+      "titleRu": "Аполлон",
+      "word": "знаменья",
+      "suggestions": [
+        "знамения"
+      ],
+      "code": 1,
+      "position": 770
+    },
+    {
+      "id": "character:artemis",
+      "titleRu": "Артемида",
+      "word": "обетов",
+      "suggestions": [
+        "объектов"
+      ],
+      "code": 1,
+      "position": 1159
+    },
+    {
+      "id": "character:eurydice",
+      "titleRu": "Эвридика",
+      "word": "Невеста",
+      "suggestions": [
+        "- Невеста"
+      ],
+      "code": 1,
+      "position": 541
+    },
+    {
+      "id": "character:eurydice",
+      "titleRu": "Эвридика",
+      "word": "рощи",
+      "suggestions": [
+        "роща"
+      ],
+      "code": 1,
+      "position": 638
+    },
+    {
+      "id": "character:odin",
+      "titleRu": "Один",
+      "word": "древу",
+      "suggestions": [
+        "дереву"
+      ],
+      "code": 1,
+      "position": 1979
+    },
+    {
+      "id": "character:heimdall",
+      "titleRu": "Хеймдалль",
+      "word": "стерегёт",
+      "suggestions": [
+        "стерегут"
+      ],
+      "code": 1,
+      "position": 2903
+    },
+    {
+      "id": "character:heimdall",
+      "titleRu": "Хеймдалль",
+      "word": "Страж",
+      "suggestions": [
+        "- Страж"
+      ],
+      "code": 1,
+      "position": 3108
+    },
+    {
+      "id": "character:heimdall",
+      "titleRu": "Хеймдалль",
+      "word": "Асгарду",
+      "suggestions": [
+        "Асгард"
+      ],
+      "code": 1,
+      "position": 3217
+    },
+    {
+      "id": "character:beanstalk-giant",
+      "titleRu": "Великан с бобового стебля",
+      "word": "обладании",
+      "suggestions": [
+        "обладание",
+        "обладания"
+      ],
+      "code": 1,
+      "position": 4232
+    },
+    {
+      "id": "character:dmitri-karamazov",
+      "titleRu": "Дмитрий Карамазов",
+      "word": "приводя",
+      "suggestions": [
+        "приводят"
+      ],
+      "code": 1,
+      "position": 3208
+    },
+    {
+      "id": "character:rosalind",
+      "titleRu": "Розалинда",
+      "word": "Переодетая",
+      "suggestions": [
+        "- Переодетая"
+      ],
+      "code": 1,
+      "position": 1956
+    },
+    {
+      "id": "character:rosalind",
+      "titleRu": "Розалинда",
+      "word": "странница",
+      "suggestions": [
+        "страница"
+      ],
+      "code": 1,
+      "position": 1967
+    },
+    {
+      "id": "character:rosalind",
+      "titleRu": "Розалинда",
+      "word": "Лес",
+      "suggestions": [
+        "Лис",
+        "Лес"
+      ],
+      "code": 1,
+      "position": 2057
+    },
+    {
+      "id": "character:emma-woodhouse",
+      "titleRu": "Эмма Вудхаус",
+      "word": "влиянии",
+      "suggestions": [
+        "влияние"
+      ],
+      "code": 1,
+      "position": 2691
+    },
+    {
+      "id": "character:gavroche",
+      "titleRu": "Гаврош",
+      "word": "Беспризорник",
+      "suggestions": [
+        "- Беспризорник"
+      ],
+      "code": 1,
+      "position": 1955
+    },
+    {
+      "id": "character:gavroche",
+      "titleRu": "Гаврош",
+      "word": "Мятежник",
+      "suggestions": [
+        "Мятежники",
+        "Мятежник"
+      ],
+      "code": 1,
+      "position": 1993
+    },
+    {
+      "id": "character:claude-frollo",
+      "titleRu": "Клод Фролло",
+      "word": "терзимый",
+      "suggestions": [
+        "терпимый",
+        "терзаемый"
+      ],
+      "code": 1,
+      "position": 2514
+    }
+  ]
+}

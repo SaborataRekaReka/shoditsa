@@ -3,7 +3,7 @@ import type { Attempt } from '../types'
 import { attemptProgressStats } from './attempt-progress'
 
 describe('attempt progress', () => {
-  it('uses fields rather than raw overlap values for a stable score', () => {
+  it('separates exact field matches from partial overlap', () => {
     const hints = [
       { key: 'country', label: 'Страна', value: 'Россия, Азербайджан', status: 'partial', direction: null, matchedValues: ['Россия'] },
       { key: 'genres', label: 'Жанры', value: 'rap, hip-hop', status: 'partial', direction: null, matchedValues: ['rap', 'hip-hop'] },
@@ -12,8 +12,9 @@ describe('attempt progress', () => {
     ] as Attempt['hints']
 
     expect(attemptProgressStats(hints)).toEqual({
-      matchedCount: 3,
-      matchedFields: 3,
+      matchedCount: 1,
+      matchedFields: 1,
+      partialFields: 2,
       totalFields: 4,
     })
   })
@@ -28,6 +29,7 @@ describe('attempt progress', () => {
     expect(attemptProgressStats(hints)).toEqual({
       matchedCount: 3,
       matchedFields: 3,
+      partialFields: 0,
       totalFields: 3,
     })
   })
@@ -41,6 +43,7 @@ describe('attempt progress', () => {
     expect(attemptProgressStats(hints)).toEqual({
       matchedCount: 1,
       matchedFields: 1,
+      partialFields: 0,
       totalFields: 2,
     })
   })

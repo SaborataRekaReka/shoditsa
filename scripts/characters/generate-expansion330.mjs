@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const OUTPUT = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion330.json')
+const EDITORIAL = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion330.editorial.json')
+const EDITORIAL_OVERRIDES = path.join(ROOT, 'data', 'characters', 'seeds', 'characters.expansion330.overrides.json')
 
 const gutenberg = (query) => `https://www.gutenberg.org/ebooks/search/?query=${encodeURIComponent(query)}`
 const wikisource = (query) => `https://ru.wikisource.org/w/index.php?search=${encodeURIComponent(query)}`
@@ -222,8 +224,20 @@ const remainderPath = path.join(ROOT, 'data', 'characters', 'seeds', 'characters
 const remainder = JSON.parse(fs.readFileSync(remainderPath, 'utf8'))
 themes.push(...remainder.themes)
 Object.assign(works, remainder.works)
+const editorial = JSON.parse(fs.readFileSync(EDITORIAL, 'utf8'))
+if (editorial?.version !== 1 || !editorial.items || typeof editorial.items !== 'object' || Array.isArray(editorial.items)) {
+  throw new Error('Character expansion editorial pack is missing or invalid')
+}
+const editorialOverrides = JSON.parse(fs.readFileSync(EDITORIAL_OVERRIDES, 'utf8'))
+if (editorialOverrides?.version !== 1 || !editorialOverrides.items || typeof editorialOverrides.items !== 'object' || Array.isArray(editorialOverrides.items)) {
+  throw new Error('Character expansion editorial overrides are missing or invalid')
+}
 
 const split = (value) => String(value ?? '').split(';').map((entry) => entry.trim()).filter(Boolean)
+const editorialList = (value) => Array.isArray(value)
+  ? [...new Set(value.map((entry) => String(entry ?? '').trim()).filter(Boolean))]
+    .map((entry) => `${entry.charAt(0).toLocaleUpperCase('ru-RU')}${entry.slice(1)}`)
+  : split(value)
 const tier = {
   e: { difficulty: 'easy', recognitionLevel: 'mass', popularity: 0.9, recognition: 92, guessability: 91 },
   m: { difficulty: 'medium', recognitionLevel: 'mainstream', popularity: 0.76, recognition: 78, guessability: 77 },
@@ -249,6 +263,18 @@ const era = (year, fallback) => {
 }
 const perturb = (slug, span) => [...slug].reduce((sum, char) => sum + char.charCodeAt(0), 0) % span
 const sourceLabel = (work) => work[5].includes('wikisource') ? `Викитека — ${work[0]}` : work[5].includes('gutenberg') ? `Project Gutenberg — ${work[0]}` : `Публичный первоисточник — ${work[0]}`
+const ERA_ORDER = new Map([
+  ['Античность', 0],
+  ['Фольклорная традиция', 1],
+  ['Средневековье', 2],
+  ['XV век', 2.5],
+  ['XVI век', 3],
+  ['XVII век', 4],
+  ['XVIII век', 5],
+  ['XIX век', 6],
+  ['XX век', 7],
+  ['XXI век', 8],
+])
 
 const sources = {}
 const items = []
@@ -264,14 +290,18 @@ for (const theme of themes) {
     if (!profile) throw new Error(`${slug}: unknown tier ${tierKey}`)
     const sourceKey = `work-${workKey}`
     sources[sourceKey] ??= [{ label: sourceLabel(work), url: work[5] }]
-    const roles = split(rolesRaw)
-    const abilities = split(abilitiesRaw)
+    const draft = { ...editorial.items[slug], ...(editorialOverrides.items[slug] ?? {}) }
+    if (!draft) throw new Error(`${slug}: editorial enrichment is missing`)
+    const roles = editorialList(draft.characterRoles)
+    const archetypes = editorialList(draft.characterArchetypes)
+    const abilities = editorialList(draft.characterAbilities)
     const objects = split(objectsRaw)
     const jitter = perturb(slug, 5)
     const itemEra = era(work[2], theme.era ?? 'Фольклорная традиция')
-    const eraOrder = Number.isFinite(work[2]) ? work[2] : Number(theme.eraOrder ?? 1)
-    const settings = [...new Set([...(theme.settings ?? []), nature === 'Человек' ? 'Общество' : 'Волшебный мир'])]
-    const plotHint = `Этот персонаж действует как ${roles.join(' и ').toLocaleLowerCase('ru-RU')}, проявляет ${abilities.join(', ').toLocaleLowerCase('ru-RU')} и связан с такими мотивами, как ${objects.join(', ').toLocaleLowerCase('ru-RU')}. История разворачивается в пространстве: ${settings.slice(0, 3).join(', ').toLocaleLowerCase('ru-RU')}.`
+    const eraOrder = ERA_ORDER.get(itemEra)
+    if (eraOrder == null) throw new Error(`${slug}: unknown visible era ${itemEra}`)
+    const settings = editorialList(draft.characterSettings)
+    const plotHint = String(draft.plotHint ?? '').trim()
     items.push({
       id: `character:${slug}`,
       slug,
@@ -296,7 +326,7 @@ for (const theme of themes) {
       characterGender: gender,
       characterAgeGroup: ageGroup,
       characterRoles: roles,
-      characterArchetypes: roles,
+      characterArchetypes: archetypes,
       characterAbilities: abilities,
       characterSettings: settings,
       iconicObjects: objects,

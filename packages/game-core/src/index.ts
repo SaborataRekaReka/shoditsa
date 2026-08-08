@@ -1667,6 +1667,24 @@ export const compareBooks = (guess: TitleItem, answer: TitleItem): Hint[] => {
   ]
 }
 
+const CHARACTER_ERA_ORDER = new Map([
+  ['античность', 0],
+  ['фольклорная традиция', 1],
+  ['средневековье', 2],
+  ['xv век', 2.5],
+  ['xvi век', 3],
+  ['xvii век', 4],
+  ['xviii век', 5],
+  ['xix век', 6],
+  ['xx век', 7],
+  ['xxi век', 8],
+])
+
+const characterEraOrder = (item: TitleItem) => {
+  const visibleEra = knownComparisonText(item.characterEra)
+  return visibleEra ? CHARACTER_ERA_ORDER.get(normalize(visibleEra)) ?? item.characterEraOrder : item.characterEraOrder
+}
+
 export const compareCharacters = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const scalarHint = (key: string, label: string, guessValue: string | null | undefined, answerValue: string | null | undefined): Hint => ({
     key,
@@ -1687,7 +1705,7 @@ export const compareCharacters = (guess: TitleItem, answer: TitleItem): Hint[] =
       matchedValues: overlaps(comparableGuess, comparableAnswer),
     }
   }
-  const eraOrder = numeric(guess.characterEraOrder, answer.characterEraOrder, 0, 1)
+  const eraOrder = numeric(characterEraOrder(guess), characterEraOrder(answer), 0, 1)
   const eraHint: Hint = {
     key: 'character_era',
     label: 'Эпоха',

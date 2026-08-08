@@ -103,7 +103,7 @@ import { createInitialGameSessionState, gameSessionReducer } from './game/sessio
 import { freePlayAnswerSalt, freePlayGameKey, freePlayLaunchFromGameKey } from './game/free-play'
 import { collectMatchSummaryTags } from './game/match-summary'
 import { attemptProgressStats } from './game/attempt-progress'
-import { searchEmptyMessage, searchResultMeta } from './game/search-presentation'
+import { matchesUsedSearchQuery, searchEmptyMessage, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
 import { commitSuggestionAttempt } from './game/suggestion-attempt'
 import { copyText, shareTextWithFallback } from './game/sharing'
@@ -162,6 +162,21 @@ const modeIcon = (mode: TitleMode) => {
   return <Icon />
 }
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
+const resultTextForSession = (
+  mode: TitleMode,
+  date: string,
+  period: PeriodKey,
+  hints: Attempt['hints'][],
+  won: boolean,
+  maxAttempts: number,
+  freePlay: boolean,
+  completionType?: Parameters<typeof resultText>[6],
+) => {
+  const text = resultText(mode, date, period, hints, won, maxAttempts, completionType)
+  return freePlay
+    ? text.replace(/^Сеанс — .*$/m, `Сеанс — ${modeMeta(mode).daily} · свободная игра`)
+    : text
+}
 const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
   movie: 'images/title-posters/movie-ticket-poster.avif',
   series: 'images/title-posters/series-ticket-poster.avif',
@@ -595,17 +610,14 @@ const toConflictPairs = (reasons: string[], normalizedItem: MusicNormalizedEvide
   return out
 }
 
-function AttemptScore({ matchedCount, matchedFields, totalFields, isCorrectAttempt }: { matchedCount: number; matchedFields: number; totalFields: number; isCorrectAttempt: boolean }) {
-  const isFullFieldMatch = totalFields > 0 && matchedFields === totalFields
-  const tone = matchedCount === 0 ? 'miss' : isFullFieldMatch && !isCorrectAttempt ? 'partial' : 'match'
-  const label = isFullFieldMatch && !isCorrectAttempt
-    ? `Совпадений: ${matchedCount}; все поля сходятся, ответ не совпал`
-    : `Совпадений: ${matchedCount}; полей с совпадениями: ${matchedFields} из ${totalFields}`
+function AttemptScore({ matchedCount, matchedFields, partialFields, totalFields, isCorrectAttempt }: { matchedCount: number; matchedFields: number; partialFields: number; totalFields: number; isCorrectAttempt: boolean }) {
+  const tone = matchedCount === 0 && partialFields === 0 ? 'miss' : isCorrectAttempt || matchedFields > 0 ? 'match' : 'partial'
+  const label = `Точных совпадений: ${matchedFields} из ${totalFields}; частичных: ${partialFields}`
 
   return <div className={`dx-score dx-score--${tone}`} aria-label={label}>
-    <span>Совпадений</span>
-    <div className="dx-score__bar">{Array.from({ length: totalFields }, (_, i) => <i key={i} className={i < matchedFields ? 'on' : ''} />)}</div>
-    <strong>{matchedCount}</strong>
+    <span>Сходится</span>
+    <div className="dx-score__bar">{Array.from({ length: totalFields }, (_, i) => <i key={i} className={i < matchedFields ? 'exact' : i < matchedFields + partialFields ? 'partial' : ''} />)}</div>
+    <strong><b>{matchedCount}</b><small> точно{partialFields ? ` · ${partialFields} частично` : ''}</small></strong>
   </div>
 }
 const alignSystemTooltip = (iconEl: HTMLElement | null) => {
@@ -736,7 +748,7 @@ function GameMatchStrip({ attempts, mode, open, onToggle }: { attempts: Attempt[
     <div className="game-match-strip__panel" id="game-match-strip-panel" aria-hidden={!open}>
       <HorizontalScrollLane className="game-match-strip__tags">
         {tags.length
-          ? tags.map((tag) => <span key={tag.id} className="game-match-strip__tag">{tag.value}</span>)
+          ? tags.map((tag) => <span key={tag.id} className="game-match-strip__tag"><small>{tag.label}</small><span>{tag.value}</span></span>)
           : <span className="game-match-strip__empty">{attempts.length ? 'Пока совпадений нет' : 'Появится после первой попытки'}</span>}
       </HorizontalScrollLane>
     </div>
@@ -2160,6 +2172,8 @@ function ClueTile({ hint, delay }: { hint: Attempt['hints'][number]; delay: numb
   const displayValue = hint.key === 'country'
     ? hint.value.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}\s*/u, '')
     : hint.value
+  const listValues = hint.matchedValues ? splitHintValues(displayValue) : []
+  const matchedValues = new Set((hint.matchedValues ?? []).map(normalizeTextMatch))
   return <div className={`clue-tile ${hint.status} clue-${hint.key}`} style={{ animationDelay: `${delay * 30}ms` }}>
     <div className="clue-tile__top">
       <span>{hint.label}</span>
@@ -2167,6 +2181,11 @@ function ClueTile({ hint, delay }: { hint: Attempt['hints'][number]; delay: numb
     </div>
     {genreTiles.length
       ? <div className="clue-genre-list">{genreTiles.map((genre) => <span key={genre}>{genre}</span>)}</div>
+      : listValues.length > 1
+        ? <div className="clue-token-list">{listValues.map((value) => {
+            const matched = matchedValues.has(normalizeTextMatch(value))
+            return <span key={value} className={matched ? 'is-match' : ''}>{value}{matched && <Check />}</span>
+          })}</div>
       : <strong>{displayValue}</strong>}
   </div>
 }
@@ -2692,14 +2711,14 @@ function BookAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   </article>
 }
 
-function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
+function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt, isAnswerReveal = false }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean; isAnswerReveal?: boolean }) {
   const score = attemptProgressStats(attempt.hints)
-  return <article className="attempt-card attempt-card--character">
+  return <article className={`attempt-card attempt-card--character${isAnswerReveal ? ' attempt-card--answer' : ''}`}>
     <div className="attempt-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <span className="attempt-card__number">{isAnswerReveal ? <Check aria-hidden="true" /> : String(index + 1).padStart(2, '0')}</span>
       <Poster item={item} />
       <div className="attempt-card__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
+        <span className="attempt-label">{isAnswerReveal ? 'Правильный ответ' : `Попытка ${index + 1}`}</span>
         <h2>{item.titleRu}</h2>
         <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || item.characterSourceWork || 'Персонаж'}</span></p>
         <div className="gm-genres">
@@ -2708,7 +2727,9 @@ function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
         </div>
       </div>
     </div>
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+    {isAnswerReveal
+      ? <div className="answer-card__summary"><Check /> Полная карточка правильного персонажа</div>
+      : <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />}
     <div className="attempt-clue-grid character-attempt__clues">
       {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
@@ -2912,6 +2933,8 @@ function Game({
     }
     return next
   }, [pool, debouncedQuery, used, mode, searchIndex])
+  const usedTitles = useMemo(() => pool.filter((item) => used.has(item.id)), [pool, used])
+  const alreadyUsedQuery = matchesUsedSearchQuery(debouncedQuery, usedTitles)
   const latestMatchCount = attempts.length ? attemptProgressStats(attempts.at(-1)!.hints).matchedFields : 0
   const searchPending = Boolean(query.trim()) && query.trim() !== debouncedQuery.trim()
 
@@ -2951,7 +2974,8 @@ function Game({
   const preferredHintRound = nextUndismissedHintRound ?? nextHintRound
   const canUseHint = status === 'playing' && pendingHintRounds.length > 0 && assistHints.some((hint) => hint.available)
   const hintTriggerLabel = pendingHintRounds.length > 1 ? `Подсказка ×${pendingHintRounds.length}` : 'Подсказка'
-  const showTodayLink = date !== getMoscowDate()
+  const isFreePlaySession = freePlayLaunch !== null
+  const showTodayLink = !isFreePlaySession && date !== getMoscowDate()
   const closeSearchDropdown = useCallback(() => setIsSearchDropdownOpen(false), [])
   const headingPeriodBadge = mode === 'music'
     ? DIFFICULTIES[difficulty].label
@@ -3161,7 +3185,7 @@ function Game({
     opponentAttempts: Math.max(1, attempts.length),
     from: getInstallationId(),
   })
-  const resultShareText = resultText(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won')
+  const resultShareText = resultTextForSession(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won', 10, isFreePlaySession)
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(resultShareText)}`
   const copyResult = async () => {
     const ok = await copyText(`${resultShareText}\n${challengeLink}`)
@@ -3201,12 +3225,12 @@ function Game({
         <div>
           <div className="game-heading__kicker">
             <span>
-              {date === getMoscowDate() ? 'Сегодня' : 'Архив'} · Сеанс №{dayNumber(date)}
+              {isFreePlaySession ? `Свободная игра · Партия №${freePlayLaunch}` : `${date === getMoscowDate() ? 'Сегодня' : 'Архив'} · Сеанс №${dayNumber(date)}`}
               {headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}
             </span>
           </div>
-          <h1>{modeMeta(mode).daily} дня</h1>
-          <p>{prettyDate(date)} · обновление в 00:00 МСК</p>
+          <h1>{isFreePlaySession ? `Угадай ${modeMeta(mode).subjectGenitive}` : `${modeMeta(mode).daily} дня`}</h1>
+          <p>{isFreePlaySession ? 'Случайная загадка · можно играть снова сразу' : `${prettyDate(date)} · обновление в 00:00 МСК`}</p>
         </div>
         <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>
       </section>
@@ -3277,6 +3301,17 @@ function Game({
         onReport={reportContent}
       />}
 
+      {status === 'lost' && mode === 'character' && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">
+        <div className="section-title"><span>Правильный ответ</span><strong>10/10</strong></div>
+        <CharacterAttemptCard
+          attempt={{ titleId: answer.id, hints: compareTitles(answer, answer) }}
+          item={answer}
+          index={attempts.length}
+          isCorrectAttempt
+          isAnswerReveal
+        />
+      </section>}
+
       {status === 'playing' && <section className="search-area search-area--sticky">
         <div className="sticky-composer__status">
           <span>Попытка {Math.min(attempts.length + 1, 10)} из 10</span>
@@ -3331,7 +3366,7 @@ function Game({
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
           activeIndex={activeSuggestionIndex}
-          emptyMessage={searchEmptyMessage(mode)}
+          emptyMessage={alreadyUsedQuery ? 'Вы уже использовали этот вариант в текущей партии.' : searchEmptyMessage(mode)}
           submitDisabled={!selected}
           onSubmit={() => {
             if (selected) submit()
@@ -3850,8 +3885,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const attempts = session.attempts.map(serverAttemptToLegacy)
   const answer = session.answer ? publicItemToTitle(session.answer) : null
   const used = new Set(session.attempts.map((entry) => entry.item.id))
+  const usedTitles = session.attempts.map((entry) => publicItemToTitle(entry.item))
   const suggestions = (search.data?.items ?? []).filter((item) => !used.has(item.id))
   const searchPending = Boolean(query.trim()) && (query.trim() !== debouncedQuery.trim() || search.isFetching)
+  const alreadyUsedQuery = matchesUsedSearchQuery(debouncedQuery, usedTitles)
   const isSuggestionsOpen = Boolean(query.trim() && !selected)
   const submit = (item: PublicContentItem) => {
     if (attempt.isPending || session.status !== 'playing') return
@@ -3904,7 +3941,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const nextMode = nextDailyMode(session.mode, completedModes)
   const routeCompleted = !nextMode
   const isPackSession = session.kind === 'pack'
-  const isSpecialSession = isPackSession || isKpopSession
+  const isFreePlaySession = session.kind === 'free_play'
+  const isSpecialSession = isPackSession || isKpopSession || isFreePlaySession
   const packTotalItems = packDetail.data?.pack.totalItems ?? (isDtfCommentSession ? DTF_COMMENTS_POOL_COUNT : null)
   const nextPackPosition = isPackSession
     && session.packPosition
@@ -3945,7 +3983,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       : null
   const shareText = isDtfCommentSession
     ? dtfShareText(attempts.length, maxAttempts, session.status === 'won')
-    : resultText(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts, session.completionType ?? undefined)
+    : resultTextForSession(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts, isFreePlaySession, session.completionType ?? undefined)
   const challengeLink = buildChallengeUrl(location.href, {
     mode: session.mode,
     date: session.puzzleDate,
@@ -3991,7 +4029,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
-      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}${isKpopSession ? ' game-heading--kpop' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : session.kind === 'free_play' ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · {isKpopSession && session.kind === 'pack' ? `Карточка ${session.packPosition ?? 1}` : `Сеанс №${dayNumber(session.puzzleDate)}`}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isKpopSession ? 'K-pop артист дня' : isPromptSession ? promoHeading : `${modeMeta(session.mode).daily} дня`}</h1><p>{isKpopSession ? `${prettyDate(session.puzzleDate)} · новый артист в 00:00 МСК` : `${prettyDate(session.puzzleDate)} · ${isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}`}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{isKpopSession ? 'K' : session.puzzleDate.slice(8, 10)}<small>{isKpopSession ? 'POP' : `/${session.puzzleDate.slice(5, 7)}`}</small></span></div></section>
+      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}${isKpopSession ? ' game-heading--kpop' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : isFreePlaySession ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'} · {isKpopSession && session.kind === 'pack' ? `Карточка ${session.packPosition ?? 1}` : `Сеанс №${dayNumber(session.puzzleDate)}`}{headingPeriodBadge ? ` · ${headingPeriodBadge}` : ''}</span></div><h1>{isKpopSession ? 'K-pop артист дня' : isPromptSession ? promoHeading : isFreePlaySession ? `Угадай ${modeMeta(session.mode).subjectGenitive}` : `${modeMeta(session.mode).daily} дня`}</h1><p>{isKpopSession ? `${prettyDate(session.puzzleDate)} · новый артист в 00:00 МСК` : isFreePlaySession ? 'Случайная загадка · можно играть снова сразу' : `${prettyDate(session.puzzleDate)} · ${isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}`}</p></div><div className="mini-ticket" aria-hidden="true"><Ticket /><span>{isKpopSession ? 'K' : isFreePlaySession ? '∞' : session.puzzleDate.slice(8, 10)}<small>{isKpopSession ? 'POP' : isFreePlaySession ? 'FREE' : `/${session.puzzleDate.slice(5, 7)}`}</small></span></div></section>
       {isPromptSession && (isDtfCommentSession
         ? <DtfCommentIntro subtitle={promoSubtitle} />
         : <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
@@ -4037,6 +4075,16 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
           }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReplay={onReplay} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {session.status === 'lost' && session.mode === 'character' && answer && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">
+        <div className="section-title"><span>Правильный ответ</span><strong>10/10</strong></div>
+        <CharacterAttemptCard
+          attempt={{ titleId: answer.id, hints: compareTitles(answer, answer) }}
+          item={answer}
+          index={attempts.length}
+          isCorrectAttempt
+          isAnswerReveal
+        />
+      </section>}
       {['won', 'lost', 'expired'].includes(session.status) && isDtfCommentSession && !nextPackPosition && packLeaderboard.data && !packLeaderboard.isError && <div className="dtf-result-leaderboard-action">
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
@@ -4080,7 +4128,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
           activeIndex={activeSuggestionIndex}
-          emptyMessage={searchEmptyMessage(session.mode, isDtfCommentSession)}
+          emptyMessage={alreadyUsedQuery ? 'Вы уже использовали этот вариант в текущей партии.' : searchEmptyMessage(session.mode, isDtfCommentSession)}
           submitDisabled={attempt.isPending || !selected}
           onSubmit={() => {
             if (selected) submit(selected)
