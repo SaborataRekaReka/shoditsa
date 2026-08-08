@@ -545,13 +545,13 @@
   padding: 0;
   overflow: hidden;
   display: grid;
-  grid-template-columns: clamp(118px, 15vw, 152px) minmax(0, 1fr);
+  grid-template-columns: 118px minmax(0, 1fr);
   border-radius: 18px;
 }
 
 .character-summary__portrait {
   position: relative;
-  min-height: 282px;
+  min-height: 292px;
   overflow: hidden;
   border-right: 1px solid color-mix(in srgb, var(--mode-character-brand) 38%, var(--color-line));
   background: color-mix(in srgb, var(--mode-character-brand) 14%, var(--color-surface));
@@ -652,12 +652,12 @@
 .character-summary__content { padding: 1px 11px 10px; }
 
 .character-summary__row {
-  min-height: 41px;
-  padding: 6px 0;
+  min-height: 38px;
+  padding: 5px 0;
   border-top: 1px solid var(--color-line);
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 7px;
   align-items: center;
 }
 
@@ -665,7 +665,7 @@
 
 .character-summary__row > label {
   color: var(--color-muted);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 850;
   letter-spacing: .065em;
   line-height: 1.25;
@@ -689,7 +689,7 @@
 .character-summary__identity-values > .character-summary__tokens { display: contents; }
 
 .character-summary__token {
-  min-height: 23px;
+  min-height: 24px;
   padding: 3px 7px;
   border: 1px solid var(--color-line-strong);
   border-radius: 7px;
@@ -698,7 +698,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
   line-height: 1.2;
 }
@@ -709,17 +709,17 @@
   background: color-mix(in srgb, var(--color-primary) 11%, var(--color-surface));
 }
 
-.character-summary__token > svg:not(.character-summary__gender) { width: 11px; height: 11px; stroke-width: 3; }
+.character-summary__token > svg:not(.character-summary__gender) { width: 12px; height: 12px; stroke-width: 3; }
 
 .character-summary__token.is-gender {
-  width: 26px;
+  width: 27px;
   padding-inline: 3px;
   justify-content: center;
 }
 
 .character-summary__gender {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2.35;
@@ -753,8 +753,8 @@
 }
 
 .character-summary__direction {
-  width: 21px;
-  height: 21px;
+  width: 22px;
+  height: 22px;
   border-radius: 6px;
   color: var(--color-warning-text);
   background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
@@ -762,7 +762,7 @@
   place-items: center;
 }
 
-.character-summary__direction svg { width: 13px; height: 13px; stroke-width: 2.5; }
+.character-summary__direction svg { width: 14px; height: 14px; stroke-width: 2.5; }
 
 .character-summary__details {
   display: grid;
@@ -774,7 +774,7 @@
 
 .character-summary__detail {
   min-width: 0;
-  min-height: 43px;
+  min-height: 44px;
   padding: 6px 7px;
   border: 1px solid transparent;
   border-radius: 7px;
@@ -785,7 +785,7 @@
   display: block;
   margin-bottom: 3px;
   color: var(--color-muted-2);
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 850;
   letter-spacing: .07em;
   text-transform: uppercase;
@@ -793,7 +793,7 @@
 
 .character-summary__detail > div {
   color: var(--color-muted);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -816,40 +816,40 @@
 .character-summary__detail--partial > label { color: var(--color-warning-text); }
 
 @media (max-width: 719px) {
-  .attempt-card--character-summary { grid-template-columns: 92px minmax(0, 1fr); }
+  .attempt-card--character-summary { grid-template-columns: 88px minmax(0, 1fr); }
 
-  .character-summary__portrait { min-height: 330px; }
+  .character-summary__portrait { min-height: 360px; }
   .character-summary__portrait-image { object-position: 50% 26%; }
 
   .character-summary__header {
-    min-height: 44px;
+    min-height: 46px;
     padding: 7px 8px;
-    grid-template-columns: minmax(0, 1fr) 76px;
+    grid-template-columns: minmax(0, 1fr) 78px;
     gap: 7px;
   }
 
-  .attempt-card--character-summary .character-summary__header h2 { font-size: 17px; }
+  .attempt-card--character-summary .character-summary__header h2 { font-size: 18px; }
   .character-summary__score { gap: 2px; }
   .character-summary__score i { height: 3px; }
-  .character-summary__content { padding: 0 8px 8px; }
+  .character-summary__content { padding: 1px 9px 9px; }
 
   .character-summary__row {
-    min-height: 38px;
+    min-height: 39px;
     padding: 5px 0;
-    grid-template-columns: 62px minmax(0, 1fr);
-    gap: 5px;
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 6px;
   }
 
-  .character-summary__row > label { font-size: 7px; }
-  .character-summary__token { min-height: 21px; padding: 2px 5px; font-size: 8px; }
-  .character-summary__token.is-gender { width: 23px; }
-  .character-summary__gender { width: 14px; height: 14px; }
-  .character-summary__role-icon { width: 16px; height: 16px; }
-  .character-summary__direction { width: 19px; height: 19px; }
+  .character-summary__row > label { font-size: 10px; }
+  .character-summary__token { min-height: 24px; padding: 3px 6px; font-size: 11px; }
+  .character-summary__token.is-gender { width: 27px; }
+  .character-summary__gender { width: 16px; height: 16px; }
+  .character-summary__role-icon { width: 18px; height: 18px; }
+  .character-summary__direction { width: 22px; height: 22px; }
   .character-summary__details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .character-summary__detail { min-height: 40px; padding: 5px 6px; }
-  .character-summary__detail > label { font-size: 6px; }
-  .character-summary__detail > div { font-size: 7px; }
+  .character-summary__detail { min-height: 44px; padding: 5px 6px; }
+  .character-summary__detail > label { font-size: 10px; }
+  .character-summary__detail > div { font-size: 11px; }
 }
 
 .attempt-card--dx { padding: 0; overflow: visible; }
