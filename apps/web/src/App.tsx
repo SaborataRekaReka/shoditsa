@@ -39,7 +39,7 @@ import {
 } from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
-import { trackDiagnosisGoal, trackDiagnosisSessionStart } from './app/diagnosis-analytics'
+import { trackDiagnosisGoal } from './app/diagnosis-analytics'
 import { trackGameCompleteOnce, trackGameStartOnce, trackNextGameStart } from './app/game-analytics'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { applyRuntimeSeo } from './app/seo'
@@ -3240,13 +3240,6 @@ function Game({
         outcome: nextStatus,
       })
     }
-    if (mode === 'diagnosis' && nextStatus !== 'playing') {
-      trackDiagnosisGoal('complete', {
-        period: effectivePeriod,
-        attempts: nextAttempts.length,
-        outcome: nextStatus,
-      })
-    }
     if (nextStatus !== 'playing' && challenge) {
       const outcome = challengeOutcome(nextAttempts.length, challenge.opponentAttempts)
       trackMetrikaGoal('challenge_completed', { mode, attempts: nextAttempts.length, opponentAttempts: challenge.opponentAttempts })
@@ -3389,7 +3382,6 @@ function Game({
         challengeOutcome={challenge ? challengeOutcome(attempts.length, challenge.opponentAttempts) : undefined}
         opponentAttempts={challenge?.opponentAttempts}
         onNext={() => {
-          if (mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: effectivePeriod, outcome: status })
           if (nextMode) trackNextGameStart(mode, nextMode, { outcome: status })
           if (routeCompleted) onHome()
           else onPlayNext(nextMode)
@@ -3667,13 +3659,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           kind: session?.kind ?? 'unknown',
         })
       }
-      if (session?.mode === 'diagnosis' && ['won', 'lost', 'expired'].includes(response.session.status)) {
-        trackDiagnosisGoal('complete', {
-          period: session.period,
-          attempts: response.session.attemptsCount,
-          outcome: response.session.status,
-        })
-      }
       if (response.reward) {
         setLastAward(response.reward)
         trackClientEvent('ticket_earned', {
@@ -3751,12 +3736,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         outcome: response.session.status,
         kind: session?.kind ?? 'unknown',
       })
-      if (session?.mode === 'diagnosis') {
-        trackDiagnosisGoal('complete', {
-          ...finalChoiceAnalytics,
-          outcome: response.session.status,
-        })
-      }
       if (response.reward) {
         setLastAward(response.reward)
         trackClientEvent('ticket_earned', {
@@ -3832,13 +3811,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         period: session.period,
         kind: session.kind,
         state: session.attemptsCount > 0 ? 'resumed' : 'new',
-      })
-    }
-    if (session.mode === 'diagnosis') {
-      trackDiagnosisSessionStart(session.id, {
-        period: session.period,
-        kind: session.kind,
-        status: session.status,
       })
     }
   }, [session?.id, session?.mode])
@@ -4175,7 +4147,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => {
-            if (session.mode === 'diagnosis') trackDiagnosisGoal('nextGame', { period: session.period, outcome: session.status })
             if (nextMode) trackNextGameStart(session.mode, nextMode, { outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)

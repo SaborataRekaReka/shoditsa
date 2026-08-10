@@ -4,7 +4,7 @@ import {
   BookOpen,
   CalendarDays,
   ChevronDown,
-  PawPrint,
+  ScanSearch,
   Save,
   Send,
   Ticket,
@@ -15,6 +15,7 @@ import type { TitleMode } from '../../types'
 import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { trackDiagnosisGoal } from '../../app/diagnosis-analytics'
+import { trackNextGameStart } from '../../app/game-analytics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { useAuthSession } from '../auth/use-auth-session'
 import { formatDays } from '../../game'
@@ -185,14 +186,14 @@ export function GameResult(props: Props) {
     />
     {props.mode === 'diagnosis' && <section className="diagnosis-result-funnel result-card__wide" aria-label="Что дальше">
       <div className="diagnosis-result-funnel__copy">
-        <strong>Продолжить играть</strong>
-        <span>Новый пациент — завтра, а другие загадки доступны сейчас.</span>
+        <strong>Ещё одна загадка?</strong>
+        <span>Следом по маршруту — животное. Или начните логическое расследование прямо сейчас.</span>
       </div>
       <div className="diagnosis-result-funnel__actions">
-        <a className="diagnosis-result-funnel__primary" href="/games/animal" onClick={() => trackDiagnosisGoal('nextGame', { placement: 'result-related', destination: 'animal' })}>
-          <PawPrint aria-hidden="true" /> Угадай животное
+        <a href="/games/danetki" onClick={() => trackNextGameStart('diagnosis', 'danetki', { placement: 'result-related' })}>
+          <ScanSearch aria-hidden="true" /> Данетки онлайн
         </a>
-        <a href="/games/book" onClick={() => trackDiagnosisGoal('nextGame', { placement: 'result-related', destination: 'book' })}>
+        <a href="/games/book" onClick={() => trackNextGameStart('diagnosis', 'book', { placement: 'result-related' })}>
           <BookOpen aria-hidden="true" /> Угадай книгу
         </a>
         {!authLoading && isGuest && <a href="/register" onClick={() => trackDiagnosisGoal('save', { placement: 'result' })}>

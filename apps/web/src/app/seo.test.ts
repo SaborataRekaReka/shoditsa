@@ -91,6 +91,7 @@ describe('search index contract', () => {
     expect(GAME_SEO.diagnosis.searchSummary?.paragraphs.join(' ')).toContain('медицинский квиз')
     expect(GAME_SEO.diagnosis.searchSummary?.paragraphs.join(' ')).toContain('Поставь диагноз')
     expect(GAME_SEO.diagnosis.description).not.toContain('лечение')
+    expect(GAME_SEO.diagnosis.relatedModes).toContain('danetki')
   })
 
   it('points a loaded session at its public game while keeping it out of the index', () => {
