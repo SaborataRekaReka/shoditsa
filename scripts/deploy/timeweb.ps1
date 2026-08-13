@@ -132,6 +132,20 @@ if command -v nginx >/dev/null 2>&1; then
     fi
     HOST_NGINX_CHANGED=1
   fi
+  if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_CONFIG"; then
+    sed -Ei '/location[[:space:]]+=[[:space:]]+\/games\/together[[:space:]]*\{/i\
+    location ~ ^/(partners|specials|club)$ {\
+        try_files /seo$uri.html =404;\
+        add_header Cache-Control "no-cache" always;\
+    }\
+' "$NGINX_CONFIG"
+    if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_CONFIG"; then
+      cp -a "$NGINX_BACKUP" "$NGINX_CONFIG"
+      echo "Could not add the host utility SEO routes" >&2
+      exit 1
+    fi
+    HOST_NGINX_CHANGED=1
+  fi
   if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_CONFIG"; then
     sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/legal\/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{/,/^[[:space:]]*}/ s#try_files[[:space:]]+/index\.html[[:space:]]+=404;#try_files /seo$uri.html =404;#' "$NGINX_CONFIG"
     if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_CONFIG"; then
@@ -183,6 +197,7 @@ elif command -v docker >/dev/null 2>&1; then
   if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*connections[^)]*\)\$' >/dev/null \
     || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*animal[^)]*\)\$' >/dev/null \
     || docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -E 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' >/dev/null \
+    || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null \
     || ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null; then
     mapfile -t NGINX_ROUTE_CONFIGS < <(
       while IFS= read -r source; do
@@ -209,6 +224,14 @@ elif command -v docker >/dev/null 2>&1; then
     if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
       sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/games\/\([^)]*game-comments[^)]*\)\$/ s/game-comments\|//g' "$NGINX_ROUTE_CONFIG"
     fi
+    if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_ROUTE_CONFIG"; then
+      sed -Ei '/location[[:space:]]+=[[:space:]]+\/games\/together[[:space:]]*\{/i\
+    location ~ ^/(partners|specials|club)$ {\
+        try_files /seo$uri.html =404;\
+        add_header Cache-Control "no-cache" always;\
+    }\
+' "$NGINX_ROUTE_CONFIG"
+    fi
     if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_ROUTE_CONFIG"; then
       sed -Ei '/location[[:space:]]+~[[:space:]]+\^\/legal\/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{/,/^[[:space:]]*}/ s#try_files[[:space:]]+/index\.html[[:space:]]+=404;#try_files /seo$uri.html =404;#' "$NGINX_ROUTE_CONFIG"
     fi
@@ -225,6 +248,11 @@ elif command -v docker >/dev/null 2>&1; then
     if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*game-comments[^)]*\)\$' "$NGINX_ROUTE_CONFIG"; then
       cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
       echo "Could not remove the private comment-game landing from the mounted Docker Nginx route" >&2
+      exit 1
+    fi
+    if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_ROUTE_CONFIG"; then
+      cp -a "$NGINX_ROUTE_BACKUP" "$NGINX_ROUTE_CONFIG"
+      echo "Could not add the mounted utility SEO routes" >&2
       exit 1
     fi
     if ! grep -Pzq 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' "$NGINX_ROUTE_CONFIG"; then
@@ -272,6 +300,11 @@ elif command -v docker >/dev/null 2>&1; then
   fi
   if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/legal/\(terms\|tariffs\|privacy\|personal-data-consent\|refunds\|contacts\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null; then
     echo "Docker Nginx did not activate route-specific legal SEO HTML" >&2
+    rollback_nginx_route
+    exit 1
+  fi
+  if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null; then
+    echo "Docker Nginx did not activate the utility SEO routes" >&2
     rollback_nginx_route
     exit 1
   fi

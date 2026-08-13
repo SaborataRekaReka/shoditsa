@@ -3,11 +3,54 @@ set -euo pipefail
 
 CONFIG_PATH="${1:?Usage: patch-nginx-not-found.sh /path/to/nginx.conf}"
 MARKER='# BEGIN SHODITSA_EXPLICIT_SPA_ROUTES'
+UTILITY_ROUTE_PATTERN='location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$'
+UTILITY_ROUTE_BLOCK_PATTERN='location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;'
 
 if [ ! -f "$CONFIG_PATH" ]; then
   echo "Nginx config does not exist: $CONFIG_PATH" >&2
   exit 1
 fi
+
+ensure_utility_seo_route() {
+  if grep -Pzq "$UTILITY_ROUTE_BLOCK_PATTERN" "$CONFIG_PATH"; then
+    return 0
+  fi
+  if grep -Eq "$UTILITY_ROUTE_PATTERN" "$CONFIG_PATH"; then
+    echo "The Partners, Specials and Club route exists but does not serve route-specific SEO HTML" >&2
+    return 1
+  fi
+
+  local utility_temp_path
+  utility_temp_path="$(mktemp "${CONFIG_PATH}.utility-routes.XXXXXX")"
+  if awk '
+    /^[[:space:]]*location[[:space:]]*=[[:space:]]*\/games\/together[[:space:]]*\{/ && !injected {
+      print "    location ~ ^/(partners|specials|club)$ {"
+      print "        try_files /seo$uri.html =404;"
+      print "        add_header Cache-Control \"no-cache\" always;"
+      print "    }"
+      print ""
+      injected = 1
+    }
+    { print }
+    END { if (!injected) exit 42 }
+  ' "$CONFIG_PATH" > "$utility_temp_path"; then
+    :
+  else
+    status=$?
+    rm -f "$utility_temp_path"
+    if [ "$status" -eq 42 ]; then
+      echo "Nginx config is missing the /games/together anchor for utility SEO routes" >&2
+    fi
+    return "$status"
+  fi
+
+  cp "$utility_temp_path" "$CONFIG_PATH"
+  rm -f "$utility_temp_path"
+  if ! grep -Pzq "$UTILITY_ROUTE_BLOCK_PATTERN" "$CONFIG_PATH"; then
+    echo "Could not add the Partners, Specials and Club SEO routes" >&2
+    return 1
+  fi
+}
 
 if grep -Fq "$MARKER" "$CONFIG_PATH"; then
   # A host config may contain several virtual hosts (for example, Shoditsa
@@ -22,6 +65,7 @@ if grep -Fq "$MARKER" "$CONFIG_PATH"; then
     echo "Explicit SPA route marker exists but the Shoditsa legacy catch-all fallback is still active" >&2
     exit 1
   fi
+  ensure_utility_seo_route
   exit 0
 fi
 
@@ -99,3 +143,4 @@ END {
 }
 
 cp "$TEMP_PATH" "$CONFIG_PATH"
+ensure_utility_seo_route

@@ -487,6 +487,10 @@ jobs:
               echo "Host Nginx did not activate the unknown-page 404 fallback" >&2
               exit 1
             fi
+            if ! nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null; then
+              echo "Host Nginx did not activate the utility SEO routes" >&2
+              exit 1
+            fi
           elif command -v docker >/dev/null 2>&1; then
             mapfile -t NGINX_CONTAINERS < <(
               while IFS= read -r container; do
@@ -651,6 +655,11 @@ jobs:
             fi
             if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -F 'BEGIN SHODITSA_EXPLICIT_SPA_ROUTES' >/dev/null; then
               echo "Docker Nginx did not activate the unknown-page 404 fallback" >&2
+              rollback_compose
+              exit 1
+            fi
+            if ! docker exec "$NGINX_CONTAINER" nginx -T 2>&1 | grep -Pz 'location[[:space:]]+~[[:space:]]+\^/\(partners\|specials\|club\)\$[[:space:]]*\{[^}]*try_files[[:space:]]+/seo\$uri\.html[[:space:]]+=404;' >/dev/null; then
+              echo "Docker Nginx did not activate the utility SEO routes" >&2
               rollback_compose
               exit 1
             fi

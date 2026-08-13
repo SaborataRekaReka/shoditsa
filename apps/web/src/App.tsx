@@ -60,7 +60,7 @@ import { GameResult } from './features/result/GameResult'
 import { FinalChoicePanel } from './features/game-session/FinalChoicePanel'
 import { FINAL_CHOICE_DURATION_SECONDS, finalChoiceSecondsRemaining } from './features/game-session/final-choice-countdown'
 import { activeSessionToSavedGame, archiveItemToSavedGame, isCatalogArchiveItem, publicItemToTitle, serverTitleCounts, toLegacyAttendance, toLegacyDailyAttendance, toLegacyWallet } from './features/server-runtime/adapters'
-import { catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
+import { canReplayCatalogSession, catalogActiveSessions, catalogGameExperience, gameExperienceForSession, type CatalogGameBackTarget } from './features/game-session/game-experience'
 import type { ContentReportReason } from './features/content-report/ContentReport'
 import { CategoryTicket } from './components/category-ticket/CategoryTicket'
 import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ticket.config'
@@ -4150,7 +4150,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             if (nextMode) trackNextGameStart(session.mode, nextMode, { outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
-          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReplay={onReplay} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'lost' && session.mode === 'character' && answer && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">
         <div className="section-title"><span>Правильный ответ</span><strong>10/10</strong></div>
         <CharacterAttemptCard

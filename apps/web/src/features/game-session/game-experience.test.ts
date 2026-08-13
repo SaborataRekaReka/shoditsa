@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { KPOP_ARTISTS_PACK_ID, type ActiveSessionSummary, type GameSessionSnapshot } from '@shoditsa/contracts'
 import {
+  canReplayCatalogSession,
   catalogActiveSessions,
   catalogGameExperience,
   gameExperienceForSession,
@@ -48,5 +49,28 @@ describe('game experience separation', () => {
     ] satisfies ActiveSessionSummary[]
 
     expect(catalogActiveSessions(sessions).map((session) => session.id)).toEqual(['daily'])
+  })
+
+  it('offers catalog replay only for ordinary free-play modes', () => {
+    expect(canReplayCatalogSession({
+      kind: 'daily',
+      mode: 'music',
+      packId: null,
+      variantKey: null,
+    })).toBe(true)
+
+    expect(canReplayCatalogSession({
+      kind: 'daily',
+      mode: 'music',
+      packId: null,
+      variantKey: KPOP_ARTISTS_PACK_ID,
+    })).toBe(false)
+
+    expect(canReplayCatalogSession({
+      kind: 'pack',
+      mode: 'game',
+      packId: 'dtf-game-comments-25-v1',
+      variantKey: 'dtf-game-comments-25-v1',
+    })).toBe(false)
   })
 })

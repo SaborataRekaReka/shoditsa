@@ -40,6 +40,16 @@ for (const mode of [...manifest.playableModes, 'danetki']) {
   if (!pageHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${pathname} build marker does not match main`)
 }
 
+for (const pathname of ['/partners', '/specials', '/club']) {
+  const page = await fetch(`${baseUrl}${pathname}?smoke=${Date.now()}`, { headers: { 'cache-control': 'no-cache' } })
+  if (!page.ok) throw new Error(`${pathname} returned HTTP ${page.status}`)
+  const pageHtml = await page.text()
+  if (!pageHtml.includes(`<link rel="canonical" href="${baseUrl}${pathname}"`)) throw new Error(`${pathname} has no matching canonical URL`)
+  if (!pageHtml.includes('name="robots" content="index,follow')) throw new Error(`${pathname} is not indexable in server HTML`)
+  if (!pageHtml.includes('<h1')) throw new Error(`${pathname} has no server-rendered heading`)
+  if (!pageHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${pathname} build marker does not match main`)
+}
+
 const invalidGame = await fetchResponse(`/games/not-a-mode?smoke=${Date.now()}`)
 if (invalidGame.status !== 404) throw new Error(`Unknown game route returned HTTP ${invalidGame.status} instead of 404`)
 const invalidRootPage = await fetchResponse(`/this-page-must-not-exist-${Date.now()}`)

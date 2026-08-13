@@ -250,6 +250,7 @@ const sourceChecks = [
     path: 'infra/nginx/shoditsa.conf.template',
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
+      ['utility routes use route-specific HTML', /location\s+~\s+\^\/\(partners\|specials\|club\)\$\s*\{[^}]*try_files\s+\/seo\$uri\.html\s+=404/s],
       ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*animal[^)]*book[^)]*character[^)]*connections[^)]*danetki[^)]*\)\$/],
       ['immutable opaque animal media', /location\s+~\*\s+"\^\/\(images\/animals\/silhouettes\|audio\/animals\)\/\[a-f0-9\]\{24\}\\\.\(webp\|ogg\)\$"\s*\{[^]*max-age=31536000,\s*immutable/],
       ['friends room SPA refresh route', /location\s+=\s+\/games\/together\s*\{[^}]*try_files\s+\/index\.html\s+=404/s],
@@ -289,6 +290,7 @@ const sourceChecks = [
       ['Connections production rollout', /set_env_value CONNECTIONS_ENABLED true/],
       ['book route rollout', /NGINX_ROUTE_CONFIG[^]*book[^]*docker exec[^]*book/],
       ['unknown-page 404 rollout', /patch-nginx-not-found\.sh[^]*bash "\$REMOTE_NGINX_PATCH"[^]*BEGIN SHODITSA_EXPLICIT_SPA_ROUTES/],
+      ['utility SEO route rollout', /patch-nginx-not-found\.sh[^]*partners\\\|specials\\\|club[^]*utility SEO routes/],
       ['K-pop special release import', /content-import-kpop-special\.js --apply --activate --actor-id="\$ADMIN_USER_ID"/],
       ['superseded releases cannot activate', /Confirm release is still main tip[^]*git ls-remote origin refs\/heads\/main[^]*if:\s*steps\.main_tip\.outputs\.deploy == 'true'/],
     ],
@@ -299,6 +301,7 @@ const sourceChecks = [
       ['content-addressed local release id', /Get-FileHash[^]*\$commitSha-\$artifactHash/],
       ['atomic local release activation', /current\.next[^]*mv -Tf/],
       ['animal route migration and verification', /NGINX_ROUTE_CONFIG[^]*animal[^]*docker exec[^]*animal/],
+      ['utility route migration and verification', /NGINX_ROUTE_CONFIG[^]*partners\\\|specials\\\|club[^]*docker exec[^]*utility SEO routes/],
     ],
   },
   {
@@ -309,6 +312,7 @@ const sourceChecks = [
       ['legacy answer data blocked', /Legacy answer dataset is publicly reachable/],
       ['legacy city answer data blocked', /Legacy city answer dataset is publicly reachable/],
       ['unknown root pages return 404', /Unknown root page returned HTTP[^]*instead of 404/],
+      ['indexable utility pages are smoke-tested', /\['\/partners', '\/specials', '\/club'\][^]*has no matching canonical URL/],
     ],
   },
 ]
