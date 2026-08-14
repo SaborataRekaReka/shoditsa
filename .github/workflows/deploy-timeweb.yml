@@ -164,13 +164,13 @@ jobs:
           REMOTE_PREPARE
           WEB_PART_DIR='release-web-parts'
           mkdir -p "$WEB_PART_DIR"
-          split --bytes=8M --numeric-suffixes=0 --suffix-length=3 release-web.tar.gz "$WEB_PART_DIR/part-"
+          split --bytes=2M --numeric-suffixes=0 --suffix-length=3 release-web.tar.gz "$WEB_PART_DIR/part-"
           WEB_PART_COUNT="$(find "$WEB_PART_DIR" -maxdepth 1 -type f -name 'part-*' | wc -l)"
           WEB_ARCHIVE_SHA256="$(sha256sum release-web.tar.gz | awk '{ print $1 }')"
           test "$WEB_PART_COUNT" -gt 0
           export DEPLOY_PORT REMOTE REMOTE_WEB_PART_DIR
           find "$WEB_PART_DIR" -maxdepth 1 -type f -name 'part-*' -print0 \
-            | xargs -0 -r -P 12 -n 1 bash -c 'part="$1"; scp -P "$DEPLOY_PORT" "$part" "$REMOTE:$REMOTE_WEB_PART_DIR/$(basename "$part")"' _
+            | xargs -0 -r -P 8 -n 1 bash -c 'part="$1"; for attempt in 1 2 3; do scp -P "$DEPLOY_PORT" "$part" "$REMOTE:$REMOTE_WEB_PART_DIR/$(basename "$part")" && exit 0; sleep "$((attempt * 2))"; done; exit 1' _
           ssh -p "$DEPLOY_PORT" "$REMOTE" "REMOTE_WEB_PART_DIR='$REMOTE_WEB_PART_DIR' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' WEB_PART_COUNT='$WEB_PART_COUNT' WEB_ARCHIVE_SHA256='$WEB_ARCHIVE_SHA256' bash -s" <<'REMOTE_ASSEMBLE_WEB'
           set -euo pipefail
           case "$REMOTE_WEB_PART_DIR" in
@@ -189,13 +189,13 @@ jobs:
           REMOTE_ASSEMBLE_WEB
           API_PART_DIR='release-api-image-parts'
           mkdir -p "$API_PART_DIR"
-          split --bytes=8M --numeric-suffixes=0 --suffix-length=3 release-api-image.tar.gz "$API_PART_DIR/part-"
+          split --bytes=2M --numeric-suffixes=0 --suffix-length=3 release-api-image.tar.gz "$API_PART_DIR/part-"
           API_PART_COUNT="$(find "$API_PART_DIR" -maxdepth 1 -type f -name 'part-*' | wc -l)"
           API_IMAGE_SHA256="$(sha256sum release-api-image.tar.gz | awk '{ print $1 }')"
           test "$API_PART_COUNT" -gt 0
           export DEPLOY_PORT REMOTE REMOTE_API_PART_DIR
           find "$API_PART_DIR" -maxdepth 1 -type f -name 'part-*' -print0 \
-            | xargs -0 -r -P 12 -n 1 bash -c 'part="$1"; scp -P "$DEPLOY_PORT" "$part" "$REMOTE:$REMOTE_API_PART_DIR/$(basename "$part")"' _
+            | xargs -0 -r -P 8 -n 1 bash -c 'part="$1"; for attempt in 1 2 3; do scp -P "$DEPLOY_PORT" "$part" "$REMOTE:$REMOTE_API_PART_DIR/$(basename "$part")" && exit 0; sleep "$((attempt * 2))"; done; exit 1' _
           ssh -p "$DEPLOY_PORT" "$REMOTE" "REMOTE_API_PART_DIR='$REMOTE_API_PART_DIR' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' API_PART_COUNT='$API_PART_COUNT' API_IMAGE_SHA256='$API_IMAGE_SHA256' bash -s" <<'REMOTE_ASSEMBLE_API'
           set -euo pipefail
           case "$REMOTE_API_PART_DIR" in
