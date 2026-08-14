@@ -147,3 +147,40 @@ test('fact-check research rotates a pinned IPRoyal session after a regional refu
   assert.deepEqual(delays, [300])
   assert.equal(result.overallVerdict, 'pass')
 })
+
+test('fact-check research rotates the proxy session after a request timeout', async () => {
+  let attempts = 0
+  let closes = 0
+  const result = await requestFactcheck({
+    task: {
+      cardId: 'character:timeout', mode: 'character', fingerprint: 'timeout-fingerprint', webSearch: true,
+      targetFields: ['titleRu'], card: { id: 'character:timeout', mode: 'character', titleRu: 'Тест' },
+      sourcePolicy: 'Use authoritative sources.', semantics: [], deterministicFindings: [],
+    },
+    apiKey: 'test-key', model: 'gpt-5-mini', maxOutputTokens: 1_200,
+    proxyUrl: 'http://user:password@geo.iproyal.com:12321', requestTimeoutMs: 5,
+    createTransport: () => ({
+      fetchImpl: async (_input, init) => {
+        attempts += 1
+        if (attempts === 1) {
+          await new Promise((resolve, reject) => {
+            init.signal.addEventListener('abort', () => reject(new Error('request aborted')), { once: true })
+          })
+        }
+        return new Response(JSON.stringify({
+          id: 'resp_timeout_retry', output_text: JSON.stringify({
+            overallVerdict: 'pass', confidence: 0.9, summary: 'Supported by evidence.',
+            fieldResults: [{ field: 'titleRu', verdict: 'pass', confidence: 0.9, reason: 'Confirmed.', proposedValue: 'Тест', sourceUrls: ['https://example.test/source'] }],
+            crossFieldFindings: [],
+          }),
+          output: [{ type: 'web_search_call' }], usage: { input_tokens: 10, output_tokens: 5 },
+        }), { status: 200 })
+      },
+      close: async () => { closes += 1 },
+    }),
+    waitForRetry: async () => {},
+  })
+  assert.equal(attempts, 2)
+  assert.equal(closes, 2)
+  assert.equal(result.overallVerdict, 'pass')
+})

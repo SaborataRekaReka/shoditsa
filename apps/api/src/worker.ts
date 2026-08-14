@@ -933,59 +933,79 @@ const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
     return progressWrite
   }
 
-  try {
-    await ai.runAiResearch({
-      tasks,
-      apiKey: environment.OPENAI_API_KEY,
-      proxyUrl,
-      proxyCountry: process.env.OPENAI_PROXY_COUNTRY?.trim() || 'de',
-      model: text(settings.model) || 'gpt-5-mini',
-      concurrency: Math.min(4, Math.max(1, Number(settings.concurrency) || 3)),
-      cacheDir: resolve(config.enrichmentDataRoot, 'factcheck', 'cache'),
-      maxOutputTokens: 5_000,
-      onResult: async (result) => {
-        const itemId = text(result.cardId)
-        const card = cardById.get(itemId)
-        const task = taskById.get(itemId)
-        if (!card || !task) return
-        const before: Json = { ...record(card.payload), id: itemId, mode }
-        const cardFindings = deterministic.filter((finding) => finding.cardId === itemId)
-        const aiFindings = core.findingsFromAiResult(task, result)
-        const findings = [...cardFindings, ...aiFindings]
-        const preview = buildFactcheckPreview(before, result, findings, Number(settings.correctionConfidence) || 0.75)
-        const usageEntry = calculateResponseCost(result)
-        await db.insert(pipelineRunItems).values({
-          runId: run.id, entityKey: itemId, cardId: itemId, inputItemVersionId: card.versionId,
-          status: preview.status, beforeJson: before, proposedJson: preview.proposed,
-          warningsJson: preview.warnings, sourcesJson: preview.sources,
-          confidenceJson: {
-            overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
-            fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
-            deterministicFindings: cardFindings, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
-            changedFields: preview.changedFields, sourceRevision: exactRevision,
-            usage: { responses: usageEntry ? [usageEntry] : [] },
-          },
-          rawResultRef: result.responseId || null, idempotencyKey: `${run.id}:${itemId}`,
-          errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
-          safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
-        }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: {
-          status: preview.status, beforeJson: before, proposedJson: preview.proposed,
-          warningsJson: preview.warnings, sourcesJson: preview.sources,
-          confidenceJson: {
-            overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
-            fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
-            deterministicFindings: cardFindings, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
-            changedFields: preview.changedFields, sourceRevision: exactRevision,
-            usage: { responses: usageEntry ? [usageEntry] : [] },
-          },
-          rawResultRef: result.responseId || null,
-          errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
-          safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
-          updatedAt: new Date(),
-        } })
-        await persistProgress(itemId)
-      },
+  let heartbeatWrite = Promise.resolve()
+  const heartbeatTick = () => {
+    heartbeatWrite = heartbeatWrite.then(async () => {
+      await Promise.all([
+        db.update(backgroundJobs).set({ heartbeatAt: new Date() }).where(eq(backgroundJobs.id, job.id)),
+        db.update(pipelineRuns).set({ heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id)),
+      ])
+    }).catch((error) => {
+      console.error(`[worker] factcheck heartbeat update failed run=${run.id} job=${job.id}: ${safeError(error)}`)
     })
+    return heartbeatWrite
+  }
+  const heartbeat = setInterval(() => { void heartbeatTick() }, config.workerHeartbeatIntervalMs)
+  void heartbeatTick()
+
+  try {
+    try {
+      await ai.runAiResearch({
+        tasks,
+        apiKey: environment.OPENAI_API_KEY,
+        proxyUrl,
+        proxyCountry: process.env.OPENAI_PROXY_COUNTRY?.trim() || 'de',
+        model: text(settings.model) || 'gpt-5-mini',
+        concurrency: Math.min(4, Math.max(1, Number(settings.concurrency) || 3)),
+        cacheDir: resolve(config.enrichmentDataRoot, 'factcheck', 'cache'),
+        maxOutputTokens: 5_000,
+        onResult: async (result) => {
+          const itemId = text(result.cardId)
+          const card = cardById.get(itemId)
+          const task = taskById.get(itemId)
+          if (!card || !task) return
+          const before: Json = { ...record(card.payload), id: itemId, mode }
+          const cardFindings = deterministic.filter((finding) => finding.cardId === itemId)
+          const aiFindings = core.findingsFromAiResult(task, result)
+          const findings = [...cardFindings, ...aiFindings]
+          const preview = buildFactcheckPreview(before, result, findings, Number(settings.correctionConfidence) || 0.75)
+          const usageEntry = calculateResponseCost(result)
+          await db.insert(pipelineRunItems).values({
+            runId: run.id, entityKey: itemId, cardId: itemId, inputItemVersionId: card.versionId,
+            status: preview.status, beforeJson: before, proposedJson: preview.proposed,
+            warningsJson: preview.warnings, sourcesJson: preview.sources,
+            confidenceJson: {
+              overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
+              fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
+              deterministicFindings: cardFindings, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
+              changedFields: preview.changedFields, sourceRevision: exactRevision,
+              usage: { responses: usageEntry ? [usageEntry] : [] },
+            },
+            rawResultRef: result.responseId || null, idempotencyKey: `${run.id}:${itemId}`,
+            errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
+            safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
+          }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: {
+            status: preview.status, beforeJson: before, proposedJson: preview.proposed,
+            warningsJson: preview.warnings, sourcesJson: preview.sources,
+            confidenceJson: {
+              overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
+              fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
+              deterministicFindings: cardFindings, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
+              changedFields: preview.changedFields, sourceRevision: exactRevision,
+              usage: { responses: usageEntry ? [usageEntry] : [] },
+            },
+            rawResultRef: result.responseId || null,
+            errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
+            safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
+            updatedAt: new Date(),
+          } })
+          await persistProgress(itemId)
+        },
+      })
+    } finally {
+      clearInterval(heartbeat)
+      await heartbeatWrite
+    }
   } catch (error) {
     await progressWrite
     const message = safeError(error)

@@ -102,7 +102,7 @@ const promptForTask = (task) => [
 
 const proxySessionId = (task, attempt) => fingerprint({ cardId: task.cardId, attempt, nonce: Date.now(), random: Math.random() }).slice(0, 20)
 
-export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, proxyUrl, proxyCountry = 'de', createTransport = createOpenAiProxyTransport, directFetch = openAiFetch, waitForRetry = (delay) => new Promise((resolve) => setTimeout(resolve, delay)) }) => {
+export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, proxyUrl, proxyCountry = 'de', requestTimeoutMs = proxyUrl ? 90_000 : 240_000, createTransport = createOpenAiProxyTransport, directFetch = openAiFetch, waitForRetry = (delay) => new Promise((resolve) => setTimeout(resolve, delay)) }) => {
   const body = {
     model, input: promptForTask(task), reasoning: { effort: 'low' },
     max_output_tokens: Math.max(1_200, Math.min(12_000, Math.trunc(maxOutputTokens))),
@@ -112,7 +112,7 @@ export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, p
   let lastError
   const attempts = proxyUrl ? 12 : 4
   for (let attempt = 0; attempt < attempts; attempt += 1) {
-    const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 240_000)
+    const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), requestTimeoutMs)
     const transport = proxyUrl ? createTransport(proxyUrl, {
       stabilizeIproyal: { country: proxyCountry, sessionId: proxySessionId(task, attempt), lifetime: '24h' },
     }) : null
