@@ -311,9 +311,9 @@ test('guest winnings survive registration, logout, login and a second browser', 
   await page.getByPlaceholder('Комментарий — необязательно').fill('Проверка полного пользовательского сценария')
   await page.getByRole('button', { name: 'Отправить', exact: true }).click()
   await expect(page.getByText('Спасибо, проверим подсказку.')).toBeVisible()
-  await page.getByRole('button', { name: 'Скопировать результат' }).click()
-  await expect(page.getByRole('button', { name: 'Скопировано' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Скопировать результат' })).toHaveCount(0)
   await page.getByRole('button', { name: 'Бросить вызов другу' }).click()
+  await expect(page.getByRole('button', { name: 'Ссылка скопирована' })).toBeVisible()
   await page.locator('.result-next').click()
   await expect(page.locator('.title-screen')).toBeVisible()
 

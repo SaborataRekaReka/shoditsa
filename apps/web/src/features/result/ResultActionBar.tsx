@@ -1,17 +1,16 @@
-import { lazy, Suspense, useState, type ReactNode } from 'react'
-import { ArrowRight, Check, Copy, RotateCcw, SlidersHorizontal, Swords, X } from 'lucide-react'
+import { useId, useState, type ReactNode } from 'react'
+import { ArrowRight, Check, ChevronDown, Copy, RotateCcw, SlidersHorizontal, Swords, X } from 'lucide-react'
 import { ControlButton } from '../../components/ui'
 import { formatTickets } from '../economy/economy-rules'
 import type { ChallengeResult } from '../challenge/challenge'
 import './ResultActionBar.css'
-
-const TipCheckoutTrigger = lazy(() => import('../commerce/TipCheckout').then((module) => ({ default: module.TipCheckoutTrigger })))
 
 export function ResultActionBar({
   nextLabel,
   nextDestination,
   nextArtworkUrl,
   nextTicketNumber,
+  nextActionLabel,
   configureLabel,
   copied,
   opponentAttempts,
@@ -24,95 +23,104 @@ export function ResultActionBar({
   replayShortage = 0,
   replayPending = false,
   replayAccessSource = 'tickets',
-  showTip,
   compactNext = false,
+  persistence,
   afterMeta,
-  afterLabel = 'После сеанса',
-  showCopy = true,
+  afterLabel = null,
+  showCopy = false,
   showReplayGate = false,
 }: {
   nextLabel: string
   nextDestination: string
   nextArtworkUrl: string
   nextTicketNumber: string
+  nextActionLabel: 'Играть' | 'Перейти'
   configureLabel: string
   copied: boolean
   opponentAttempts?: ChallengeResult
   onNext: () => void
   onConfigure: () => void
   onChallenge?: () => void
-  onCopy: () => void
+  onCopy?: () => void
   onReplay?: () => void
   replayCost?: number
   replayShortage?: number
   replayPending?: boolean
   replayAccessSource?: 'tickets' | 'club'
-  showTip: boolean
   compactNext?: boolean
+  persistence?: ReactNode
   afterMeta?: ReactNode
   afterLabel?: string | null
   showCopy?: boolean
   showReplayGate?: boolean
 }) {
   const [replayNoticeOpen, setReplayNoticeOpen] = useState(false)
-  const hasNextDestination = nextDestination !== nextLabel
+  const [moreActionsOpen, setMoreActionsOpen] = useState(false)
+  const secondaryActionsId = useId()
+  const hasNamedNextDestination = nextDestination !== nextLabel
   const replayCostValue = Math.max(0, Math.trunc(replayCost))
   const replayShortageValue = Math.max(0, Math.trunc(replayShortage))
   const replayBalance = Math.max(0, replayCostValue - replayShortageValue)
   const paidReplay = Boolean(onReplay)
-  const replayButtonLabel = replayPending
-    ? 'Запускаем новую игру…'
-    : replayShortageValue > 0
-      ? `Не хватает ${formatTickets(replayShortageValue)}`
-      : replayAccessSource === 'club'
-        ? 'Сыграть ещё раз · по клубу'
-        : `Сыграть ещё раз · ${formatTickets(replayCostValue)}`
+  const hasSecondaryActions = showReplayGate || !compactNext || Boolean(onChallenge) || Boolean(showCopy && onCopy) || Boolean(afterMeta)
+  const nextKicker = nextActionLabel === 'Перейти'
+    ? nextLabel === 'На главную' ? 'Маршрут завершён' : 'Раунд завершён'
+    : hasNamedNextDestination
+      ? 'Следующая игра маршрута'
+      : nextLabel.toLocaleLowerCase('ru-RU').includes('следующая')
+        ? 'Продолжить подборку'
+        : 'Продолжить сессию'
   const confirmReplay = () => {
     if (!onReplay || replayPending || replayShortageValue > 0) return
     onReplay()
   }
+
   return <>
-    <div className={`result-primary-actions${compactNext ? ' is-compact' : ''}`}>
+    <div className={`result-primary-actions result-card__wide${compactNext ? ' is-compact' : ''}`}>
       <ControlButton className="result-next" onClick={onNext} aria-label={nextLabel}>
-        <img className="result-next__art" src={nextArtworkUrl} alt="" aria-hidden="true" />
+        <img className="result-next__art" src={nextArtworkUrl} alt="" aria-hidden="true" loading="lazy" />
         <span className="result-next__copy">
-          <small>{nextLabel === 'На главную' ? 'Маршрут завершён' : hasNextDestination ? 'Дальше по маршруту' : 'Продолжить игру'}</small>
+          <small>{nextKicker}</small>
           <strong>{nextDestination}</strong>
+          {nextTicketNumber !== 'СЕАНС' && <em>{nextTicketNumber} · по маршруту</em>}
         </span>
-        {compactNext && <span className="result-next__serial" aria-hidden="true">{nextTicketNumber}</span>}
-        <span className="result-next__arrow" aria-hidden="true"><ArrowRight /></span>
+        <span className="result-next__arrow" aria-hidden="true"><span>{nextActionLabel}</span><ArrowRight /></span>
       </ControlButton>
-      {!compactNext && <ControlButton className="result-config" onClick={onConfigure}>
-        <span className="result-config__icon" aria-hidden="true"><SlidersHorizontal /></span>
-        <span className="result-config__copy"><small>Режим</small><strong>{configureLabel}</strong></span>
-        <span className="result-config__serial" aria-hidden="true">{nextTicketNumber}</span>
-      </ControlButton>}
     </div>
-    <div className="result-after-actions result-card__wide">
-      {afterLabel && <span className="result-after-actions__label">{afterLabel}</span>}
-      {showReplayGate && <ControlButton className="result-replay" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending}>
-        <RotateCcw />
-        <span>{paidReplay ? replayButtonLabel : 'Сыграть ещё раз'}</span>
-      </ControlButton>}
-      {onChallenge && <ControlButton className="result-challenge" onClick={onChallenge}>
-        <Swords />
-        <span>
-          <small>{opponentAttempts ? 'Матч-реванш' : 'Игра на двоих'}</small>
-          <strong>{opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}</strong>
-        </span>
-      </ControlButton>}
-      {showCopy && <ControlButton
-        className="result-copy"
-        onClick={onCopy}
-        aria-label={copied ? 'Скопировано' : 'Скопировать результат'}
-        title={copied ? 'Скопировано' : 'Скопировать результат'}
-      >
-        {copied ? <Check /> : <Copy />}
-        {copied && <span className="result-copy__tooltip" role="status">Скопировано</span>}
-      </ControlButton>}
-      {showTip && <Suspense fallback={null}><TipCheckoutTrigger className="result-tip" label="Жетон кассиру" hint="99 · 299 · 699 ₽" /></Suspense>}
-      {afterMeta && <div className="result-after-actions__meta">{afterMeta}</div>}
-    </div>
+
+    {persistence}
+
+    {hasSecondaryActions && <section className={`result-secondary-actions result-card__wide${compactNext ? ' is-compact' : ''}${moreActionsOpen ? ' is-open' : ''}`} aria-label="Другие действия">
+      <ControlButton className="result-more-toggle" onClick={() => setMoreActionsOpen((open) => !open)} aria-expanded={moreActionsOpen} aria-controls={secondaryActionsId}>
+        <span>Другие действия</span><ChevronDown aria-hidden="true" />
+      </ControlButton>
+      <div className="result-after-actions" id={secondaryActionsId}>
+        {afterLabel && <span className="result-after-actions__label">{afterLabel}</span>}
+        {showReplayGate && <ControlButton className="result-replay" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending}>
+          <RotateCcw />
+          <span>{replayPending ? 'Запускаем новую игру…' : 'Сыграть ещё раз'}</span>
+        </ControlButton>}
+        {!compactNext && <ControlButton className="result-config" onClick={onConfigure}>
+          <SlidersHorizontal />
+          <span><strong>Настроить игру</strong><small>{configureLabel}</small></span>
+        </ControlButton>}
+        {onChallenge && <ControlButton className="result-challenge" onClick={onChallenge}>
+          {copied ? <Check /> : <Swords />}
+          <span>{copied ? 'Ссылка скопирована' : opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}</span>
+        </ControlButton>}
+        {onChallenge && <span className="result-copy-status" role="status" aria-live="polite" aria-atomic="true">{copied ? 'Ссылка на вызов скопирована' : ''}</span>}
+        {showCopy && onCopy && <ControlButton
+          className="result-copy"
+          onClick={onCopy}
+          aria-label={copied ? 'Скопировано' : 'Скопировать результат'}
+        >
+          {copied ? <Check /> : <Copy />}
+          <span>{copied ? 'Скопировано' : 'Скопировать результат'}</span>
+        </ControlButton>}
+        {afterMeta && <div className="result-after-actions__meta">{afterMeta}</div>}
+      </div>
+    </section>}
+
     {replayNoticeOpen && <div className="result-replay-notice result-card__wide" role="status" aria-label={paidReplay ? 'Повторная игра' : 'Лимит игр на сегодня'}>
       {paidReplay
         ? <div>
@@ -131,7 +139,7 @@ export function ResultActionBar({
           </div>}
       {paidReplay
         ? replayShortageValue > 0
-          ? <a className="result-replay-notice__action" href="/club">Получить билетики</a>
+          ? <a className="result-replay-notice__action" href="/club">Получить билеты</a>
           : <ControlButton className="result-replay-notice__action" onClick={confirmReplay} disabled={replayPending}>
               {replayPending
                 ? 'Запускаем…'
@@ -139,7 +147,7 @@ export function ResultActionBar({
                   ? 'Начать новую игру'
                   : `Начать за ${formatTickets(replayCostValue)}`}
             </ControlButton>
-        : <a className="result-replay-notice__action" href="/club">Вступить в клуб</a>}
+        : <a className="result-replay-notice__action" href="/club">Открыть клуб</a>}
       <ControlButton className="result-replay-notice__close" onClick={() => setReplayNoticeOpen(false)} aria-label="Закрыть"><X /></ControlButton>
     </div>}
   </>

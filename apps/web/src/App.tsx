@@ -106,7 +106,7 @@ import { attemptProgressStats } from './game/attempt-progress'
 import { matchesUsedSearchQuery, searchEmptyMessage, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
 import { commitSuggestionAttempt } from './game/suggestion-attempt'
-import { copyText, shareTextWithFallback } from './game/sharing'
+import { shareTextWithFallback } from './game/sharing'
 import { useDataLoader } from './hooks/use-data-loader'
 import { useDebouncedValue } from './hooks/use-debounced-value'
 import { ensureServerSession, SERVER_RUNTIME, useServerRuntime } from './hooks/use-server-runtime'
@@ -3285,23 +3285,17 @@ function Game({
   })
   const resultShareText = resultTextForSession(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won', 10, isFreePlaySession)
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(resultShareText)}`
-  const copyResult = async () => {
-    const ok = await copyText(`${resultShareText}\n${challengeLink}`)
-    trackMetrikaGoal(ok ? 'share_copy' : 'share_copy_error', { mode, period: effectivePeriod, status })
-    if (ok && mode === 'diagnosis') trackDiagnosisGoal('share', { period: effectivePeriod, status })
-    if (!ok) dispatchSession({ type: 'set_message', message: 'Не удалось скопировать результат' })
-    setCopied(ok)
-    if (ok) setTimeout(() => setCopied(false), 1800)
-  }
   const shareChallenge = async () => {
     trackMetrikaGoal(challenge ? 'challenge_reshared' : 'challenge_created', { mode, period: effectivePeriod, attempts: attempts.length })
     trackMetrikaGoal('native_share_opened', { mode })
     const outcome = await shareTextWithFallback('Сходится! — вызов', resultShareText, challengeLink)
     if (outcome === 'native-completed') trackMetrikaGoal('native_share_completed', { mode })
     if (outcome === 'copied') {
+      trackMetrikaGoal('share_copy', { mode, period: effectivePeriod, status, placement: 'challenge' })
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     }
+    if (outcome !== 'failed' && mode === 'diagnosis') trackDiagnosisGoal('share', { period: effectivePeriod, status })
     if (outcome === 'failed') dispatchSession({ type: 'set_message', message: 'Не удалось поделиться результатом' })
   }
   const reportContent = (reason: ContentReportReason, comment: string) => {
@@ -3375,6 +3369,8 @@ function Game({
         completedToday={completedToday}
         nextRewardText={completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : completedToday === 2 ? 'До награды: ещё одна игра' : `До полного маршрута: ещё ${FULL_HOUSE_MODE_IDS.length - completedToday}`}
         nextLabel={nextLabel}
+        nextActionLabel={routeCompleted ? 'Перейти' : 'Играть'}
+        nextMode={nextMode ?? undefined}
         award={lastAward}
         streak={lastAward?.newDailyStreak ?? loadAttendanceStats().currentDailyStreak}
         copied={copied}
@@ -3389,7 +3385,6 @@ function Game({
         configureLabel={configureLabel}
         onConfigure={onConfigureMode}
         onChallenge={shareChallenge}
-        onCopy={copyResult}
         onReplay={onReplay}
         replayCost={replayCost}
         replayShortage={replayShortage}
@@ -4075,16 +4070,14 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     from: getInstallationId(),
   })
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
-  const copyResult = async () => {
-    const ok = await copyText(`${shareText}\n${challengeLink}`)
-    trackMetrikaGoal(ok ? 'share_copy' : 'share_copy_error', { mode: session.mode, period: session.period, status: session.status })
-    if (ok && session.mode === 'diagnosis') trackDiagnosisGoal('share', { period: session.period, status: session.status })
-    setCopied(ok)
-    if (ok) window.setTimeout(() => setCopied(false), 1800)
-  }
   const shareChallenge = async () => {
     const outcome = await shareTextWithFallback('Сходится! — вызов', shareText, challengeLink)
-    if (outcome === 'copied') setCopied(true)
+    if (outcome === 'copied') {
+      trackMetrikaGoal('share_copy', { mode: session.mode, period: session.period, status: session.status, placement: 'challenge' })
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1800)
+    }
+    if (outcome !== 'failed' && session.mode === 'diagnosis') trackDiagnosisGoal('share', { period: session.period, status: session.status })
     if (outcome === 'failed') setMessage('Не удалось поделиться результатом')
   }
   const award = lastAward ? {
@@ -4136,7 +4129,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         lost: packDetail.data.pack.lostItems ?? 0,
         total: packDetail.data.pack.totalItems,
         roundScore: 100 + (session.status === 'won' ? 50 + Math.max(0, maxAttempts - attempts.length) * 10 : 0),
-      } : undefined} nextLabel={nextLabel} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
+      } : undefined} nextLabel={nextLabel} nextActionLabel={isKpopSession || (isPackSession && !nextPackPosition) || (!isPackSession && routeCompleted) ? 'Перейти' : 'Играть'} nextMode={!isSpecialSession ? nextMode ?? undefined : undefined} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
         ? onBack
         : isPackSession
         ? () => {
@@ -4150,7 +4143,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             if (nextMode) trackNextGameStart(session.mode, nextMode, { outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
-          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onCopy={() => void copyResult()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'lost' && session.mode === 'character' && answer && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">
         <div className="section-title"><span>Правильный ответ</span><strong>10/10</strong></div>
         <CharacterAttemptCard

@@ -579,13 +579,13 @@ export function ConnectionsResult({
       nextDestination={nextDestination}
       nextArtworkUrl={nextArtworkUrl}
       nextTicketNumber={`${String(Math.min(routeCompleted + 1, routeTotal)).padStart(2, '0')}/${String(routeTotal).padStart(2, '0')}`}
+      nextActionLabel={nextMode ? 'Играть' : 'Перейти'}
       configureLabel="Открыть архив"
       copied={copied}
       onNext={onNext}
       onConfigure={onArchive}
       onChallenge={onChallenge}
       onCopy={onCopy}
-      showTip={false}
       showReplayGate
       compactNext
       afterLabel={null}

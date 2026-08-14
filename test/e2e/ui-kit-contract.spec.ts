@@ -155,47 +155,121 @@ test('connections result keeps all category names readable across breakpoints', 
     getComputedStyle(element).gridTemplateColumns.split(' ').length
   ))
   expect(desktopColumns).toBe(2)
+  const desktopActionContract = await result.evaluate((element) => {
+    const primary = element.querySelector<HTMLElement>('.result-primary-actions')!
+    const next = element.querySelector<HTMLElement>('.result-next')!
+    const actions = element.querySelector<HTMLElement>('.result-after-actions')!
+    return {
+      nextFillsCard: next.getBoundingClientRect().height >= primary.getBoundingClientRect().height - 2,
+      actionColumns: getComputedStyle(actions).gridTemplateColumns.split(' ').length,
+    }
+  })
+  expect(desktopActionContract).toEqual({ nextFillsCard: true, actionColumns: 2 })
 
   await page.setViewportSize({ width: 390, height: 844 })
   await result.scrollIntoViewIfNeeded()
   const mobileContract = await result.evaluate((element) => {
     const grid = element.querySelector<HTMLElement>('.connections-result__groups-grid')!
     const cards = [...element.querySelectorAll<HTMLElement>('.connections-result__group')]
+    const primary = element.querySelector<HTMLElement>('.result-primary-actions')!
+    const next = element.querySelector<HTMLElement>('.result-next')!
+    const actions = element.querySelector<HTMLElement>('.result-after-actions')!
+    const moreToggle = element.querySelector<HTMLElement>('.result-more-toggle')!
+    const nextActionLabel = element.querySelector<HTMLElement>('.result-next__arrow > span')!
     return {
       columns: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
       cardsFit: cards.every((card) => card.scrollWidth === card.clientWidth && card.scrollHeight === card.clientHeight),
+      nextFillsCard: next.getBoundingClientRect().height >= primary.getBoundingClientRect().height - 2,
+      actionColumns: getComputedStyle(actions).gridTemplateColumns.split(' ').length,
+      actionsVisible: getComputedStyle(actions).display === 'grid' && getComputedStyle(moreToggle).display === 'none',
+      nextActionVisible: getComputedStyle(nextActionLabel).display !== 'none' && nextActionLabel.getBoundingClientRect().width > 0,
       pageFits: document.documentElement.scrollWidth <= window.innerWidth,
     }
   })
-  expect(mobileContract).toEqual({ columns: 1, cardsFit: true, pageFits: true })
+  expect(mobileContract).toEqual({
+    columns: 1,
+    cardsFit: true,
+    nextFillsCard: true,
+    actionColumns: 1,
+    actionsVisible: true,
+    nextActionVisible: true,
+    pageFits: true,
+  })
 })
 
-test('standard game result keeps primary actions together and copy in the utility row', async ({ page }) => {
+test('standard game result keeps one dominant next step and ordered supporting levels', async ({ page }) => {
   await page.setViewportSize({ width: 999, height: 792 })
   const result = page.locator('#result-actions .result-card')
   await result.scrollIntoViewIfNeeded()
 
   const contract = await result.evaluate((element) => {
     const top = (selector: string) => element.querySelector<HTMLElement>(selector)!.getBoundingClientRect().top
+    const primary = element.querySelector<HTMLElement>('.result-primary-actions')!
     return {
+      hierarchy: [
+        top('.result-card__hero'),
+        top('.result-rewards'),
+        top('.result-primary-actions'),
+        top('.result-persistence'),
+        top('.result-secondary-actions'),
+        top('.reward-breakdown'),
+      ],
       actionTops: [
         top('.result-replay'),
+        top('.result-config'),
         top('.result-challenge'),
-        top('.result-tip'),
       ],
-      copyInActions: element.querySelectorAll('.result-after-actions .result-copy').length,
-      copyInUtility: element.querySelectorAll('.result-utility .result-copy-bottom').length,
+      primaryWidth: primary.getBoundingClientRect().width,
+      resultWidth: element.getBoundingClientRect().width,
+      copyActions: element.querySelectorAll('.result-copy').length,
+      tipActions: element.querySelectorAll('.result-tip, .result-support').length,
       overflow: element.scrollWidth - element.clientWidth,
     }
   })
 
+  expect(contract.hierarchy).toEqual([...contract.hierarchy].sort((left, right) => left - right))
   expect(Math.max(...contract.actionTops) - Math.min(...contract.actionTops)).toBeLessThan(1)
-  expect(contract.copyInActions).toBe(0)
-  expect(contract.copyInUtility).toBe(1)
+  expect(contract.primaryWidth).toBeGreaterThan(contract.resultWidth * 0.9)
+  expect(contract.copyActions).toBe(0)
+  expect(contract.tipActions).toBe(0)
   expect(contract.overflow).toBeLessThanOrEqual(0)
+  await expect(result.locator('.result-next__arrow')).toContainText('Играть')
+  await expect(result.locator('.result-copy-status')).toHaveAttribute('aria-live', 'polite')
+
+  const refinement = await result.evaluate((element) => {
+    const verdict = element.querySelector<HTMLElement>('.result-verdict')!
+    const rewardValues = [...element.querySelectorAll<HTMLElement>('.result-rewards article strong')]
+    const next = element.querySelector<HTMLElement>('.result-next')!
+    const save = element.querySelector<HTMLElement>('.result-persistence > a')!
+    const ticketReward = element.querySelector<HTMLElement>('.result-reward--tickets')!
+    const routeReward = element.querySelector<HTMLElement>('.result-reward--route')!
+    return {
+      verdictText: verdict.textContent?.trim(),
+      verdictBackground: getComputedStyle(verdict).backgroundColor,
+      verdictRadius: Number.parseFloat(getComputedStyle(verdict).borderRadius),
+      rewardSizes: rewardValues.map((node) => Number.parseFloat(getComputedStyle(node).fontSize)),
+      ticketBackground: getComputedStyle(ticketReward).backgroundColor,
+      routeBackground: getComputedStyle(routeReward).backgroundColor,
+      routeSegments: element.querySelectorAll('.result-route-track > b').length,
+      completedSegments: element.querySelectorAll('.result-route-track > .is-complete').length,
+      nextBackground: getComputedStyle(next).backgroundColor,
+      saveBackground: getComputedStyle(save).backgroundColor,
+      saveCopy: element.querySelector<HTMLElement>('.result-persistence__copy')?.innerText,
+    }
+  })
+  expect(refinement.verdictText).toBe('Победа')
+  expect(refinement.verdictBackground).not.toBe('rgba(0, 0, 0, 0)')
+  expect(refinement.verdictRadius).toBeGreaterThanOrEqual(6)
+  expect(refinement.rewardSizes[0]).toBeGreaterThan(Math.max(...refinement.rewardSizes.slice(1)))
+  expect(refinement.ticketBackground).not.toBe(refinement.routeBackground)
+  expect(refinement.routeSegments).toBe(10)
+  expect(refinement.completedSegments).toBe(4)
+  expect(refinement.saveBackground).not.toBe(refinement.nextBackground)
+  expect(refinement.saveCopy).toContain('Сохраните победу и прогресс')
+  expect(refinement.saveCopy).not.toContain('Не потеряйте')
 })
 
-test('next game remains a compact card on tablet', async ({ page }) => {
+test('next game remains the dominant full-width card on tablet', async ({ page }) => {
   await page.setViewportSize({ width: 768, height: 1024 })
   const section = page.locator('#result-actions')
   const specimen = section.locator('.ui-kit-result-action')
@@ -213,9 +287,67 @@ test('next game remains a compact card on tablet', async ({ page }) => {
     }
   })
 
-  expect(contract.cardWidth).toBeLessThan(contract.specimenWidth * 0.8)
-  expect(contract.nextHeight).toBeLessThanOrEqual(112)
-  expect(contract.gridColumn).not.toContain('-1')
+  expect(contract.cardWidth).toBeGreaterThan(contract.specimenWidth * 0.9)
+  expect(contract.nextHeight).toBeGreaterThanOrEqual(88)
+  expect(contract.nextHeight).toBeLessThanOrEqual(104)
+  expect(contract.gridColumn).toContain('-1')
+})
+
+test('mobile result collapses direct secondary actions without hiding the next game', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const result = page.locator('#result-actions .result-card')
+  await result.scrollIntoViewIfNeeded()
+
+  await expect(result.locator('.result-next')).toBeVisible()
+  await expect(result.locator('.result-persistence')).toBeVisible()
+  const actionLabel = result.locator('.result-next__arrow > span')
+  await expect(actionLabel).toBeVisible()
+  await expect(actionLabel).toHaveText('Играть')
+  const nextActionFit = await result.locator('.result-next').evaluate((button) => {
+    const copy = button.querySelector<HTMLElement>('.result-next__copy')!.getBoundingClientRect()
+    const action = button.querySelector<HTMLElement>('.result-next__arrow')!.getBoundingClientRect()
+    return {
+      noOverlap: copy.right <= action.left - 6,
+      actionHeight: action.height,
+    }
+  })
+  expect(nextActionFit.noOverlap).toBe(true)
+  expect(nextActionFit.actionHeight).toBeGreaterThanOrEqual(40)
+  const rewardLabelsFit = await result.locator('.result-rewards article small').evaluateAll((labels) => (
+    labels.every((label) => label.scrollWidth <= label.clientWidth && label.scrollHeight <= label.parentElement!.clientHeight)
+  ))
+  expect(rewardLabelsFit).toBe(true)
+  const adaptiveRewardColumns = await result.locator('.result-rewards').evaluate((rail) => {
+    const columns = () => getComputedStyle(rail).gridTemplateColumns.split(' ').length
+    rail.classList.replace('result-rewards--3', 'result-rewards--2')
+    const two = columns()
+    rail.classList.replace('result-rewards--2', 'result-rewards--1')
+    const one = columns()
+    rail.classList.replace('result-rewards--1', 'result-rewards--3')
+    return { two, one }
+  })
+  expect(adaptiveRewardColumns).toEqual({ two: 2, one: 1 })
+  await expect(result.locator('.result-more-toggle')).toHaveAttribute('aria-expanded', 'false')
+  await expect(result.locator('.result-replay')).toBeHidden()
+
+  await result.locator('.result-more-toggle').click()
+  await expect(result.locator('.result-more-toggle')).toHaveAttribute('aria-expanded', 'true')
+  await expect(result.locator('.result-replay')).toBeVisible()
+  await expect(result.getByRole('button', { name: 'Настроить игру Период / свободная игра' })).toBeVisible()
+  await expect(result.getByRole('button', { name: 'Бросить вызов другу' })).toBeVisible()
+
+  await page.setViewportSize({ width: 320, height: 844 })
+  await result.locator('.result-next__copy strong').evaluate((title) => { title.textContent = 'Угадай исполнителя' })
+  const narrowNextFit = await result.locator('.result-next').evaluate((button) => {
+    const copy = button.querySelector<HTMLElement>('.result-next__copy')!.getBoundingClientRect()
+    const action = button.querySelector<HTMLElement>('.result-next__arrow')!.getBoundingClientRect()
+    return {
+      noOverlap: copy.right <= action.left - 6,
+      pageFits: document.documentElement.scrollWidth <= window.innerWidth,
+      labelVisible: button.querySelector<HTMLElement>('.result-next__arrow > span')!.getBoundingClientRect().width > 0,
+    }
+  })
+  expect(narrowNextFit).toEqual({ noOverlap: true, pageFits: true, labelVisible: true })
 })
 
 test('final choice keeps a compact draggable mobile carousel', async ({ page }) => {

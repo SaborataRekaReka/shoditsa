@@ -452,28 +452,42 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="result-actions">
-            <SectionTitle index="09" title="Действия после игры" description="Маршрут, настройка режима и действия после сеанса собраны в одном компоненте. На телефоне все вторичные действия занимают полную ширину." component="ResultActionBar" />
+            <SectionTitle index="09" title="Результат игры" description="Универсальная карточка ведёт от результата к награде, следующей игре и сохранению прогресса. На телефоне вторичные действия сворачиваются в один спокойный уровень." component="GameResult · ResultActionBar" />
             <div className="ui-kit-result-action">
               <GameResult
                 mode="series"
                 won
                 attempts={4}
                 poster={<img src={publicAssetUrl('images/category-stubs/movie-stub.webp')} alt="Постер демонстрационного результата" />}
-                title="Тёмные начала"
-                meta="His Dark Materials · 2019"
-                tags={['фэнтези', 'драма']}
+                title="Джон Ф. Кеннеди: выстрелы в Далласе"
+                meta="JFK · 1991 · триллер"
+                tags={['триллер', 'драма', 'история']}
                 completedToday={4}
-                nextRewardText="До полного маршрута: ещё 3"
+                nextRewardText="До полного маршрута: ещё 6"
                 nextLabel="Играть дальше: кино"
+                nextActionLabel="Играть"
+                nextMode="movie"
                 configureLabel="Период / свободная игра"
-                award={null}
+                award={{
+                  total: 11,
+                  base: 11,
+                  completed: 2,
+                  win: 5,
+                  speed: 3,
+                  firstDaily: 1,
+                  milestoneBonus: 0,
+                  fullHouse: 0,
+                  streakMilestone: 0,
+                  newDailyStreak: 5,
+                  alreadyClaimed: false,
+                }}
                 streak={5}
                 copied={false}
                 telegramUrl="#"
+                accountState="guest"
                 onNext={() => undefined}
                 onConfigure={() => undefined}
                 onChallenge={() => undefined}
-                onCopy={() => undefined}
                 autoScroll={false}
               />
             </div>
