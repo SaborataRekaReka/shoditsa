@@ -17,6 +17,17 @@ const parseJson = (value) => {
   throw new Error('AI fact-checker did not return JSON')
 }
 
+const unsafeJsonControlCharacters = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g
+const sanitizeModelJson = (value) => {
+  if (typeof value === 'string') return value.replace(unsafeJsonControlCharacters, '')
+  if (Array.isArray(value)) return value.map(sanitizeModelJson)
+  if (!isRecord(value)) return value
+  return Object.fromEntries(Object.entries(value).map(([key, entry]) => [
+    key.replace(unsafeJsonControlCharacters, ''),
+    sanitizeModelJson(entry),
+  ]))
+}
+
 const responseSchema = {
   type: 'object', additionalProperties: false,
   properties: {
@@ -81,7 +92,27 @@ const validateResult = (task, result) => {
   }
   result.crossFieldFindings = result.crossFieldFindings.filter((cross) => cross.fields.length)
   result.confidence = Math.max(0, Math.min(1, Number(result.confidence) || 0))
-  return result
+  return {
+    overallVerdict: result.overallVerdict,
+    confidence: result.confidence,
+    summary: text(result.summary),
+    fieldResults: result.fieldResults.map((fieldResult) => ({
+      field: fieldResult.field,
+      verdict: fieldResult.verdict,
+      confidence: fieldResult.confidence,
+      reason: text(fieldResult.reason),
+      proposedValue: fieldResult.proposedValue,
+      sourceUrls: fieldResult.sourceUrls,
+    })),
+    crossFieldFindings: result.crossFieldFindings.map((cross) => ({
+      fields: cross.fields,
+      verdict: cross.verdict,
+      severity: ['critical', 'high', 'medium', 'low'].includes(cross.severity) ? cross.severity : 'medium',
+      confidence: cross.confidence,
+      reason: text(cross.reason),
+      sourceUrls: cross.sourceUrls,
+    })),
+  }
 }
 
 const promptForTask = (task) => [
@@ -143,7 +174,7 @@ export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, p
         const reason = text(payload?.incomplete_details?.reason) || 'unknown reason'
         throw Object.assign(new Error(`OpenAI fact-check response was incomplete: ${reason}`), { retryableFactcheckOutput: true })
       }
-      const result = validateResult(task, parseJson(extractResponseText(payload)))
+      const result = validateResult(task, sanitizeModelJson(parseJson(extractResponseText(payload))))
       return {
         ...result, taskFingerprint: task.fingerprint, mode: task.mode, cardId: task.cardId,
         model, responseId: text(payload.id), reviewedAt: new Date().toISOString(), usage: payload.usage ?? null,

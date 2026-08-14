@@ -222,3 +222,31 @@ test('fact-check research retries malformed structured output with a larger toke
   assert.deepEqual(outputBudgets, [5_000, 7_500])
   assert.equal(result.overallVerdict, 'pass')
 })
+
+test('fact-check research strips JSON-unsafe control characters and unknown model metadata', async () => {
+  const result = await requestFactcheck({
+    task: {
+      cardId: 'character:frog-prince', mode: 'character', fingerprint: 'unsafe-json-fingerprint', webSearch: true,
+      targetFields: ['titleRu'], card: { id: 'character:frog-prince', mode: 'character', titleRu: 'Король-лягушонок' },
+      sourcePolicy: 'Use authoritative sources.', semantics: [], deterministicFindings: [],
+    },
+    apiKey: 'test-key', model: 'gpt-5-mini', maxOutputTokens: 5_000,
+    directFetch: async () => new Response(JSON.stringify({
+      id: 'resp_unsafe_json', output_text: JSON.stringify({
+        overallVerdict: 'pass', confidence: 0.9, summary: 'Confirmed\u0000 by evidence.',
+        fieldResults: [{
+          field: 'titleRu', verdict: 'pass', confidence: 0.9, reason: 'Confirmed.\u0000',
+          proposedValue: 'Король-лягушонок', sourceUrls: ['https://www.gutenberg.org/ebooks/2591'],
+          sources: [{ label: 'Project Gutenberg\u0000 edition' }],
+        }],
+        crossFieldFindings: [],
+        internalMetadata: { label: 'unsafe\u0000' },
+      }),
+      output: [{ type: 'web_search_call' }], usage: { input_tokens: 10, output_tokens: 5 },
+    }), { status: 200 }),
+  })
+  assert.equal(JSON.stringify(result).includes('\\u0000'), false)
+  assert.equal(Object.hasOwn(result, 'internalMetadata'), false)
+  assert.equal(Object.hasOwn(result.fieldResults[0], 'sources'), false)
+  assert.equal(result.summary, 'Confirmed by evidence.')
+})
