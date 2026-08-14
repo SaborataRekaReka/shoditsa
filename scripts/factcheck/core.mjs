@@ -41,6 +41,8 @@ const compactValue = (value, depth = 0) => {
 const internalFields = new Set([
   'id', 'mode', 'allowedInGame', 'contentStatus', 'reviewStatus', 'sourceFlags', 'dataQuality',
   'popularityScore', 'topRank', 'animalRank', 'bookRank', 'characterRank', 'dailyEligible',
+  'posterUrl', 'silhouetteUrl', 'soundUrl', 'mediaAttribution',
+  'recognitionScore', 'guessabilityScore', 'recognitionLevel', 'characterDifficulty', 'characterEraOrder',
 ])
 
 export const factualFields = (item) => Object.keys(item).filter((field) => !internalFields.has(field))

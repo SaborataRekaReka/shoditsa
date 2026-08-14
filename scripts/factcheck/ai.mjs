@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createOpenAiProxyTransport, openAiFetch } from '../shared/openai-fetch.mjs'
 import { isOpenAiWebSearchRegionalError, isTransientOpenAiError } from '../shared/openai-web-search.mjs'
-import { fingerprint, isRecord, text, valueType, VERDICTS } from './core.mjs'
+import { fingerprint, isRecord, stableJson, text, valueType, VERDICTS } from './core.mjs'
 
 const extractResponseText = (payload) => typeof payload.output_text === 'string'
   ? payload.output_text
@@ -70,6 +70,10 @@ const validateResult = (task, result) => {
       fieldResult.verdict = 'uncertain'
       fieldResult.proposedValue = currentValue
       fieldResult.reason = `${text(fieldResult.reason)} Proposed value changed the field data type.`.trim()
+    }
+    if (fieldResult.verdict === 'contradiction' && stableJson(currentValue) === stableJson(fieldResult.proposedValue)) {
+      fieldResult.verdict = 'uncertain'
+      fieldResult.reason = `${text(fieldResult.reason)} The proposed value is identical to the current value, so the contradiction is not actionable.`.trim()
     }
     validFieldResults.push(fieldResult)
   }
@@ -233,7 +237,7 @@ export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concu
   if (!text(apiKey)) throw new Error('OPENAI_API_KEY is required for --ai=web')
   await mkdir(cacheDir, { recursive: true })
   return mapPool(tasks, concurrency, async (task, index) => {
-    const cacheKey = fingerprint({ taskFingerprint: task.fingerprint, model, promptVersion: 1 })
+    const cacheKey = fingerprint({ taskFingerprint: task.fingerprint, model, promptVersion: 2 })
     const cachePath = path.join(cacheDir, `${cacheKey}.json`)
     let result
     if (!refresh) {

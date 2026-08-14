@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildFactcheckPreview } from '../src/modules/admin/factcheck-pipeline.js'
+import { buildFactcheckPreview, factcheckRetryFields, mergeFactcheckResearchResults } from '../src/modules/admin/factcheck-pipeline.js'
 
 describe('factcheck pipeline preview', () => {
   it('keeps a sourced high-confidence correction as review-only before/after diff', () => {
@@ -41,5 +41,52 @@ describe('factcheck pipeline preview', () => {
 
     expect(preview.status).toBe('verified')
     expect(preview.releaseGate.blocking).toBe(false)
+  })
+
+  it('uses target field evidence instead of an unrelated uncertain overall verdict', () => {
+    const before = { id: 'character:test', mode: 'character', titleRu: 'Тест', posterUrl: '/internal.webp' }
+    const preview = buildFactcheckPreview(before, {
+      overallVerdict: 'uncertain', confidence: 0.8, summary: 'Internal artwork cannot be checked externally.',
+      fieldResults: [
+        { field: 'titleRu', verdict: 'pass', confidence: 0.95, proposedValue: 'Тест', sourceUrls: ['https://example.org/work'] },
+        { field: 'posterUrl', verdict: 'uncertain', confidence: 0.2, proposedValue: '/internal.webp', sourceUrls: [] },
+      ],
+    }, [], 0.75, ['titleRu'])
+
+    expect(preview.status).toBe('verified')
+    expect(preview.releaseGate.blocking).toBe(false)
+  })
+
+  it('retries only unresolved or non-actionable factual fields', () => {
+    const before = { titleRu: 'Тест', characterFirstAppearanceYear: 1901, characterSourceWork: 'Книга' }
+    const fields = factcheckRetryFields(before, {
+      fieldResults: [
+        { field: 'titleRu', verdict: 'pass', confidence: 0.95, proposedValue: 'Тест', sourceUrls: ['https://example.org/work'] },
+        { field: 'characterFirstAppearanceYear', verdict: 'contradiction', confidence: 0.98, proposedValue: 1901, sourceUrls: ['https://example.org/year'] },
+        { field: 'characterSourceWork', verdict: 'uncertain', confidence: 0.4, proposedValue: 'Книга', sourceUrls: [] },
+      ],
+    }, ['titleRu', 'characterFirstAppearanceYear', 'characterSourceWork'])
+
+    expect(fields).toEqual(['characterFirstAppearanceYear', 'characterSourceWork'])
+  })
+
+  it('merges a targeted follow-up without losing settled field evidence', () => {
+    const merged = mergeFactcheckResearchResults({
+      summary: 'Initial review.',
+      fieldResults: [
+        { field: 'titleRu', verdict: 'pass', confidence: 0.9, proposedValue: 'Тест', sourceUrls: ['https://example.org/title'] },
+        { field: 'year', verdict: 'uncertain', confidence: 0.2, proposedValue: 1901, sourceUrls: [] },
+      ],
+      crossFieldFindings: [{ fields: ['year'], verdict: 'uncertain', confidence: 0.2, reason: 'Unknown.', sourceUrls: [] }],
+    }, {
+      summary: 'Year resolved.',
+      fieldResults: [{ field: 'year', verdict: 'contradiction', confidence: 0.98, proposedValue: 1900, sourceUrls: ['https://example.org/year'] }],
+      crossFieldFindings: [],
+    }, ['year'])
+
+    expect(merged.fieldResults).toHaveLength(2)
+    expect(merged.fieldResults?.find((entry) => entry.field === 'titleRu')?.verdict).toBe('pass')
+    expect(merged.fieldResults?.find((entry) => entry.field === 'year')?.proposedValue).toBe(1900)
+    expect(merged.crossFieldFindings).toEqual([])
   })
 })

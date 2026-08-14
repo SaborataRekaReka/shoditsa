@@ -52,9 +52,16 @@ test('multi-field research uses one whole-card task with dependency context', ()
 })
 
 test('whole-card context targets factual fields and keeps identity', () => {
-  const context = contextForTask(animal({ dataQuality: { verified: false } }), 'animal', ['*'])
+  const context = contextForTask(animal({
+    dataQuality: { verified: false }, posterUrl: '/internal.webp', mediaAttribution: { author: 'internal' },
+    recognitionScore: 80, guessabilityScore: 70,
+  }), 'animal', ['*'])
   assert.ok(context.targetFields.includes('scientificName'))
   assert.ok(!context.targetFields.includes('dataQuality'))
+  assert.ok(!context.targetFields.includes('posterUrl'))
+  assert.ok(!context.targetFields.includes('mediaAttribution'))
+  assert.ok(!context.targetFields.includes('recognitionScore'))
+  assert.ok(!context.targetFields.includes('guessabilityScore'))
   assert.equal(context.card.id, 'animal:test')
 })
 
@@ -254,6 +261,30 @@ test('fact-check research strips JSON-unsafe control characters and unknown mode
   assert.equal(result.summary, 'Confirmed by evidence.')
 })
 
+test('fact-check research downgrades a contradiction that repeats the current value', async () => {
+  const result = await requestFactcheck({
+    task: {
+      cardId: 'character:test', mode: 'character', fingerprint: 'unchanged-proposal', webSearch: true,
+      targetFields: ['characterFirstAppearanceYear'], card: { characterFirstAppearanceYear: 1835 },
+      sourcePolicy: 'Use authoritative sources.', semantics: [], deterministicFindings: [],
+    },
+    apiKey: 'test-key', model: 'gpt-5-mini', maxOutputTokens: 1_200,
+    directFetch: async () => new Response(JSON.stringify({
+      id: 'resp_unchanged', output_text: JSON.stringify({
+        overallVerdict: 'contradiction', confidence: 0.98, summary: 'The year is wrong.',
+        fieldResults: [{
+          field: 'characterFirstAppearanceYear', verdict: 'contradiction', confidence: 0.98,
+          reason: 'The first appearance was 1841.', proposedValue: 1835, sourceUrls: ['https://example.org/year'],
+        }],
+        crossFieldFindings: [],
+      }),
+      output: [{ type: 'web_search_call' }], usage: { input_tokens: 10, output_tokens: 5 },
+    }), { status: 200 }),
+  })
+  assert.equal(result.fieldResults[0].verdict, 'uncertain')
+  assert.match(result.fieldResults[0].reason, /not actionable/)
+})
+
 test('fact-check research sanitizes cached results before persistence', async () => {
   const cacheDir = await mkdtemp(path.join(tmpdir(), 'factcheck-cache-'))
   const task = {
@@ -262,7 +293,7 @@ test('fact-check research sanitizes cached results before persistence', async ()
     sourcePolicy: 'Use authoritative sources.', semantics: [], deterministicFindings: [],
   }
   const model = 'gpt-5-mini'
-  const cacheKey = fingerprint({ taskFingerprint: task.fingerprint, model, promptVersion: 1 })
+  const cacheKey = fingerprint({ taskFingerprint: task.fingerprint, model, promptVersion: 2 })
   const cached = {
     overallVerdict: 'pass', confidence: 0.9, summary: 'Cached\u0000 result.',
     fieldResults: [{

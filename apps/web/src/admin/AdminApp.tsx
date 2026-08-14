@@ -3069,6 +3069,26 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
+  const retryUnresolvedItems = useMutation({
+    mutationFn: () => adminApi.retryUnresolvedPipelineItems(selectedId!),
+    onSuccess: (result) => {
+      notify('success', `Спорные карточки поставлены на экономную точечную перепроверку: ${result.unresolvedCount}`)
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events', selectedId] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
+  const reprocessFactcheckResults = useMutation({
+    mutationFn: () => adminApi.reprocessFactcheckResults(selectedId!),
+    onSuccess: (result) => {
+      notify('success', `Сохранённые результаты переоцениваются без новых AI-запросов: ${result.unresolvedCount}`)
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-items', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'pipeline-events', selectedId] })
+    },
+    onError: (error) => notify('error', errorText(error)),
+  })
   const approve = useMutation({
     mutationFn: ({ publish, itemIds }: { publish: boolean; itemIds?: string[] }) => adminApi.approvePipeline(selectedId!, itemIds?.length ? { itemIds } : {}, publish),
     onSuccess: (result, variables) => {
@@ -3290,7 +3310,9 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       ? selectedRunScenario === 'factcheck'
     : ['music', 'movie', 'anime'].includes(String(selectedRun?.pipelineKey)) && selectedRunScenario === 'manual'
   const failedItemCount = Number(statsByStatus.failed ?? 0)
+  const unresolvedItemCount = Number(statsByStatus.unresolved ?? 0)
   const canRetryFailedItems = isGenericNormalizationRun && failedItemCount > 0 && !['queued', 'running'].includes(runStatus)
+  const canRetryUnresolvedItems = selectedRun?.pipelineKey === 'factcheck' && unresolvedItemCount > 0 && !['queued', 'running'].includes(runStatus)
   const totalItems = Number(selectedRun?.itemsTotal ?? 0)
   const processedItems = Number(selectedRun?.itemsProcessed ?? 0)
   const hasRemainingItems = totalItems > 0 && processedItems < totalItems
@@ -3462,6 +3484,18 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     if (!canRetryFailedItems) return
     if (!confirm(`Перегенерировать ${failedItemCount} ошибочных айтемов? Успешные результаты не изменятся. Будут списаны кредиты только за повторные запросы.`)) return
     retryFailedItems.mutate()
+  }
+
+  const requestRetryUnresolvedItems = () => {
+    if (!canRetryUnresolvedItems) return
+    if (!confirm(`Точечно перепроверить ${unresolvedItemCount} спорных карточек? Уже подтверждённые поля будут взяты из сохранённых результатов; платные запросы пойдут только по незакрытым фактическим полям.`)) return
+    retryUnresolvedItems.mutate()
+  }
+
+  const requestReprocessFactcheckResults = () => {
+    if (!canRetryUnresolvedItems) return
+    if (!confirm(`Бесплатно переоценить сохранённые результаты ${unresolvedItemCount} спорных карточек по обновлённой методологии? Новых запросов OpenAI не будет.`)) return
+    reprocessFactcheckResults.mutate()
   }
 
   const requestDeleteRun = (rawRun: Record<string, any> | undefined = selectedRun ? record(selectedRun) : undefined) => {
@@ -3764,6 +3798,26 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     >
                       <RefreshCw />
                       Перегенерировать ошибки · {failedItemCount}
+                    </button>
+                  )}
+                  {canRetryUnresolvedItems && (
+                    <button
+                      onClick={requestReprocessFactcheckResults}
+                      disabled={reprocessFactcheckResults.isPending || retryUnresolvedItems.isPending || retryFailedItems.isPending || continueRun.isPending || removeRun.isPending}
+                      title="Переоценить сохранённые ответы без новых запросов OpenAI"
+                    >
+                      <RefreshCw />
+                      Переоценить сохранённое · $0
+                    </button>
+                  )}
+                  {canRetryUnresolvedItems && (
+                    <button
+                      onClick={requestRetryUnresolvedItems}
+                      disabled={reprocessFactcheckResults.isPending || retryUnresolvedItems.isPending || retryFailedItems.isPending || continueRun.isPending || removeRun.isPending}
+                      title="Переиспользовать сохранённые результаты и запросить только незакрытые фактические поля"
+                    >
+                      <RefreshCw />
+                      Точечно перепроверить спорные · {unresolvedItemCount}
                     </button>
                   )}
                   {["queued", "running"].includes(

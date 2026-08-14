@@ -1554,6 +1554,65 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     })
     return reply.code(202).send(result)
   })
+  app.post('/api/v1/admin/pipeline-runs/:id/retry-unresolved', { schema: { params, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
+    const existing = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existing[0]) return reply.code(202).send({ job: existing[0], unresolvedCount: Number(asRecord(existing[0].payload).unresolvedCount ?? 0) })
+    const result = await deps.db.transaction(async (tx) => {
+      const run = await tx.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+      if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+      if (run[0].pipelineKey !== 'factcheck') throw new ApiError(409, 'PIPELINE_TARGETED_RETRY_UNSUPPORTED', 'Точечная перепроверка доступна только для фактчека')
+      if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Дождитесь завершения текущего запуска')
+      const unresolved = await tx.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(
+        eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'unresolved'),
+      ))
+      const unresolvedCount = unresolved[0]?.count ?? 0
+      if (!unresolvedCount) throw new ApiError(409, 'NO_UNRESOLVED_ITEMS', 'Нет спорных элементов для точечной перепроверки')
+      const active = await tx.select({ id: backgroundJobs.id }).from(backgroundJobs).where(and(
+        eq(backgroundJobs.pipelineRunId, runId), sql`${backgroundJobs.status} in ('queued','running')`,
+        sql`${backgroundJobs.payload}->>'retryUnresolved' = 'true'`,
+      )).limit(1)
+      if (active[0]) throw new ApiError(409, 'PIPELINE_TARGETED_RETRY_ACTIVE', 'Спорные элементы уже перепроверяются')
+      const job = (await tx.insert(backgroundJobs).values({
+        type: 'factcheck_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId,
+        payload: { runId, retryUnresolved: true, unresolvedCount },
+      }).returning())[0]
+      await tx.update(pipelineRuns).set({ status: 'queued', cancelRequestedAt: null, finishedAt: null, heartbeatAt: new Date(), errorCode: null, safeErrorMessage: null }).where(eq(pipelineRuns.id, runId))
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id, action: 'pipeline.unresolved.retry', entityType: 'pipeline_run', entityId: runId,
+        before: { status: run[0].status, unresolvedCount }, after: { status: 'queued', jobId: job.id, targeted: true }, requestId: request.id,
+      })
+      return { job, unresolvedCount }
+    })
+    return reply.code(202).send(result)
+  })
+  app.post('/api/v1/admin/pipeline-runs/:id/reprocess-results', { schema: { params, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps); const runId = (request.params as { id: string }).id; const key = requireIdempotencyKey(request)
+    const existing = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existing[0]) return reply.code(202).send({ job: existing[0], unresolvedCount: Number(asRecord(existing[0].payload).unresolvedCount ?? 0) })
+    const result = await deps.db.transaction(async (tx) => {
+      const run = await tx.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).limit(1)
+      if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
+      if (run[0].pipelineKey !== 'factcheck') throw new ApiError(409, 'PIPELINE_REPROCESS_UNSUPPORTED', 'Бесплатная переоценка доступна только для фактчека')
+      if (['queued', 'running'].includes(run[0].status)) throw new ApiError(409, 'PIPELINE_RUN_ACTIVE', 'Дождитесь завершения текущего запуска')
+      const unresolved = await tx.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(
+        eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'unresolved'),
+      ))
+      const unresolvedCount = unresolved[0]?.count ?? 0
+      if (!unresolvedCount) throw new ApiError(409, 'NO_UNRESOLVED_ITEMS', 'Нет спорных элементов для переоценки')
+      const job = (await tx.insert(backgroundJobs).values({
+        type: 'factcheck_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: runId,
+        payload: { runId, reprocessResults: true, unresolvedCount },
+      }).returning())[0]
+      await tx.update(pipelineRuns).set({ status: 'queued', cancelRequestedAt: null, finishedAt: null, heartbeatAt: new Date(), errorCode: null, safeErrorMessage: null }).where(eq(pipelineRuns.id, runId))
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id, action: 'pipeline.results.reprocess', entityType: 'pipeline_run', entityId: runId,
+        before: { status: run[0].status, unresolvedCount }, after: { status: 'queued', jobId: job.id, paidRequests: 0 }, requestId: request.id,
+      })
+      return { job, unresolvedCount }
+    })
+    return reply.code(202).send(result)
+  })
   app.post('/api/v1/admin/pipeline-runs/:id/continue', { schema: { params } }, async (request, reply) => {
     const actor = await admin(request, reply, deps)
     const runId = (request.params as { id: string }).id

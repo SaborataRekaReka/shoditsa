@@ -25,7 +25,10 @@ import { reconcileCommerceOrders } from './modules/commerce/service.js'
 import { handleDanetkiJob } from './modules/danetki/worker.js'
 import { runContentRetention, runGameLifecycleCleanup } from './modules/maintenance/service.js'
 import { contentDuplicateGroups, isAllowedInRegularGame } from '@shoditsa/game-core'
-import { buildFactcheckPreview, type FactcheckFinding, type FactcheckResearchResult } from './modules/admin/factcheck-pipeline.js'
+import {
+  buildFactcheckPreview, factcheckRetryFields, mergeFactcheckResearchResults,
+  type FactcheckFinding, type FactcheckResearchResult,
+} from './modules/admin/factcheck-pipeline.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -841,6 +844,7 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
 type FactcheckCoreModule = {
   runDatasetRules: (itemsByMode: Record<string, Json[]>, requestedFieldsByMode: Record<string, string[]>) => FactcheckFinding[]
   buildResearchTasks: (input: { itemsByMode: Record<string, Json[]>; requestedFieldsByMode: Record<string, string[]>; findings: FactcheckFinding[]; research: 'all' }) => Array<Json & { cardId: string; mode: string }>
+  contextForTask: (item: Json, mode: string, targetFields: string[]) => { targetFields: string[]; contextFields: string[]; card: Json }
   findingsFromAiResult: (task: Json, result: FactcheckResearchResult) => FactcheckFinding[]
   summarizeFindings: (findings: FactcheckFinding[]) => Json
 }
@@ -857,6 +861,22 @@ type FactcheckAiModule = {
     maxOutputTokens: number
     onResult: (result: FactcheckResearchResult & { cardId?: string }, index: number) => Promise<void>
   }) => Promise<FactcheckResearchResult[]>
+}
+
+const factcheckResultFromConfidence = (value: unknown): FactcheckResearchResult => {
+  const confidence = record(value)
+  return {
+    overallVerdict: text(confidence.overallVerdict) || 'uncertain',
+    confidence: Number(confidence.confidence) || 0,
+    summary: text(confidence.summary),
+    fieldResults: Array.isArray(confidence.fieldResults) ? confidence.fieldResults as FactcheckResearchResult['fieldResults'] : [],
+    crossFieldFindings: Array.isArray(confidence.crossFieldFindings) ? confidence.crossFieldFindings as FactcheckResearchResult['crossFieldFindings'] : [],
+  }
+}
+
+const factcheckUsageResponses = (value: unknown) => {
+  const responses = record(record(value).usage).responses
+  return Array.isArray(responses) ? responses.filter((entry) => entry && typeof entry === 'object' && !Array.isArray(entry)) : []
 }
 
 const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
@@ -887,6 +907,176 @@ const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
   if (proxyUrl) process.env.OPENAI_OUTBOUND_PROXY_URL = proxyUrl
   const core = await import(pathToFileURL(resolve(root, 'scripts/factcheck/core.mjs')).href) as FactcheckCoreModule
   const ai = await import(pathToFileURL(resolve(root, 'scripts/factcheck/ai.mjs')).href) as FactcheckAiModule
+
+  const reprocessFactcheckResults = record(job.payload).reprocessResults === true
+  if (record(job.payload).retryUnresolved === true || reprocessFactcheckResults) {
+    await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId })
+      .where(eq(pipelineRuns.id, run.id))
+    const storedItems = await db.select().from(pipelineRunItems).where(and(
+      eq(pipelineRunItems.runId, run.id),
+      eq(pipelineRunItems.status, 'unresolved'),
+    ))
+    const itemIds = storedItems.map((item) => item.entityKey)
+    const retryCards = itemIds.length ? await db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, payload: contentItemVersions.payload })
+      .from(contentItemVersions).where(and(
+        eq(contentItemVersions.revisionId, revisionId),
+        eq(contentItemVersions.mode, mode),
+        inArray(contentItemVersions.itemId, itemIds),
+      )) : []
+    const retryCardById = new Map(retryCards.map((card) => [card.itemId, card]))
+    const minimumCorrectionConfidence = Number(settings.correctionConfidence) || 0.75
+    const targetedTasks: Array<Json & { cardId: string; mode: string }> = []
+    const targetedMeta = new Map<string, {
+      item: typeof storedItems[number]
+      card: typeof retryCards[number]
+      before: Json
+      targetFields: string[]
+      retryFields: string[]
+      previous: FactcheckResearchResult
+      previousConfidence: Json
+      deterministic: FactcheckFinding[]
+    }>()
+    let completedThisJob = 0
+    let progressWrite = Promise.resolve()
+    const persistProgress = (itemId: string) => {
+      const current = ++completedThisJob
+      progressWrite = progressWrite.then(async () => {
+        const snapshot = await loadRunSnapshot(run.id)
+        await Promise.all([
+          db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: {
+            current, total: storedItems.length, percent: Math.round(current / Math.max(1, storedItems.length) * 100),
+            message: `${itemId}: точечная перепроверка ${current}/${storedItems.length}`,
+          } }).where(eq(backgroundJobs.id, job.id)),
+          db.update(pipelineRuns).set({
+            heartbeatAt: new Date(), itemsProcessed: snapshot.itemsProcessed, itemsSucceeded: snapshot.itemsSucceeded,
+            itemsFailed: snapshot.itemsFailed, actualCost: String(snapshot.actualCost.toFixed(8)), usageJson: snapshot.usageJson,
+            logExcerpt: `${itemId}: точечная перепроверка ${current}/${storedItems.length}`,
+          }).where(eq(pipelineRuns.id, run.id)),
+        ])
+      })
+      return progressWrite
+    }
+    const saveResult = async (meta: (typeof targetedMeta extends Map<string, infer T> ? T : never), result: FactcheckResearchResult, rawResultRef?: string | null) => {
+      const taskContext = { cardId: meta.item.entityKey, mode, title: text(meta.before.titleRu || meta.before.titleOriginal) || meta.item.entityKey, card: meta.before, targetFields: meta.targetFields }
+      const aiFindings = core.findingsFromAiResult(taskContext, result)
+      const findings = [...meta.deterministic, ...aiFindings]
+      const preview = buildFactcheckPreview(meta.before, result, findings, minimumCorrectionConfidence, meta.targetFields)
+      const confidenceJson = {
+        ...meta.previousConfidence,
+        overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
+        fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
+        deterministicFindings: meta.deterministic, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
+        changedFields: preview.changedFields, sourceRevision: exactRevision,
+      }
+      await db.update(pipelineRunItems).set({
+        status: preview.status, beforeJson: meta.before, proposedJson: preview.proposed,
+        warningsJson: preview.warnings, sourcesJson: preview.sources, confidenceJson,
+        rawResultRef: rawResultRef ?? meta.item.rawResultRef, errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
+        safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
+        updatedAt: new Date(),
+      }).where(eq(pipelineRunItems.id, meta.item.id))
+    }
+
+    for (const item of storedItems) {
+      const card = retryCardById.get(item.entityKey)
+      if (!card) {
+        await saveProcessingFailure(run.id, item.entityKey, new Error('Карточка отсутствует в зафиксированной ревизии'))
+        await persistProgress(item.entityKey)
+        continue
+      }
+      const before: Json = { ...record(card.payload), id: item.entityKey, mode }
+      const targetFields = core.contextForTask(before, mode, fields).targetFields
+      const previousConfidence = record(item.confidenceJson)
+      const previous = factcheckResultFromConfidence(previousConfidence)
+      const retryFields = factcheckRetryFields(before, previous, targetFields, minimumCorrectionConfidence)
+      const storedDeterministic = Array.isArray(previousConfidence.deterministicFindings) ? previousConfidence.deterministicFindings as FactcheckFinding[] : []
+      const deterministic = core.runDatasetRules({ [mode]: [before] }, { [mode]: targetFields })
+      const deterministicByKey = new Map([...storedDeterministic, ...deterministic].map((finding) => [JSON.stringify([finding.ruleId, finding.fields, finding.status, finding.message]), finding]))
+      const meta = { item, card, before, targetFields, retryFields, previous, previousConfidence, deterministic: [...deterministicByKey.values()] }
+      if (reprocessFactcheckResults || !retryFields.length) {
+        await saveResult(meta, previous)
+        await persistProgress(item.entityKey)
+        continue
+      }
+      const targetedFindings = core.runDatasetRules({ [mode]: [before] }, { [mode]: retryFields })
+      const task = core.buildResearchTasks({
+        itemsByMode: { [mode]: [before] }, requestedFieldsByMode: { [mode]: retryFields }, findings: targetedFindings, research: 'all',
+      })[0]
+      if (!task) {
+        await saveResult(meta, previous)
+        await persistProgress(item.entityKey)
+        continue
+      }
+      targetedTasks.push(task)
+      targetedMeta.set(item.entityKey, meta)
+    }
+
+    let heartbeatWrite = Promise.resolve()
+    const heartbeat = setInterval(() => {
+      heartbeatWrite = heartbeatWrite.then(async () => {
+        await Promise.all([
+          db.update(backgroundJobs).set({ heartbeatAt: new Date() }).where(eq(backgroundJobs.id, job.id)),
+          db.update(pipelineRuns).set({ heartbeatAt: new Date() }).where(eq(pipelineRuns.id, run.id)),
+        ])
+      }).catch((error) => console.error(`[worker] targeted factcheck heartbeat failed run=${run.id}: ${safeError(error)}`))
+    }, config.workerHeartbeatIntervalMs)
+    try {
+      try {
+        if (targetedTasks.length) await ai.runAiResearch({
+          tasks: targetedTasks,
+          apiKey: environment.OPENAI_API_KEY,
+          proxyUrl,
+          proxyCountry: process.env.OPENAI_PROXY_COUNTRY?.trim() || 'de',
+          model: text(settings.model) || 'gpt-5-mini',
+          concurrency: Math.min(4, Math.max(1, Number(settings.concurrency) || 3)),
+          cacheDir: resolve(config.enrichmentDataRoot, 'factcheck', 'cache'),
+          maxOutputTokens: 5_000,
+          onResult: async (fresh) => {
+            const meta = targetedMeta.get(text(fresh.cardId))
+            if (!meta) return
+            const merged = mergeFactcheckResearchResults(meta.previous, fresh, meta.retryFields)
+            const usageEntry = calculateResponseCost(fresh)
+            const previousResponses = factcheckUsageResponses(meta.previousConfidence)
+            meta.previousConfidence = {
+              ...meta.previousConfidence,
+              usage: { responses: [...previousResponses, ...(usageEntry ? [usageEntry] : [])] },
+            }
+            await saveResult(meta, merged, fresh.responseId)
+            await persistProgress(meta.item.entityKey)
+          },
+        })
+      } finally {
+        clearInterval(heartbeat)
+        await heartbeatWrite
+      }
+    } catch (error) {
+      await progressWrite
+      const message = safeError(error)
+      if (/billing|quota|credits|insufficient/i.test(message)) {
+        const snapshot = await loadRunSnapshot(run.id)
+        await db.update(pipelineRuns).set({
+          ...snapshot, actualCost: String(snapshot.actualCost.toFixed(8)), status: 'partially_failed', finishedAt: new Date(), heartbeatAt: new Date(),
+          errorCode: 'OPENAI_CREDITS_EXHAUSTED', safeErrorMessage: message,
+        }).where(eq(pipelineRuns.id, run.id))
+        return { ...snapshot, paused: true, reason: 'OPENAI_CREDITS_EXHAUSTED' }
+      }
+      throw error
+    }
+    await progressWrite
+    const snapshot = await loadRunSnapshot(run.id)
+    const statuses = await db.select({ status: pipelineRunItems.status, count: sql<number>`count(*)::int` }).from(pipelineRunItems)
+      .where(eq(pipelineRunItems.runId, run.id)).groupBy(pipelineRunItems.status)
+    const byStatus = Object.fromEntries(statuses.map((entry) => [entry.status, entry.count]))
+    const finalStatus = snapshot.itemsFailed ? 'partially_failed'
+      : Number(byStatus.review_required ?? 0) || Number(byStatus.unresolved ?? 0) ? 'review_required' : 'completed'
+    await db.update(pipelineRuns).set({
+      itemsProcessed: snapshot.itemsProcessed, itemsSucceeded: snapshot.itemsSucceeded, itemsFailed: snapshot.itemsFailed,
+      actualCost: String(snapshot.actualCost.toFixed(8)), usageJson: snapshot.usageJson,
+      status: finalStatus, finishedAt: new Date(), heartbeatAt: new Date(), errorCode: null, safeErrorMessage: null,
+      logExcerpt: `${reprocessFactcheckResults ? 'Бесплатная переоценка' : 'Точечная перепроверка'} завершена: ${storedItems.length}; платных запросов ${targetedTasks.length}; спорных осталось ${Number(byStatus.unresolved ?? 0)}`,
+    }).where(eq(pipelineRuns.id, run.id))
+    return { ...snapshot, byStatus, targetedRequests: targetedTasks.length, sourceRevision: exactRevision }
+  }
 
   await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId })
     .where(eq(pipelineRuns.id, run.id))
@@ -968,7 +1158,7 @@ const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
           const cardFindings = deterministic.filter((finding) => finding.cardId === itemId)
           const aiFindings = core.findingsFromAiResult(task, result)
           const findings = [...cardFindings, ...aiFindings]
-          const preview = buildFactcheckPreview(before, result, findings, Number(settings.correctionConfidence) || 0.75)
+          const preview = buildFactcheckPreview(before, result, findings, Number(settings.correctionConfidence) || 0.75, strings(task.targetFields))
           const usageEntry = calculateResponseCost(result)
           await db.insert(pipelineRunItems).values({
             runId: run.id, entityKey: itemId, cardId: itemId, inputItemVersionId: card.versionId,
