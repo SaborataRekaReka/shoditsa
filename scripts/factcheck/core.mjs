@@ -231,7 +231,8 @@ export const findingsFromAiResult = (task, result) => {
   return findings
 }
 
-export const buildPatchPlan = (findings) => findings.filter((entry) => entry.origin === 'ai-research' && entry.status === 'contradiction' && entry.proposed !== undefined)
+export const buildPatchPlan = (findings) => findings.filter((entry) => entry.origin === 'ai-research' && entry.status === 'contradiction' && entry.proposed !== undefined
+    && stableJson(entry.proposed) !== stableJson(entry.current?.[entry.fields[0]] ?? null))
   .map((entry) => ({
     mode: entry.mode, cardId: entry.cardId, field: entry.fields[0], currentValue: entry.current?.[entry.fields[0]] ?? null,
     proposedValue: entry.proposed, confidence: entry.confidence, sourceUrls: entry.evidence.map((evidence) => evidence.url).filter(Boolean),

@@ -249,7 +249,7 @@ export const adminApi = {
   report: (id: string) => request<Record<string, unknown>>(`/admin/content-reports/${id}`),
   patchReport: (id: string, body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/content-reports/${id}`, { method: 'PATCH', body: json(body) }),
   pipelines: () => request<{ items: Array<Record<string, unknown>> }>('/admin/pipelines'),
-  pipelineEstimate: (pipeline: 'music' | 'movie' | 'anime' | 'normalization', body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/pipelines/${pipeline}/estimate`, { method: 'POST', body: json(body) }),
+  pipelineEstimate: (pipeline: 'music' | 'movie' | 'anime' | 'normalization' | 'factcheck', body: Record<string, unknown>) => request<Record<string, unknown>>(`/admin/pipelines/${pipeline}/estimate`, { method: 'POST', body: json(body) }),
   pipelineManualPreview: (pipeline: 'music' | 'movie' | 'anime', items: Array<Record<string, unknown>>) => request<{ items: Array<Record<string, unknown>>; summary: Record<string, number> }>(`/admin/pipelines/${pipeline}/manual/preview`, { method: 'POST', body: json(pipeline === 'music' ? { artists: items } : pipeline === 'movie' ? { movies: items } : { anime: items }) }),
   normalizationFields: (mode: ContentMode) => request<{
     mode: ContentMode
@@ -263,7 +263,7 @@ export const adminApi = {
     renderedPrompt: string
     context: Record<string, unknown>
   }>('/admin/pipelines/normalization/preview', { method: 'POST', body: json(body) }),
-  startPipeline: (pipeline: 'music' | 'movie' | 'anime' | 'normalization', body: Record<string, unknown>) => request<{ runId: string; jobId: string }>(`/admin/pipelines/${pipeline}/runs`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ ...body, confirmation: true }) }),
+  startPipeline: (pipeline: 'music' | 'movie' | 'anime' | 'normalization' | 'factcheck', body: Record<string, unknown>) => request<{ runId: string; jobId: string }>(`/admin/pipelines/${pipeline}/runs`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey() }, body: json({ ...body, confirmation: true }) }),
   pipelineRuns: () => request<{ items: Array<Record<string, unknown>> }>('/admin/pipeline-runs'),
   pipelineRun: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}`),
   pipelineRunEvents: (id: string) => request<Record<string, unknown>>(`/admin/pipeline-runs/${id}/events`),

@@ -242,6 +242,8 @@ const REPORT_REASON: Record<string, string> = {
 const STATUS_LABEL: Record<string, string> = {
   open: 'Новый', in_progress: 'В работе', resolved: 'Исправлен', dismissed: 'Отклонён', duplicate: 'Дубликат',
   queued: 'В очереди', running: 'Выполняется', completed: 'Готово', failed: 'Ошибка', review_required: 'Нужна проверка',
+  verified: 'Подтверждено', unresolved: 'Спорно',
+  pass: 'Подтверждено', contradiction: 'Противоречие', uncertain: 'Недостаточно данных', stale: 'Устарело', not_applicable: 'Неприменимо', source_conflict: 'Источники расходятся',
   partially_failed: 'Частично с ошибками', approved: 'Одобрено', staged: 'В рабочей версии', published: 'Опубликовано', partially_published: 'Частично опубликовано', cancelled: 'Отменено',
   create: 'Добавить', update: 'Изменить', unchanged: 'Без изменений', conflict: 'Конфликт', invalid: 'Ошибка',
   update_available: 'Доступно обновление', building: 'Собирается', active: 'Активно', ready: 'Готово', retired: 'Архив',
@@ -303,8 +305,8 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
   return debounced
 }
 const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid'].includes(String(status)) ? 'danger'
-  : ['running', 'in_progress', 'warning', 'partially_failed', 'building', 'update_available'].includes(String(status)) ? 'warning'
-    : ['completed', 'published', 'resolved', 'active', 'ready'].includes(String(status)) ? 'success' : 'neutral'
+  : ['running', 'in_progress', 'warning', 'partially_failed', 'building', 'update_available', 'unresolved'].includes(String(status)) ? 'warning'
+    : ['completed', 'published', 'resolved', 'active', 'ready', 'verified'].includes(String(status)) ? 'success' : 'neutral'
 const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => typeof value === 'string' && value in MODE_LABEL ? value as ContentMode : fallback
 
 const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
@@ -1753,6 +1755,8 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     music: "Музыка",
     movie: "Кино",
     anime: "Аниме",
+    normalization: "Нормализация",
+    factcheck: "Фактчек",
   };
 
   const [q, setQ] = useState(params.get("q") ?? "");
@@ -2292,7 +2296,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <header><div><strong>Состояние и происхождение</strong><small>Сузьте выборку по рабочим признакам карточек.</small></div></header>
             <div className="admin-content-facet-grid">
               <label><span>Источник изменений</span><div><FileJson /><select value={source} onChange={(event) => { setSource(event.target.value); resetSelection() }}><option value="">Любой источник</option><option value="manual">Ручное</option><option value="ai_pipeline">AI пайплайн</option><option value="bulk">Массовое</option><option value="import">Импорт</option><option value="rollback">Откат</option><option value="report_fix">Фикс по репорту</option></select></div></label>
-              <label><span>Пайплайн</span><div><Bot /><select value={pipelineFilter} onChange={(event) => { setPipelineFilter(event.target.value); resetSelection() }}><option value="">Любой пайплайн</option><option value="music">Музыка</option><option value="movie">Кино</option><option value="anime">Аниме</option></select></div></label>
+              <label><span>Пайплайн</span><div><Bot /><select value={pipelineFilter} onChange={(event) => { setPipelineFilter(event.target.value); resetSelection() }}><option value="">Любой пайплайн</option><option value="music">Музыка</option><option value="movie">Кино</option><option value="anime">Аниме</option><option value="normalization">Нормализация</option><option value="factcheck">Фактчек</option></select></div></label>
               <label><span>Игровая подсказка</span><div><Sparkles /><select value={hintFilter} onChange={(event) => { setHintFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
               <label><span>Баг-репорты</span><div><Bug /><select value={reportsFilter} onChange={(event) => { setReportsFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
               <label><span>Качество</span><div><AlertTriangle /><select aria-label="Фильтр качества" value={issuesFilter} onChange={(event) => { setIssuesFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть проблемы</option><option value="no">Без проблем</option></select></div></label>
@@ -2860,7 +2864,7 @@ function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | nu
     </div></>
 }
 
-type PipelineKey = 'music' | 'movie' | 'anime' | 'normalization'
+type PipelineKey = 'music' | 'movie' | 'anime' | 'normalization' | 'factcheck'
 
 const NORMALIZATION_COMMON_FIELDS = ['titleRu', 'titleOriginal', 'alternativeTitles', 'year', 'endYear', 'plotHint', 'slogan', 'facts', 'genres', 'allowedInGame', 'posterUrl', 'headerUrl', 'backdropUrl', 'screenshots']
 const DANETKI_NORMALIZATION_COMMON_FIELDS = new Set(['titleRu', 'titleOriginal', 'alternativeTitles', 'genres', 'allowedInGame'])
@@ -2925,13 +2929,19 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const [normalizationExcludeTags, setNormalizationExcludeTags] = useState<string[]>([])
   const [normalizationTagMatch, setNormalizationTagMatch] = useState<'all' | 'any'>('all')
   const [normalizationPrefilled, setNormalizationPrefilled] = useState(false)
+  const [factcheckMode, setFactcheckMode] = useState<ContentMode>('character')
+  const [factcheckScope, setFactcheckScope] = useState<'all' | 'selected'>('all')
+  const [factcheckQuery, setFactcheckQuery] = useState('')
+  const [factcheckIdsText, setFactcheckIdsText] = useState('')
+  const [factcheckWholeCard, setFactcheckWholeCard] = useState(true)
+  const [factcheckFields, setFactcheckFields] = useState<string[]>([])
   const [artistText, setArtistText] = useState(''); const artists = useMemo(() => parseArtistList(artistText), [artistText])
   const [movieText, setMovieText] = useState(''); const movies = useMemo(() => parseMovieList(movieText), [movieText])
   const [animeText, setAnimeText] = useState(''); const anime = useMemo(() => parseAnimeList(animeText), [animeText])
   const manualItems = pipelineKey === 'music' ? artists : pipelineKey === 'movie' ? movies : anime
   const selectedPipelineIds = useMemo(() => [...new Set(selectedPipelineIdsText.split(/\r?\n|,/).map((entry) => entry.trim()).filter(Boolean))].slice(0, 20), [selectedPipelineIdsText])
   const manualPayload = pipelineKey === 'music' ? { artists, includeExisting } : pipelineKey === 'movie' ? { movies, includeExisting } : { anime, includeExisting }
-  const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && pipelineKey !== 'normalization' && scenario === 'manual' && manualItems.length > 0 })
+  const preview = useQuery({ queryKey: ['admin', 'pipeline-manual-preview', pipelineKey, manualItems], queryFn: () => adminApi.pipelineManualPreview(pipelineKey as 'music' | 'movie' | 'anime', manualItems), enabled: starting && ['music', 'movie', 'anime'].includes(pipelineKey) && scenario === 'manual' && manualItems.length > 0 })
   const normalizationFieldsQuery = useQuery({ queryKey: ['admin', 'normalization-fields', normalizationMode], queryFn: () => adminApi.normalizationFields(normalizationMode), enabled: starting && pipelineKey === 'normalization', retry: 1, staleTime: 5 * 60_000 })
   const normalizationFieldOptions = useMemo(() => {
     const remote = normalizationFieldsQuery.data?.mode === normalizationMode ? normalizationFieldsQuery.data.items : []
@@ -2968,13 +2978,30 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     enabled: Boolean(normalizationPreviewPayload),
     retry: false,
   })
+  const factcheckFieldsQuery = useQuery({ queryKey: ['admin', 'factcheck-fields', factcheckMode], queryFn: () => adminApi.normalizationFields(factcheckMode), enabled: starting && pipelineKey === 'factcheck', retry: 1, staleTime: 5 * 60_000 })
+  const factcheckFieldOptions = useMemo(() => {
+    const remote = factcheckFieldsQuery.data?.mode === factcheckMode ? factcheckFieldsQuery.data.items : []
+    return remote.length ? remote : normalizationFallbackFields(factcheckMode)
+  }, [factcheckFieldsQuery.data, factcheckMode])
+  const factcheckItemIds = useMemo(() => [...new Set(factcheckIdsText.split(/\r?\n|,/).map((entry) => entry.trim()).filter(Boolean))].slice(0, 500), [factcheckIdsText])
+  const factcheckPayload = {
+    mode: factcheckMode,
+    fields: factcheckWholeCard ? ['*'] : factcheckFields,
+    scope: factcheckScope,
+    itemIds: factcheckScope === 'selected' ? factcheckItemIds : undefined,
+    query: factcheckQuery || undefined,
+    maxItems,
+    model: 'gpt-5-mini',
+    webSearch: true,
+  }
+  const factcheckReady = (factcheckWholeCard || factcheckFields.length > 0) && (factcheckScope === 'all' || factcheckItemIds.length > 0)
   const estimate = useQuery({
-    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, includeExisting, selectedPipelineIds, pipelineAiMode, pipelineWebSearch, normalizationMode, normalizationField, normalizationPrompt, normalizationContextFields, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && !normalizationUnknownVariables.length && (normalizationScope === 'all' || normalizationSelected.size > 0) : scenario === 'manual' ? manualItems.length > 0 : scenario === 'selected' ? selectedPipelineIds.length > 0 && selectedPipelineIds.length <= maxItems : true,
-    queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), ...(scenario === 'selected' ? { itemIds: selectedPipelineIds } : {}), aiMode: pipelineAiMode, model: 'gpt-5-mini', webSearch: pipelineWebSearch }),
+    queryKey: ['admin', 'pipeline-estimate', pipelineKey, scenario, maxItems, manualItems, includeExisting, selectedPipelineIds, pipelineAiMode, pipelineWebSearch, normalizationMode, normalizationField, normalizationPrompt, normalizationContextFields, normalizationScope, normalizationQuery, normalizationSelected.size, normalizationIncludeTags, normalizationExcludeTags, normalizationTagMatch, factcheckMode, factcheckScope, factcheckQuery, factcheckItemIds, factcheckWholeCard, factcheckFields], enabled: pipelineKey === 'normalization' ? normalizationPrompt.trim().length >= 10 && !normalizationUnknownVariables.length && (normalizationScope === 'all' || normalizationSelected.size > 0) : pipelineKey === 'factcheck' ? factcheckReady : scenario === 'manual' ? manualItems.length > 0 : scenario === 'selected' ? selectedPipelineIds.length > 0 && selectedPipelineIds.length <= maxItems : true,
+    queryFn: () => pipelineKey === 'normalization' ? adminApi.pipelineEstimate('normalization', normalizationPayload) : pipelineKey === 'factcheck' ? adminApi.pipelineEstimate('factcheck', factcheckPayload) : adminApi.pipelineEstimate(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), ...(scenario === 'selected' ? { itemIds: selectedPipelineIds } : {}), aiMode: pipelineAiMode, model: 'gpt-5-mini', webSearch: pipelineWebSearch }),
   })
   const start = useMutation({
-    mutationFn: () => pipelineKey === 'normalization' ? adminApi.startPipeline('normalization', normalizationPayload) : adminApi.startPipeline(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), ...(scenario === 'selected' ? { itemIds: selectedPipelineIds } : {}), aiMode: pipelineAiMode, model: 'gpt-5-mini', webSearch: pipelineWebSearch }),
-    onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : pipelineKey === 'anime' ? 'Аниме-пайплайн запущен' : 'Нормализация запущена'); setStarting(false); setRepeatSourceRunId(null); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
+    mutationFn: () => pipelineKey === 'normalization' ? adminApi.startPipeline('normalization', normalizationPayload) : pipelineKey === 'factcheck' ? adminApi.startPipeline('factcheck', factcheckPayload) : adminApi.startPipeline(pipelineKey, { scenario, maxItems, ...(scenario === 'manual' ? manualPayload : {}), ...(scenario === 'selected' ? { itemIds: selectedPipelineIds } : {}), aiMode: pipelineAiMode, model: 'gpt-5-mini', webSearch: pipelineWebSearch }),
+    onSuccess: (data) => { notify('success', pipelineKey === 'music' ? 'Музыкальный пайплайн запущен' : pipelineKey === 'movie' ? 'Кино-пайплайн запущен' : pipelineKey === 'anime' ? 'Аниме-пайплайн запущен' : pipelineKey === 'factcheck' ? 'Фактчек запущен' : 'Нормализация запущена'); setStarting(false); setRepeatSourceRunId(null); navigate('pipelines', data.runId); void client.invalidateQueries({ queryKey: ['admin', 'pipeline-runs'] }) },
     onError: (error) => notify('error', errorText(error)),
   })
   const runItems = items.data?.items ?? []
@@ -2993,7 +3020,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     setModerationIndex(0)
   }, [selectedId])
 
-  const isItemReviewable = (item: Record<string, any>) => ['review_required', 'approved', 'rejected'].includes(String(item.status)) && Boolean(item.proposedJson && typeof item.proposedJson === 'object' && !Array.isArray(item.proposedJson))
+  const isItemReviewable = (item: Record<string, any>) => ['review_required', 'approved', 'rejected'].includes(String(item.status)) && Boolean(item.proposedJson && typeof item.proposedJson === 'object' && !Array.isArray(item.proposedJson)) && itemDiffFields(item).length > 0
   const itemDiffFields = (item: Record<string, any>) => {
     const before = record(item.beforeJson)
     const proposed = record(item.proposedJson)
@@ -3102,7 +3129,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     },
     onError: (error) => notify('error', errorText(error)),
   })
-  const isPipelineKey = (value: unknown): value is PipelineKey => value === 'music' || value === 'movie' || value === 'anime' || value === 'normalization'
+  const isPipelineKey = (value: unknown): value is PipelineKey => value === 'music' || value === 'movie' || value === 'anime' || value === 'normalization' || value === 'factcheck'
   const safeText = (value: unknown) => typeof value === 'string' ? value.trim() : ''
   const continueRun = useMutation({
     mutationFn: () => adminApi.continuePipelineRun(selectedId!),
@@ -3140,9 +3167,9 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   })
   const previewSummary = record(preview.data?.summary); const readyItems = Number(previewSummary.ready ?? 0)
   const runnableManualItems = readyItems + (includeExisting ? Number(previewSummary.existing ?? 0) : 0)
-  const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : key === 'normalization' ? 'Нормализация' : 'Пайплайн'
-  const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : key === 'normalization' ? 'Универсальная нормализация' : 'Контентный пайплайн'
-  const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : <Bot />
+  const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : key === 'normalization' ? 'Нормализация' : key === 'factcheck' ? 'Фактчек' : 'Пайплайн'
+  const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : key === 'normalization' ? 'Универсальная нормализация' : key === 'factcheck' ? 'Универсальный фактчек' : 'Контентный пайплайн'
+  const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : key === 'factcheck' ? <BadgeCheck /> : <Bot />
   const pipelinePulseText = (status: string) => status === 'queued' ? 'В очереди' : status === 'running' ? 'В работе' : 'Остановлен'
   const manualText = pipelineKey === 'music' ? artistText : pipelineKey === 'movie' ? movieText : animeText
   const setManualText = pipelineKey === 'music' ? setArtistText : pipelineKey === 'movie' ? setMovieText : setAnimeText
@@ -3165,7 +3192,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     if (!isPipelineKey(key)) return
     setPipelineKey(key)
     setScenario('manual')
-    setMaxItems(key === 'normalization' ? 100 : 5)
+    setMaxItems(key === 'normalization' ? 100 : key === 'factcheck' ? 500 : 5)
     setPipelineAiMode('auto')
     setPipelineWebSearch(true)
     setIncludeExisting(false)
@@ -3181,6 +3208,14 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       setNormalizationIncludeTags([])
       setNormalizationExcludeTags([])
       setNormalizationTagMatch('all')
+    }
+    if (key === 'factcheck') {
+      setFactcheckMode('character')
+      setFactcheckScope('all')
+      setFactcheckQuery('')
+      setFactcheckIdsText('')
+      setFactcheckWholeCard(true)
+      setFactcheckFields([])
     }
     setNormalizationPrefilled(false)
     setStarting(true)
@@ -3198,7 +3233,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     setPipelineAiMode(settings.aiMode === 'never' ? 'never' : 'auto')
     setPipelineWebSearch(settings.webSearch !== false)
     setIncludeExisting(nextScenario === 'manual' ? true : input.includeExisting === true)
-    setMaxItems(Math.max(1, Math.min(key === 'normalization' ? 500 : 20, Number(settings.maxItems ?? rawRun.itemsTotal ?? (key === 'normalization' ? 100 : 5)) || 5)))
+    setMaxItems(Math.max(1, Math.min(key === 'normalization' || key === 'factcheck' ? 500 : 20, Number(settings.maxItems ?? rawRun.itemsTotal ?? (key === 'normalization' ? 100 : key === 'factcheck' ? 500 : 5)) || 5)))
     setSelectedPipelineIdsText(itemIds.slice(0, 20).join('\n'))
     setArtistText('')
     setMovieText('')
@@ -3216,6 +3251,16 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
       setNormalizationExcludeTags(array(input.excludeTagIds).map(String))
       setNormalizationTagMatch(input.tagMatch === 'any' ? 'any' : 'all')
       setNormalizationPrefilled(true)
+    } else if (key === 'factcheck') {
+      const selectedFields = array(input.fields).map(String).filter(Boolean)
+      setFactcheckMode(asContentMode(input.mode, 'character'))
+      setFactcheckScope(input.scope === 'selected' ? 'selected' : 'all')
+      setFactcheckQuery(safeText(input.query))
+      setFactcheckIdsText(itemIds.slice(0, 500).join('\n'))
+      setFactcheckWholeCard(selectedFields.includes('*'))
+      setFactcheckFields(selectedFields.filter((field) => field !== '*'))
+      setScenario('factcheck')
+      setNormalizationPrefilled(false)
     } else {
       setScenario(nextScenario)
       setNormalizationPrefilled(false)
@@ -3241,6 +3286,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const isGenericNormalizationRun = selectedRun?.pipelineKey !== 'normalization' || selectedRunScenario === 'normalize'
   const supportsGenericContinue = selectedRun?.pipelineKey === 'normalization'
     ? selectedRunScenario === 'normalize'
+    : selectedRun?.pipelineKey === 'factcheck'
+      ? selectedRunScenario === 'factcheck'
     : ['music', 'movie', 'anime'].includes(String(selectedRun?.pipelineKey)) && selectedRunScenario === 'manual'
   const failedItemCount = Number(statsByStatus.failed ?? 0)
   const canRetryFailedItems = isGenericNormalizationRun && failedItemCount > 0 && !['queued', 'running'].includes(runStatus)
@@ -3261,7 +3308,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const reviewQueue = useMemo(() => runItems.filter((entry) => isItemReviewable(record(entry))), [runItems])
   const moderationRawItem = reviewQueue[moderationIndex] ?? null
   const moderationItem = moderationRawItem ? record(moderationRawItem) : null
-  const fallbackModerationMode: ContentMode = selectedRun?.pipelineKey === 'normalization'
+  const fallbackModerationMode: ContentMode = selectedRun?.pipelineKey === 'normalization' || selectedRun?.pipelineKey === 'factcheck'
     ? asContentMode(record(selectedRun.inputDefinitionJson).mode, 'music')
     : selectedRun?.pipelineKey === 'movie' ? 'movie' : selectedRun?.pipelineKey === 'anime' ? 'anime' : 'music'
   const moderationProposed = record(moderationItem?.proposedJson)
@@ -3811,6 +3858,10 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   <span>
                     На проверке: {String(statsByStatus.review_required ?? 0)}
                   </span>
+                  {selectedRun.pipelineKey === 'factcheck' && <>
+                    <span>Подтверждено: {String(statsByStatus.verified ?? 0)}</span>
+                    <span>Спорно: {String(statsByStatus.unresolved ?? 0)}</span>
+                  </>}
                   <span>Провалено: {String(statsByStatus.failed ?? 0)}</span>
                   <span>Одобрено: {String(statsByStatus.approved ?? 0)}</span>
                 </div>
@@ -4545,24 +4596,32 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
               {itemDiffFields(record(activePipelineItem)).map((field) => (
                 <div key={field}>
                   <strong>{field}</strong>
-                  <pre>
-                    {JSON.stringify(
-                      record(activePipelineItem.beforeJson)[field],
-                      null,
-                      2,
-                    ) ?? "—"}
-                  </pre>
+                  <label className="admin-diff__value"><small>До</small><pre>
+                    {JSON.stringify(record(activePipelineItem.beforeJson)[field], null, 2) ?? "—"}
+                  </pre></label>
                   <ChevronRight />
-                  <pre>
-                    {JSON.stringify(
-                      record(activePipelineItem.proposedJson)[field],
-                      null,
-                      2,
-                    ) ?? "—"}
-                  </pre>
+                  <label className="admin-diff__value"><small>После</small><pre>
+                    {JSON.stringify(record(activePipelineItem.proposedJson)[field], null, 2) ?? "—"}
+                  </pre></label>
                 </div>
               ))}
+              {!itemDiffFields(record(activePipelineItem)).length && <p className="admin-diff__empty">Изменений не предложено. Откройте вывод проверки и источники ниже.</p>}
             </div>
+            {selectedRun.pipelineKey === 'factcheck' && (
+              <section className="admin-factcheck-evidence">
+                <header><strong>Вывод проверки</strong><Status value={record(activePipelineItem.confidenceJson).overallVerdict ?? activePipelineItem.status} /></header>
+                <p>{title(record(activePipelineItem.confidenceJson).summary || record(record(activePipelineItem.confidenceJson).releaseGate).reason || 'Дополнительных пояснений нет')}</p>
+                <small>Уверенность: {Math.round(Number(record(activePipelineItem.confidenceJson).confidence ?? 0) * 100)}%</small>
+                {array(activePipelineItem.sourcesJson).length > 0 && <div>
+                  <strong>Источники</strong>
+                  {array(activePipelineItem.sourcesJson).map((rawSource, index) => {
+                    const source = typeof rawSource === 'string' ? { url: rawSource } : record(rawSource)
+                    return <a key={`${String(source.url)}-${index}`} href={String(source.url)} target="_blank" rel="noreferrer">{title(array(source.fields).join(', ') || 'Источник')} <ChevronRight /></a>
+                  })}
+                </div>}
+                <details><summary>Структурированный отчёт</summary><pre>{JSON.stringify(record(activePipelineItem.confidenceJson), null, 2)}</pre></details>
+              </section>
+            )}
             {pipelineWarnings(activePipelineItem.warningsJson).length > 0 && (
               <div className="admin-pipeline-item-warnings">
                 <AlertTriangle />
@@ -4847,6 +4906,49 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     </small>
                   </label>
                 </>
+              ) : pipelineKey === "factcheck" ? (
+                <>
+                  <label className="admin-field admin-field--wide">
+                    <span>Категория</span>
+                    <select value={factcheckMode} onChange={(event) => { setFactcheckMode(event.target.value as ContentMode); setFactcheckFields([]) }}>
+                      {Object.entries(MODE_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                    </select>
+                  </label>
+                  <section className="admin-normalization-context">
+                    <header>
+                      <div><strong>Что проверять</strong><small>Вся карточка включает проверку каждого фактического поля и противоречий между связанными полями.</small></div>
+                    </header>
+                    <label className="admin-toggle">
+                      <input type="checkbox" checked={factcheckWholeCard} onChange={(event) => setFactcheckWholeCard(event.target.checked)} />
+                      Вся карточка целиком
+                    </label>
+                    {!factcheckWholeCard && <div>
+                      {factcheckFieldOptions.map((entry) => <label key={entry.field}>
+                        <input type="checkbox" checked={factcheckFields.includes(entry.field)} onChange={(event) => setFactcheckFields((current) => event.target.checked ? [...new Set([...current, entry.field])] : current.filter((field) => field !== entry.field))} />
+                        <span>{entry.label}</span><small>{entry.field}</small>
+                      </label>)}
+                    </div>}
+                    {factcheckFieldsQuery.isFetching && <small>Загружаем доступные поля…</small>}
+                  </section>
+                  <div className="admin-periods">
+                    <button className={factcheckScope === 'all' ? 'is-active' : ''} onClick={() => setFactcheckScope('all')}>Все подходящие</button>
+                    <button className={factcheckScope === 'selected' ? 'is-active' : ''} onClick={() => setFactcheckScope('selected')}>Только ID</button>
+                  </div>
+                  <label className="admin-field admin-field--wide">
+                    <span>Поиск карточек</span>
+                    <input value={factcheckQuery} onChange={(event) => setFactcheckQuery(event.target.value)} placeholder="Название или ID; пусто — вся категория" />
+                  </label>
+                  {factcheckScope === 'selected' && <label className="admin-field admin-field--wide admin-artist-import">
+                    <span>ID карточек <small>до 500 строк</small></span>
+                    <textarea value={factcheckIdsText} onChange={(event) => setFactcheckIdsText(event.target.value)} placeholder="Один ID карточки на строку" />
+                    <small>Выбрано: {factcheckItemIds.length}</small>
+                  </label>}
+                  <label className="admin-field">
+                    <span>Максимум карточек · {maxItems}</span>
+                    <input type="range" min="1" max="500" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} />
+                  </label>
+                  <div className="admin-normalization-warning"><BadgeCheck /> Запуск привязывается к точной активной ревизии. Исправления не публикуются: сначала появятся diff «до / после», вывод и источники.</div>
+                </>
               ) : (
                 <>
                   <label className="admin-field admin-field--wide">
@@ -5034,7 +5136,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                 </>
               )}
               <section className="admin-pipeline-run-options">
-                {pipelineKey !== 'normalization' && (
+                {pipelineKey !== 'normalization' && pipelineKey !== 'factcheck' && (
                   <label className="admin-toggle">
                     <input
                       type="checkbox"
@@ -5047,8 +5149,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                 <label className="admin-toggle">
                   <input
                     type="checkbox"
-                    checked={pipelineWebSearch}
-                    disabled={pipelineKey !== 'normalization' && pipelineAiMode === 'never'}
+                    checked={pipelineKey === 'factcheck' ? true : pipelineWebSearch}
+                    disabled={pipelineKey === 'factcheck' || (pipelineKey !== 'normalization' && pipelineAiMode === 'never')}
                     onChange={(event) => setPipelineWebSearch(event.target.checked)}
                   />
                   Использовать веб-поиск
@@ -5084,6 +5186,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       normalizationUnknownVariables.length > 0 ||
                       (normalizationScope === "selected" &&
                         !normalizationSelected.size)
+                    : pipelineKey === "factcheck"
+                      ? !factcheckReady
                     : scenario === "manual" &&
                       (!runnableManualItems || preview.isFetching) ||
                       (scenario === "selected" &&
@@ -5094,6 +5198,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                 <Play />
                 {pipelineKey === "normalization"
                   ? `Нормализовать до ${maxItems} карточек`
+                  : pipelineKey === "factcheck"
+                    ? `Фактчек до ${maxItems} карточек`
                   : scenario === "manual"
                     ? `Запустить ${runnableManualItems} ${pipelineKey === "music" ? "артистов" : pipelineKey === "movie" ? "фильмов" : "аниме"}`
                     : scenario === "selected"

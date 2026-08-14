@@ -314,7 +314,7 @@ export const pipelineRuns = pgTable('pipeline_runs', {
   logExcerpt: text('log_excerpt'),
   resultExpiresAt: timestamp('result_expires_at', { withTimezone: true }),
 }, (table) => [
-  check('pipeline_run_status_check', sql`${table.status} in ('queued','running','review_required','partially_failed','approved','staged','published','partially_published','failed','cancelled')`),
+  check('pipeline_run_status_check', sql`${table.status} in ('queued','running','completed','review_required','partially_failed','approved','staged','published','partially_published','failed','cancelled')`),
   index('pipeline_run_status_created_idx').on(table.status, table.createdAt),
   index('pipeline_run_pipeline_created_idx').on(table.pipelineKey, table.createdAt),
 ])
@@ -345,7 +345,7 @@ export const pipelineRunItems = pgTable('pipeline_run_items', {
 }, (table) => [
   unique('pipeline_run_entity_unique').on(table.runId, table.entityKey),
   unique('pipeline_run_item_idempotency_unique').on(table.idempotencyKey),
-  check('pipeline_run_item_status_check', sql`${table.status} in ('pending','running','review_required','approved','staged','published','failed','rejected','conflict')`),
+  check('pipeline_run_item_status_check', sql`${table.status} in ('pending','running','verified','unresolved','review_required','approved','staged','published','failed','rejected','conflict')`),
   index('pipeline_run_item_run_status_idx').on(table.runId, table.status),
 ])
 
@@ -397,7 +397,7 @@ export const backgroundJobs = pgTable('background_jobs', {
   workerId: text('worker_id'),
   pipelineRunId: uuid('pipeline_run_id').references(() => pipelineRuns.id, { onDelete: 'set null' }),
 }, (table) => [
-  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','event_export','user_export','media_check','client_event_retention','danetki_ai_reply','danetki_guess_evaluate','danetki_room_expire','commerce_reconcile','game_lifecycle_cleanup','content_retention')`),
+  check('background_job_type_check', sql`${table.type} in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','factcheck_pipeline','event_export','user_export','media_check','client_event_retention','danetki_ai_reply','danetki_guess_evaluate','danetki_room_expire','commerce_reconcile','game_lifecycle_cleanup','content_retention')`),
   check('background_job_status_check', sql`${table.status} in ('queued','running','completed','failed','cancelled')`),
   index('background_job_claim_idx').on(table.status, table.nextRetryAt, table.createdAt),
   index('background_job_pipeline_idx').on(table.pipelineRunId),

@@ -37,9 +37,15 @@ const validateResult = (task, result) => {
   if (!Array.isArray(result.fieldResults) || !Array.isArray(result.crossFieldFindings)) throw new Error('AI result arrays are missing')
   const targetFields = new Set(task.targetFields)
   const returnedFields = new Set()
+  const validFieldResults = []
   for (const fieldResult of result.fieldResults) {
-    if (!isRecord(fieldResult) || !targetFields.has(text(fieldResult.field)) || !VERDICTS.includes(fieldResult.verdict)) throw new Error('AI result contains an invalid field verdict')
-    if (returnedFields.has(fieldResult.field)) throw new Error(`AI result contains duplicate field verdicts for ${fieldResult.field}`)
+    if (!isRecord(fieldResult)) continue
+    fieldResult.field = text(fieldResult.field)
+    if (!targetFields.has(fieldResult.field) || returnedFields.has(fieldResult.field)) continue
+    if (!VERDICTS.includes(fieldResult.verdict)) {
+      fieldResult.verdict = 'uncertain'
+      fieldResult.reason = `${text(fieldResult.reason)} The AI returned an unsupported verdict.`.trim()
+    }
     returnedFields.add(fieldResult.field)
     fieldResult.confidence = Math.max(0, Math.min(1, Number(fieldResult.confidence) || 0))
     fieldResult.sourceUrls = Array.isArray(fieldResult.sourceUrls) ? fieldResult.sourceUrls.map(text).filter((url) => /^https:\/\//i.test(url)).slice(0, 10) : []
@@ -53,17 +59,26 @@ const validateResult = (task, result) => {
       fieldResult.proposedValue = currentValue
       fieldResult.reason = `${text(fieldResult.reason)} Proposed value changed the field data type.`.trim()
     }
+    validFieldResults.push(fieldResult)
   }
+  result.fieldResults = validFieldResults
   for (const field of targetFields) {
     if (returnedFields.has(field)) continue
     const currentValue = Object.hasOwn(task.card, field) ? task.card[field] : null
     result.fieldResults.push({ field, verdict: 'uncertain', confidence: 0, reason: 'The AI response omitted this target field.', proposedValue: currentValue, sourceUrls: [] })
   }
+  result.crossFieldFindings = result.crossFieldFindings.filter((cross) => isRecord(cross) && Array.isArray(cross.fields))
   for (const cross of result.crossFieldFindings) {
-    if (!isRecord(cross) || !Array.isArray(cross.fields) || !VERDICTS.includes(cross.verdict)) throw new Error('AI result contains an invalid cross-field verdict')
+    cross.fields = cross.fields.map(text).filter((field) => targetFields.has(field))
+    if (!cross.fields.length) continue
+    if (!VERDICTS.includes(cross.verdict)) {
+      cross.verdict = 'uncertain'
+      cross.reason = `${text(cross.reason)} The AI returned an unsupported verdict.`.trim()
+    }
     cross.confidence = Math.max(0, Math.min(1, Number(cross.confidence) || 0))
     cross.sourceUrls = Array.isArray(cross.sourceUrls) ? cross.sourceUrls.map(text).filter((url) => /^https:\/\//i.test(url)).slice(0, 10) : []
   }
+  result.crossFieldFindings = result.crossFieldFindings.filter((cross) => cross.fields.length)
   result.confidence = Math.max(0, Math.min(1, Number(result.confidence) || 0))
   return result
 }
@@ -91,26 +106,40 @@ const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens }) => {
     ...(task.webSearch ? { tools: [{ type: 'web_search', search_context_size: 'medium' }], tool_choice: 'required' } : {}),
     text: { format: { type: 'json_schema', name: 'content_factcheck_result', strict: false, schema: responseSchema } },
   }
-  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 180_000)
-  try {
-    let response
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      response = await openAiFetch('https://api.openai.com/v1/responses', {
+  let lastError
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 240_000)
+    try {
+      const response = await openAiFetch('https://api.openai.com/v1/responses', {
         method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body), signal: controller.signal,
       })
-      if (response.ok || ![429, 500, 502, 503, 504].includes(response.status)) break
-      await new Promise((resolve) => setTimeout(resolve, 1_000 * (attempt + 1)))
+      const payload = await response.json()
+      if (!response.ok) {
+        const error = new Error(text(payload?.error?.message) || `OpenAI HTTP ${response.status}`)
+        const errorCode = text(payload?.error?.code)
+        if (['insufficient_quota', 'billing_hard_limit_reached'].includes(errorCode)
+          || /no credits remaining|billing|quota/i.test(error.message)) {
+          throw Object.assign(error, { fatal: true, nonRetryable: true, code: errorCode || 'billing_unavailable' })
+        }
+        if (![408, 409, 429, 500, 502, 503, 504].includes(response.status)) throw Object.assign(error, { nonRetryable: true })
+        throw error
+      }
+      const result = validateResult(task, parseJson(extractResponseText(payload)))
+      return {
+        ...result, taskFingerprint: task.fingerprint, mode: task.mode, cardId: task.cardId,
+        model, responseId: text(payload.id), reviewedAt: new Date().toISOString(), usage: payload.usage ?? null,
+        webSearchCalls: (Array.isArray(payload.output) ? payload.output : []).filter((item) => item?.type === 'web_search_call').length,
+      }
+    } catch (error) {
+      lastError = error
+      if (error?.nonRetryable || attempt === 3) throw error
+    } finally {
+      clearTimeout(timer)
     }
-    const payload = await response.json()
-    if (!response.ok) throw new Error(text(payload?.error?.message) || `OpenAI HTTP ${response.status}`)
-    const result = validateResult(task, parseJson(extractResponseText(payload)))
-    return {
-      ...result, taskFingerprint: task.fingerprint, mode: task.mode, cardId: task.cardId,
-      model, responseId: text(payload.id), reviewedAt: new Date().toISOString(), usage: payload.usage ?? null,
-      webSearchCalls: (Array.isArray(payload.output) ? payload.output : []).filter((item) => item?.type === 'web_search_call').length,
-    }
-  } finally { clearTimeout(timer) }
+    await new Promise((resolve) => setTimeout(resolve, 1_500 * (attempt + 1)))
+  }
+  throw lastError ?? new Error('AI fact-check request failed')
 }
 
 const mapPool = async (items, concurrency, handler) => {
@@ -126,6 +155,19 @@ const mapPool = async (items, concurrency, handler) => {
   return results
 }
 
+const failedResearchResult = (task, error, model) => ({
+  overallVerdict: 'uncertain', confidence: 0,
+  summary: 'Automated evidence research did not complete after retries.',
+  fieldResults: [], crossFieldFindings: [],
+  taskFingerprint: task.fingerprint, mode: task.mode, cardId: task.cardId,
+  model, responseId: null, reviewedAt: new Date().toISOString(), usage: null, webSearchCalls: 0,
+  researchError: {
+    name: text(error?.name) || 'Error',
+    code: text(error?.cause?.code || error?.code) || 'unknown',
+    message: text(error?.message).slice(0, 500) || 'AI research failed',
+  },
+})
+
 export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concurrency = 3, cacheDir, refresh = false, maxOutputTokens = 5_000, onResult }) => {
   if (!text(apiKey)) throw new Error('OPENAI_API_KEY is required for --ai=web')
   await mkdir(cacheDir, { recursive: true })
@@ -137,8 +179,13 @@ export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concu
       try { result = JSON.parse(await readFile(cachePath, 'utf8')) } catch {}
     }
     if (!result) {
-      result = await requestFactcheck({ task, apiKey, model, maxOutputTokens })
-      await writeFile(cachePath, `${JSON.stringify(result, null, 2)}\n`, 'utf8')
+      try {
+        result = await requestFactcheck({ task, apiKey, model, maxOutputTokens })
+        await writeFile(cachePath, `${JSON.stringify(result, null, 2)}\n`, 'utf8')
+      } catch (error) {
+        if (error?.fatal) throw error
+        result = failedResearchResult(task, error, model)
+      }
     }
     if (onResult) await onResult(result, index)
     return result

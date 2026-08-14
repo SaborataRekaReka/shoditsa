@@ -30,7 +30,7 @@ export type AdminContentListItem = {
   missingFields: string[]
   hasHint: boolean
   source: 'manual' | 'ai_pipeline' | 'bulk' | 'import' | 'rollback' | 'report_fix' | null
-  pipelineKey: 'music' | 'movie' | 'anime' | null
+  pipelineKey: 'music' | 'movie' | 'anime' | 'normalization' | 'factcheck' | null
   draftVersion: number | null
   updatedAt: string
   tags: AdminContentTag[]

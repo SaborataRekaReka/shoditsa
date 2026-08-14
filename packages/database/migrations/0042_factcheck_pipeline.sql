@@ -1,0 +1,6 @@
+ALTER TABLE "pipeline_runs" DROP CONSTRAINT "pipeline_run_status_check";--> statement-breakpoint
+ALTER TABLE "pipeline_runs" ADD CONSTRAINT "pipeline_run_status_check" CHECK ("pipeline_runs"."status" in ('queued','running','completed','review_required','partially_failed','approved','staged','published','partially_published','failed','cancelled'));--> statement-breakpoint
+ALTER TABLE "pipeline_run_items" DROP CONSTRAINT "pipeline_run_item_status_check";--> statement-breakpoint
+ALTER TABLE "pipeline_run_items" ADD CONSTRAINT "pipeline_run_item_status_check" CHECK ("pipeline_run_items"."status" in ('pending','running','verified','unresolved','review_required','approved','staged','published','failed','rejected','conflict'));--> statement-breakpoint
+ALTER TABLE "background_jobs" DROP CONSTRAINT "background_job_type_check";--> statement-breakpoint
+ALTER TABLE "background_jobs" ADD CONSTRAINT "background_job_type_check" CHECK ("background_jobs"."type" in ('content_revision_build','content_release_import','content_quality_check','music_pipeline','movie_pipeline','anime_pipeline','normalization_pipeline','factcheck_pipeline','event_export','user_export','media_check','client_event_retention','danetki_ai_reply','danetki_guess_evaluate','danetki_room_expire','commerce_reconcile','game_lifecycle_cleanup','content_retention'));

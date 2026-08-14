@@ -19,7 +19,7 @@ export const AdminContentItemsQuerySchema = Type.Object({
   hasIssues: Type.Optional(Type.Boolean()),
   hasHint: Type.Optional(Type.Boolean()),
   source: Type.Optional(Type.Union([Type.Literal('manual'), Type.Literal('ai_pipeline'), Type.Literal('bulk'), Type.Literal('import'), Type.Literal('rollback'), Type.Literal('report_fix')])),
-  pipelineKey: Type.Optional(Type.Union([Type.Literal('music'), Type.Literal('movie'), Type.Literal('anime'), Type.Literal('normalization')])),
+  pipelineKey: Type.Optional(Type.Union([Type.Literal('music'), Type.Literal('movie'), Type.Literal('anime'), Type.Literal('normalization'), Type.Literal('factcheck')])),
   includeTagIds: Type.Optional(Type.String({ maxLength: 1200 })),
   excludeTagIds: Type.Optional(Type.String({ maxLength: 1200 })),
   tagMatch: Type.Optional(Type.Union([Type.Literal('all'), Type.Literal('any')])),
@@ -270,6 +270,28 @@ export const NormalizationPipelineRunBodySchema = Type.Object({
   confirmation: Type.Literal(true),
 }, { additionalProperties: false })
 
+const FactcheckFieldSchema = Type.Union([
+  Type.Literal('*'),
+  ContentExchangeFieldSchema,
+])
+
+const FactcheckPipelineRequestProperties = {
+  mode: ContentModeSchema,
+  fields: Type.Array(FactcheckFieldSchema, { minItems: 1, maxItems: 60, uniqueItems: true }),
+  scope: Type.Union([Type.Literal('all'), Type.Literal('selected')]),
+  itemIds: Type.Optional(Type.Array(Type.String({ minLength: 1, maxLength: 255 }), { maxItems: 500, uniqueItems: true })),
+  query: Type.Optional(Type.String({ maxLength: 160 })),
+  maxItems: Type.Integer({ minimum: 1, maximum: 500, default: 100 }),
+  model: Type.Optional(Type.Union([Type.Literal('gpt-5-mini')])),
+  webSearch: Type.Optional(Type.Boolean()),
+}
+
+export const FactcheckPipelineEstimateBodySchema = Type.Object(FactcheckPipelineRequestProperties, { additionalProperties: false })
+export const FactcheckPipelineRunBodySchema = Type.Object({
+  ...FactcheckPipelineRequestProperties,
+  confirmation: Type.Literal(true),
+}, { additionalProperties: false })
+
 export const IntegrationKeySchema = Type.Union([
   Type.Literal('OPENAI_API_KEY'), Type.Literal('LASTFM_API_KEY'), Type.Literal('SPOTIFY_CLIENT_ID'),
   Type.Literal('SPOTIFY_CLIENT_SECRET'), Type.Literal('THEAUDIODB_API_KEY'), Type.Literal('MUSICBRAINZ_USER_AGENT'),
@@ -396,6 +418,8 @@ export type AnimePipelineRunBody = Static<typeof AnimePipelineRunBodySchema>
 export type AnimePipelineManualPreviewBody = Static<typeof AnimePipelineManualPreviewBodySchema>
 export type NormalizationPipelineEstimateBody = Static<typeof NormalizationPipelineEstimateBodySchema>
 export type NormalizationPipelineRunBody = Static<typeof NormalizationPipelineRunBodySchema>
+export type FactcheckPipelineEstimateBody = Static<typeof FactcheckPipelineEstimateBodySchema>
+export type FactcheckPipelineRunBody = Static<typeof FactcheckPipelineRunBodySchema>
 export type IntegrationKey = Static<typeof IntegrationKeySchema>
 export type IntegrationSecretUpdateBody = Static<typeof IntegrationSecretUpdateBodySchema>
 export type PipelineItemDecisionBody = Static<typeof PipelineItemDecisionBodySchema>

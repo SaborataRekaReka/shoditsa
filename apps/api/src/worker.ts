@@ -14,7 +14,7 @@ import { buildReleaseContentRevision } from './modules/admin/release-content-ser
 import { loadAdminTimeline } from './modules/admin/timeline-service.js'
 import { isContentModeId, type AdminEventsQuery, type ContentMode } from '@shoditsa/contracts'
 import { loadIntegrationEnvironment } from './modules/admin/integration-secrets.js'
-import { collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
+import { calculateResponseCost, collectMusicRecordUsage } from './modules/admin/pipeline-cost.js'
 import { loadPipelineResultManifest } from './modules/admin/pipeline-manifest.js'
 import { probeMusicSourceHealth } from './modules/admin/music-source-health.js'
 import { normalizeMovieTitle, searchKinopoiskMovie } from './modules/admin/movie-search.js'
@@ -25,6 +25,7 @@ import { reconcileCommerceOrders } from './modules/commerce/service.js'
 import { handleDanetkiJob } from './modules/danetki/worker.js'
 import { runContentRetention, runGameLifecycleCleanup } from './modules/maintenance/service.js'
 import { contentDuplicateGroups, isAllowedInRegularGame } from '@shoditsa/game-core'
+import { buildFactcheckPreview, type FactcheckFinding, type FactcheckResearchResult } from './modules/admin/factcheck-pipeline.js'
 
 type Json = Record<string, unknown>
 const config = loadConfig()
@@ -837,6 +838,185 @@ const handleNormalization = async (job: typeof backgroundJobs.$inferSelect) => {
   return { ...snapshot, cancelled: pool.cancelled, concurrency: pool.finalConcurrency }
 }
 
+type FactcheckCoreModule = {
+  runDatasetRules: (itemsByMode: Record<string, Json[]>, requestedFieldsByMode: Record<string, string[]>) => FactcheckFinding[]
+  buildResearchTasks: (input: { itemsByMode: Record<string, Json[]>; requestedFieldsByMode: Record<string, string[]>; findings: FactcheckFinding[]; research: 'all' }) => Array<Json & { cardId: string; mode: string }>
+  findingsFromAiResult: (task: Json, result: FactcheckResearchResult) => FactcheckFinding[]
+  summarizeFindings: (findings: FactcheckFinding[]) => Json
+}
+
+type FactcheckAiModule = {
+  runAiResearch: (input: {
+    tasks: Array<Json & { cardId: string; mode: string }>
+    apiKey: string
+    model: string
+    concurrency: number
+    cacheDir: string
+    maxOutputTokens: number
+    onResult: (result: FactcheckResearchResult & { cardId?: string }, index: number) => Promise<void>
+  }) => Promise<FactcheckResearchResult[]>
+}
+
+const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
+  if (!job.pipelineRunId) throw new Error('factcheck_pipeline job has no pipelineRunId')
+  const run = (await db.select().from(pipelineRuns).where(eq(pipelineRuns.id, job.pipelineRunId)).limit(1))[0]
+  if (!run) throw new Error('Pipeline run not found')
+  if (run.cancelRequestedAt) {
+    await db.update(pipelineRuns).set({ status: 'cancelled', finishedAt: new Date() }).where(eq(pipelineRuns.id, run.id))
+    return { cancelled: true }
+  }
+  const input = record(run.inputDefinitionJson)
+  const settings = record(run.settingsJson)
+  const sourceRevision = record(input.sourceRevision)
+  const revisionId = text(sourceRevision.id)
+  const mode = text(input.mode) as ContentMode
+  const fields = strings(input.fields)
+  const runItemIds = strings(input.itemIds)
+  if (!revisionId || !isContentModeId(mode) || !fields.length || !runItemIds.length) throw new ApiError(422, 'FACTCHECK_RUN_INVALID', 'Параметры запуска фактчека неполны')
+  const exactRevision = (await db.select({ id: contentRevisions.id, version: contentRevisions.version, checksumSha256: contentRevisions.checksumSha256 })
+    .from(contentRevisions).where(eq(contentRevisions.id, revisionId)).limit(1))[0]
+  if (!exactRevision || exactRevision.version !== text(sourceRevision.version) || exactRevision.checksumSha256 !== text(sourceRevision.checksumSha256)) {
+    throw new ApiError(409, 'FACTCHECK_SOURCE_REVISION_MISMATCH', 'Исходная ревизия фактчека отсутствует или не совпадает по checksum')
+  }
+
+  const environment = await loadIntegrationEnvironment(db, config)
+  if (!environment.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'OpenAI API key не настроен')
+  const proxyUrl = environment.OPENAI_OUTBOUND_PROXY_URL || environment.MUSIC_OUTBOUND_PROXY_URL
+  if (proxyUrl) process.env.OPENAI_OUTBOUND_PROXY_URL = proxyUrl
+  const core = await import(pathToFileURL(resolve(root, 'scripts/factcheck/core.mjs')).href) as FactcheckCoreModule
+  const ai = await import(pathToFileURL(resolve(root, 'scripts/factcheck/ai.mjs')).href) as FactcheckAiModule
+
+  await db.update(pipelineRuns).set({ status: 'running', startedAt: run.startedAt ?? new Date(), heartbeatAt: new Date(), workerId: config.workerId })
+    .where(eq(pipelineRuns.id, run.id))
+  const existingItems = await db.select({ entityKey: pipelineRunItems.entityKey, status: pipelineRunItems.status })
+    .from(pipelineRunItems).where(eq(pipelineRunItems.runId, run.id))
+  const existingById = new Map(existingItems.map((item) => [item.entityKey, item.status]))
+  const retryFailed = record(job.payload).retryFailed === true
+  const workItemIds = retryFailed
+    ? runItemIds.filter((itemId) => existingById.get(itemId) === 'failed')
+    : runItemIds.filter((itemId) => !existingById.has(itemId))
+  const cards = workItemIds.length ? await db.select({ itemId: contentItemVersions.itemId, versionId: contentItemVersions.id, payload: contentItemVersions.payload })
+    .from(contentItemVersions).where(and(
+      eq(contentItemVersions.revisionId, revisionId),
+      eq(contentItemVersions.mode, mode),
+      inArray(contentItemVersions.itemId, workItemIds),
+    )) : []
+  const cardById = new Map(cards.map((card) => [card.itemId, card]))
+  for (const itemId of workItemIds) {
+    if (!cardById.has(itemId)) await saveProcessingFailure(run.id, itemId, new Error('Карточка отсутствует в зафиксированной ревизии'))
+  }
+  const beforeCards = cards.map((card) => ({ ...record(card.payload), id: card.itemId, mode }))
+  const requestedFieldsByMode = { [mode]: fields }
+  const deterministic = core.runDatasetRules({ [mode]: beforeCards }, requestedFieldsByMode)
+  const tasks = core.buildResearchTasks({ itemsByMode: { [mode]: beforeCards }, requestedFieldsByMode, findings: deterministic, research: 'all' })
+  const taskById = new Map(tasks.map((task) => [text(task.cardId), task]))
+  let completedThisJob = 0
+  let progressWrite = Promise.resolve()
+  const persistProgress = (itemId: string) => {
+    const current = ++completedThisJob
+    progressWrite = progressWrite.then(async () => {
+      const snapshot = await loadRunSnapshot(run.id)
+      await Promise.all([
+        db.update(backgroundJobs).set({ heartbeatAt: new Date(), progress: {
+          current, total: tasks.length, percent: Math.round(current / Math.max(1, tasks.length) * 100),
+          message: `${itemId}: ${snapshot.itemsProcessed}/${run.itemsTotal}`,
+        } }).where(eq(backgroundJobs.id, job.id)),
+        db.update(pipelineRuns).set({
+          heartbeatAt: new Date(), itemsProcessed: snapshot.itemsProcessed, itemsSucceeded: snapshot.itemsSucceeded,
+          itemsFailed: snapshot.itemsFailed, actualCost: String(snapshot.actualCost.toFixed(8)), usageJson: snapshot.usageJson,
+          logExcerpt: `${itemId}: ${snapshot.itemsProcessed}/${run.itemsTotal}`,
+        }).where(eq(pipelineRuns.id, run.id)),
+      ])
+    })
+    return progressWrite
+  }
+
+  try {
+    await ai.runAiResearch({
+      tasks,
+      apiKey: environment.OPENAI_API_KEY,
+      model: text(settings.model) || 'gpt-5-mini',
+      concurrency: Math.min(4, Math.max(1, Number(settings.concurrency) || 3)),
+      cacheDir: resolve(config.enrichmentDataRoot, 'factcheck', 'cache'),
+      maxOutputTokens: 5_000,
+      onResult: async (result) => {
+        const itemId = text(result.cardId)
+        const card = cardById.get(itemId)
+        const task = taskById.get(itemId)
+        if (!card || !task) return
+        const before: Json = { ...record(card.payload), id: itemId, mode }
+        const cardFindings = deterministic.filter((finding) => finding.cardId === itemId)
+        const aiFindings = core.findingsFromAiResult(task, result)
+        const findings = [...cardFindings, ...aiFindings]
+        const preview = buildFactcheckPreview(before, result, findings, Number(settings.correctionConfidence) || 0.75)
+        const usageEntry = calculateResponseCost(result)
+        await db.insert(pipelineRunItems).values({
+          runId: run.id, entityKey: itemId, cardId: itemId, inputItemVersionId: card.versionId,
+          status: preview.status, beforeJson: before, proposedJson: preview.proposed,
+          warningsJson: preview.warnings, sourcesJson: preview.sources,
+          confidenceJson: {
+            overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
+            fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
+            deterministicFindings: cardFindings, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
+            changedFields: preview.changedFields, sourceRevision: exactRevision,
+            usage: { responses: usageEntry ? [usageEntry] : [] },
+          },
+          rawResultRef: result.responseId || null, idempotencyKey: `${run.id}:${itemId}`,
+          errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
+          safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
+        }).onConflictDoUpdate({ target: pipelineRunItems.idempotencyKey, set: {
+          status: preview.status, beforeJson: before, proposedJson: preview.proposed,
+          warningsJson: preview.warnings, sourcesJson: preview.sources,
+          confidenceJson: {
+            overallVerdict: result.overallVerdict, confidence: result.confidence, summary: result.summary,
+            fieldResults: result.fieldResults ?? [], crossFieldFindings: result.crossFieldFindings ?? [],
+            deterministicFindings: cardFindings, findingSummary: core.summarizeFindings(findings), releaseGate: preview.releaseGate,
+            changedFields: preview.changedFields, sourceRevision: exactRevision,
+            usage: { responses: usageEntry ? [usageEntry] : [] },
+          },
+          rawResultRef: result.responseId || null,
+          errorCode: preview.status === 'failed' ? text(result.researchError?.code) || 'FACTCHECK_RESEARCH_FAILED' : null,
+          safeErrorMessage: preview.status === 'failed' ? safeError(result.researchError?.message ?? 'AI research failed') : null,
+          updatedAt: new Date(),
+        } })
+        await persistProgress(itemId)
+      },
+    })
+  } catch (error) {
+    await progressWrite
+    const message = safeError(error)
+    if (/billing|quota|credits|insufficient/i.test(message)) {
+      const snapshot = await loadRunSnapshot(run.id)
+      await db.update(pipelineRuns).set({
+        ...snapshot, actualCost: String(snapshot.actualCost.toFixed(8)), status: 'partially_failed', finishedAt: new Date(), heartbeatAt: new Date(),
+        errorCode: 'OPENAI_CREDITS_EXHAUSTED', safeErrorMessage: message,
+      }).where(eq(pipelineRuns.id, run.id))
+      return { ...snapshot, paused: true, reason: 'OPENAI_CREDITS_EXHAUSTED' }
+    }
+    throw error
+  }
+  await progressWrite
+  const snapshot = await loadRunSnapshot(run.id)
+  const statuses = await db.select({ status: pipelineRunItems.status, count: sql<number>`count(*)::int` }).from(pipelineRunItems)
+    .where(eq(pipelineRunItems.runId, run.id)).groupBy(pipelineRunItems.status)
+  const byStatus = Object.fromEntries(statuses.map((entry) => [entry.status, entry.count]))
+  const hasReview = Number(byStatus.review_required ?? 0) > 0 || Number(byStatus.unresolved ?? 0) > 0
+  const finalStatus = snapshot.itemsProcessed < run.itemsTotal
+    ? 'partially_failed'
+    : snapshot.itemsFailed
+      ? 'partially_failed'
+      : hasReview
+        ? 'review_required'
+        : 'completed'
+  await db.update(pipelineRuns).set({
+    itemsProcessed: snapshot.itemsProcessed, itemsSucceeded: snapshot.itemsSucceeded, itemsFailed: snapshot.itemsFailed,
+    actualCost: String(snapshot.actualCost.toFixed(8)), usageJson: snapshot.usageJson,
+    status: finalStatus, finishedAt: new Date(), heartbeatAt: new Date(),
+    logExcerpt: `Фактчек завершён: ${snapshot.itemsProcessed}/${run.itemsTotal}; проверено ${Number(byStatus.verified ?? 0)}; исправлений ${Number(byStatus.review_required ?? 0)}; спорных ${Number(byStatus.unresolved ?? 0)}; ошибок ${snapshot.itemsFailed}`,
+  }).where(eq(pipelineRuns.id, run.id))
+  return { ...snapshot, byStatus, sourceRevision: exactRevision }
+}
+
 const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   if (job.type === 'danetki_ai_reply' || job.type === 'danetki_guess_evaluate' || job.type === 'danetki_room_expire') return handleDanetkiJob(db, config, job)
   if (job.type === 'content_revision_build') {
@@ -853,6 +1033,7 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
   if (job.type === 'movie_pipeline') return handleMovie(job)
   if (job.type === 'anime_pipeline') return handleAnime(job)
   if (job.type === 'normalization_pipeline') return handleNormalization(job)
+  if (job.type === 'factcheck_pipeline') return handleFactcheck(job)
   if (job.type === 'user_export') return handleUserExport(job)
   if (job.type === 'event_export') {
     const events = await loadAdminTimeline(db, { ...record(job.payload), limit: 10_000 } as AdminEventsQuery)

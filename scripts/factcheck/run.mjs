@@ -113,7 +113,7 @@ const markdownReport = ({ manifest, profile, summary, findings, aiResults, patch
   const byMode = Object.entries(manifest.cardsByMode).map(([mode, count]) => `- ${mode}: ${count}`).join('\n')
   const topRules = Object.entries(findings.reduce((counts, entry) => ({ ...counts, [entry.ruleId]: (counts[entry.ruleId] ?? 0) + 1 }), {}))
     .sort((left, right) => right[1] - left[1]).slice(0, 15).map(([rule, count]) => `- ${rule}: ${count}`).join('\n') || '- none'
-  const releaseGate = aiResults.length < manifest.researchTasks
+  const releaseGate = manifest.aiCompleted < manifest.researchTasks
     ? 'INCOMPLETE: semantic AI research tasks remain unprocessed.'
     : summary.bySeverity.critical || summary.bySeverity.high
       ? 'BLOCKED: critical or high findings remain unresolved.'
@@ -137,7 +137,8 @@ ${byMode}
 ## Coverage
 
 - Deterministic checks: ${manifest.totalCards}/${manifest.totalCards} cards
-- AI research: ${aiResults.length}/${manifest.researchTasks} tasks completed
+- AI research: ${manifest.aiCompleted}/${manifest.researchTasks} tasks completed
+- AI research failures: ${manifest.aiFailed}
 - Fields profiled: ${Object.values(profile).reduce((sum, entry) => sum + entry.fields.length, 0)} mode-field combinations
 
 ## Findings
@@ -216,11 +217,13 @@ const main = async () => {
   }
   const summary = summarizeFindings(findings)
   const patchPlan = buildPatchPlan(findings)
+  const aiCompleted = aiResults.filter((entry) => !entry.researchError).length
+  const aiFailed = aiResults.length - aiCompleted
   const manifest = {
     protocolVersion: 1, runId, generatedAt: new Date().toISOString(), source: loaded.sourceMeta,
     modes: Object.keys(itemsByMode), requestedFields, research, ai, totalCards: Object.values(itemsByMode).reduce((sum, items) => sum + items.length, 0),
     cardsByMode: Object.fromEntries(Object.entries(itemsByMode).map(([mode, items]) => [mode, items.length])),
-    researchTasks: tasks.length, aiCompleted: aiResults.length, readOnly: true,
+    researchTasks: tasks.length, aiCompleted, aiFailed, readOnly: true,
   }
   await Promise.all([
     writeJson(path.join(output, 'manifest.json'), manifest), writeJson(path.join(output, 'profile.json'), profile),

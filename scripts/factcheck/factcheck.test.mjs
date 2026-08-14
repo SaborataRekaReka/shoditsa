@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildResearchTasks, contextForTask, runDatasetRules } from './core.mjs'
+import { buildPatchPlan, buildResearchTasks, contextForTask, runDatasetRules } from './core.mjs'
 import { expandDependencies } from './packs.mjs'
+import { buildContentExchangeDocument } from './prepare-release.mjs'
 
 const animal = (overrides = {}) => ({
   id: 'animal:test', mode: 'animal', titleRu: 'Тестовое животное', scientificName: 'Testus animalis',
@@ -21,6 +22,11 @@ test('animal rules catch zero legs with walking', () => {
   const itemsByMode = { animal: [animal({ legCount: 0 })] }
   const findings = runDatasetRules(itemsByMode, { animal: ['legCount', 'locomotion'] })
   assert.ok(findings.some((finding) => finding.ruleId === 'ANIMAL-LOCOMOTION-001' && finding.severity === 'critical'))
+})
+
+test('zero-legged crawling without walking is semantically consistent', () => {
+  const findings = runDatasetRules({ animal: [animal({ legCount: 0, locomotion: ['Ползание'] })] }, { animal: ['legCount', 'locomotion'] })
+  assert.ok(!findings.some((finding) => finding.ruleId === 'ANIMAL-LOCOMOTION-001'))
 })
 
 test('unknown leg count is not treated as confirmed zero', () => {
@@ -71,4 +77,32 @@ test('custom input accepts an existing arbitrary mode label', () => {
   const item = { id: 'entity:test', mode: 'product', titleRu: 'Товар', price: 10 }
   const findings = runDatasetRules({ custom: [item] }, { custom: ['price'] })
   assert.ok(!findings.some((finding) => finding.ruleId === 'COMMON-MODE-001'))
+})
+
+test('patch plan excludes unchanged AI proposals', () => {
+  const base = {
+    ruleId: 'AI-FIELD-FACTCHECK', mode: 'animal', cardId: 'animal:test', fields: ['legCount'],
+    status: 'contradiction', severity: 'high', confidence: 0.9, current: { legCount: 4 },
+    evidence: [{ url: 'https://example.test/source' }], message: 'Test', origin: 'ai-research',
+  }
+  const plan = buildPatchPlan([{ ...base, proposed: 4 }, { ...base, proposed: 2 }])
+  assert.equal(plan.length, 1)
+  assert.equal(plan[0].proposedValue, 2)
+})
+
+test('reviewed proposals become a revision-pinned content exchange', () => {
+  const snapshot = [animal({ id: 'animal:test', legCount: 4 })]
+  const document = buildContentExchangeDocument({
+    snapshot,
+    manifest: { source: { type: 'active-revision', revision: { id: '6151a93f-4f71-4a6e-929d-3d8e4754d5d2', version: 'test' } } },
+    candidates: [{
+      mode: 'animal', cardId: 'animal:test', field: 'legCount', currentValue: 4, proposedValue: 2,
+      sourceUrls: ['https://example.test/evidence'], disposition: 'human_review_required',
+    }],
+    expected: 1,
+  })
+  assert.equal(document.items.length, 1)
+  assert.equal(document.items[0].data.legCount, 2)
+  assert.equal(document.items[0].base.revisionId, '6151a93f-4f71-4a6e-929d-3d8e4754d5d2')
+  assert.match(document.items[0].base.fieldHashes.legCount, /^[a-f0-9]{64}$/)
 })

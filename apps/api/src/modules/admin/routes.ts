@@ -14,6 +14,7 @@ import {
   IntegrationKeyParamsSchema, IntegrationSecretUpdateBodySchema, MusicPipelineEstimateBodySchema, MusicPipelineManualPreviewBodySchema,
   MusicPipelineRunBodySchema, MoviePipelineEstimateBodySchema, MoviePipelineManualPreviewBodySchema, MoviePipelineRunBodySchema,
   NormalizationPipelineEstimateBodySchema, NormalizationPipelineRunBodySchema,
+  FactcheckPipelineEstimateBodySchema, FactcheckPipelineRunBodySchema,
   PipelineApprovalBodySchema, PipelineBulkDecisionBodySchema, PipelineItemDecisionBodySchema,
   CONTENT_MODE_IDS, UuidSchema,
   type AdminBlockUserBody, type AdminContentItemsQuery, type AdminDailyChallengeReplaceBody, type AdminEventsQuery, type AdminReportPatchBody, type AdminTagCreateBody,
@@ -24,6 +25,7 @@ import {
   type MusicPipelineEstimateBody, type MusicPipelineManualPreviewBody, type MusicPipelineRunBody,
   type MoviePipelineEstimateBody, type MoviePipelineManualPreviewBody, type MoviePipelineRunBody,
   type NormalizationPipelineEstimateBody, type NormalizationPipelineRunBody,
+  type FactcheckPipelineEstimateBody, type FactcheckPipelineRunBody,
   type PipelineApprovalBody, type PipelineBulkDecisionBody, type PipelineItemDecisionBody,
 } from '@shoditsa/contracts'
 import { Type } from '@sinclair/typebox'
@@ -898,6 +900,8 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
   const itemEventMessage = (item: { entityKey: string; status: string; safeErrorMessage: string | null }) => {
     if (item.status === 'failed') return `${item.entityKey}: ошибка${item.safeErrorMessage ? ` — ${item.safeErrorMessage}` : ''}`
+    if (item.status === 'verified') return `${item.entityKey}: факты подтверждены`
+    if (item.status === 'unresolved') return `${item.entityKey}: источники или смыслы требуют внимания`
     if (item.status === 'review_required') return `${item.entityKey}: готово к ручной проверке`
     if (item.status === 'approved') return `${item.entityKey}: одобрено`
     if (item.status === 'rejected') return `${item.entityKey}: отклонено`
@@ -914,11 +918,13 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const movies = last.filter((entry) => entry.pipelineKey === 'movie')
     const anime = last.filter((entry) => entry.pipelineKey === 'anime')
     const normalization = last.filter((entry) => entry.pipelineKey === 'normalization')
+    const factcheck = last.filter((entry) => entry.pipelineKey === 'factcheck')
     return { items: [
       { key: 'music', title: 'Музыка', description: 'Поиск, проверка источников и подготовка музыкальных карточек', mode: 'music', state: 'connected', lastRun: music[0] ?? null, awaitingReview: music.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'movie', title: 'Кино · Кинопоиск', description: 'Поиск фильмов, данные Кинопоиска, фактчекинг и подготовка карточек', mode: 'movie', state: 'connected', lastRun: movies[0] ?? null, awaitingReview: movies.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'anime', title: 'Аниме · Shikimori', description: 'Каталог Shikimori, роли, метаданные, фактчекинг и подготовка аниме-карточек', mode: 'anime', state: 'connected', lastRun: anime[0] ?? null, awaitingReview: anime.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'normalization', title: 'Универсальная нормализация', description: 'Выбор категории, карточек и поля; произвольная инструкция для GPT-5 mini с учетом токенов и стоимости', mode: null, state: 'connected', lastRun: normalization[0] ?? null, awaitingReview: normalization.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
+      { key: 'factcheck', title: 'Универсальный фактчек', description: 'Проверка одного поля, связанных полей или всей карточки по смыслу и источникам; результаты и исправления остаются на ревью', mode: null, state: 'connected', lastRun: factcheck[0] ?? null, awaitingReview: factcheck.filter((entry) => ['review_required', 'partially_failed'].includes(entry.status)).length },
       { key: 'translation', title: 'Машинный перевод', description: 'Единый review-контур для переводов', mode: null, state: 'not_connected', lastRun: null, awaitingReview: 0 },
     ] }
   })
@@ -1023,6 +1029,72 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     }).returning())[0]
     const job = (await deps.db.insert(backgroundJobs).values({ type: 'normalization_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id } }).returning())[0]
     await deps.db.insert(auditLog).values({ actorUserId: actor.id, action: 'pipeline.normalization.start', entityType: 'pipeline_run', entityId: run.id, before: null, after: { mode: body.mode, field: body.field, items: items.length, jobId: job.id }, requestId: request.id })
+    return reply.code(202).send({ runId: run.id, jobId: job.id })
+  })
+
+  const resolveFactcheckItems = async (body: FactcheckPipelineEstimateBody) => {
+    if (body.scope === 'selected' && !body.itemIds?.length) throw new ApiError(422, 'PIPELINE_SELECTION_REQUIRED', 'Выберите хотя бы одну карточку')
+    if (body.fields.includes('*') && body.fields.length > 1) throw new ApiError(422, 'FACTCHECK_FIELDS_INVALID', 'Для проверки всей карточки укажите только поле *')
+    const active = (await deps.db.select({
+      id: contentRevisions.id,
+      version: contentRevisions.version,
+      checksumSha256: contentRevisions.checksumSha256,
+    }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1))[0]
+    if (!active) throw new ApiError(409, 'ACTIVE_REVISION_NOT_FOUND', 'Нет активной ревизии контента')
+    const filters = [eq(contentItemVersions.revisionId, active.id), eq(contentItemVersions.mode, body.mode)]
+    if (body.scope === 'selected') filters.push(inArray(contentItemVersions.itemId, body.itemIds!))
+    if (body.query?.trim()) {
+      const needle = `%${body.query.trim()}%`
+      filters.push(or(ilike(contentItemVersions.itemId, needle), ilike(contentItemVersions.titleRu, needle), ilike(contentItemVersions.titleOriginal, needle))!)
+    }
+    const items = await deps.db.select({
+      itemId: contentItemVersions.itemId,
+      versionId: contentItemVersions.id,
+      titleRu: contentItemVersions.titleRu,
+      titleOriginal: contentItemVersions.titleOriginal,
+    }).from(contentItemVersions).where(and(...filters)).orderBy(asc(contentItemVersions.itemId)).limit(body.maxItems)
+    return { active, items }
+  }
+
+  app.post('/api/v1/admin/pipelines/factcheck/estimate', { schema: { body: FactcheckPipelineEstimateBodySchema } }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const body = request.body as FactcheckPipelineEstimateBody
+    const { active, items } = await resolveFactcheckItems(body)
+    return {
+      items: items.length,
+      aiReviewCalls: items.length,
+      estimatedCost: Number((items.length * 0.03).toFixed(2)),
+      currency: 'USD', upperBound: true, model: body.model ?? 'gpt-5-mini',
+      sourceRevision: active,
+    }
+  })
+
+  app.post('/api/v1/admin/pipelines/factcheck/runs', { schema: { body: FactcheckPipelineRunBodySchema, headers: idempotencyHeaders } }, async (request, reply) => {
+    const actor = await admin(request, reply, deps)
+    const body = request.body as FactcheckPipelineRunBody
+    const key = requireIdempotencyKey(request)
+    const existingJob = await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, key)).limit(1)
+    if (existingJob[0]) return reply.code(202).send({ runId: existingJob[0].pipelineRunId, jobId: existingJob[0].id })
+    const integrations = await loadIntegrationEnvironment(deps.db, deps.config)
+    if (!integrations.OPENAI_API_KEY) throw new ApiError(409, 'OPENAI_API_KEY_REQUIRED', 'Добавьте OpenAI API key в разделе «API-интеграции»')
+    if (body.webSearch === false) throw new ApiError(422, 'FACTCHECK_WEB_SEARCH_REQUIRED', 'Для доказательного фактчека веб-поиск должен быть включён')
+    const { active, items } = await resolveFactcheckItems(body)
+    if (!items.length) throw new ApiError(409, 'FACTCHECK_ITEMS_EMPTY', 'Под заданный фильтр не найдено карточек')
+    const run = (await deps.db.insert(pipelineRuns).values({
+      pipelineKey: 'factcheck', pipelineVersion: 'content-factcheck-v1', status: 'queued', createdBy: actor.id, itemsTotal: items.length,
+      inputDefinitionJson: {
+        scenario: 'factcheck', mode: body.mode, fields: body.fields, scope: body.scope, query: body.query ?? '',
+        itemIds: items.map((item) => item.itemId),
+        sourceRevision: { id: active.id, version: active.version, checksumSha256: active.checksumSha256 },
+      },
+      settingsJson: { maxItems: items.length, model: body.model ?? 'gpt-5-mini', webSearch: true, research: 'all', concurrency: 3, correctionConfidence: 0.75 },
+      estimatedCost: String((items.length * 0.03).toFixed(6)), resultExpiresAt: new Date(Date.now() + 30 * 86_400_000),
+    }).returning())[0]
+    const job = (await deps.db.insert(backgroundJobs).values({ type: 'factcheck_pipeline', idempotencyKey: key, createdBy: actor.id, pipelineRunId: run.id, payload: { runId: run.id } }).returning())[0]
+    await deps.db.insert(auditLog).values({
+      actorUserId: actor.id, action: 'pipeline.factcheck.start', entityType: 'pipeline_run', entityId: run.id,
+      before: null, after: { mode: body.mode, fields: body.fields, sourceRevision: active, items: items.length, jobId: job.id }, requestId: request.id,
+    })
     return reply.code(202).send({ runId: run.id, jobId: job.id })
   })
 
@@ -1434,7 +1506,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const publishedItems = await deps.db.select({ cardId: pipelineRunItems.cardId, entityKey: pipelineRunItems.entityKey }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.appliedRevisionId, activated.revision.id)))
     const publishedCardIds = [...new Set(publishedItems.map((item) => item.cardId ?? item.entityKey).filter(Boolean))]
     const tagSlug = `pipeline-run-${runId}`
-    const pipelineName = run.pipelineKey === 'normalization' ? 'Нормализация' : run.pipelineKey === 'music' ? 'Музыка' : run.pipelineKey === 'movie' ? 'Кино' : run.pipelineKey === 'anime' ? 'Аниме' : 'Пайплайн'
+    const pipelineName = run.pipelineKey === 'factcheck' ? 'Фактчек' : run.pipelineKey === 'normalization' ? 'Нормализация' : run.pipelineKey === 'music' ? 'Музыка' : run.pipelineKey === 'movie' ? 'Кино' : run.pipelineKey === 'anime' ? 'Аниме' : 'Пайплайн'
     const date = new Intl.DateTimeFormat('ru-RU', { timeZone: 'Asia/Almaty', day: '2-digit', month: '2-digit', year: 'numeric' }).format(run.createdAt)
     await deps.db.insert(contentTags).values({ name: `${pipelineName} · ${date} · ${runId.slice(0, 8)}`, slug: tagSlug, color: '#697f2f', createdBy: actor.id }).onConflictDoNothing()
     const runTag = (await deps.db.select({ id: contentTags.id, name: contentTags.name, slug: contentTags.slug, color: contentTags.color }).from(contentTags).where(eq(contentTags.slug, tagSlug)).limit(1))[0]
@@ -1461,7 +1533,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
       const failed = await tx.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(and(eq(pipelineRunItems.runId, runId), eq(pipelineRunItems.status, 'failed')))
       const failedCount = failed[0]?.count ?? 0
       if (!failedCount) throw new ApiError(409, 'NO_FAILED_ITEMS', 'Нет ошибочных элементов для повтора')
-      const jobType = run[0].pipelineKey === 'movie' ? 'movie_pipeline' : run[0].pipelineKey === 'anime' ? 'anime_pipeline' : run[0].pipelineKey === 'normalization' ? 'normalization_pipeline' : run[0].pipelineKey === 'music' ? 'music_pipeline' : null
+      const jobType = run[0].pipelineKey === 'movie' ? 'movie_pipeline' : run[0].pipelineKey === 'anime' ? 'anime_pipeline' : run[0].pipelineKey === 'normalization' ? 'normalization_pipeline' : run[0].pipelineKey === 'factcheck' ? 'factcheck_pipeline' : run[0].pipelineKey === 'music' ? 'music_pipeline' : null
       if (!jobType) throw new ApiError(409, 'PIPELINE_RETRY_UNSUPPORTED', 'Повтор ошибок для этого пайплайна недоступен')
       const active = await tx.select({ id: backgroundJobs.id }).from(backgroundJobs).where(and(
         eq(backgroundJobs.pipelineRunId, runId),
@@ -1489,15 +1561,15 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     if (!run[0]) throw new ApiError(404, 'PIPELINE_RUN_NOT_FOUND', 'Запуск не найден')
 
     const pipelineKey = String(run[0].pipelineKey)
-    const jobType = pipelineKey === 'music' ? 'music_pipeline' : pipelineKey === 'movie' ? 'movie_pipeline' : pipelineKey === 'anime' ? 'anime_pipeline' : pipelineKey === 'normalization' ? 'normalization_pipeline' : null
+    const jobType = pipelineKey === 'music' ? 'music_pipeline' : pipelineKey === 'movie' ? 'movie_pipeline' : pipelineKey === 'anime' ? 'anime_pipeline' : pipelineKey === 'normalization' ? 'normalization_pipeline' : pipelineKey === 'factcheck' ? 'factcheck_pipeline' : null
     if (!jobType) throw new ApiError(409, 'PIPELINE_CONTINUE_UNSUPPORTED', 'Продолжение недоступно для этого типа пайплайна')
 
     const input = asRecord(run[0].inputDefinitionJson)
     const scenario = String(input.scenario || 'discover')
-    const resumableScenario = pipelineKey === 'normalization' ? scenario === 'normalize' : scenario === 'manual'
+    const resumableScenario = pipelineKey === 'normalization' ? scenario === 'normalize' : pipelineKey === 'factcheck' ? scenario === 'factcheck' : scenario === 'manual'
     if (!resumableScenario) throw new ApiError(409, 'PIPELINE_CONTINUE_MANUAL_ONLY', 'Этот запуск нельзя продолжить универсальным воркером')
 
-    const nonResumableStatuses = new Set(['review_required', 'approved', 'staged', 'published', 'partially_published'])
+    const nonResumableStatuses = new Set(['completed', 'review_required', 'approved', 'staged', 'published', 'partially_published'])
     if (nonResumableStatuses.has(run[0].status)) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Запуск уже завершён; продолжать нечего')
 
     const staleAfterMs = Math.max(30_000, deps.config.workerStaleAfterMs)
@@ -1516,7 +1588,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
 
     const processedItems = await deps.db.select({ count: sql<number>`count(*)::int` }).from(pipelineRunItems).where(eq(pipelineRunItems.runId, runId))
     const processed = Math.max(Number(run[0].itemsProcessed ?? 0), Number(processedItems[0]?.count ?? 0))
-    const inputTotal = pipelineKey === 'normalization'
+    const inputTotal = pipelineKey === 'normalization' || pipelineKey === 'factcheck'
       ? (Array.isArray(input.itemIds) ? input.itemIds.filter((entry) => typeof entry === 'string' && entry.trim().length > 0).length : 0)
       : pipelineKey === 'music'
       ? (Array.isArray(input.artists) ? input.artists.map(asRecord).filter((entry) => typeof entry.artist === 'string' && entry.artist.trim().length > 0).length : 0)
@@ -1527,7 +1599,7 @@ const registerPipelineRoutes = (app: FastifyInstance, deps: Deps) => {
     const offset = Math.max(0, Math.min(total, Math.trunc(processed)))
     if (total <= 0 || offset >= total) throw new ApiError(409, 'PIPELINE_ALREADY_COMPLETE', 'Все элементы уже обработаны. Продолжать нечего')
 
-    const resumeKey = `${runId}:${pipelineKey === 'normalization' ? 'normalization' : 'manual'}:${offset}`
+    const resumeKey = `${runId}:${pipelineKey === 'normalization' ? 'normalization' : pipelineKey === 'factcheck' ? 'factcheck' : 'manual'}:${offset}`
     let job = (await deps.db.select().from(backgroundJobs).where(eq(backgroundJobs.idempotencyKey, resumeKey)).limit(1))[0]
     if (job) {
       job = (await deps.db.update(backgroundJobs).set({
