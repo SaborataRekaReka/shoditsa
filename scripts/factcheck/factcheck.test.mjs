@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import test from 'node:test'
-import { requestFactcheck } from './ai.mjs'
-import { buildPatchPlan, buildResearchTasks, contextForTask, runDatasetRules } from './core.mjs'
+import { requestFactcheck, runAiResearch } from './ai.mjs'
+import { buildPatchPlan, buildResearchTasks, contextForTask, fingerprint, runDatasetRules } from './core.mjs'
 import { expandDependencies } from './packs.mjs'
 import { buildContentExchangeDocument } from './prepare-release.mjs'
 
@@ -249,4 +252,33 @@ test('fact-check research strips JSON-unsafe control characters and unknown mode
   assert.equal(Object.hasOwn(result, 'internalMetadata'), false)
   assert.equal(Object.hasOwn(result.fieldResults[0], 'sources'), false)
   assert.equal(result.summary, 'Confirmed by evidence.')
+})
+
+test('fact-check research sanitizes cached results before persistence', async () => {
+  const cacheDir = await mkdtemp(path.join(tmpdir(), 'factcheck-cache-'))
+  const task = {
+    cardId: 'character:frog-prince', mode: 'character', fingerprint: 'cached-unsafe-json-fingerprint', webSearch: true,
+    targetFields: ['titleRu'], card: { id: 'character:frog-prince', mode: 'character', titleRu: 'Король-лягушонок' },
+    sourcePolicy: 'Use authoritative sources.', semantics: [], deterministicFindings: [],
+  }
+  const model = 'gpt-5-mini'
+  const cacheKey = fingerprint({ taskFingerprint: task.fingerprint, model, promptVersion: 1 })
+  const cached = {
+    overallVerdict: 'pass', confidence: 0.9, summary: 'Cached\u0000 result.',
+    fieldResults: [{
+      field: 'titleRu', verdict: 'pass', confidence: 0.9, reason: 'Confirmed.', proposedValue: 'Король-лягушонок',
+      sourceUrls: ['https://www.gutenberg.org/ebooks/2591'], sources: [{ label: 'Project Gutenberg\u0000 edition' }],
+    }],
+    crossFieldFindings: [], cardId: task.cardId, mode: task.mode, responseId: 'resp_cached', usage: null,
+  }
+  await writeFile(path.join(cacheDir, `${cacheKey}.json`), JSON.stringify(cached), 'utf8')
+  try {
+    let observed
+    await runAiResearch({ tasks: [task], apiKey: 'test-key', model, cacheDir, onResult: (result) => { observed = result } })
+    assert.equal(JSON.stringify(observed).includes('\\u0000'), false)
+    assert.equal(observed.summary, 'Cached result.')
+    assert.equal(observed.fieldResults[0].sources[0].label, 'Project Gutenberg edition')
+  } finally {
+    await rm(cacheDir, { recursive: true, force: true })
+  }
 })

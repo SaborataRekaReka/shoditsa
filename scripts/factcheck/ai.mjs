@@ -237,7 +237,7 @@ export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concu
     const cachePath = path.join(cacheDir, `${cacheKey}.json`)
     let result
     if (!refresh) {
-      try { result = JSON.parse(await readFile(cachePath, 'utf8')) } catch {}
+      try { result = sanitizeModelJson(JSON.parse(await readFile(cachePath, 'utf8'))) } catch {}
     }
     if (!result) {
       try {
@@ -248,6 +248,7 @@ export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concu
         result = failedResearchResult(task, error, model)
       }
     }
+    result = sanitizeModelJson(result)
     if (onResult) await onResult(result, index)
     return result
   })
