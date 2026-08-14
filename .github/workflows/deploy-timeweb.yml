@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: shoditsa-production
+  group: shoditsa-production-v2
   cancel-in-progress: false
 
 permissions:
@@ -84,13 +84,20 @@ jobs:
           REMOTE_UPLOAD_DIR="${DEPLOY_ROOT}/incoming"
           REMOTE_ARCHIVE="${REMOTE_UPLOAD_DIR}/shoditsa-web-${GITHUB_SHA}.tar.gz"
           REMOTE_API_IMAGE="${REMOTE_UPLOAD_DIR}/shoditsa-api-${GITHUB_SHA}.tar.gz"
+          REMOTE_API_PART_DIR="${REMOTE_UPLOAD_DIR}/shoditsa-api-${GITHUB_SHA}.parts"
           REMOTE_NGINX_PATCH="${REMOTE_UPLOAD_DIR}/patch-nginx-not-found-${GITHUB_SHA}.sh"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' REMOTE_UPLOAD_DIR='$REMOTE_UPLOAD_DIR' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' REMOTE_NGINX_PATCH='$REMOTE_NGINX_PATCH' bash -s" <<'REMOTE_PREPARE'
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' REMOTE_UPLOAD_DIR='$REMOTE_UPLOAD_DIR' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' REMOTE_API_PART_DIR='$REMOTE_API_PART_DIR' REMOTE_NGINX_PATCH='$REMOTE_NGINX_PATCH' bash -s" <<'REMOTE_PREPARE'
           set -euo pipefail
           install -d -m 700 "$REMOTE_UPLOAD_DIR"
           mkdir -p "$DEPLOY_ROOT/releases"
+          case "$REMOTE_API_PART_DIR" in
+            "$REMOTE_UPLOAD_DIR"/shoditsa-api-*.parts) ;;
+            *) echo "Refusing unexpected API parts path: $REMOTE_API_PART_DIR" >&2; exit 1 ;;
+          esac
           find "$REMOTE_UPLOAD_DIR" -maxdepth 1 -type f \( -name 'shoditsa-web-*.tar.gz' -o -name 'shoditsa-api-*.tar.gz' -o -name 'patch-nginx-not-found-*.sh' \) -mtime +1 -delete
           rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE" "$REMOTE_NGINX_PATCH"
+          rm -rf -- "$REMOTE_API_PART_DIR"
+          install -d -m 700 "$REMOTE_API_PART_DIR"
 
           # Failed releases can leave incomplete stage directories and old API
           # images behind. Reclaim only Shoditsa-owned, reproducible artifacts:
@@ -151,13 +158,42 @@ jobs:
           fi
           REMOTE_PREPARE
           scp -P "$DEPLOY_PORT" release-web.tar.gz "$REMOTE:$REMOTE_ARCHIVE"
-          scp -P "$DEPLOY_PORT" release-api-image.tar.gz "$REMOTE:$REMOTE_API_IMAGE"
+          API_PART_DIR='release-api-image-parts'
+          mkdir -p "$API_PART_DIR"
+          split --bytes=8M --numeric-suffixes=0 --suffix-length=3 release-api-image.tar.gz "$API_PART_DIR/part-"
+          API_PART_COUNT="$(find "$API_PART_DIR" -maxdepth 1 -type f -name 'part-*' | wc -l)"
+          API_IMAGE_SHA256="$(sha256sum release-api-image.tar.gz | awk '{ print $1 }')"
+          test "$API_PART_COUNT" -gt 0
+          export DEPLOY_PORT REMOTE REMOTE_API_PART_DIR
+          find "$API_PART_DIR" -maxdepth 1 -type f -name 'part-*' -print0 \
+            | xargs -0 -r -P 12 -n 1 bash -c 'part="$1"; scp -P "$DEPLOY_PORT" "$part" "$REMOTE:$REMOTE_API_PART_DIR/$(basename "$part")"' _
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "REMOTE_API_PART_DIR='$REMOTE_API_PART_DIR' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' API_PART_COUNT='$API_PART_COUNT' API_IMAGE_SHA256='$API_IMAGE_SHA256' bash -s" <<'REMOTE_ASSEMBLE_API'
+          set -euo pipefail
+          case "$REMOTE_API_PART_DIR" in
+            /opt/shoditsa/incoming/shoditsa-api-*.parts) ;;
+            *) echo "Refusing unexpected API parts path: $REMOTE_API_PART_DIR" >&2; exit 1 ;;
+          esac
+          mapfile -t API_PARTS < <(find "$REMOTE_API_PART_DIR" -maxdepth 1 -type f -name 'part-*' -print | sort)
+          if [ "${#API_PARTS[@]}" -ne "$API_PART_COUNT" ]; then
+            echo "Expected ${API_PART_COUNT} API image parts, found ${#API_PARTS[@]}" >&2
+            exit 1
+          fi
+          cat -- "${API_PARTS[@]}" > "$REMOTE_API_IMAGE"
+          echo "${API_IMAGE_SHA256}  ${REMOTE_API_IMAGE}" | sha256sum --check --status
+          gzip -t "$REMOTE_API_IMAGE"
+          rm -rf -- "$REMOTE_API_PART_DIR"
+          REMOTE_ASSEMBLE_API
           scp -P "$DEPLOY_PORT" scripts/deploy/patch-nginx-not-found.sh "$REMOTE:$REMOTE_NGINX_PATCH"
-          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' REMOTE_NGINX_PATCH='$REMOTE_NGINX_PATCH' bash -s" <<'REMOTE'
+          ssh -p "$DEPLOY_PORT" "$REMOTE" "DEPLOY_ROOT='$DEPLOY_ROOT' GITHUB_SHA='$GITHUB_SHA' REMOTE_ARCHIVE='$REMOTE_ARCHIVE' REMOTE_API_IMAGE='$REMOTE_API_IMAGE' REMOTE_API_PART_DIR='$REMOTE_API_PART_DIR' REMOTE_NGINX_PATCH='$REMOTE_NGINX_PATCH' bash -s" <<'REMOTE'
           set -euo pipefail
           API_DEPLOY_ROLLBACK_ARMED=0
+          case "$REMOTE_API_PART_DIR" in
+            "$DEPLOY_ROOT"/incoming/shoditsa-api-*.parts) ;;
+            *) echo "Refusing unexpected API parts path: $REMOTE_API_PART_DIR" >&2; exit 1 ;;
+          esac
           cleanup_uploads() {
             rm -f "$REMOTE_ARCHIVE" "$REMOTE_API_IMAGE" "$REMOTE_NGINX_PATCH"
+            rm -rf -- "$REMOTE_API_PART_DIR"
           }
           trap cleanup_uploads EXIT
           trap 'status=$?; failed_line=$LINENO; failed_command=$BASH_COMMAND; if [ "${API_DEPLOY_ROLLBACK_ARMED:-0}" -eq 1 ] && declare -F rollback_api >/dev/null; then rollback_api || true; fi; echo "remote deploy failed at line ${failed_line}: ${failed_command} (exit ${status})" >&2; exit "$status"' ERR
