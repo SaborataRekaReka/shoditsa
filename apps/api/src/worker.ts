@@ -958,7 +958,7 @@ const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
         model: text(settings.model) || 'gpt-5-mini',
         concurrency: Math.min(4, Math.max(1, Number(settings.concurrency) || 3)),
         cacheDir: resolve(config.enrichmentDataRoot, 'factcheck', 'cache'),
-        maxOutputTokens: 5_000,
+        maxOutputTokens: 8_000,
         onResult: async (result) => {
           const itemId = text(result.cardId)
           const card = cardById.get(itemId)

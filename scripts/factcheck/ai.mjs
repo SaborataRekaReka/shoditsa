@@ -102,14 +102,19 @@ const promptForTask = (task) => [
 
 const proxySessionId = (task, attempt) => fingerprint({ cardId: task.cardId, attempt, nonce: Date.now(), random: Math.random() }).slice(0, 20)
 
+const isRetryableFactcheckOutputError = (error) => error?.retryableFactcheckOutput === true
+  || error instanceof SyntaxError
+  || /did not return json|invalid overall verdict|result arrays are missing/i.test(error instanceof Error ? error.message : String(error))
+
 export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, proxyUrl, proxyCountry = 'de', requestTimeoutMs = proxyUrl ? 90_000 : 240_000, createTransport = createOpenAiProxyTransport, directFetch = openAiFetch, waitForRetry = (delay) => new Promise((resolve) => setTimeout(resolve, delay)) }) => {
+  const baseMaxOutputTokens = Math.max(1_200, Math.min(12_000, Math.trunc(maxOutputTokens)))
   const body = {
     model, input: promptForTask(task), reasoning: { effort: 'low' },
-    max_output_tokens: Math.max(1_200, Math.min(12_000, Math.trunc(maxOutputTokens))),
     ...(task.webSearch ? { tools: [{ type: 'web_search', search_context_size: 'medium' }], tool_choice: 'required' } : {}),
     text: { format: { type: 'json_schema', name: 'content_factcheck_result', strict: false, schema: responseSchema } },
   }
   let lastError
+  let outputFailures = 0
   const attempts = proxyUrl ? 12 : 4
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), requestTimeoutMs)
@@ -119,7 +124,7 @@ export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, p
     try {
       const response = await (transport?.fetchImpl ?? directFetch)('https://api.openai.com/v1/responses', {
         method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body), signal: controller.signal,
+        body: JSON.stringify({ ...body, max_output_tokens: Math.min(12_000, baseMaxOutputTokens + outputFailures * 2_500) }), signal: controller.signal,
       })
       const payload = await response.json()
       if (!response.ok) {
@@ -134,6 +139,10 @@ export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, p
         if (!regionalError && ![408, 409, 429, 500, 502, 503, 504].includes(response.status)) throw Object.assign(error, { nonRetryable: true })
         throw error
       }
+      if (payload?.status === 'incomplete') {
+        const reason = text(payload?.incomplete_details?.reason) || 'unknown reason'
+        throw Object.assign(new Error(`OpenAI fact-check response was incomplete: ${reason}`), { retryableFactcheckOutput: true })
+      }
       const result = validateResult(task, parseJson(extractResponseText(payload)))
       return {
         ...result, taskFingerprint: task.fingerprint, mode: task.mode, cardId: task.cardId,
@@ -143,7 +152,12 @@ export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, p
     } catch (error) {
       lastError = error
       const regionalError = isOpenAiWebSearchRegionalError(error)
-      const retryable = regionalError || isTransientOpenAiError(error)
+      const outputError = isRetryableFactcheckOutputError(error)
+      if (outputError) {
+        outputFailures += 1
+        if (outputFailures >= 3) throw Object.assign(error, { code: 'OPENAI_INVALID_STRUCTURED_OUTPUT' })
+      }
+      const retryable = regionalError || outputError || isTransientOpenAiError(error)
       if (error?.nonRetryable || !retryable) throw error
       if (attempt === attempts - 1) {
         if (regionalError && proxyUrl) throw Object.assign(error, { fatal: true, code: 'OPENAI_PROXY_REGION_UNAVAILABLE' })
