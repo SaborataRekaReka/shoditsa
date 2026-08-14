@@ -8,7 +8,7 @@ export const isOpenAiWebSearchRegionalError = (error) => /country,\s*region,\s*o
   error instanceof Error ? error.message : String(error),
 )
 
-export const isTransientOpenAiError = (error) => /fetch failed|network|socket|econnreset|econnrefused|etimedout|openai http (408|409|429|5\d\d)|an error occurred while processing your request/i.test(
+export const isTransientOpenAiError = (error) => /fetch failed|network|socket|aborted|timeout|econnreset|econnrefused|etimedout|openai http (408|409|429|5\d\d)|an error occurred while processing your request/i.test(
   error instanceof Error ? error.message : String(error),
 )
 

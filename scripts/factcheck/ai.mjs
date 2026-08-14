@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { openAiFetch } from '../shared/openai-fetch.mjs'
+import { createOpenAiProxyTransport, openAiFetch } from '../shared/openai-fetch.mjs'
+import { isOpenAiWebSearchRegionalError, isTransientOpenAiError } from '../shared/openai-web-search.mjs'
 import { fingerprint, isRecord, text, valueType, VERDICTS } from './core.mjs'
 
 const extractResponseText = (payload) => typeof payload.output_text === 'string'
@@ -99,7 +100,9 @@ const promptForTask = (task) => [
   `Deterministic findings to verify, not blindly accept: ${JSON.stringify(task.deterministicFindings)}`,
 ].join('\n\n')
 
-const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens }) => {
+const proxySessionId = (task, attempt) => fingerprint({ cardId: task.cardId, attempt, nonce: Date.now(), random: Math.random() }).slice(0, 20)
+
+export const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens, proxyUrl, proxyCountry = 'de', createTransport = createOpenAiProxyTransport, directFetch = openAiFetch, waitForRetry = (delay) => new Promise((resolve) => setTimeout(resolve, delay)) }) => {
   const body = {
     model, input: promptForTask(task), reasoning: { effort: 'low' },
     max_output_tokens: Math.max(1_200, Math.min(12_000, Math.trunc(maxOutputTokens))),
@@ -107,10 +110,14 @@ const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens }) => {
     text: { format: { type: 'json_schema', name: 'content_factcheck_result', strict: false, schema: responseSchema } },
   }
   let lastError
-  for (let attempt = 0; attempt < 4; attempt += 1) {
+  const attempts = proxyUrl ? 12 : 4
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
     const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 240_000)
+    const transport = proxyUrl ? createTransport(proxyUrl, {
+      stabilizeIproyal: { country: proxyCountry, sessionId: proxySessionId(task, attempt), lifetime: '24h' },
+    }) : null
     try {
-      const response = await openAiFetch('https://api.openai.com/v1/responses', {
+      const response = await (transport?.fetchImpl ?? directFetch)('https://api.openai.com/v1/responses', {
         method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body), signal: controller.signal,
       })
@@ -122,7 +129,9 @@ const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens }) => {
           || /no credits remaining|billing|quota/i.test(error.message)) {
           throw Object.assign(error, { fatal: true, nonRetryable: true, code: errorCode || 'billing_unavailable' })
         }
-        if (![408, 409, 429, 500, 502, 503, 504].includes(response.status)) throw Object.assign(error, { nonRetryable: true })
+        const regionalError = isOpenAiWebSearchRegionalError(error)
+        if (regionalError && proxyUrl) error.code = 'OPENAI_PROXY_REGION_UNAVAILABLE'
+        if (!regionalError && ![408, 409, 429, 500, 502, 503, 504].includes(response.status)) throw Object.assign(error, { nonRetryable: true })
         throw error
       }
       const result = validateResult(task, parseJson(extractResponseText(payload)))
@@ -133,11 +142,18 @@ const requestFactcheck = async ({ task, apiKey, model, maxOutputTokens }) => {
       }
     } catch (error) {
       lastError = error
-      if (error?.nonRetryable || attempt === 3) throw error
+      const regionalError = isOpenAiWebSearchRegionalError(error)
+      const retryable = regionalError || isTransientOpenAiError(error)
+      if (error?.nonRetryable || !retryable) throw error
+      if (attempt === attempts - 1) {
+        if (regionalError && proxyUrl) throw Object.assign(error, { fatal: true, code: 'OPENAI_PROXY_REGION_UNAVAILABLE' })
+        throw error
+      }
     } finally {
       clearTimeout(timer)
+      if (transport) await transport.close().catch(() => {})
     }
-    await new Promise((resolve) => setTimeout(resolve, 1_500 * (attempt + 1)))
+    await waitForRetry(Math.min(2_000, 300 * (attempt + 1)))
   }
   throw lastError ?? new Error('AI fact-check request failed')
 }
@@ -168,7 +184,7 @@ const failedResearchResult = (task, error, model) => ({
   },
 })
 
-export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concurrency = 3, cacheDir, refresh = false, maxOutputTokens = 5_000, onResult }) => {
+export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concurrency = 3, cacheDir, refresh = false, maxOutputTokens = 5_000, proxyUrl = process.env.OPENAI_OUTBOUND_PROXY_URL?.trim() || process.env.MUSIC_OUTBOUND_PROXY_URL?.trim() || '', proxyCountry = process.env.OPENAI_PROXY_COUNTRY?.trim() || 'de', onResult }) => {
   if (!text(apiKey)) throw new Error('OPENAI_API_KEY is required for --ai=web')
   await mkdir(cacheDir, { recursive: true })
   return mapPool(tasks, concurrency, async (task, index) => {
@@ -180,7 +196,7 @@ export const runAiResearch = async ({ tasks, apiKey, model = 'gpt-5-mini', concu
     }
     if (!result) {
       try {
-        result = await requestFactcheck({ task, apiKey, model, maxOutputTokens })
+        result = await requestFactcheck({ task, apiKey, model, maxOutputTokens, proxyUrl, proxyCountry })
         await writeFile(cachePath, `${JSON.stringify(result, null, 2)}\n`, 'utf8')
       } catch (error) {
         if (error?.fatal) throw error

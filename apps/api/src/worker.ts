@@ -849,6 +849,8 @@ type FactcheckAiModule = {
   runAiResearch: (input: {
     tasks: Array<Json & { cardId: string; mode: string }>
     apiKey: string
+    proxyUrl?: string
+    proxyCountry?: string
     model: string
     concurrency: number
     cacheDir: string
@@ -935,6 +937,8 @@ const handleFactcheck = async (job: typeof backgroundJobs.$inferSelect) => {
     await ai.runAiResearch({
       tasks,
       apiKey: environment.OPENAI_API_KEY,
+      proxyUrl,
+      proxyCountry: process.env.OPENAI_PROXY_COUNTRY?.trim() || 'de',
       model: text(settings.model) || 'gpt-5-mini',
       concurrency: Math.min(4, Math.max(1, Number(settings.concurrency) || 3)),
       cacheDir: resolve(config.enrichmentDataRoot, 'factcheck', 'cache'),

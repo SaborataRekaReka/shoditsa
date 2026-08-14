@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { requestFactcheck } from './ai.mjs'
 import { buildPatchPlan, buildResearchTasks, contextForTask, runDatasetRules } from './core.mjs'
 import { expandDependencies } from './packs.mjs'
 import { buildContentExchangeDocument } from './prepare-release.mjs'
@@ -105,4 +106,44 @@ test('reviewed proposals become a revision-pinned content exchange', () => {
   assert.equal(document.items[0].data.legCount, 2)
   assert.equal(document.items[0].base.revisionId, '6151a93f-4f71-4a6e-929d-3d8e4754d5d2')
   assert.match(document.items[0].base.fieldHashes.legCount, /^[a-f0-9]{64}$/)
+})
+
+test('fact-check research rotates a pinned IPRoyal session after a regional refusal', async () => {
+  let attempts = 0
+  let closes = 0
+  const sessions = []
+  const delays = []
+  const result = await requestFactcheck({
+    task: {
+      cardId: 'character:test', mode: 'character', fingerprint: 'task-fingerprint', webSearch: true,
+      targetFields: ['titleRu'], card: { id: 'character:test', mode: 'character', titleRu: 'Тест' },
+      sourcePolicy: 'Use authoritative sources.', semantics: [], deterministicFindings: [],
+    },
+    apiKey: 'test-key', model: 'gpt-5-mini', maxOutputTokens: 1_200,
+    proxyUrl: 'http://user:password@geo.iproyal.com:12321', proxyCountry: 'de',
+    createTransport: (_url, options) => {
+      sessions.push(options.stabilizeIproyal.sessionId)
+      return {
+        fetchImpl: async () => {
+          attempts += 1
+          if (attempts === 1) return new Response(JSON.stringify({ error: { message: 'Country, region, or territory not supported' } }), { status: 403 })
+          return new Response(JSON.stringify({
+            id: 'resp_test', output_text: JSON.stringify({
+              overallVerdict: 'pass', confidence: 0.9, summary: 'Supported by evidence.',
+              fieldResults: [{ field: 'titleRu', verdict: 'pass', confidence: 0.9, reason: 'Confirmed.', proposedValue: 'Тест', sourceUrls: ['https://example.test/source'] }],
+              crossFieldFindings: [],
+            }),
+            output: [{ type: 'web_search_call' }], usage: { input_tokens: 10, output_tokens: 5 },
+          }), { status: 200 })
+        },
+        close: async () => { closes += 1 },
+      }
+    },
+    waitForRetry: async (delay) => { delays.push(delay) },
+  })
+  assert.equal(attempts, 2)
+  assert.equal(closes, 2)
+  assert.equal(new Set(sessions).size, 2)
+  assert.deepEqual(delays, [300])
+  assert.equal(result.overallVerdict, 'pass')
 })
