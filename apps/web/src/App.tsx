@@ -146,6 +146,8 @@ const FriendsRoomIntroScreen = lazy(() => import('./features/friends-room/Friend
 const LegalScreen = lazy(() => import('./features/legal/LegalScreen').then((module) => ({ default: module.LegalScreen })))
 const DanetkiJoinPage = lazy(() => import('./features/danetki/DanetkiEntryPages').then((module) => ({ default: module.DanetkiJoinPage })))
 const DanetkiLobbyPage = lazy(() => import('./features/danetki/DanetkiEntryPages').then((module) => ({ default: module.DanetkiLobbyPage })))
+const DanetkiCatalogPage = lazy(() => import('./features/danetki/DanetkiCatalogPage').then((module) => ({ default: module.DanetkiCatalogPage })))
+const DanetkiStoryPage = lazy(() => import('./features/danetki/DanetkiCatalogPage').then((module) => ({ default: module.DanetkiStoryPage })))
 const ConnectionsTitleScreen = lazy(() => import('./features/connections/ConnectionsTitleScreen').then((module) => ({ default: module.ConnectionsTitleScreen })))
 const RewatchScreen = lazy(() => import('./features/archive/RewatchScreen').then((module) => ({ default: module.RewatchScreen })))
 const ProfileScreen = lazy(() => import('./features/profile/ProfileScreen').then((module) => ({ default: module.ProfileScreen })))
@@ -4685,6 +4687,8 @@ function GameApp() {
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
+    if (target.screen === 'danetki-catalog') return navigate({ to: '/danetki', replace })
+    if (target.screen === 'danetki-story' && target.danetkiSlug) return navigate({ to: '/danetki/$slug', params: { slug: target.danetkiSlug }, replace })
     if (target.screen === 'friends-intro') return navigate({ to: '/games/together', replace })
     if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
     if (target.screen === 'danetki-join' && target.inviteToken) return navigate({ to: '/danetki/join/$token', params: { token: target.inviteToken }, replace })
@@ -4734,6 +4738,7 @@ function GameApp() {
       packId: routedScreen === 'special' ? playerRouteFromPathname(routeLocation.pathname).packId : undefined,
       legalDocument: routedScreen === 'legal' ? playerRouteFromPathname(routeLocation.pathname).legalDocument : undefined,
       inviteToken: routedScreen === 'danetki-join' ? playerRouteFromPathname(routeLocation.pathname).inviteToken : undefined,
+      danetkiSlug: routedScreen === 'danetki-story' ? playerRouteFromPathname(routeLocation.pathname).danetkiSlug : undefined,
     }
     const desiredPath = pathnameForPlayerRoute(target)
     if (applyingRouteRef.current) {
@@ -5482,6 +5487,10 @@ function GameApp() {
     {screen === 'friends-room' && !canAccessFriendsRoom && <main className="loading" role="status">{serverRuntime.loading ? 'Проверяем доступ…' : 'Переходим к регистрации…'}</main>}
 
     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} canCreateGroupRoom={canCreateFriendsRoomAccess} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onCreateRoom={() => selectFriendsRoom('danetki')} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
+
+    {screen === 'danetki-catalog' && <DanetkiCatalogPage onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+
+    {screen === 'danetki-story' && <DanetkiStoryPage slug={playerRouteFromPathname(routeLocation.pathname).danetkiSlug ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onJoined={(session) => activateServerSession(session, 'hub')} />}
 

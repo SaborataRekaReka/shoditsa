@@ -42,3 +42,26 @@ docs/music-music-mbwd-retry.summary.json
 docs/music-remaining-cards.after-rules.json
 docs/music-hints-payload*.json
 docs/music-hints-output*.json
+
+# Local generated artifacts managed by project-storage-maintenance
+node_modules/
+.next/
+.nuxt/
+dist/
+build/
+coverage/
+.cache/
+.parcel-cache/
+.turbo/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.tmp/
+.downloads/
+deploy-*.tgz
+deploy-*.tar.gz
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/

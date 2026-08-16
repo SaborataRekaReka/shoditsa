@@ -1,7 +1,7 @@
 import { isPlayableModeId, type PlayableModeId } from '@shoditsa/contracts'
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
 
-export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-join' | 'friends-intro' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
+export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-catalog' | 'danetki-story' | 'danetki-join' | 'friends-intro' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
 
 export type PlayerRouteState = {
   screen: PlayerScreen
@@ -10,6 +10,7 @@ export type PlayerRouteState = {
   packId?: string
   legalDocument?: LegalDocumentSlug
   inviteToken?: string
+  danetkiSlug?: string
 }
 
 const decodedSegment = (value: string) => {
@@ -32,9 +33,12 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   if (normalized === '/purchase/return') return { screen: 'purchase-return' }
   if (normalized === '/review/music') return { screen: 'review', mode: 'music' }
   if (normalized === '/games/danetki') return { screen: 'danetki' }
+  if (normalized === '/danetki') return { screen: 'danetki-catalog' }
   if (normalized === '/games/together') return { screen: 'friends-intro' }
   const danetkiJoinMatch = normalized.match(/^\/danetki\/join\/([^/]+)$/)
   if (danetkiJoinMatch) return { screen: 'danetki-join', inviteToken: decodedSegment(danetkiJoinMatch[1]) }
+  const danetkiStoryMatch = normalized.match(/^\/danetki\/([^/]+)$/)
+  if (danetkiStoryMatch) return { screen: 'danetki-story', danetkiSlug: decodedSegment(danetkiStoryMatch[1]) }
   const legalMatch = normalized.match(/^\/legal\/([^/]+)$/)
   if (legalMatch) {
     const legalDocument = decodedSegment(legalMatch[1])
@@ -67,8 +71,10 @@ export const playerRouteFromLocation = (pathname: string, search = ''): PlayerRo
     : route
 }
 
-export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken }: PlayerRouteState) => {
+export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken, danetkiSlug }: PlayerRouteState) => {
   if (screen === 'danetki') return '/games/danetki'
+  if (screen === 'danetki-catalog') return '/danetki'
+  if (screen === 'danetki-story' && danetkiSlug) return `/danetki/${encodeURIComponent(danetkiSlug)}`
   if ((screen === 'title' || screen === 'game') && mode === 'danetki') return '/games/danetki'
   if (screen === 'friends-intro') return '/games/together'
   if (screen === 'friends-room') return '/games/together'

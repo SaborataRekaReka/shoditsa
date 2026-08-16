@@ -13,6 +13,12 @@ import {
 } from '../../apps/web/src/app/seo-content'
 import { seoRouteFromPathname, structuredDataForSeoRoute } from '../../apps/web/src/app/seo'
 import { LEGAL_DOCUMENT_SLUGS } from '../../apps/web/src/features/legal/legal'
+import {
+  DANETKI_CATALOG_ITEMS,
+  danetkiDifficultyLabel,
+  danetkiStoryPath,
+  type DanetkiCatalogItem,
+} from '../../apps/web/src/features/danetki/danetki-catalog'
 
 const distRoot = resolve('dist')
 const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club'] as const
@@ -81,6 +87,15 @@ const renderHubGuideSummary = () => `<summary class="hub-guide__summary"><span c
 
 const renderHomeFallback = () => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><div class="hub-hero__facts" aria-label="Об игре"><span><strong>11 игр</strong></span><span><strong>1 загадка в день</strong></span><span><strong>10 попыток</strong></span></div><h1>${escapeHtml(HOME_SEO.heading)}</h1><p>${escapeHtml(HOME_SEO.lead)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="#hub-guide">Узнать больше</a><a class="ui-button ui-button--secondary" href="/games/movie">Играть сейчас</a></div></div><div class="hub-hero__visual" aria-hidden="true"><img src="/images/hero.webp" alt="" width="1122" height="913"></div></section><details class="hub-guide" id="hub-guide">${renderHubGuideSummary()}<div class="hub-guide__drawer"><header class="hub-guide__intro"><span>Путеводитель · без спойлеров</span><h2>${escapeHtml(HOME_SEO.heading)}</h2><p>${escapeHtml(HOME_SEO.lead)}</p></header><div class="hub-guide__content"><section class="hub-guide__story" aria-label="О платформе">${renderParagraphs(HOME_SEO)}</section><nav class="hub-guide__game-links" aria-label="Все ежедневные игры"><span>↗ Все игровые маршруты</span><div>${renderGameLinks()}</div></nav></div></div></details></article></main>`
 const renderUtilityFallback = (content: SeoPageContent) => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead || content.description)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="${escapeHtml(content.canonicalPath)}">Открыть страницу</a><a class="ui-button ui-button--secondary" href="/">К играм</a></div></div></section><details class="hub-guide" open><summary class="hub-guide__summary"><span class="hub-guide__summary-title"><strong>Подробнее</strong></span></summary><div class="hub-guide__drawer"><header class="hub-guide__intro"><h2>${escapeHtml(content.heading)}</h2><p>${escapeHtml(content.lead || content.description)}</p></header><div class="hub-guide__content"><section class="hub-guide__story">${renderParagraphs(content)}</section></div></div></details></article></main>`
+
+const renderDanetkiCard = (item: DanetkiCatalogItem, index: number) => `<article class="danetki-catalog-card"><div class="danetki-catalog-card__number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div><div class="danetki-catalog-card__copy"><div class="danetki-catalog-card__meta"><span>${escapeHtml(danetkiDifficultyLabel(item.difficulty))}</span>${item.genres.slice(0, 1).map((genre) => `<span>${escapeHtml(genre)}</span>`).join('')}</div><h2><a href="${escapeHtml(danetkiStoryPath(item))}">${escapeHtml(item.titleRu)}</a></h2><p>${escapeHtml(item.condition)}</p><a class="danetki-catalog-card__action" href="${escapeHtml(danetkiStoryPath(item))}">Проверить свою версию <span aria-hidden="true">→</span></a></div></article>`
+
+const renderDanetkiCatalogFallback = (content: SeoPageContent) => `<main class="danetki-catalog-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span><span>Данетки с ответами</span></nav><header class="danetki-catalog-hero"><div class="danetki-catalog-hero__copy"><span class="danetki-catalog-eyebrow">Каталог логических историй</span><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead)}</p><div class="danetki-catalog-hero__actions"><a class="ui-button ui-button--primary" href="/games/danetki?from=catalog#game">Играть с ИИ без спойлеров</a><a class="ui-button ui-button--secondary" href="#stories">Смотреть истории</a></div></div><dl class="danetki-catalog-facts"><div><dt>Историй сейчас</dt><dd>${DANETKI_CATALOG_ITEMS.length}</dd></div><div><dt>Формат</dt><dd>Да · Нет</dd></div><div><dt>Ответы</dt><dd>Под спойлером</dd></div></dl></header><section class="danetki-catalog-list" id="stories"><div class="danetki-catalog-section-head"><div><span>Подборка редакции</span><h2>Все данетки</h2></div><p>Новые истории будут добавляться после редакционной проверки.</p></div><div class="danetki-catalog-grid">${DANETKI_CATALOG_ITEMS.map(renderDanetkiCard).join('')}</div></section><section class="danetki-catalog-guide"><span class="danetki-catalog-eyebrow">Короткие правила</span><h2>Как решать данетки</h2><ol><li><strong>01</strong><span>Прочитайте условие и отделите факты от предположений.</span></li><li><strong>02</strong><span>Проверяйте место, время, мотив и роли участников вопросами «да» или «нет».</span></li><li><strong>03</strong><span>Соберите цельную версию и только затем откройте ответ.</span></li></ol></section></main>`
+
+const renderDanetkiStoryFallback = (item: DanetkiCatalogItem) => {
+  const related = DANETKI_CATALOG_ITEMS.filter((candidate) => candidate.id !== item.id).slice(0, 3)
+  return `<main class="danetki-catalog-main danetki-story-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span><a href="/danetki">Данетки</a><span>/</span><span>${escapeHtml(item.titleRu)}</span></nav><article class="danetki-story"><header class="danetki-story__header"><div><span class="danetki-catalog-eyebrow">Данетка с ответом</span><h1>${escapeHtml(item.titleRu)}</h1><div class="danetki-story__tags"><span>${escapeHtml(danetkiDifficultyLabel(item.difficulty))}</span>${item.genres.map((genre) => `<span>${escapeHtml(genre)}</span>`).join('')}</div></div></header><section class="danetki-story__condition"><span>Условие</span><h2>Что произошло?</h2><p>${escapeHtml(item.condition)}</p></section><section class="danetki-story__questions"><span>Если не знаете, с чего начать</span><h2>Стартовые вопросы</h2><ul>${item.starterQuestions.map((question) => `<li><span>${escapeHtml(question)}</span></li>`).join('')}</ul></section><details class="danetki-story__answer"><summary><span><strong>Показать ответ</strong><small>Откройте, когда соберёте свою версию</small></span><span aria-hidden="true">+</span></summary><div><span>Авторская разгадка</span><p>${escapeHtml(item.solution)}</p></div></details><aside class="danetki-story__play"><div><span>Хотите настоящее расследование?</span><h2>Задавайте вопросы ИИ-ведущему</h2><p>В игре ответ скрыт: ведущий реагирует на версии и помогает восстановить историю.</p></div><a class="ui-button ui-button--primary" href="/games/danetki?from=story&amp;story=${escapeHtml(danetkiStoryPath(item).split('/').at(-1) ?? '')}#game">Играть без спойлеров</a></aside></article><section class="danetki-story-related"><div class="danetki-catalog-section-head"><div><span>Следующие дела</span><h2>Похожие данетки</h2></div><a href="/danetki">Все истории →</a></div><div class="danetki-catalog-grid">${related.map(renderDanetkiCard).join('')}</div></section></main>`
+}
 
 const renderArtifactDossier = (content: GameSeoContent) => {
   const presentation = GAME_GUIDE_PRESENTATION[content.mode]
@@ -152,14 +167,19 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
   if ('mode' in content && TITLE_POSTER_PATHS[content.mode]) html = addImagePreload(html, TITLE_POSTER_PATHS[content.mode]!)
   html = html.replace(/<div id="root">[^]*?<\/div>\s*<noscript>/i, `<div id="root">${fallback}</div>\n    <noscript>`)
   const isGamePage = 'mode' in content
+  const danetkiPageFragment = route.kind === 'danetki-catalog'
+    ? 'class="danetki-catalog-hero"'
+    : route.kind === 'danetki-story'
+      ? 'class="danetki-story"'
+      : null
   const requiredFragments = [
     `<title>${escapeHtml(content.title)}</title>`,
     `content="${INDEXABLE_ROBOTS}"`,
     `href="${canonicalUrl}"`,
     'type="application/ld+json"',
     '<h1',
-    isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"',
-    isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"',
+    danetkiPageFragment ?? (isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
+    danetkiPageFragment ?? (isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"'),
   ]
   for (const fragment of requiredFragments) {
     if (!html.includes(fragment)) throw new Error(`SEO page ${content.canonicalPath} is missing ${fragment}`)
@@ -169,7 +189,7 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
 }
 
 const renderSitemap = () => {
-  const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO, ...INDEXABLE_UTILITY_PATHS.map((canonicalPath) => ({ canonicalPath })), ...LEGAL_DOCUMENT_SLUGS.map((slug) => ({ canonicalPath: `/legal/${slug}` }))]
+  const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO, { canonicalPath: '/danetki' }, ...DANETKI_CATALOG_ITEMS.map((item) => ({ canonicalPath: danetkiStoryPath(item) })), ...INDEXABLE_UTILITY_PATHS.map((canonicalPath) => ({ canonicalPath })), ...LEGAL_DOCUMENT_SLUGS.map((slug) => ({ canonicalPath: `/legal/${slug}` }))]
   const lastmod = new Date().toISOString().slice(0, 10)
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((page) => `  <url><loc>${escapeXml(new URL(page.canonicalPath, `${SITE_ORIGIN}/`).toString())}</loc><lastmod>${lastmod}</lastmod></url>`).join('\n')}\n</urlset>\n`
 }
@@ -197,6 +217,15 @@ for (const game of INDEXABLE_GAME_SEO) {
   await writeFile(target, buildPage(template, game, fallback), 'utf8')
 }
 
+const danetkiCatalogContent = seoRouteFromPathname('/danetki')
+await writeFile(resolve(distRoot, 'seo', 'danetki.html'), buildPage(template, danetkiCatalogContent, renderDanetkiCatalogFallback(danetkiCatalogContent)), 'utf8')
+for (const item of DANETKI_CATALOG_ITEMS) {
+  const content = seoRouteFromPathname(danetkiStoryPath(item))
+  const target = resolve(distRoot, 'seo', 'danetki', `${danetkiStoryPath(item).split('/').at(-1)}.html`)
+  await mkdir(resolve(target, '..'), { recursive: true })
+  await writeFile(target, buildPage(template, content, renderDanetkiStoryFallback(item)), 'utf8')
+}
+
 for (const canonicalPath of INDEXABLE_UTILITY_PATHS) {
   const content = seoRouteFromPathname(canonicalPath)
   const target = resolve(distRoot, 'seo', `${canonicalPath.slice(1)}.html`)
@@ -214,6 +243,7 @@ for (const slug of LEGAL_DOCUMENT_SLUGS) {
 
 await writeFile(resolve(distRoot, 'sitemap.xml'), renderSitemap(), 'utf8')
 await writeFile(resolve(distRoot, 'robots.txt'), renderRobots(), 'utf8')
-await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath), ...INDEXABLE_UTILITY_PATHS, ...LEGAL_DOCUMENT_SLUGS.map((slug) => `/legal/${slug}`)] }, null, 2)}\n`, 'utf8')
+const manifestPaths = [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath), '/danetki', ...DANETKI_CATALOG_ITEMS.map(danetkiStoryPath), ...INDEXABLE_UTILITY_PATHS, ...LEGAL_DOCUMENT_SLUGS.map((slug) => `/legal/${slug}`)]
+await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: manifestPaths }, null, 2)}\n`, 'utf8')
 
-console.log(`[seo] generated ${INDEXABLE_GAME_SEO.length + INDEXABLE_UTILITY_PATHS.length + LEGAL_DOCUMENT_SLUGS.length + 1} indexable pages, sitemap.xml and robots.txt`)
+console.log(`[seo] generated ${manifestPaths.length} indexable pages, sitemap.xml and robots.txt`)

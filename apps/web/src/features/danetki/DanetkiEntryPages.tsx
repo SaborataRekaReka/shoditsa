@@ -11,6 +11,8 @@ import { publicAssetUrl } from '../../app/public-asset'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
 import { InlineAlert, TextInput } from '../../components/ui'
+import { trackClientEvent } from '../../app/client-events'
+import { trackMetrikaGoal } from '../../app/metrics'
 import './DanetkiGamePage.css'
 import './DanetkiEntryPages.css'
 
@@ -45,6 +47,10 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
     ? canCreateGroupRoom
     : launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay)))
   const launch = () => {
+    const source = typeof window === 'undefined' ? 'direct' : new URLSearchParams(window.location.search).get('from') ?? 'direct'
+    const payload = { roomMode, source, dailyAvailable, mode: 'danetki' }
+    trackClientEvent('danetki_start_clicked', payload)
+    trackMetrikaGoal('danetki_start_clicked', payload)
     if (roomMode === 'group') {
       if (!canCreateGroupRoom) return
       onCreateRoom()
@@ -63,6 +69,12 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
         ? `Начать игру · ${launchCost} билетов`
         : 'Начать игру'
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
+  useEffect(() => {
+    const source = typeof window === 'undefined' ? 'direct' : new URLSearchParams(window.location.search).get('from') ?? 'direct'
+    const payload = { mode: 'danetki', source, route: '/games/danetki' }
+    trackClientEvent('danetki_landing_view', payload)
+    trackMetrikaGoal('danetki_landing_view', payload)
+  }, [])
   useEffect(() => {
     if (!canCreateGroupRoom && roomMode === 'group') setRoomMode('solo')
   }, [canCreateGroupRoom, roomMode])

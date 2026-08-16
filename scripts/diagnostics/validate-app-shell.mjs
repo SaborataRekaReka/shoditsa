@@ -251,6 +251,7 @@ const sourceChecks = [
     required: [
       ['route-specific game HTML', /try_files\s+\/seo\$uri\.html\s+=404/],
       ['utility routes use route-specific HTML', /location\s+~\s+\^\/\(partners\|specials\|club\)\$\s*\{[^}]*try_files\s+\/seo\$uri\.html\s+=404/s],
+      ['Danetki catalog uses route-specific HTML', /location\s+~\s+\^\/danetki\(\?:\/\[\^\/\]\+\)\?\$\s*\{[^}]*try_files\s+\/seo\$uri\.html\s+=404/s],
       ['hosted game refresh routes', /location\s+~\s+\^\/games\/\([^)]*animal[^)]*book[^)]*character[^)]*connections[^)]*danetki[^)]*\)\$/],
       ['immutable opaque animal media', /location\s+~\*\s+"\^\/\(images\/animals\/silhouettes\|audio\/animals\)\/\[a-f0-9\]\{24\}\\\.\(webp\|ogg\)\$"\s*\{[^]*max-age=31536000,\s*immutable/],
       ['friends room SPA refresh route', /location\s+=\s+\/games\/together\s*\{[^}]*try_files\s+\/index\.html\s+=404/s],

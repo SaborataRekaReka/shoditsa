@@ -94,6 +94,20 @@ describe('search index contract', () => {
     expect(GAME_SEO.diagnosis.relatedModes).toContain('danetki')
   })
 
+  it('publishes a separate Danetki catalog and story pages without cannibalizing the game landing', () => {
+    const catalog = seoRouteFromPathname('/danetki')
+    const story = seoRouteFromPathname('/danetki/verevka')
+    const game = seoRouteFromPathname('/games/danetki')
+    expect(catalog.kind).toBe('danetki-catalog')
+    expect(catalog.indexable).toBe(true)
+    expect(catalog.title).toContain('Данетки с ответами')
+    expect(story.kind).toBe('danetki-story')
+    expect(story.indexable).toBe(true)
+    expect(story.title).toContain('Верёвка')
+    expect(game.title).toContain('Данетки онлайн')
+    expect(new Set([catalog.canonicalPath, story.canonicalPath, game.canonicalPath]).size).toBe(3)
+  })
+
   it('points a loaded session at its public game while keeping it out of the index', () => {
     const route = seoRouteForRuntime('/sessions/id-1', '/games/diagnosis')
 

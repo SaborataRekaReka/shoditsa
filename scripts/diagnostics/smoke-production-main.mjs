@@ -40,6 +40,25 @@ for (const mode of [...manifest.playableModes, 'danetki']) {
   if (!pageHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${pathname} build marker does not match main`)
 }
 
+const danetkiCatalogPath = '/danetki'
+if (!sitemap.includes(`<loc>${baseUrl}${danetkiCatalogPath}</loc>`)) throw new Error('Sitemap is missing the Danetki catalog')
+const danetkiCatalogHtml = await fetchText(`${danetkiCatalogPath}?smoke=${Date.now()}`)
+if (!danetkiCatalogHtml.includes(`<link rel="canonical" href="${baseUrl}${danetkiCatalogPath}"`)) throw new Error('Danetki catalog has no matching canonical URL')
+if (!danetkiCatalogHtml.includes('name="robots" content="index,follow')) throw new Error('Danetki catalog is not indexable in server HTML')
+if (!danetkiCatalogHtml.includes('CollectionPage') || !danetkiCatalogHtml.includes('ItemList')) throw new Error('Danetki catalog has no collection structured data')
+if (!danetkiCatalogHtml.includes('<h1>Данетки с ответами</h1>')) throw new Error('Danetki catalog has no server-rendered heading')
+if (!danetkiCatalogHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error('Danetki catalog build marker does not match main')
+
+const danetkiStoryMatch = sitemap.match(new RegExp(`<loc>${baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(/danetki/[^<]+)</loc>`))
+if (!danetkiStoryMatch) throw new Error('Sitemap has no indexable Danetki story')
+const danetkiStoryPath = danetkiStoryMatch[1]
+const danetkiStoryHtml = await fetchText(`${danetkiStoryPath}?smoke=${Date.now()}`)
+if (!danetkiStoryHtml.includes(`<link rel="canonical" href="${baseUrl}${danetkiStoryPath}"`)) throw new Error(`${danetkiStoryPath} has no matching canonical URL`)
+if (!danetkiStoryHtml.includes('name="robots" content="index,follow')) throw new Error(`${danetkiStoryPath} is not indexable in server HTML`)
+if (!danetkiStoryHtml.includes('CreativeWork') || !danetkiStoryHtml.includes('BreadcrumbList')) throw new Error(`${danetkiStoryPath} has no story structured data`)
+if (!danetkiStoryHtml.includes('<h1') || !danetkiStoryHtml.includes('Показать ответ')) throw new Error(`${danetkiStoryPath} has no server-rendered story and answer disclosure`)
+if (!danetkiStoryHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${danetkiStoryPath} build marker does not match main`)
+
 for (const pathname of ['/partners', '/specials', '/club']) {
   const page = await fetch(`${baseUrl}${pathname}?smoke=${Date.now()}`, { headers: { 'cache-control': 'no-cache' } })
   if (!page.ok) throw new Error(`${pathname} returned HTTP ${page.status}`)

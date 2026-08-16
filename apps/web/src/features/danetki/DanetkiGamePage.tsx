@@ -1,16 +1,24 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { ArrowRight, CalendarDays, Check, CheckCircle2, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Send, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, CalendarDays, Check, CheckCircle2, Clock3, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Save, Send, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
 import { trackClientEvent } from '../../app/client-events'
+import { trackMetrikaGoal } from '../../app/metrics'
 import { trackGameCompleteOnce } from '../../app/game-analytics'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { ControlButton, DialogSurface, InlineAlert, TextArea, TextInput } from '../../components/ui'
+import { useAuthSession } from '../auth/use-auth-session'
+import {
+  currentDanetkiReturnUrl,
+  danetkiRegistrationHref,
+  rememberDanetkiRegistrationIntent,
+  type DanetkiRegistrationPlacement,
+} from './danetki-registration-attribution'
 import './DanetkiGamePage.css'
 import './DanetkiSession.css'
 import './DanetkiCaseHeader.css'
@@ -30,6 +38,38 @@ type Props = {
 
 const errorText = (error: unknown) => error instanceof ApiClientError ? error.message : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 const localTime = (value: string) => new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
+
+function DanetkiRegistrationOffer({ placement, sessionId, questionCount }: { placement: Extract<DanetkiRegistrationPlacement, 'investigation' | 'result'>; sessionId: string; questionCount: number }) {
+  const { session: authSession, loading } = useAuthSession()
+  const viewTracked = useRef(false)
+  const guest = !authSession || authSession.isAnonymous
+  const returnUrl = currentDanetkiReturnUrl()
+  const href = danetkiRegistrationHref(placement, returnUrl)
+
+  useEffect(() => {
+    if (loading || !guest || viewTracked.current) return
+    viewTracked.current = true
+    const payload = { placement, mode: 'danetki', questionCount }
+    trackClientEvent('danetki_registration_offer_view', payload, { gameSessionId: sessionId })
+    trackMetrikaGoal('danetki_registration_offer_view', payload)
+  }, [guest, loading, placement, questionCount, sessionId])
+
+  if (loading) return null
+  if (!guest) return placement === 'result' ? <section className="danetki-registration-offer is-saved" aria-label="Прогресс сохранён"><span><CheckCircle2 aria-hidden="true" /></span><div><strong>Расследование сохранено</strong><p>Результат, серия дней и статистика доступны в вашем профиле.</p></div></section> : null
+
+  const click = () => {
+    rememberDanetkiRegistrationIntent(placement, returnUrl)
+    const payload = { placement, mode: 'danetki', questionCount, returnUrl }
+    trackClientEvent('danetki_registration_offer_clicked', payload, { gameSessionId: sessionId })
+    trackMetrikaGoal('danetki_registration_offer_clicked', payload)
+  }
+  return <section className={`danetki-registration-offer danetki-registration-offer--${placement}`} aria-label="Сохранить расследование">
+    <span><Save aria-hidden="true" /></span>
+    <div><strong>{placement === 'result' ? 'Сохраните закрытое дело' : 'Не потеряйте расследование'}</strong><p>{placement === 'result' ? 'Аккаунт сохранит результат, серию дней и статистику на любом устройстве.' : 'После регистрации вы вернётесь в это дело, а прогресс останется в профиле.'}</p></div>
+    <a href={href} onClick={click}>{placement === 'result' ? 'Сохранить в аккаунте' : 'Создать аккаунт'}</a>
+  </section>
+}
+
 export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive, onStats, onRules, onReview }: Props) {
   const client = useQueryClient()
   const runtime = useServerRuntime()
@@ -93,6 +133,15 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     setNewMessages(0)
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
   }, [state.messages.length])
+
+  useEffect(() => {
+    if (state.questionCount <= 0) return
+    const storageKey = `shoditsa:danetki-engaged:${sessionId}`
+    try { if (window.sessionStorage.getItem(storageKey)) return; window.sessionStorage.setItem(storageKey, '1') } catch { /* continue without deduplication */ }
+    const payload = { mode: 'danetki', sessionKind: session.kind, roomMode: state.roomMode, questionCount: state.questionCount }
+    trackClientEvent('danetki_first_question', payload, { gameSessionId: sessionId })
+    trackMetrikaGoal('danetki_first_question', payload)
+  }, [session.kind, sessionId, state.questionCount, state.roomMode])
 
   useEffect(() => {
     const completedNow = previousSessionStatus.current === 'playing' && session.status !== 'playing'
@@ -306,6 +355,8 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         </>}
       </section>
 
+      {session.status === 'playing' && state.questionCount >= 3 && <DanetkiRegistrationOffer placement="investigation" sessionId={session.id} questionCount={state.questionCount} />}
+
       {error && <InlineAlert tone="danger" className="danetki-error" onDismiss={() => setError('')}>{error}</InlineAlert>}
       {session.status === 'playing' ? <div className="danetki-session-actions">
         <ActionButton type="button" variant="primary" onClick={() => setDialog('guess')}><Check /> Я знаю разгадку</ActionButton>
@@ -322,7 +373,10 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
             <span><Lightbulb aria-hidden="true" /> {state.hintLevel > 0 ? `Подсказки: ${state.hintLevel}/3` : 'Без подсказок'}</span>
           </div>
         </div>
-        <ActionButton type="button" className="danetki-outcome__action" onClick={onHome}>К другим играм <ArrowRight aria-hidden="true" /></ActionButton>
+        <div className="danetki-outcome__conversion">
+          <DanetkiRegistrationOffer placement="result" sessionId={session.id} questionCount={state.questionCount} />
+          <div><a href="/danetki"><BookOpen aria-hidden="true" /> Все данетки с ответами</a><ActionButton type="button" className="danetki-outcome__action" onClick={onHome}>К другим играм <ArrowRight aria-hidden="true" /></ActionButton></div>
+        </div>
       </section>}
     </GameScreenShell>
 

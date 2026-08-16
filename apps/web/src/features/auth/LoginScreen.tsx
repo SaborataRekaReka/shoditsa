@@ -11,6 +11,7 @@ import { notifyAuthSessionChanged } from './use-auth-session'
 import { localizeYandexOAuthUrl } from './yandex-oauth'
 import { REGISTRATION_REFERRALS, registrationReferralFromSearch } from './registration-referral'
 import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
+import { clearDanetkiRegistrationIntent, readDanetkiRegistrationIntent } from '../danetki/danetki-registration-attribution'
 
 type AuthPageMode = 'login' | 'register'
 
@@ -75,6 +76,20 @@ const authHref = (pathname: '/login' | '/register', returnUrl: string) => {
   return `${pathname}${query}`
 }
 
+const danetkiAcquisitionMeta = () => {
+  const intent = readDanetkiRegistrationIntent()
+  return intent ? { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null } : {}
+}
+
+const completeDanetkiRegistrationAttribution = (method: 'email' | 'yandex' | 'session') => {
+  const intent = readDanetkiRegistrationIntent()
+  if (!intent) return
+  const payload = { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null, method }
+  trackClientEvent('danetki_registration_succeeded', payload)
+  trackMetrikaGoal('danetki_registration_succeeded', payload)
+  clearDanetkiRegistrationIntent()
+}
+
 const removeResetTokenFromAddress = () => {
   if (typeof window === 'undefined') return
   const params = new URLSearchParams(window.location.search)
@@ -126,6 +141,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       trackClientEvent('friends_room_guest_registered', { placement: 'friends_room_registration', returnUrl })
       window.sessionStorage.removeItem('shoditsa:friends-room-registration')
     }
+    completeDanetkiRegistrationAttribution('session')
     window.location.replace(currentReturnUrl())
   }, [returnUrl, serverRuntime.me])
 
@@ -236,14 +252,15 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
         : await api.signIn(email.trim(), password)
 
       if (register && !authResult.token) {
-        trackMetrikaGoal('auth_success', { action: 'sign_up_pending_verification' })
+        trackMetrikaGoal('auth_success', { action: 'sign_up_pending_verification', ...danetkiAcquisitionMeta() })
         setPassword('')
         setRegister(false)
         setNotice(`Аккаунт создан. Подтвердите ${email.trim()} по ссылке из письма.`)
         return
       }
       if (!authResult.token) throw new Error('Сервер не создал пользовательскую сессию. Попробуйте войти еще раз.')
-      trackMetrikaGoal('auth_success', { action: register ? 'sign_up' : 'sign_in' })
+      trackMetrikaGoal('auth_success', { action: register ? 'sign_up' : 'sign_in', ...danetkiAcquisitionMeta() })
+      if (register) completeDanetkiRegistrationAttribution('email')
       notifyAuthSessionChanged()
       redirectAfterAuth()
     } catch (value) {
@@ -266,7 +283,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       const payload = await api.signInYandex(window.location.href, register ? registrationReferral ?? undefined : undefined)
       const oauthUrl = typeof payload?.url === 'string' ? payload.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
-      trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
+      trackMetrikaGoal('auth_oauth_start', { provider: 'yandex', ...danetkiAcquisitionMeta() })
       redirected = true
       window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {
