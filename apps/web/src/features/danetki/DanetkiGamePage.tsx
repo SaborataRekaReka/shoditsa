@@ -284,7 +284,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     : `${String(puzzleDate.getDate()).padStart(2, '0')}/${String(puzzleDate.getMonth() + 1).padStart(2, '0')}`
   const caseNumber = (state.puzzle.id.match(/\d+/g)?.join('') ?? dateBadge.replace(/\D/g, '')).slice(-3).padStart(3, '0')
 
-  return <div className="danetki-page danetki-page--session">
+  return <div className={`danetki-page danetki-page--session${dialog ? ' is-dialog-open' : ''}`}>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
 
     <GameScreenShell

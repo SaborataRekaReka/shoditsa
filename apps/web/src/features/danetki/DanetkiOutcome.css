@@ -1,4 +1,5 @@
 .danetki-dialog-backdrop{position:fixed;inset:0;background:#0b1c15b8;display:grid;place-items:center;padding:20px;z-index:50}
+.danetki-page.is-dialog-open{z-index:300}
 .danetki-dialog{width:min(540px,100%);border:1px solid #786b4b;border-radius:22px;padding:24px;color:#e7dcc5;background:#172219;box-shadow:0 30px 100px #0005}
 .danetki-dialog h2{margin-top:0}
 .danetki-dialog>div{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}

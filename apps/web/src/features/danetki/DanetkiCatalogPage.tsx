@@ -145,7 +145,7 @@ export function DanetkiStoryPage({ slug, ...props }: NavigationProps & { slug: s
         </section>
 
         <details className="danetki-story__answer" onToggle={(event) => onAnswerToggle(event.currentTarget.open)}>
-          <summary><span><strong>Показать ответ</strong><small>Откройте, когда соберёте свою версию</small></span><span aria-hidden="true">+</span></summary>
+          <summary><span><strong><span className="danetki-story__answer-label--closed">Показать ответ</span><span className="danetki-story__answer-label--open">Скрыть ответ</span></strong><small>Откройте, когда соберёте свою версию</small></span><span aria-hidden="true">+</span></summary>
           <div><span><CheckCircle2 aria-hidden="true" /> Авторская разгадка</span><p>{item.solution}</p></div>
         </details>
 
