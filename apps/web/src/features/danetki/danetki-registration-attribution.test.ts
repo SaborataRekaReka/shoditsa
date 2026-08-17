@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearDanetkiRegistrationIntent, danetkiRegistrationHref, readDanetkiRegistrationIntent, rememberDanetkiRegistrationIntent } from './danetki-registration-attribution'
+import {
+  clearDanetkiRegistrationIntent,
+  danetkiRegistrationHref,
+  readDanetkiRegistrationIntent,
+  readDanetkiTrafficContext,
+  rememberDanetkiRegistrationIntent,
+  rememberDanetkiTrafficContext,
+} from './danetki-registration-attribution'
 
 describe('Danetki registration attribution', () => {
   const values = new Map<string, string>()
@@ -27,5 +34,16 @@ describe('Danetki registration attribution', () => {
   it('rejects external return URLs', () => {
     rememberDanetkiRegistrationIntent('catalog', 'https://example.com/steal')
     expect(readDanetkiRegistrationIntent()?.returnUrl).toBe('/games/danetki')
+  })
+
+  it('carries the SEO collection through the registration funnel', () => {
+    rememberDanetkiTrafficContext('catalog', 'slozhnye')
+    expect(readDanetkiTrafficContext()).toEqual({ entrySource: 'catalog', collection: 'slozhnye' })
+    rememberDanetkiRegistrationIntent('investigation', '/sessions/example', 'danetka_2026_006')
+    expect(readDanetkiRegistrationIntent()).toMatchObject({
+      entrySource: 'catalog',
+      collection: 'slozhnye',
+      story: 'danetka_2026_006',
+    })
   })
 })

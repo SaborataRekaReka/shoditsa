@@ -6,6 +6,10 @@ import {
   danetkiStoryPath,
 } from '../features/danetki/danetki-catalog'
 import {
+  danetkiCatalogItemsForPathname,
+  danetkiCollectionFromPathname,
+} from '../features/danetki/danetki-collections'
+import {
   DEFAULT_SOCIAL_IMAGE_PATH,
   GAME_SEO,
   HOME_SEO,
@@ -31,20 +35,21 @@ const NOINDEX_PRIVATE = 'noindex,nofollow,noarchive'
 const DANETKI_CATALOG_IMAGE_PATH = '/images/title-posters/danetki-ticket-poster.webp'
 
 const danetkiCatalogSeo = (pathname: string): SeoRoute | null => {
-  if (pathname === '/danetki/dlya-detey') return {
-    kind: 'danetki-catalog',
-    title: 'Данетки для детей с ответами — логические загадки | Сходится!',
-    description: `Данетки для детей с ответами: ${DANETKI_CATALOG_ITEMS.filter((item) => item.audience === 'family').length} семейных историй на логику для дома, школы и компании.`,
-    canonicalPath: '/danetki/dlya-detey',
-    heading: 'Данетки для детей',
-    lead: 'Добрые и увлекательные ситуации без взрослого контента — для семейной игры, класса или детской компании.',
-    paragraphs: [
-      'Детские данетки учат отделять факты от предположений и последовательно проверять версии вопросами, на которые можно ответить «да» или «нет».',
-      'В этой подборке только семейные истории. У каждой есть условие, стартовые вопросы и ответ под спойлером, а выбранную данетку можно расследовать вместе с ИИ-ведущим.',
-    ],
-    robots: INDEXABLE_ROBOTS,
-    indexable: true,
-    imagePath: DANETKI_CATALOG_IMAGE_PATH,
+  const collection = danetkiCollectionFromPathname(pathname)
+  if (collection) {
+    const count = danetkiCatalogItemsForPathname(pathname).length
+    return {
+      kind: 'danetki-catalog',
+      title: collection.title,
+      description: collection.description(count),
+      canonicalPath: collection.canonicalPath,
+      heading: collection.heading,
+      lead: collection.lead,
+      paragraphs: collection.paragraphs,
+      robots: INDEXABLE_ROBOTS,
+      indexable: true,
+      imagePath: DANETKI_CATALOG_IMAGE_PATH,
+    }
   }
   if (pathname === '/danetki') return {
     kind: 'danetki-catalog',
@@ -65,12 +70,17 @@ const danetkiCatalogSeo = (pathname: string): SeoRoute | null => {
   const match = pathname.match(/^\/danetki\/([^/]+)$/)
   const item = match ? danetkiCatalogItemBySlug(match[1]) : null
   if (!item) return null
+  const isAlbatross = item.slug === 'albatros'
   return {
     kind: 'danetki-story',
-    title: `${item.titleRu} — данетка с ответом | Сходится!`,
-    description: danetkiStoryDescription(item),
+    title: isAlbatross
+      ? 'Данетка про альбатроса с ответом — «Мясо альбатроса» | Сходится!'
+      : `Данетка «${item.titleRu}» с ответом | Сходится!`,
+    description: isAlbatross
+      ? 'Данетка про мясо альбатроса с полным ответом. Разгадайте классическую историю самостоятельно или сыграйте с ИИ-ведущим без спойлеров.'
+      : danetkiStoryDescription(item),
     canonicalPath: danetkiStoryPath(item),
-    heading: item.titleRu,
+    heading: isAlbatross ? 'Данетка про альбатроса' : item.titleRu,
     lead: item.condition,
     paragraphs: [item.condition, item.solution],
     robots: INDEXABLE_ROBOTS,
@@ -241,26 +251,32 @@ export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN
     ],
   }
 
-  if (route.kind === 'danetki-catalog') return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      { '@type': 'WebSite', '@id': websiteId, url: `${siteUrl}/`, name: SITE_NAME, alternateName: 'Сходится', inLanguage: SITE_LANGUAGE },
-      {
-        '@type': 'CollectionPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, image: imageUrl,
-        inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId },
-        mainEntity: {
-          '@type': 'ItemList', itemListElement: DANETKI_CATALOG_ITEMS.filter((item) => route.canonicalPath !== '/danetki/dlya-detey' || item.audience === 'family').map((item, index) => ({
-            '@type': 'ListItem', position: index + 1, name: item.titleRu, url: new URL(danetkiStoryPath(item), `${siteUrl}/`).toString(),
-          })),
+  if (route.kind === 'danetki-catalog') {
+    const items = danetkiCatalogItemsForPathname(route.canonicalPath)
+    const collection = danetkiCollectionFromPathname(route.canonicalPath)
+    const breadcrumbs = [
+      { '@type': 'ListItem', position: 1, name: SITE_NAME, item: `${siteUrl}/` },
+      { '@type': 'ListItem', position: 2, name: 'Данетки с ответами', item: `${siteUrl}/danetki` },
+      ...(collection ? [{ '@type': 'ListItem', position: 3, name: collection.heading, item: canonicalUrl }] : []),
+    ]
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'WebSite', '@id': websiteId, url: `${siteUrl}/`, name: SITE_NAME, alternateName: 'Сходится', inLanguage: SITE_LANGUAGE },
+        {
+          '@type': 'CollectionPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, image: imageUrl,
+          inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId },
+          mainEntity: {
+            '@type': 'ItemList', numberOfItems: items.length, itemListElement: items.map((item, index) => ({
+              '@type': 'ListItem', position: index + 1, name: item.titleRu, url: new URL(danetkiStoryPath(item), `${siteUrl}/`).toString(),
+            })),
+          },
         },
-      },
-      {
-        '@type': 'BreadcrumbList', '@id': `${canonicalUrl}#breadcrumb`, itemListElement: [
-          { '@type': 'ListItem', position: 1, name: SITE_NAME, item: `${siteUrl}/` },
-          { '@type': 'ListItem', position: 2, name: route.canonicalPath === '/danetki/dlya-detey' ? 'Данетки для детей' : 'Данетки с ответами', item: canonicalUrl },
-        ],
-      },
-    ],
+        {
+          '@type': 'BreadcrumbList', '@id': `${canonicalUrl}#breadcrumb`, itemListElement: breadcrumbs,
+        },
+      ],
+    }
   }
 
   if (route.kind === 'danetki-story') {

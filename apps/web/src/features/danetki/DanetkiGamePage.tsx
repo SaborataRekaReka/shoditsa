@@ -16,6 +16,7 @@ import { useAuthSession } from '../auth/use-auth-session'
 import {
   currentDanetkiReturnUrl,
   danetkiRegistrationHref,
+  readDanetkiTrafficContext,
   rememberDanetkiRegistrationIntent,
   type DanetkiRegistrationPlacement,
 } from './danetki-registration-attribution'
@@ -45,21 +46,22 @@ function DanetkiRegistrationOffer({ placement, sessionId, questionCount, story }
   const guest = !authSession || authSession.isAnonymous
   const returnUrl = currentDanetkiReturnUrl()
   const href = danetkiRegistrationHref(placement, returnUrl, story)
+  const traffic = readDanetkiTrafficContext()
 
   useEffect(() => {
     if (loading || !guest || viewTracked.current) return
     viewTracked.current = true
-    const payload = { placement, mode: 'danetki', questionCount, story: story ?? null }
+    const payload = { placement, mode: 'danetki', questionCount, story: story ?? null, entrySource: traffic?.entrySource ?? null, collection: traffic?.collection ?? null }
     trackClientEvent('danetki_registration_offer_view', payload, { gameSessionId: sessionId })
     trackMetrikaGoal('danetki_registration_offer_view', payload)
-  }, [guest, loading, placement, questionCount, sessionId, story])
+  }, [guest, loading, placement, questionCount, sessionId, story, traffic?.collection, traffic?.entrySource])
 
   if (loading) return null
   if (!guest) return placement === 'result' ? <section className="danetki-registration-offer is-saved" aria-label="Прогресс сохранён"><span><CheckCircle2 aria-hidden="true" /></span><div><strong>Расследование сохранено</strong><p>Результат, серия дней и статистика доступны в вашем профиле.</p></div></section> : null
 
   const click = () => {
     rememberDanetkiRegistrationIntent(placement, returnUrl, story)
-    const payload = { placement, mode: 'danetki', questionCount, returnUrl, story: story ?? null }
+    const payload = { placement, mode: 'danetki', questionCount, returnUrl, story: story ?? null, entrySource: traffic?.entrySource ?? null, collection: traffic?.collection ?? null }
     trackClientEvent('danetki_registration_offer_clicked', payload, { gameSessionId: sessionId })
     trackMetrikaGoal('danetki_registration_offer_clicked', payload)
   }

@@ -14,6 +14,7 @@ import { InlineAlert, TextInput } from '../../components/ui'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { danetkiCatalogItemBySlug, danetkiDifficultyLabel, danetkiStoryPath } from './danetki-catalog'
+import { rememberDanetkiTrafficContext } from './danetki-registration-attribution'
 import './DanetkiGamePage.css'
 import './DanetkiEntryPages.css'
 
@@ -43,6 +44,9 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
   const selectedStory = typeof window === 'undefined'
     ? null
     : danetkiCatalogItemBySlug(new URLSearchParams(window.location.search).get('story'))
+  const trafficParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
+  const entrySource = trafficParams?.get('from') ?? 'direct'
+  const entryCollection = trafficParams?.get('collection') ?? undefined
   const dailyAvailable = (access?.dailyRoomsStarted ?? 0) === 0
   const groupStartCost = access?.nextGroupCost ?? 0
   const launchCost = roomMode === 'group' || dailyAvailable ? 0 : access?.nextSoloCost ?? 0
@@ -51,9 +55,9 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
     ? canCreateGroupRoom
     : launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay)))
   const launch = () => {
-    const source = typeof window === 'undefined' ? 'direct' : new URLSearchParams(window.location.search).get('from') ?? 'direct'
+    const source = entrySource
     const selectedItemId = roomMode === 'solo' ? selectedStory?.id : undefined
-    const payload = { roomMode, source, dailyAvailable, mode: 'danetki', story: selectedStory?.slug ?? null, itemId: selectedItemId ?? null }
+    const payload = { roomMode, source, collection: entryCollection ?? null, dailyAvailable, mode: 'danetki', story: selectedStory?.slug ?? null, itemId: selectedItemId ?? null }
     trackClientEvent('danetki_start_clicked', payload)
     trackMetrikaGoal('danetki_start_clicked', payload)
     if (roomMode === 'group') {
@@ -75,11 +79,11 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
         : 'Начать игру'
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
   useEffect(() => {
-    const source = typeof window === 'undefined' ? 'direct' : new URLSearchParams(window.location.search).get('from') ?? 'direct'
-    const payload = { mode: 'danetki', source, route: '/games/danetki', story: selectedStory?.slug ?? null, itemId: selectedStory?.id ?? null }
+    rememberDanetkiTrafficContext(entrySource, entryCollection)
+    const payload = { mode: 'danetki', source: entrySource, collection: entryCollection ?? null, route: '/games/danetki', story: selectedStory?.slug ?? null, itemId: selectedStory?.id ?? null }
     trackClientEvent('danetki_landing_view', payload)
     trackMetrikaGoal('danetki_landing_view', payload)
-  }, [selectedStory?.id, selectedStory?.slug])
+  }, [entryCollection, entrySource, selectedStory?.id, selectedStory?.slug])
   useEffect(() => {
     if (!canCreateGroupRoom && roomMode === 'group') setRoomMode('solo')
   }, [canCreateGroupRoom, roomMode])

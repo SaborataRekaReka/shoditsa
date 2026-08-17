@@ -78,13 +78,13 @@ const authHref = (pathname: '/login' | '/register', returnUrl: string) => {
 
 const danetkiAcquisitionMeta = () => {
   const intent = readDanetkiRegistrationIntent()
-  return intent ? { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null } : {}
+  return intent ? { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null, entrySource: intent.entrySource ?? null, collection: intent.collection ?? null } : {}
 }
 
 const completeDanetkiRegistrationAttribution = (method: 'email' | 'yandex' | 'session') => {
   const intent = readDanetkiRegistrationIntent()
   if (!intent) return
-  const payload = { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null, method }
+  const payload = { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null, entrySource: intent.entrySource ?? null, collection: intent.collection ?? null, method }
   trackClientEvent('danetki_registration_succeeded', payload)
   trackMetrikaGoal('danetki_registration_succeeded', payload)
   clearDanetkiRegistrationIntent()

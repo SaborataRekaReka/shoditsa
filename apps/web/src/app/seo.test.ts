@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS } from './seo-content'
 import { normalizeSeoPathname, seoRouteForRuntime, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
+import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from '../features/danetki/danetki-collections'
 
 describe('search index contract', () => {
   it('publishes one unique, indexable landing page for every canonical game mode', () => {
@@ -96,20 +97,38 @@ describe('search index contract', () => {
 
   it('publishes a separate Danetki catalog and story pages without cannibalizing the game landing', () => {
     const catalog = seoRouteFromPathname('/danetki')
-    const family = seoRouteFromPathname('/danetki/dlya-detey')
     const story = seoRouteFromPathname('/danetki/verevka')
     const game = seoRouteFromPathname('/games/danetki')
     expect(catalog.kind).toBe('danetki-catalog')
     expect(catalog.indexable).toBe(true)
     expect(catalog.title).toContain('Данетки с ответами')
-    expect(family.kind).toBe('danetki-catalog')
-    expect(family.title).toContain('Данетки для детей')
-    expect(family.canonicalPath).toBe('/danetki/dlya-detey')
+    const collectionPaths = DANETKI_COLLECTION_DEFINITIONS.map((definition) => {
+      const route = seoRouteFromPathname(definition.canonicalPath)
+      const data = structuredDataForSeoRoute(route) as { '@graph': Array<Record<string, unknown>> }
+      const page = data['@graph'].find((entry) => entry['@type'] === 'CollectionPage') as { mainEntity?: { numberOfItems?: number } }
+      const breadcrumbs = data['@graph'].find((entry) => entry['@type'] === 'BreadcrumbList') as { itemListElement?: unknown[] }
+      expect(route.kind).toBe('danetki-catalog')
+      expect(route.indexable).toBe(true)
+      expect(route.canonicalPath).toBe(definition.canonicalPath)
+      expect(route.title).toBe(definition.title)
+      expect(route.paragraphs.join(' ').length).toBeGreaterThanOrEqual(300)
+      expect(page.mainEntity?.numberOfItems).toBe(danetkiCollectionItems(definition.slug).length)
+      expect(breadcrumbs.itemListElement).toHaveLength(3)
+      return route.canonicalPath
+    })
     expect(story.kind).toBe('danetki-story')
     expect(story.indexable).toBe(true)
     expect(story.title).toContain('Верёвка')
     expect(game.title).toContain('Данетки онлайн')
-    expect(new Set([catalog.canonicalPath, family.canonicalPath, story.canonicalPath, game.canonicalPath]).size).toBe(4)
+    expect(new Set([catalog.canonicalPath, ...collectionPaths, story.canonicalPath, game.canonicalPath]).size).toBe(7)
+    expect(seoRouteFromPathname('/danetki/interesnye').indexable).toBe(false)
+  })
+
+  it('covers the established Albatross query on its canonical story page', () => {
+    const route = seoRouteFromPathname('/danetki/albatros')
+    expect(route.title).toContain('Данетка про альбатроса')
+    expect(route.title).toContain('Мясо альбатроса')
+    expect(route.description).toContain('Данетка про мясо альбатроса')
   })
 
   it('points a loaded session at its public game while keeping it out of the index', () => {

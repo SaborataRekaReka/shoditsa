@@ -71,8 +71,15 @@ for (const field of ['condition', 'solution']) {
 const counts = (field) => Object.fromEntries([...new Set(items.map((item) => item[field]))].map((value) => [value, items.filter((item) => item[field] === value).length]))
 const difficulties = counts('difficulty')
 for (const level of allowed.difficulty) if ((difficulties[level] ?? 0) < 6) errors.push(`Difficulty ${level} needs at least 6 stories`)
+for (const level of ['easy', 'hard']) if ((difficulties[level] ?? 0) < 8) errors.push(`SEO collection ${level} needs at least 8 stories`)
 const familyCount = items.filter((item) => item.audience === 'family').length
 if (familyCount < 12) errors.push(`Family-safe collection needs at least 12 stories; found ${familyCount}`)
+const childItems = items.filter((item) => item.genres.includes('детская'))
+if (childItems.length < 8) errors.push(`Child-intent collection needs at least 8 explicitly tagged stories; found ${childItems.length}`)
+for (const item of childItems) {
+  if (item.audience !== 'family') errors.push(`${item.id}: child-intent story must use family audience`)
+  if (Array.isArray(item.contentWarnings) && item.contentWarnings.length) errors.push(`${item.id}: child-intent story must not have content warnings`)
+}
 const classicShare = items.filter((item) => item.isClassic).length / items.length
 if (classicShare < .1 || classicShare > .3) errors.push(`Classic share must stay between 10% and 30%; found ${Math.round(classicShare * 100)}%`)
 

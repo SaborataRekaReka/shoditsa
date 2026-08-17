@@ -20,6 +20,12 @@ import {
   danetkiStoryPath,
   type DanetkiCatalogItem,
 } from '../../apps/web/src/features/danetki/danetki-catalog'
+import {
+  DANETKI_COLLECTION_DEFINITIONS,
+  danetkiCatalogItemsForPathname,
+  danetkiCollectionFromPathname,
+  danetkiCollectionItems,
+} from '../../apps/web/src/features/danetki/danetki-collections'
 
 const distRoot = resolve('dist')
 const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club'] as const
@@ -44,7 +50,6 @@ const escapeHtml = (value: string) => value
   .replace(/'/g, '&#39;')
 
 const escapeXml = escapeHtml
-const DANETKI_FAMILY_PATH = '/danetki/dlya-detey'
 
 const upsertMeta = (html: string, attribute: 'name' | 'property', key: string, content: string) => {
   const pattern = new RegExp(`<meta\\s+${attribute}="${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*>`, 'i')
@@ -92,15 +97,33 @@ const renderUtilityFallback = (content: SeoPageContent) => `<main class="seo-sta
 
 const renderDanetkiCard = (item: DanetkiCatalogItem, index: number) => `<article class="danetki-catalog-card"><div class="danetki-catalog-card__number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div><div class="danetki-catalog-card__copy"><div class="danetki-catalog-card__meta"><span>${escapeHtml(danetkiDifficultyLabel(item.difficulty))}</span>${item.genres.slice(0, 1).map((genre) => `<span>${escapeHtml(genre)}</span>`).join('')}<span>${item.estimatedMinutes} мин</span></div><h2><a href="${escapeHtml(danetkiStoryPath(item))}">${escapeHtml(item.titleRu)}</a></h2><p>${escapeHtml(item.condition)}</p><a class="danetki-catalog-card__action" href="${escapeHtml(danetkiStoryPath(item))}">Проверить свою версию <span aria-hidden="true">→</span></a></div></article>`
 
+const GENERAL_DANETKI_GUIDE_STEPS = [
+  'Прочитайте условие и отделите факты от предположений.',
+  'Проверяйте место, время, мотив и роли участников вопросами «да» или «нет».',
+  'Соберите версию, объясняющую каждую странность условия, и только затем откройте ответ.',
+] as const
+
+const renderDanetkiCollectionLinks = (currentPath: string) => `<nav class="danetki-catalog-collections" aria-label="Тематические подборки данеток"><a${currentPath === '/danetki' ? ' class="is-current"' : ''} href="/danetki"><span>Все истории</span><strong>${DANETKI_CATALOG_ITEMS.length}</strong></a>${DANETKI_COLLECTION_DEFINITIONS.map((entry) => `<a${currentPath === entry.canonicalPath ? ' class="is-current"' : ''} href="${entry.canonicalPath}"><span>${escapeHtml(entry.internalLinkLabel)}</span><strong>${danetkiCollectionItems(entry.slug).length}</strong></a>`).join('')}</nav>`
+
 const renderDanetkiCatalogFallback = (content: SeoPageContent) => {
-  const family = content.canonicalPath === DANETKI_FAMILY_PATH
-  const items = family ? DANETKI_CATALOG_ITEMS.filter((item) => item.audience === 'family') : DANETKI_CATALOG_ITEMS
-  return `<main class="danetki-catalog-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span>${family ? '<a href="/danetki">Данетки</a><span>/</span>' : ''}<span>${escapeHtml(content.heading)}</span></nav><header class="danetki-catalog-hero"><div class="danetki-catalog-hero__copy"><span class="danetki-catalog-eyebrow">Каталог логических историй</span><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead)}</p><div class="danetki-catalog-hero__actions"><a class="ui-button ui-button--primary" href="/games/danetki?from=catalog#game">Играть с ИИ без спойлеров</a><a class="ui-button ui-button--secondary" href="#stories">Смотреть истории</a></div></div><dl class="danetki-catalog-facts"><div><dt>${family ? 'Для семьи' : 'Историй сейчас'}</dt><dd>${items.length}</dd></div><div><dt>Формат</dt><dd>Да · Нет</dd></div><div><dt>Ответы</dt><dd>Под спойлером</dd></div></dl></header><section class="danetki-catalog-list" id="stories"><div class="danetki-catalog-section-head"><div><span>Подборка редакции</span><h2>${family ? 'Семейные данетки' : 'Все данетки'}</h2></div><p>${items.length} проверенных историй разной сложности.</p></div>${family ? '' : '<a class="danetki-catalog-collection-link" href="/danetki/dlya-detey">Данетки для детей и семейной игры →</a>'}<div class="danetki-catalog-grid">${items.map(renderDanetkiCard).join('')}</div></section><section class="danetki-catalog-guide"><span class="danetki-catalog-eyebrow">Короткие правила</span><h2>Как решать данетки</h2><ol><li><strong>01</strong><span>Прочитайте условие и отделите факты от предположений.</span></li><li><strong>02</strong><span>Проверяйте место, время, мотив и роли участников вопросами «да» или «нет».</span></li><li><strong>03</strong><span>Соберите цельную версию и только затем откройте ответ.</span></li></ol></section></main>`
+  const collection = danetkiCollectionFromPathname(content.canonicalPath)
+  const items = danetkiCatalogItemsForPathname(content.canonicalPath)
+  const guideSteps = collection?.guideSteps ?? GENERAL_DANETKI_GUIDE_STEPS
+  const playSearch = collection ? `?from=catalog&amp;collection=${collection.slug}` : '?from=catalog'
+  const breadcrumbParent = collection ? '<a href="/danetki">Данетки</a><span>/</span>' : ''
+  const factLabel = collection?.factLabel ?? 'Формат'
+  const factValue = collection?.factValue ?? 'Да · Нет'
+  const sectionHeading = collection?.sectionHeading ?? 'Все данетки'
+  const sectionLead = collection?.sectionLead(items.length) ?? `${items.length} историй · выбирайте по сложности и настроению.`
+  const copyHeading = collection?.contentHeading ?? 'Что такое данетки и как в них играть'
+  return `<main class="danetki-catalog-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span>${breadcrumbParent}<span>${escapeHtml(content.heading)}</span></nav><header class="danetki-catalog-hero"><div class="danetki-catalog-hero__copy"><span class="danetki-catalog-eyebrow">${escapeHtml(collection?.eyebrow ?? 'Каталог логических историй')}</span><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead)}</p><div class="danetki-catalog-hero__actions"><a class="ui-button ui-button--primary" href="/games/danetki${playSearch}#game">Играть с ИИ без спойлеров</a><a class="ui-button ui-button--secondary" href="#stories">Смотреть истории</a></div></div><dl class="danetki-catalog-facts"><div><dt>${escapeHtml(collection?.countLabel ?? 'Историй сейчас')}</dt><dd>${items.length}</dd></div><div><dt>${escapeHtml(factLabel)}</dt><dd>${escapeHtml(factValue)}</dd></div><div><dt>Ответы</dt><dd>Под спойлером</dd></div></dl></header>${renderDanetkiCollectionLinks(content.canonicalPath)}<section class="danetki-catalog-list" id="stories"><div class="danetki-catalog-section-head"><div><span>Подборка редакции</span><h2>${escapeHtml(sectionHeading)}</h2></div><p>${escapeHtml(sectionLead)}</p></div><div class="danetki-catalog-grid">${items.map(renderDanetkiCard).join('')}</div></section><section class="danetki-catalog-copy"><span class="danetki-catalog-eyebrow">По существу</span><h2>${escapeHtml(copyHeading)}</h2><div>${renderParagraphs(content)}</div></section><section class="danetki-catalog-guide"><span class="danetki-catalog-eyebrow">Короткие правила</span><h2>${escapeHtml(collection?.guideHeading ?? 'Как решать данетки')}</h2><ol>${guideSteps.map((step, index) => `<li><strong>${String(index + 1).padStart(2, '0')}</strong><span>${escapeHtml(step)}</span></li>`).join('')}</ol></section></main>`
 }
 
 const renderDanetkiStoryFallback = (item: DanetkiCatalogItem) => {
   const related = danetkiRelatedItems(item)
-  return `<main class="danetki-catalog-main danetki-story-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span><a href="/danetki">Данетки</a><span>/</span><span>${escapeHtml(item.titleRu)}</span></nav><article class="danetki-story"><header class="danetki-story__header"><div><span class="danetki-catalog-eyebrow">Данетка с ответом</span><h1>${escapeHtml(item.titleRu)}</h1><div class="danetki-story__tags"><span>${escapeHtml(danetkiDifficultyLabel(item.difficulty))}</span>${item.genres.map((genre) => `<span>${escapeHtml(genre)}</span>`).join('')}</div></div></header><section class="danetki-story__condition"><span>Условие</span><h2>Что произошло?</h2><p>${escapeHtml(item.condition)}</p></section><section class="danetki-story__questions"><span>Если не знаете, с чего начать</span><h2>Стартовые вопросы</h2><ul>${item.starterQuestions.map((question) => `<li><span>${escapeHtml(question)}</span></li>`).join('')}</ul></section><details class="danetki-story__answer"><summary><span><strong>Показать ответ</strong><small>Откройте, когда соберёте свою версию</small></span><span aria-hidden="true">+</span></summary><div><span>Авторская разгадка</span><p>${escapeHtml(item.solution)}</p></div></details><aside class="danetki-story__play"><div><span>Хотите настоящее расследование?</span><h2>Задавайте вопросы ИИ-ведущему</h2><p>В игре ответ скрыт: ведущий реагирует на версии и помогает восстановить историю.</p></div><a class="ui-button ui-button--primary" href="/games/danetki?from=story&amp;story=${escapeHtml(danetkiStoryPath(item).split('/').at(-1) ?? '')}#game">Играть без спойлеров</a></aside></article><section class="danetki-story-related"><div class="danetki-catalog-section-head"><div><span>Следующие дела</span><h2>Похожие данетки</h2></div><a href="/danetki">Все истории →</a></div><div class="danetki-catalog-grid">${related.map(renderDanetkiCard).join('')}</div></section></main>`
+  const aliases = item.alternativeTitles.length ? `<p class="danetki-story__aliases">Также известна как: ${item.alternativeTitles.map(escapeHtml).join(', ')}</p>` : ''
+  const heading = item.slug === 'albatros' ? 'Данетка про альбатроса' : item.titleRu
+  return `<main class="danetki-catalog-main danetki-story-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span><a href="/danetki">Данетки</a><span>/</span><span>${escapeHtml(item.titleRu)}</span></nav><article class="danetki-story"><header class="danetki-story__header"><div><span class="danetki-catalog-eyebrow">Данетка с ответом</span><h1>${escapeHtml(heading)}</h1>${aliases}<div class="danetki-story__tags"><span>${escapeHtml(danetkiDifficultyLabel(item.difficulty))}</span>${item.genres.map((genre) => `<span>${escapeHtml(genre)}</span>`).join('')}</div></div></header><section class="danetki-story__condition"><span>Условие</span><h2>Что произошло?</h2><p>${escapeHtml(item.condition)}</p></section><section class="danetki-story__questions"><span>Если не знаете, с чего начать</span><h2>Стартовые вопросы</h2><ul>${item.starterQuestions.map((question) => `<li><span>${escapeHtml(question)}</span></li>`).join('')}</ul></section><details class="danetki-story__answer"><summary><span><strong>Показать ответ</strong><small>Откройте, когда соберёте свою версию</small></span><span aria-hidden="true">+</span></summary><div><span>Авторская разгадка</span><p>${escapeHtml(item.solution)}</p></div></details><aside class="danetki-story__play"><div><span>Хотите настоящее расследование?</span><h2>Задавайте вопросы ИИ-ведущему</h2><p>В игре ответ скрыт: ведущий реагирует на версии и помогает восстановить историю.</p></div><a class="ui-button ui-button--primary" href="/games/danetki?from=story&amp;story=${escapeHtml(danetkiStoryPath(item).split('/').at(-1) ?? '')}#game">Играть без спойлеров</a></aside></article><section class="danetki-story-related"><div class="danetki-catalog-section-head"><div><span>Следующие дела</span><h2>Похожие данетки</h2></div><a href="/danetki">Все истории →</a></div><div class="danetki-catalog-grid">${related.map(renderDanetkiCard).join('')}</div></section></main>`
 }
 
 const renderArtifactDossier = (content: GameSeoContent) => {
@@ -195,7 +218,7 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
 }
 
 const renderSitemap = () => {
-  const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO, { canonicalPath: '/danetki' }, { canonicalPath: DANETKI_FAMILY_PATH }, ...DANETKI_CATALOG_ITEMS.map((item) => ({ canonicalPath: danetkiStoryPath(item) })), ...INDEXABLE_UTILITY_PATHS.map((canonicalPath) => ({ canonicalPath })), ...LEGAL_DOCUMENT_SLUGS.map((slug) => ({ canonicalPath: `/legal/${slug}` }))]
+  const urls = [HOME_SEO, ...INDEXABLE_GAME_SEO, { canonicalPath: '/danetki' }, ...DANETKI_COLLECTION_DEFINITIONS, ...DANETKI_CATALOG_ITEMS.map((item) => ({ canonicalPath: danetkiStoryPath(item) })), ...INDEXABLE_UTILITY_PATHS.map((canonicalPath) => ({ canonicalPath })), ...LEGAL_DOCUMENT_SLUGS.map((slug) => ({ canonicalPath: `/legal/${slug}` }))]
   const lastmod = new Date().toISOString().slice(0, 10)
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((page) => `  <url><loc>${escapeXml(new URL(page.canonicalPath, `${SITE_ORIGIN}/`).toString())}</loc><lastmod>${lastmod}</lastmod></url>`).join('\n')}\n</urlset>\n`
 }
@@ -225,9 +248,11 @@ for (const game of INDEXABLE_GAME_SEO) {
 
 const danetkiCatalogContent = seoRouteFromPathname('/danetki')
 await writeFile(resolve(distRoot, 'seo', 'danetki.html'), buildPage(template, danetkiCatalogContent, renderDanetkiCatalogFallback(danetkiCatalogContent)), 'utf8')
-const danetkiFamilyContent = seoRouteFromPathname(DANETKI_FAMILY_PATH)
 await mkdir(resolve(distRoot, 'seo', 'danetki'), { recursive: true })
-await writeFile(resolve(distRoot, 'seo', 'danetki', 'dlya-detey.html'), buildPage(template, danetkiFamilyContent, renderDanetkiCatalogFallback(danetkiFamilyContent)), 'utf8')
+for (const collection of DANETKI_COLLECTION_DEFINITIONS) {
+  const content = seoRouteFromPathname(collection.canonicalPath)
+  await writeFile(resolve(distRoot, 'seo', 'danetki', `${collection.slug}.html`), buildPage(template, content, renderDanetkiCatalogFallback(content)), 'utf8')
+}
 for (const item of DANETKI_CATALOG_ITEMS) {
   const content = seoRouteFromPathname(danetkiStoryPath(item))
   const target = resolve(distRoot, 'seo', 'danetki', `${danetkiStoryPath(item).split('/').at(-1)}.html`)
@@ -252,7 +277,7 @@ for (const slug of LEGAL_DOCUMENT_SLUGS) {
 
 await writeFile(resolve(distRoot, 'sitemap.xml'), renderSitemap(), 'utf8')
 await writeFile(resolve(distRoot, 'robots.txt'), renderRobots(), 'utf8')
-const manifestPaths = [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath), '/danetki', DANETKI_FAMILY_PATH, ...DANETKI_CATALOG_ITEMS.map(danetkiStoryPath), ...INDEXABLE_UTILITY_PATHS, ...LEGAL_DOCUMENT_SLUGS.map((slug) => `/legal/${slug}`)]
+const manifestPaths = [HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath), '/danetki', ...DANETKI_COLLECTION_DEFINITIONS.map((collection) => collection.canonicalPath), ...DANETKI_CATALOG_ITEMS.map(danetkiStoryPath), ...INDEXABLE_UTILITY_PATHS, ...LEGAL_DOCUMENT_SLUGS.map((slug) => `/legal/${slug}`)]
 await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: manifestPaths }, null, 2)}\n`, 'utf8')
 
 console.log(`[seo] generated ${manifestPaths.length} indexable pages, sitemap.xml and robots.txt`)

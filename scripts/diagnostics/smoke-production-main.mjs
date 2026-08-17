@@ -49,19 +49,27 @@ if (!danetkiCatalogHtml.includes('CollectionPage') || !danetkiCatalogHtml.includ
 if (!danetkiCatalogHtml.includes('<h1>Данетки с ответами</h1>')) throw new Error('Danetki catalog has no server-rendered heading')
 if (!danetkiCatalogHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error('Danetki catalog build marker does not match main')
 
-const danetkiFamilyPath = '/danetki/dlya-detey'
-if (!sitemap.includes(`<loc>${baseUrl}${danetkiFamilyPath}</loc>`)) throw new Error('Sitemap is missing the Danetki family collection')
-const danetkiFamilyHtml = await fetchText(`${danetkiFamilyPath}?smoke=${Date.now()}`)
-if (!danetkiFamilyHtml.includes(`<link rel="canonical" href="${baseUrl}${danetkiFamilyPath}"`)) throw new Error('Danetki family collection has no matching canonical URL')
-if (!danetkiFamilyHtml.includes('name="robots" content="index,follow')) throw new Error('Danetki family collection is not indexable in server HTML')
-if (!danetkiFamilyHtml.includes('CollectionPage') || !danetkiFamilyHtml.includes('ItemList')) throw new Error('Danetki family collection has no collection structured data')
-if (!danetkiFamilyHtml.includes('<h1>Данетки для детей')) throw new Error('Danetki family collection has no server-rendered heading')
-if (!danetkiFamilyHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error('Danetki family collection build marker does not match main')
+const danetkiCollections = [
+  ['/danetki/dlya-detey', 'Данетки для детей с ответами'],
+  ['/danetki/slozhnye', 'Сложные данетки с ответами'],
+  ['/danetki/legkie', 'Лёгкие данетки с ответами'],
+  ['/danetki/novye', 'Новые данетки с ответами'],
+]
+for (const [pathname, heading] of danetkiCollections) {
+  if (!sitemap.includes(`<loc>${baseUrl}${pathname}</loc>`)) throw new Error(`Sitemap is missing ${pathname}`)
+  const collectionHtml = await fetchText(`${pathname}?smoke=${Date.now()}`)
+  if (!collectionHtml.includes(`<link rel="canonical" href="${baseUrl}${pathname}"`)) throw new Error(`${pathname} has no matching canonical URL`)
+  if (!collectionHtml.includes('name="robots" content="index,follow')) throw new Error(`${pathname} is not indexable in server HTML`)
+  if (!collectionHtml.includes('CollectionPage') || !collectionHtml.includes('ItemList')) throw new Error(`${pathname} has no collection structured data`)
+  if (!collectionHtml.includes(`<h1>${heading}</h1>`)) throw new Error(`${pathname} has no server-rendered heading`)
+  if (!collectionHtml.includes('class="danetki-catalog-copy"')) throw new Error(`${pathname} has no visible intent-specific copy`)
+  if (!collectionHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${pathname} build marker does not match main`)
+}
 
 const escapedBaseUrl = baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const danetkiStoryPaths = [...sitemap.matchAll(new RegExp(`<loc>${escapedBaseUrl}(/danetki/[^<]+)</loc>`, 'g'))]
   .map((match) => match[1])
-  .filter((pathname) => pathname !== danetkiFamilyPath)
+  .filter((pathname) => !danetkiCollections.some(([collectionPath]) => pathname === collectionPath))
 const danetkiStoryPath = danetkiStoryPaths[0]
 if (!danetkiStoryPath) throw new Error('Sitemap has no indexable Danetki story')
 const danetkiStoryHtml = await fetchText(`${danetkiStoryPath}?smoke=${Date.now()}`)

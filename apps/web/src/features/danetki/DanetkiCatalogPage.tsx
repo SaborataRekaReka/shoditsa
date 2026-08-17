@@ -12,6 +12,12 @@ import {
   danetkiStoryPath,
   type DanetkiCatalogItem,
 } from './danetki-catalog'
+import {
+  DANETKI_COLLECTION_DEFINITIONS,
+  danetkiCollectionDefinition,
+  danetkiCollectionItems,
+  type DanetkiCollectionSlug,
+} from './danetki-collections'
 import './DanetkiCatalogPage.css'
 
 type NavigationProps = {
@@ -22,17 +28,29 @@ type NavigationProps = {
   onReview: () => void
 }
 
-const playHref = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem) => {
+const playHref = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem, collection?: DanetkiCollectionSlug) => {
   const search = new URLSearchParams({ from: placement })
   if (item) search.set('story', item.slug)
+  if (collection) search.set('collection', collection)
   return `/games/danetki?${search.toString()}#game`
 }
 
-const trackPlayClick = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem) => {
-  const payload = { placement, story: item?.slug ?? null, itemId: item?.id ?? null }
+const trackPlayClick = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem, collection?: DanetkiCollectionSlug) => {
+  const payload = { placement, story: item?.slug ?? null, itemId: item?.id ?? null, collection: collection ?? 'all' }
   trackClientEvent('danetki_catalog_play_clicked', payload)
   trackMetrikaGoal('danetki_catalog_play_clicked', payload)
 }
+
+const GENERAL_CATALOG_PARAGRAPHS = [
+  'Данетки — это логические загадки, в которых известно только необычное происшествие. Игроки восстанавливают скрытую причинно-следственную связь вопросами, на которые ведущий отвечает «да» или «нет».',
+  'В каталоге собраны редакционные истории разной сложности. У каждой есть условие, стартовые вопросы и полный ответ под спойлером, а выбранную данетку можно расследовать с ИИ-ведущим без раскрытия решения.',
+] as const
+
+const GENERAL_GUIDE_STEPS = [
+  'Прочитайте условие и отделите факты от предположений.',
+  'Проверяйте место, время, мотив и роли участников вопросами «да» или «нет».',
+  'Соберите версию, объясняющую каждую странность условия, и только затем откройте ответ.',
+] as const
 
 const StoryCard = ({ item, index }: { item: DanetkiCatalogItem; index: number }) => <article className="danetki-catalog-card">
   <div className="danetki-catalog-card__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
@@ -48,22 +66,22 @@ const StoryCard = ({ item, index }: { item: DanetkiCatalogItem; index: number })
   </div>
 </article>
 
-export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & { collection?: 'dlya-detey' }) {
-  const familyCollection = collection === 'dlya-detey'
-  const scopeItems = useMemo(() => familyCollection
-    ? DANETKI_CATALOG_ITEMS.filter((item) => item.audience === 'family')
-    : DANETKI_CATALOG_ITEMS, [familyCollection])
+export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & { collection?: DanetkiCollectionSlug }) {
+  const collectionDefinition = collection ? danetkiCollectionDefinition(collection) : null
+  const scopeItems = useMemo(() => collection
+    ? danetkiCollectionItems(collection)
+    : DANETKI_CATALOG_ITEMS, [collection])
   const [filter, setFilter] = useState<'all' | 'easy' | 'medium' | 'hard' | 'family' | 'classic'>('all')
   const filteredItems = useMemo(() => scopeItems.filter((item) => filter === 'all'
     || item.difficulty === filter
     || (filter === 'family' && item.audience === 'family')
     || (filter === 'classic' && item.isClassic)), [filter, scopeItems])
   const filters = [
-    { id: 'all' as const, label: familyCollection ? 'Все для семьи' : 'Все', count: scopeItems.length },
+    { id: 'all' as const, label: 'Все', count: scopeItems.length },
     { id: 'easy' as const, label: 'Лёгкие', count: scopeItems.filter((item) => item.difficulty === 'easy').length },
     { id: 'medium' as const, label: 'Средние', count: scopeItems.filter((item) => item.difficulty === 'medium').length },
     { id: 'hard' as const, label: 'Сложные', count: scopeItems.filter((item) => item.difficulty === 'hard').length },
-    ...(!familyCollection ? [{ id: 'family' as const, label: 'Для семьи', count: scopeItems.filter((item) => item.audience === 'family').length }] : []),
+    { id: 'family' as const, label: 'Для семьи', count: scopeItems.filter((item) => item.audience === 'family').length },
     { id: 'classic' as const, label: 'Классические', count: scopeItems.filter((item) => item.isClassic).length },
   ]
   useEffect(() => {
@@ -76,44 +94,52 @@ export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & {
     <AppHeader {...props} />
     <main className="danetki-catalog-main">
       <ScreenBack href="/games/danetki" label="К игре" />
-      <nav className="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span>{familyCollection && <><a href="/danetki">Данетки</a><span>/</span></>}<span>{familyCollection ? 'Данетки для детей' : 'Данетки с ответами'}</span></nav>
+      <nav className="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span>{collectionDefinition && <><a href="/danetki">Данетки</a><span>/</span></>}<span>{collectionDefinition?.heading ?? 'Данетки с ответами'}</span></nav>
 
       <header className="danetki-catalog-hero">
         <div className="danetki-catalog-hero__copy">
-          <span className="danetki-catalog-eyebrow"><Sparkles aria-hidden="true" /> Каталог логических историй</span>
-          <h1>{familyCollection ? 'Данетки для детей' : 'Данетки с ответами'}</h1>
-          <p>{familyCollection ? 'Семейные истории без взрослого контента: развивают логику, учат задавать точные вопросы и подходят для игры дома или в классе.' : 'Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.'}</p>
+          <span className="danetki-catalog-eyebrow"><Sparkles aria-hidden="true" /> {collectionDefinition?.eyebrow ?? 'Каталог логических историй'}</span>
+          <h1>{collectionDefinition?.heading ?? 'Данетки с ответами'}</h1>
+          <p>{collectionDefinition?.lead ?? 'Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.'}</p>
           <div className="danetki-catalog-hero__actions">
-            <a className="ui-button ui-button--primary" href={playHref('catalog')} onClick={() => trackPlayClick('catalog')}><Play aria-hidden="true" /> Играть с ИИ без спойлеров</a>
+            <a className="ui-button ui-button--primary" href={playHref('catalog', undefined, collection)} onClick={() => trackPlayClick('catalog', undefined, collection)}><Play aria-hidden="true" /> Играть с ИИ без спойлеров</a>
             <a className="ui-button ui-button--secondary" href="#stories"><BookOpen aria-hidden="true" /> Смотреть истории</a>
           </div>
         </div>
         <dl className="danetki-catalog-facts">
-          <div><dt>{familyCollection ? 'Для семьи' : 'Историй сейчас'}</dt><dd>{scopeItems.length}</dd></div>
-          <div><dt>Формат</dt><dd>Да · Нет</dd></div>
+          <div><dt>{collectionDefinition?.countLabel ?? 'Историй сейчас'}</dt><dd>{scopeItems.length}</dd></div>
+          <div><dt>{collectionDefinition?.factLabel ?? 'Формат'}</dt><dd>{collectionDefinition?.factValue ?? 'Да · Нет'}</dd></div>
           <div><dt>Ответы</dt><dd>Под спойлером</dd></div>
         </dl>
       </header>
 
+      <nav className="danetki-catalog-collections" aria-label="Тематические подборки данеток">
+        <a className={!collection ? 'is-current' : ''} href="/danetki"><span>Все истории</span><strong>{DANETKI_CATALOG_ITEMS.length}</strong></a>
+        {DANETKI_COLLECTION_DEFINITIONS.map((entry) => <a className={collection === entry.slug ? 'is-current' : ''} href={entry.canonicalPath} key={entry.slug}><span>{entry.internalLinkLabel}</span><strong>{danetkiCollectionItems(entry.slug).length}</strong></a>)}
+      </nav>
+
       <section className="danetki-catalog-list" id="stories" aria-labelledby="danetki-stories-title">
         <div className="danetki-catalog-section-head">
-          <div><span>Подборка редакции</span><h2 id="danetki-stories-title">{filter === 'all' ? familyCollection ? 'Все для семьи' : 'Все данетки' : filters.find((entry) => entry.id === filter)?.label}</h2></div>
-          <p>{filteredItems.length} историй · выбирайте по сложности и настроению.</p>
+          <div><span>Подборка редакции</span><h2 id="danetki-stories-title">{collectionDefinition?.sectionHeading ?? (filter === 'all' ? 'Все данетки' : filters.find((entry) => entry.id === filter)?.label)}</h2></div>
+          <p>{collectionDefinition?.sectionLead(scopeItems.length) ?? `${filteredItems.length} историй · выбирайте по сложности и настроению.`}</p>
         </div>
-        <div className="danetki-catalog-filters" role="group" aria-label="Фильтр данеток">
+        {!collectionDefinition && <div className="danetki-catalog-filters" role="group" aria-label="Фильтр данеток">
           {filters.map((entry) => <ControlButton key={entry.id} type="button" aria-pressed={filter === entry.id} onClick={() => setFilter(entry.id)}><span>{entry.label}</span><strong>{entry.count}</strong></ControlButton>)}
-        </div>
-        {!familyCollection && <a className="danetki-catalog-collection-link" href="/danetki/dlya-detey">Данетки для детей и семейной игры <ArrowRight aria-hidden="true" /></a>}
+        </div>}
         <div className="danetki-catalog-grid">{filteredItems.map((item, index) => <StoryCard key={item.id} item={item} index={index} />)}</div>
+      </section>
+
+      <section className="danetki-catalog-copy" aria-labelledby="danetki-copy-title">
+        <span className="danetki-catalog-eyebrow"><BookOpen aria-hidden="true" /> По существу</span>
+        <h2 id="danetki-copy-title">{collectionDefinition?.contentHeading ?? 'Что такое данетки и как в них играть'}</h2>
+        <div>{(collectionDefinition?.paragraphs ?? GENERAL_CATALOG_PARAGRAPHS).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
       </section>
 
       <section className="danetki-catalog-guide" aria-labelledby="danetki-guide-title">
         <span className="danetki-catalog-eyebrow"><HelpCircle aria-hidden="true" /> Короткие правила</span>
-        <h2 id="danetki-guide-title">Как решать данетки</h2>
+        <h2 id="danetki-guide-title">{collectionDefinition?.guideHeading ?? 'Как решать данетки'}</h2>
         <ol>
-          <li><strong>01</strong><span>Прочитайте условие и отделите факты от предположений.</span></li>
-          <li><strong>02</strong><span>Проверяйте место, время, мотив и роли участников вопросами «да» или «нет».</span></li>
-          <li><strong>03</strong><span>Соберите версию, объясняющую каждую странность условия, и только затем откройте ответ.</span></li>
+          {(collectionDefinition?.guideSteps ?? GENERAL_GUIDE_STEPS).map((step, index) => <li key={step}><strong>{String(index + 1).padStart(2, '0')}</strong><span>{step}</span></li>)}
         </ol>
       </section>
     </main>
@@ -153,7 +179,8 @@ export function DanetkiStoryPage({ slug, ...props }: NavigationProps & { slug: s
         <header className="danetki-story__header">
           <div>
             <span className="danetki-catalog-eyebrow"><Sparkles aria-hidden="true" /> Данетка с ответом</span>
-            <h1>{item.titleRu}</h1>
+            <h1>{item.slug === 'albatros' ? 'Данетка про альбатроса' : item.titleRu}</h1>
+            {item.alternativeTitles.length > 0 && <p className="danetki-story__aliases">Также известна как: {item.alternativeTitles.join(', ')}</p>}
             <div className="danetki-story__tags"><span>{danetkiDifficultyLabel(item.difficulty)}</span>{item.genres.map((genre) => <span key={genre}>{genre}</span>)}</div>
           </div>
           <div className="danetki-story__stamp" aria-hidden="true"><small>Дело</small><strong>{storyKey.slice(0, 2).toUpperCase()}</strong></div>

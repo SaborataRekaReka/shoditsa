@@ -1,5 +1,6 @@
 import { isPlayableModeId, type PlayableModeId } from '@shoditsa/contracts'
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
+import { isDanetkiCollectionSlug, type DanetkiCollectionSlug } from '../features/danetki/danetki-collections'
 
 export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-catalog' | 'danetki-story' | 'danetki-join' | 'friends-intro' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
 
@@ -11,7 +12,7 @@ export type PlayerRouteState = {
   legalDocument?: LegalDocumentSlug
   inviteToken?: string
   danetkiSlug?: string
-  danetkiCollection?: 'dlya-detey'
+  danetkiCollection?: DanetkiCollectionSlug
 }
 
 const decodedSegment = (value: string) => {
@@ -35,7 +36,10 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   if (normalized === '/review/music') return { screen: 'review', mode: 'music' }
   if (normalized === '/games/danetki') return { screen: 'danetki' }
   if (normalized === '/danetki') return { screen: 'danetki-catalog' }
-  if (normalized === '/danetki/dlya-detey') return { screen: 'danetki-catalog', danetkiCollection: 'dlya-detey' }
+  const danetkiCollectionMatch = normalized.match(/^\/danetki\/([^/]+)$/)
+  if (danetkiCollectionMatch && isDanetkiCollectionSlug(danetkiCollectionMatch[1])) {
+    return { screen: 'danetki-catalog', danetkiCollection: danetkiCollectionMatch[1] }
+  }
   if (normalized === '/games/together') return { screen: 'friends-intro' }
   const danetkiJoinMatch = normalized.match(/^\/danetki\/join\/([^/]+)$/)
   if (danetkiJoinMatch) return { screen: 'danetki-join', inviteToken: decodedSegment(danetkiJoinMatch[1]) }

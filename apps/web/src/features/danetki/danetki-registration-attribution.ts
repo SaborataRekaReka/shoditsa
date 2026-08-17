@@ -6,9 +6,17 @@ export type DanetkiRegistrationIntent = {
   returnUrl: string
   createdAt: string
   story?: string
+  entrySource?: string
+  collection?: string
+}
+
+export type DanetkiTrafficContext = {
+  entrySource: string
+  collection?: string
 }
 
 const STORAGE_KEY = 'shoditsa:danetki-registration-intent:v1'
+const TRAFFIC_STORAGE_KEY = 'shoditsa:danetki-traffic-context:v1'
 const MAX_AGE_MS = 7 * 86_400_000
 const PLACEMENTS: DanetkiRegistrationPlacement[] = ['investigation', 'result', 'catalog']
 const isPlacement = (value: unknown): value is DanetkiRegistrationPlacement =>
@@ -24,14 +32,40 @@ const safeLocalReturnUrl = (value: string) => {
   }
 }
 
+const safeDimension = (value: unknown) => typeof value === 'string' && /^[a-z0-9-]{1,64}$/.test(value) ? value : undefined
+
+export const rememberDanetkiTrafficContext = (entrySource: string, collection?: string) => {
+  if (typeof window === 'undefined') return null
+  const safeSource = safeDimension(entrySource) ?? 'direct'
+  const safeCollection = safeDimension(collection)
+  const context: DanetkiTrafficContext = { entrySource: safeSource, ...(safeCollection ? { collection: safeCollection } : {}) }
+  try { window.sessionStorage.setItem(TRAFFIC_STORAGE_KEY, JSON.stringify(context)) } catch { /* unavailable storage */ }
+  return context
+}
+
+export const readDanetkiTrafficContext = (): DanetkiTrafficContext | null => {
+  if (typeof window === 'undefined') return null
+  try {
+    const parsed = JSON.parse(window.sessionStorage.getItem(TRAFFIC_STORAGE_KEY) ?? 'null') as Partial<DanetkiTrafficContext> | null
+    const entrySource = safeDimension(parsed?.entrySource)
+    const collection = safeDimension(parsed?.collection)
+    return entrySource ? { entrySource, ...(collection ? { collection } : {}) } : null
+  } catch {
+    return null
+  }
+}
+
 export const rememberDanetkiRegistrationIntent = (placement: DanetkiRegistrationPlacement, returnUrl: string, story?: string) => {
   if (typeof window === 'undefined') return null
+  const traffic = readDanetkiTrafficContext()
   const intent: DanetkiRegistrationIntent = {
     source: 'danetki',
     placement,
     returnUrl: safeLocalReturnUrl(returnUrl),
     createdAt: new Date().toISOString(),
     ...(story ? { story } : {}),
+    ...(traffic?.entrySource ? { entrySource: traffic.entrySource } : {}),
+    ...(traffic?.collection ? { collection: traffic.collection } : {}),
   }
   try { window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(intent)) } catch { /* unavailable storage */ }
   return intent
@@ -52,6 +86,8 @@ export const readDanetkiRegistrationIntent = (): DanetkiRegistrationIntent | nul
       returnUrl: safeLocalReturnUrl(parsed.returnUrl),
       createdAt: parsed.createdAt,
       ...(parsed.story ? { story: parsed.story } : {}),
+      ...(safeDimension(parsed.entrySource) ? { entrySource: safeDimension(parsed.entrySource) } : {}),
+      ...(safeDimension(parsed.collection) ? { collection: safeDimension(parsed.collection) } : {}),
     }
   } catch {
     return null
