@@ -49,9 +49,21 @@ if (!danetkiCatalogHtml.includes('CollectionPage') || !danetkiCatalogHtml.includ
 if (!danetkiCatalogHtml.includes('<h1>Данетки с ответами</h1>')) throw new Error('Danetki catalog has no server-rendered heading')
 if (!danetkiCatalogHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error('Danetki catalog build marker does not match main')
 
-const danetkiStoryMatch = sitemap.match(new RegExp(`<loc>${baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(/danetki/[^<]+)</loc>`))
-if (!danetkiStoryMatch) throw new Error('Sitemap has no indexable Danetki story')
-const danetkiStoryPath = danetkiStoryMatch[1]
+const danetkiFamilyPath = '/danetki/dlya-detey'
+if (!sitemap.includes(`<loc>${baseUrl}${danetkiFamilyPath}</loc>`)) throw new Error('Sitemap is missing the Danetki family collection')
+const danetkiFamilyHtml = await fetchText(`${danetkiFamilyPath}?smoke=${Date.now()}`)
+if (!danetkiFamilyHtml.includes(`<link rel="canonical" href="${baseUrl}${danetkiFamilyPath}"`)) throw new Error('Danetki family collection has no matching canonical URL')
+if (!danetkiFamilyHtml.includes('name="robots" content="index,follow')) throw new Error('Danetki family collection is not indexable in server HTML')
+if (!danetkiFamilyHtml.includes('CollectionPage') || !danetkiFamilyHtml.includes('ItemList')) throw new Error('Danetki family collection has no collection structured data')
+if (!danetkiFamilyHtml.includes('<h1>Данетки для детей')) throw new Error('Danetki family collection has no server-rendered heading')
+if (!danetkiFamilyHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error('Danetki family collection build marker does not match main')
+
+const escapedBaseUrl = baseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const danetkiStoryPaths = [...sitemap.matchAll(new RegExp(`<loc>${escapedBaseUrl}(/danetki/[^<]+)</loc>`, 'g'))]
+  .map((match) => match[1])
+  .filter((pathname) => pathname !== danetkiFamilyPath)
+const danetkiStoryPath = danetkiStoryPaths[0]
+if (!danetkiStoryPath) throw new Error('Sitemap has no indexable Danetki story')
 const danetkiStoryHtml = await fetchText(`${danetkiStoryPath}?smoke=${Date.now()}`)
 if (!danetkiStoryHtml.includes(`<link rel="canonical" href="${baseUrl}${danetkiStoryPath}"`)) throw new Error(`${danetkiStoryPath} has no matching canonical URL`)
 if (!danetkiStoryHtml.includes('name="robots" content="index,follow')) throw new Error(`${danetkiStoryPath} is not indexable in server HTML`)
