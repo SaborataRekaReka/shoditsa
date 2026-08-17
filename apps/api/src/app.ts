@@ -336,6 +336,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         kind: body.kind,
         roomMode: body.roomMode ?? 'solo',
         archiveDate: body.archiveDate,
+        itemId: body.itemId,
         idempotencyKey: requireIdempotencyKey(request),
       }, config) }
     }

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-07-31T14:00:31.128Z",
+  "generatedAt": "2026-08-16T08:56:01.001Z",
   "sourceRoot": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries",
-  "totalItems": 7459,
+  "totalItems": 7884,
   "modes": {
     "movie": {
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\movies\\items.json",
@@ -40,8 +40,8 @@
     },
     "danetki": {
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\danetki\\items.json",
-      "checksumSha256": "ce6fb380d4608df4ac02eb7aa95c03a2e7362100091aced508d353df29d79474",
-      "count": 5
+      "checksumSha256": "2a2119670f561852b89e70c5a08ec3362702cb33755a479e5c4f3ea27a89ae33",
+      "count": 30
     },
     "connections": {
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\connections\\items.json",
@@ -55,11 +55,16 @@
     },
     "book": {
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\books\\items.json",
-      "checksumSha256": "3173d2cb04302b9ad075622e1c58cd870923cce7e9208f188edd38eb7d56db05",
+      "checksumSha256": "6bea6136e5759ce32953ea227ee8c383e082128af4bbf9c57231df6324066591",
       "count": 277
+    },
+    "character": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\characters\\items.json",
+      "checksumSha256": "0cebac556958435e58cd409218a0d17602194ecdd21aaadac873235e7e4a8151",
+      "count": 400
     }
   },
   "warnings": [],
-  "checksumSha256": "3c502f838352db58b6bc78fd784aa5f8bd5d3651dfabba50b963274dfd728213",
+  "checksumSha256": "4c2543711f17be78d4cf3ed9965e8e107d7bf75cccca7783f3420ade79254321",
   "mode": "dry-run"
 }

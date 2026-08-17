@@ -8,9 +8,10 @@ describe('danetki catalog', () => {
   })
 
   it('derives routes from the shared content library', () => {
-    expect(DANETKI_CATALOG_ITEMS.length).toBeGreaterThan(0)
+    expect(DANETKI_CATALOG_ITEMS).toHaveLength(30)
     const item = DANETKI_CATALOG_ITEMS[0]
-    expect(danetkiCatalogItemBySlug(danetkiSlug(item.titleRu))).toEqual(item)
+    expect(danetkiCatalogItemBySlug(item.slug)).toEqual(item)
     expect(danetkiStoryPath(item)).toMatch(/^\/danetki\/[a-z0-9-]+$/)
+    expect(DANETKI_CATALOG_ITEMS.filter((candidate) => candidate.audience === 'family').length).toBeGreaterThanOrEqual(12)
   })
 })

@@ -1,4 +1,6 @@
 export type DanetkiDifficulty = 'easy' | 'medium' | 'hard'
+export type DanetkiAudience = 'family' | 'teen' | 'adult'
+export type DanetkiTone = 'light' | 'warm' | 'wonder' | 'mystery' | 'tense' | 'dark'
 export type DanetkiRoomMode = 'solo' | 'group'
 export type DanetkiAiStatus = 'idle' | 'queued' | 'processing' | 'error'
 export type DanetkiSenderKind = 'user' | 'ai' | 'system'
@@ -14,6 +16,7 @@ export type DanetkiKeyFact = {
 export type DanetkiPayload = {
   id: string
   mode: 'danetki'
+  slug?: string
   titleRu: string
   titleOriginal: ''
   alternativeTitles?: string[]
@@ -27,13 +30,20 @@ export type DanetkiPayload = {
   starterQuestions: string[]
   answerRules: { requiredFactIds: string[]; minCoverage: number }
   contentWarnings: string[]
+  audience?: DanetkiAudience
+  tone?: DanetkiTone
+  estimatedMinutes?: number
+  isClassic?: boolean
+  sourceNote?: string
+  publishedAt?: string
+  indexable?: boolean
   contentStatus: 'draft' | 'test' | 'ready' | 'blocked'
   allowedInGame: boolean
   popularityScore?: number
 }
 
 export type PublicDanetka = Pick<DanetkiPayload,
-  'id' | 'titleRu' | 'condition' | 'difficulty' | 'genres' | 'starterQuestions' | 'contentWarnings'
+  'id' | 'slug' | 'titleRu' | 'condition' | 'difficulty' | 'genres' | 'starterQuestions' | 'contentWarnings' | 'audience' | 'tone' | 'estimatedMinutes'
 >
 
 export type DanetkiMember = {

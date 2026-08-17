@@ -58,6 +58,7 @@ export const GameStartBodySchema = Type.Object({
   variantKey: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   packId: Type.Optional(Type.String({ minLength: 1, maxLength: 120 })),
   packPosition: Type.Optional(Type.Integer({ minimum: 1, maximum: 10_000 })),
+  itemId: Type.Optional(Type.String({ minLength: 1, maxLength: 160 })),
   archiveDate: Type.Optional(Type.Union([DateSchema, Type.Null()])),
 }, { additionalProperties: false })
 

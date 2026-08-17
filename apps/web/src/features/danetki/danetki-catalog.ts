@@ -5,6 +5,7 @@ export type DanetkiCatalogDifficulty = 'easy' | 'medium' | 'hard'
 export type DanetkiCatalogItem = {
   id: string
   mode: 'danetki'
+  slug: string
   titleRu: string
   titleOriginal: string
   alternativeTitles: string[]
@@ -15,6 +16,13 @@ export type DanetkiCatalogItem = {
   tags: string[]
   starterQuestions: string[]
   contentWarnings: string[]
+  audience: 'family' | 'teen' | 'adult'
+  tone: 'light' | 'warm' | 'wonder' | 'mystery' | 'tense' | 'dark'
+  estimatedMinutes: number
+  isClassic: boolean
+  sourceNote: string
+  publishedAt: string
+  indexable: boolean
   contentStatus: string
   allowedInGame: boolean
   popularityScore: number
@@ -33,16 +41,29 @@ export const danetkiSlug = (title: string) => Array.from(title.toLocaleLowerCase
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-+|-+$/g, '')
 
-export const danetkiStoryPath = (item: Pick<DanetkiCatalogItem, 'titleRu'>) => `/danetki/${danetkiSlug(item.titleRu)}`
+export const danetkiStoryPath = (item: Pick<DanetkiCatalogItem, 'slug'>) => `/danetki/${item.slug}`
 
 export const DANETKI_CATALOG_ITEMS = (catalogItems as DanetkiCatalogItem[])
-  .filter((item) => item.allowedInGame && item.titleRu.trim() && item.condition.trim() && item.solution.trim())
+  .filter((item) => item.allowedInGame && item.indexable && item.contentStatus === 'ready' && item.slug.trim() && item.titleRu.trim() && item.condition.trim() && item.solution.trim())
   .sort((left, right) => right.popularityScore - left.popularityScore || left.titleRu.localeCompare(right.titleRu, 'ru-RU'))
 
 export const danetkiCatalogItemBySlug = (slug: string | null | undefined) => {
   const normalized = String(slug ?? '').trim().toLocaleLowerCase('ru-RU')
-  return DANETKI_CATALOG_ITEMS.find((item) => danetkiSlug(item.titleRu) === normalized) ?? null
+  return DANETKI_CATALOG_ITEMS.find((item) => item.slug === normalized) ?? null
 }
+
+export const danetkiRelatedItems = (item: DanetkiCatalogItem, limit = 3) => DANETKI_CATALOG_ITEMS
+  .filter((candidate) => candidate.id !== item.id)
+  .map((candidate) => ({
+    candidate,
+    score: candidate.genres.filter((genre) => item.genres.includes(genre)).length * 4
+      + candidate.tags.filter((tag) => item.tags.includes(tag)).length * 2
+      + Number(candidate.difficulty === item.difficulty)
+      + Number(candidate.audience === item.audience),
+  }))
+  .sort((left, right) => right.score - left.score || right.candidate.popularityScore - left.candidate.popularityScore)
+  .slice(0, limit)
+  .map(({ candidate }) => candidate)
 
 export const danetkiDifficultyLabel = (difficulty: DanetkiCatalogDifficulty) => difficulty === 'easy'
   ? 'Лёгкая'

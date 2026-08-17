@@ -12,8 +12,8 @@ const requestId = `deploy:danetki-bootstrap:${config.gitSha}`
 try {
   const release = await loadReleaseLibraries(config.contentReleaseRoot)
   const danetki = release.libraries.find((library) => library.mode === 'danetki')
-  if (!danetki || danetki.items.length !== 5) {
-    throw new Error(`Expected exactly 5 bundled danetki, received ${danetki?.items.length ?? 0}`)
+  if (!danetki || danetki.items.length < 30) {
+    throw new Error(`Expected at least 30 bundled danetki, received ${danetki?.items.length ?? 0}`)
   }
   const bundledIds = danetki.items.map((item) => item.id)
   const active = (await db.select({ id: contentRevisions.id }).from(contentRevisions)
@@ -43,7 +43,7 @@ try {
     const built = await buildReleaseContentRevision(db, { id: actorId }, config.contentReleaseRoot, config.gitSha, requestId)
     if (built.status !== 'active') {
       if (!['ready', 'retired'].includes(built.status)) throw new Error(`Danetki content revision is not activatable: ${built.status}`)
-      await activateContentRevision(db, { id: actorId }, built.revisionId, requestId, 'Автоматическое подключение пяти стартовых данеток')
+      await activateContentRevision(db, { id: actorId }, built.revisionId, requestId, `Обновление каталога данеток до ${bundledIds.length} историй`)
     }
 
     const activated = (await db.select({ id: contentRevisions.id }).from(contentRevisions)

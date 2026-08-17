@@ -12,8 +12,9 @@ describe('release content catalog', () => {
     const anime = release.libraries.find((library) => library.mode === 'anime')!
     expect(anime.items.every((item) => !item.facts?.length)).toBe(true)
     const danetki = release.libraries.find((library) => library.mode === 'danetki')!
-    expect(danetki.items).toHaveLength(5)
-    expect(danetki.items.every((item) => item.allowedInGame === true && String(item.contentStatus) === 'test')).toBe(true)
+    expect(danetki.items).toHaveLength(30)
+    expect(danetki.items.every((item) => item.allowedInGame === true && String(item.contentStatus) === 'ready')).toBe(true)
+    expect(danetki.items.every((item) => typeof item.slug === 'string' && item.indexable === true)).toBe(true)
   })
 
   it('imports editorial, normalized and localized game answers as aliases', () => {

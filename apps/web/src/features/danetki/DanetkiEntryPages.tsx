@@ -13,6 +13,7 @@ import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticke
 import { InlineAlert, TextInput } from '../../components/ui'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
+import { danetkiCatalogItemBySlug, danetkiDifficultyLabel, danetkiStoryPath } from './danetki-catalog'
 import './DanetkiGamePage.css'
 import './DanetkiEntryPages.css'
 
@@ -31,14 +32,17 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
   onStats: () => void
   onRules: () => void
   onReview: () => void
-  onStart: (roomMode: DanetkiRoomMode) => void
+  onStart: (roomMode: DanetkiRoomMode, itemId?: string) => void
   onContinue?: () => void
-  onStartFreePlay?: (roomMode: DanetkiRoomMode) => void
+  onStartFreePlay?: (roomMode: DanetkiRoomMode, itemId?: string) => void
   onCreateRoom: () => void
   busy: boolean
   error?: string
 }) {
   const [roomMode, setRoomMode] = useState<DanetkiRoomMode>('solo')
+  const selectedStory = typeof window === 'undefined'
+    ? null
+    : danetkiCatalogItemBySlug(new URLSearchParams(window.location.search).get('story'))
   const dailyAvailable = (access?.dailyRoomsStarted ?? 0) === 0
   const groupStartCost = access?.nextGroupCost ?? 0
   const launchCost = roomMode === 'group' || dailyAvailable ? 0 : access?.nextSoloCost ?? 0
@@ -48,7 +52,8 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
     : launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay)))
   const launch = () => {
     const source = typeof window === 'undefined' ? 'direct' : new URLSearchParams(window.location.search).get('from') ?? 'direct'
-    const payload = { roomMode, source, dailyAvailable, mode: 'danetki' }
+    const selectedItemId = roomMode === 'solo' ? selectedStory?.id : undefined
+    const payload = { roomMode, source, dailyAvailable, mode: 'danetki', story: selectedStory?.slug ?? null, itemId: selectedItemId ?? null }
     trackClientEvent('danetki_start_clicked', payload)
     trackMetrikaGoal('danetki_start_clicked', payload)
     if (roomMode === 'group') {
@@ -56,8 +61,8 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
       onCreateRoom()
       return
     }
-    if (dailyAvailable) onStart('solo')
-    else onStartFreePlay?.('solo')
+    if (dailyAvailable) onStart('solo', selectedItemId)
+    else onStartFreePlay?.('solo', selectedItemId)
   }
   const launchLabel = busy
     ? 'Запускаем…'
@@ -71,10 +76,10 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
   useEffect(() => {
     const source = typeof window === 'undefined' ? 'direct' : new URLSearchParams(window.location.search).get('from') ?? 'direct'
-    const payload = { mode: 'danetki', source, route: '/games/danetki' }
+    const payload = { mode: 'danetki', source, route: '/games/danetki', story: selectedStory?.slug ?? null, itemId: selectedStory?.id ?? null }
     trackClientEvent('danetki_landing_view', payload)
     trackMetrikaGoal('danetki_landing_view', payload)
-  }, [])
+  }, [selectedStory?.id, selectedStory?.slug])
   useEffect(() => {
     if (!canCreateGroupRoom && roomMode === 'group') setRoomMode('solo')
   }, [canCreateGroupRoom, roomMode])
@@ -114,6 +119,13 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
           <TicketKicker title="Данетка дня" detail="ИИ-ведущий на связи" />
           <h2 id="ticket-danetki">Игра с ИИ-ведущим</h2>
           <p>Одна новая данетка в день доступна бесплатно. ИИ-ведущий отвечает «да» или «нет», а обязательная регистрация для одиночной игры не нужна.</p>
+          {selectedStory && <aside className="danetki-selected-story" aria-label="Выбранная данетка">
+            <span>Выбрано из каталога</span>
+            <strong>{selectedStory.titleRu}</strong>
+            <small>{danetkiDifficultyLabel(selectedStory.difficulty)} · около {selectedStory.estimatedMinutes} минут</small>
+            <a href={danetkiStoryPath(selectedStory)}>Вернуться к условию</a>
+            {roomMode === 'group' && <em>Для совместной комнаты будет выбрана случайная история.</em>}
+          </aside>}
           {onContinue && <ActionButton type="button" variant="secondary" className="danetki-title-continue" onClick={onContinue}><Clock3 /> Продолжить расследование</ActionButton>}
           <GameLaunchControls
             mode="danetki"

@@ -1,13 +1,14 @@
-import { useEffect, useRef } from 'react'
-import { ArrowRight, BookOpen, CheckCircle2, HelpCircle, Play, Sparkles } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { ArrowRight, BookOpen, CheckCircle2, Clock3, HelpCircle, Play, Sparkles } from 'lucide-react'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
+import { ControlButton } from '../../components/ui'
 import {
   DANETKI_CATALOG_ITEMS,
   danetkiCatalogItemBySlug,
   danetkiDifficultyLabel,
-  danetkiSlug,
+  danetkiRelatedItems,
   danetkiStoryPath,
   type DanetkiCatalogItem,
 } from './danetki-catalog'
@@ -23,12 +24,12 @@ type NavigationProps = {
 
 const playHref = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem) => {
   const search = new URLSearchParams({ from: placement })
-  if (item) search.set('story', danetkiSlug(item.titleRu))
+  if (item) search.set('story', item.slug)
   return `/games/danetki?${search.toString()}#game`
 }
 
 const trackPlayClick = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem) => {
-  const payload = { placement, story: item ? danetkiSlug(item.titleRu) : null }
+  const payload = { placement, story: item?.slug ?? null, itemId: item?.id ?? null }
   trackClientEvent('danetki_catalog_play_clicked', payload)
   trackMetrikaGoal('danetki_catalog_play_clicked', payload)
 }
@@ -39,6 +40,7 @@ const StoryCard = ({ item, index }: { item: DanetkiCatalogItem; index: number })
     <div className="danetki-catalog-card__meta">
       <span>{danetkiDifficultyLabel(item.difficulty)}</span>
       {item.genres.slice(0, 1).map((genre) => <span key={genre}>{genre}</span>)}
+      <span><Clock3 aria-hidden="true" /> {item.estimatedMinutes} мин</span>
     </div>
     <h2><a href={danetkiStoryPath(item)}>{item.titleRu}</a></h2>
     <p>{item.condition}</p>
@@ -46,30 +48,48 @@ const StoryCard = ({ item, index }: { item: DanetkiCatalogItem; index: number })
   </div>
 </article>
 
-export function DanetkiCatalogPage(props: NavigationProps) {
+export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & { collection?: 'dlya-detey' }) {
+  const familyCollection = collection === 'dlya-detey'
+  const scopeItems = useMemo(() => familyCollection
+    ? DANETKI_CATALOG_ITEMS.filter((item) => item.audience === 'family')
+    : DANETKI_CATALOG_ITEMS, [familyCollection])
+  const [filter, setFilter] = useState<'all' | 'easy' | 'medium' | 'hard' | 'family' | 'classic'>('all')
+  const filteredItems = useMemo(() => scopeItems.filter((item) => filter === 'all'
+    || item.difficulty === filter
+    || (filter === 'family' && item.audience === 'family')
+    || (filter === 'classic' && item.isClassic)), [filter, scopeItems])
+  const filters = [
+    { id: 'all' as const, label: familyCollection ? 'Все для семьи' : 'Все', count: scopeItems.length },
+    { id: 'easy' as const, label: 'Лёгкие', count: scopeItems.filter((item) => item.difficulty === 'easy').length },
+    { id: 'medium' as const, label: 'Средние', count: scopeItems.filter((item) => item.difficulty === 'medium').length },
+    { id: 'hard' as const, label: 'Сложные', count: scopeItems.filter((item) => item.difficulty === 'hard').length },
+    ...(!familyCollection ? [{ id: 'family' as const, label: 'Для семьи', count: scopeItems.filter((item) => item.audience === 'family').length }] : []),
+    { id: 'classic' as const, label: 'Классические', count: scopeItems.filter((item) => item.isClassic).length },
+  ]
   useEffect(() => {
-    trackClientEvent('danetki_catalog_view', { stories: DANETKI_CATALOG_ITEMS.length })
-    trackMetrikaGoal('danetki_catalog_view', { stories: DANETKI_CATALOG_ITEMS.length })
-  }, [])
+    const payload = { stories: scopeItems.length, collection: collection ?? 'all' }
+    trackClientEvent('danetki_catalog_view', payload)
+    trackMetrikaGoal('danetki_catalog_view', payload)
+  }, [collection, scopeItems.length])
 
   return <div className="danetki-catalog-page">
     <AppHeader {...props} />
     <main className="danetki-catalog-main">
       <ScreenBack href="/games/danetki" label="К игре" />
-      <nav className="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span><span>Данетки с ответами</span></nav>
+      <nav className="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span>{familyCollection && <><a href="/danetki">Данетки</a><span>/</span></>}<span>{familyCollection ? 'Данетки для детей' : 'Данетки с ответами'}</span></nav>
 
       <header className="danetki-catalog-hero">
         <div className="danetki-catalog-hero__copy">
           <span className="danetki-catalog-eyebrow"><Sparkles aria-hidden="true" /> Каталог логических историй</span>
-          <h1>Данетки с ответами</h1>
-          <p>Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.</p>
+          <h1>{familyCollection ? 'Данетки для детей' : 'Данетки с ответами'}</h1>
+          <p>{familyCollection ? 'Семейные истории без взрослого контента: развивают логику, учат задавать точные вопросы и подходят для игры дома или в классе.' : 'Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.'}</p>
           <div className="danetki-catalog-hero__actions">
             <a className="ui-button ui-button--primary" href={playHref('catalog')} onClick={() => trackPlayClick('catalog')}><Play aria-hidden="true" /> Играть с ИИ без спойлеров</a>
             <a className="ui-button ui-button--secondary" href="#stories"><BookOpen aria-hidden="true" /> Смотреть истории</a>
           </div>
         </div>
         <dl className="danetki-catalog-facts">
-          <div><dt>Историй сейчас</dt><dd>{DANETKI_CATALOG_ITEMS.length}</dd></div>
+          <div><dt>{familyCollection ? 'Для семьи' : 'Историй сейчас'}</dt><dd>{scopeItems.length}</dd></div>
           <div><dt>Формат</dt><dd>Да · Нет</dd></div>
           <div><dt>Ответы</dt><dd>Под спойлером</dd></div>
         </dl>
@@ -77,10 +97,14 @@ export function DanetkiCatalogPage(props: NavigationProps) {
 
       <section className="danetki-catalog-list" id="stories" aria-labelledby="danetki-stories-title">
         <div className="danetki-catalog-section-head">
-          <div><span>Подборка редакции</span><h2 id="danetki-stories-title">Все данетки</h2></div>
-          <p>Новые истории будут добавляться после редакционной проверки.</p>
+          <div><span>Подборка редакции</span><h2 id="danetki-stories-title">{filter === 'all' ? familyCollection ? 'Все для семьи' : 'Все данетки' : filters.find((entry) => entry.id === filter)?.label}</h2></div>
+          <p>{filteredItems.length} историй · выбирайте по сложности и настроению.</p>
         </div>
-        <div className="danetki-catalog-grid">{DANETKI_CATALOG_ITEMS.map((item, index) => <StoryCard key={item.id} item={item} index={index} />)}</div>
+        <div className="danetki-catalog-filters" role="group" aria-label="Фильтр данеток">
+          {filters.map((entry) => <ControlButton key={entry.id} type="button" aria-pressed={filter === entry.id} onClick={() => setFilter(entry.id)}><span>{entry.label}</span><strong>{entry.count}</strong></ControlButton>)}
+        </div>
+        {!familyCollection && <a className="danetki-catalog-collection-link" href="/danetki/dlya-detey">Данетки для детей и семейной игры <ArrowRight aria-hidden="true" /></a>}
+        <div className="danetki-catalog-grid">{filteredItems.map((item, index) => <StoryCard key={item.id} item={item} index={index} />)}</div>
       </section>
 
       <section className="danetki-catalog-guide" aria-labelledby="danetki-guide-title">
@@ -102,15 +126,15 @@ export function DanetkiStoryPage({ slug, ...props }: NavigationProps & { slug: s
 
   useEffect(() => {
     if (!item) return
-    const payload = { story: danetkiSlug(item.titleRu), difficulty: item.difficulty }
+    const payload = { story: item.slug, itemId: item.id, difficulty: item.difficulty }
     trackClientEvent('danetki_story_view', payload)
     trackMetrikaGoal('danetki_story_view', payload)
   }, [item])
 
   if (!item) return <div className="danetki-catalog-page"><AppHeader {...props} /><main className="danetki-catalog-main"><ScreenBack href="/danetki" label="К каталогу" /><section className="danetki-story-missing"><HelpCircle /><h1>Такой данетки нет</h1><p>Возможно, ссылка устарела. Вернитесь к актуальной подборке.</p><a className="ui-button ui-button--primary" href="/danetki">Открыть каталог</a></section></main></div>
 
-  const related = DANETKI_CATALOG_ITEMS.filter((candidate) => candidate.id !== item.id).slice(0, 3)
-  const storyKey = danetkiSlug(item.titleRu)
+  const related = danetkiRelatedItems(item)
+  const storyKey = item.slug
   const onAnswerToggle = (open: boolean) => {
     if (!open || answerTracked.current) return
     answerTracked.current = true

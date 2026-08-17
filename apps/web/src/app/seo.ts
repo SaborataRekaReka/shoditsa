@@ -31,6 +31,21 @@ const NOINDEX_PRIVATE = 'noindex,nofollow,noarchive'
 const DANETKI_CATALOG_IMAGE_PATH = '/images/title-posters/danetki-ticket-poster.webp'
 
 const danetkiCatalogSeo = (pathname: string): SeoRoute | null => {
+  if (pathname === '/danetki/dlya-detey') return {
+    kind: 'danetki-catalog',
+    title: 'Данетки для детей с ответами — логические загадки | Сходится!',
+    description: `Данетки для детей с ответами: ${DANETKI_CATALOG_ITEMS.filter((item) => item.audience === 'family').length} семейных историй на логику для дома, школы и компании.`,
+    canonicalPath: '/danetki/dlya-detey',
+    heading: 'Данетки для детей',
+    lead: 'Добрые и увлекательные ситуации без взрослого контента — для семейной игры, класса или детской компании.',
+    paragraphs: [
+      'Детские данетки учат отделять факты от предположений и последовательно проверять версии вопросами, на которые можно ответить «да» или «нет».',
+      'В этой подборке только семейные истории. У каждой есть условие, стартовые вопросы и ответ под спойлером, а выбранную данетку можно расследовать вместе с ИИ-ведущим.',
+    ],
+    robots: INDEXABLE_ROBOTS,
+    indexable: true,
+    imagePath: DANETKI_CATALOG_IMAGE_PATH,
+  }
   if (pathname === '/danetki') return {
     kind: 'danetki-catalog',
     title: 'Данетки с ответами — истории, загадки и игра онлайн | Сходится!',
@@ -234,7 +249,7 @@ export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN
         '@type': 'CollectionPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, image: imageUrl,
         inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId },
         mainEntity: {
-          '@type': 'ItemList', itemListElement: DANETKI_CATALOG_ITEMS.map((item, index) => ({
+          '@type': 'ItemList', itemListElement: DANETKI_CATALOG_ITEMS.filter((item) => route.canonicalPath !== '/danetki/dlya-detey' || item.audience === 'family').map((item, index) => ({
             '@type': 'ListItem', position: index + 1, name: item.titleRu, url: new URL(danetkiStoryPath(item), `${siteUrl}/`).toString(),
           })),
         },
@@ -242,7 +257,7 @@ export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN
       {
         '@type': 'BreadcrumbList', '@id': `${canonicalUrl}#breadcrumb`, itemListElement: [
           { '@type': 'ListItem', position: 1, name: SITE_NAME, item: `${siteUrl}/` },
-          { '@type': 'ListItem', position: 2, name: 'Данетки с ответами', item: canonicalUrl },
+          { '@type': 'ListItem', position: 2, name: route.canonicalPath === '/danetki/dlya-detey' ? 'Данетки для детей' : 'Данетки с ответами', item: canonicalUrl },
         ],
       },
     ],

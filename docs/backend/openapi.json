@@ -277,6 +277,24 @@
                               "enum": [
                                 "city"
                               ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "animal"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "book"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "character"
+                              ]
                             }
                           ]
                         },
@@ -519,6 +537,24 @@
                   "enum": [
                     "city"
                   ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
                 }
               ]
             },
@@ -757,6 +793,30 @@
                       {
                         "type": "string",
                         "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
                           "danetki"
                         ]
                       }
@@ -873,6 +933,11 @@
                     "minimum": 1,
                     "maximum": 10000,
                     "type": "integer"
+                  },
+                  "itemId": {
+                    "minLength": 1,
+                    "maxLength": 160,
+                    "type": "string"
                   },
                   "archiveDate": {
                     "anyOf": [
@@ -1086,6 +1151,24 @@
                         "enum": [
                           "info"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "fact"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "silhouette"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "sound"
+                        ]
                       }
                     ]
                   }
@@ -1175,6 +1258,30 @@
                         "type": "string",
                         "enum": [
                           "duplicate_card"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "ambiguous_group"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "wrong_group_title"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "word_does_not_fit"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "duplicate_word"
                         ]
                       },
                       {
@@ -1356,6 +1463,36 @@
                         "enum": [
                           "city"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "danetki"
+                        ]
                       }
                     ]
                   },
@@ -1483,6 +1620,24 @@
                         "type": "string",
                         "enum": [
                           "city"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
                         ]
                       }
                     ]
@@ -1633,6 +1788,36 @@
                   "enum": [
                     "city"
                   ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "danetki"
+                  ]
                 }
               ]
             },
@@ -1714,6 +1899,36 @@
                   "type": "string",
                   "enum": [
                     "city"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "danetki"
                   ]
                 }
               ]
@@ -3327,6 +3542,448 @@
         }
       }
     },
+    "/api/v1/connections/sessions/{sessionId}/guesses": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "tileIds"
+                ],
+                "properties": {
+                  "tileIds": {
+                    "type": "array",
+                    "items": [
+                      {
+                        "minLength": 1,
+                        "maxLength": 16,
+                        "type": "string"
+                      },
+                      {
+                        "minLength": 1,
+                        "maxLength": 16,
+                        "type": "string"
+                      },
+                      {
+                        "minLength": 1,
+                        "maxLength": 16,
+                        "type": "string"
+                      },
+                      {
+                        "minLength": 1,
+                        "maxLength": 16,
+                        "type": "string"
+                      }
+                    ],
+                    "additionalItems": false,
+                    "minItems": 4,
+                    "maxItems": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/connections/sessions/{sessionId}/hints": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "checkpoint"
+                ],
+                "properties": {
+                  "checkpoint": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "enum": [
+                          1
+                        ]
+                      },
+                      {
+                        "type": "number",
+                        "enum": [
+                          3
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "sessionId",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/rounds": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/import/preview": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "version",
+                  "locale",
+                  "rounds"
+                ],
+                "properties": {
+                  "version": {
+                    "type": "integer"
+                  },
+                  "locale": {
+                    "type": "string"
+                  },
+                  "rounds": {
+                    "minItems": 1,
+                    "maxItems": 500,
+                    "type": "array",
+                    "items": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/import/apply": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "document",
+                  "reason"
+                ],
+                "properties": {
+                  "document": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "version",
+                      "locale",
+                      "rounds"
+                    ],
+                    "properties": {
+                      "version": {
+                        "type": "integer"
+                      },
+                      "locale": {
+                        "type": "string"
+                      },
+                      "rounds": {
+                        "minItems": 1,
+                        "maxItems": 500,
+                        "type": "array",
+                        "items": {}
+                      }
+                    }
+                  },
+                  "reason": {
+                    "minLength": 3,
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/schedule": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "from",
+            "required": false
+          },
+          {
+            "schema": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "in": "query",
+            "name": "to",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/schedule/{date}": {
+      "put": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "itemVersionId"
+                ],
+                "properties": {
+                  "itemVersionId": {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "minLength": 3,
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "date",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      },
+      "delete": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "minLength": 3,
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "date",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/schedule/bulk": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "startDate",
+                  "itemVersionIds"
+                ],
+                "properties": {
+                  "startDate": {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  "itemVersionIds": {
+                    "minItems": 1,
+                    "maxItems": 365,
+                    "type": "array",
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "reason": {
+                    "minLength": 3,
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/schedule/swap": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "firstDate",
+                  "secondDate",
+                  "reason"
+                ],
+                "properties": {
+                  "firstDate": {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  "secondDate": {
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "minLength": 3,
+                    "maxLength": 500,
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/connections/analytics": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
     "/api/v1/friends/rooms": {
       "get": {
         "responses": {
@@ -3403,12 +4060,30 @@
                         "enum": [
                           "city"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
                       }
                     ]
                   },
                   "packs": {
                     "minItems": 1,
-                    "maxItems": 7,
+                    "maxItems": 10,
                     "type": "array",
                     "items": {
                       "additionalProperties": false,
@@ -3460,6 +4135,24 @@
                               "type": "string",
                               "enum": [
                                 "city"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "animal"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "book"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "character"
                               ]
                             }
                           ]
@@ -3747,12 +4440,30 @@
                         "enum": [
                           "city"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
                       }
                     ]
                   },
                   "packs": {
                     "minItems": 1,
-                    "maxItems": 7,
+                    "maxItems": 10,
                     "type": "array",
                     "items": {
                       "additionalProperties": false,
@@ -3804,6 +4515,24 @@
                               "type": "string",
                               "enum": [
                                 "city"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "animal"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "book"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "character"
                               ]
                             }
                           ]
@@ -4490,6 +5219,66 @@
                             {
                               "type": "string",
                               "enum": [
+                                "danetki_landing_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_start_clicked"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_first_question"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_catalog_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_story_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_story_answer_opened"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_catalog_play_clicked"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_registration_offer_view"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_registration_offer_clicked"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "danetki_registration_succeeded"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
                                 "friends_room_created"
                               ]
                             },
@@ -4593,6 +5382,54 @@
                               "type": "string",
                               "enum": [
                                 "final_choice_unavailable"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_started"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_guess_submitted"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_one_away"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_group_solved"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_hint_used"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_completed"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_shared"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections_report_submitted"
                               ]
                             }
                           ]
@@ -4883,6 +5720,30 @@
                   "enum": [
                     "danetki"
                   ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
                 }
               ]
             },
@@ -5011,6 +5872,12 @@
                   "type": "string",
                   "enum": [
                     "normalization"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "factcheck"
                   ]
                 }
               ]
@@ -5496,6 +6363,30 @@
                                   "enum": [
                                     "danetki"
                                   ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "connections"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "animal"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "book"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "character"
+                                  ]
                                 }
                               ]
                             },
@@ -5775,6 +6666,30 @@
                                   "enum": [
                                     "danetki"
                                   ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "connections"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "animal"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "book"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "character"
+                                  ]
                                 }
                               ]
                             },
@@ -5935,6 +6850,30 @@
                               "enum": [
                                 "danetki"
                               ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "connections"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "animal"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "book"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "character"
+                              ]
                             }
                           ]
                         }
@@ -6027,6 +6966,30 @@
                         "type": "string",
                         "enum": [
                           "danetki"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
                         ]
                       }
                     ]
@@ -6579,6 +7542,30 @@
                   "enum": [
                     "danetki"
                   ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
                 }
               ]
             },
@@ -7023,6 +8010,30 @@
                   "enum": [
                     "danetki"
                   ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
                 }
               ]
             },
@@ -7103,6 +8114,30 @@
                         "type": "string",
                         "enum": [
                           "danetki"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
                         ]
                       }
                     ]
@@ -7295,6 +8330,30 @@
                         "type": "string",
                         "enum": [
                           "danetki"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
                         ]
                       }
                     ]
@@ -7489,6 +8548,30 @@
                         "enum": [
                           "danetki"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
                       }
                     ]
                   },
@@ -7598,6 +8681,366 @@
                           "gpt-5-nano"
                         ]
                       }
+                    ]
+                  },
+                  "webSearch": {
+                    "type": "boolean"
+                  },
+                  "confirmation": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pipelines/factcheck/estimate": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "mode",
+                  "fields",
+                  "scope",
+                  "maxItems"
+                ],
+                "properties": {
+                  "mode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "movie"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "series"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "anime"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "game"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "music"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "diagnosis"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "city"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "danetki"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
+                      }
+                    ]
+                  },
+                  "fields": {
+                    "minItems": 1,
+                    "maxItems": 60,
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "*"
+                          ]
+                        },
+                        {
+                          "minLength": 1,
+                          "maxLength": 80,
+                          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  "scope": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "all"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "selected"
+                        ]
+                      }
+                    ]
+                  },
+                  "itemIds": {
+                    "maxItems": 500,
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "maxLength": 255,
+                      "type": "string"
+                    }
+                  },
+                  "query": {
+                    "maxLength": 160,
+                    "type": "string"
+                  },
+                  "maxItems": {
+                    "minimum": 1,
+                    "maximum": 500,
+                    "default": 100,
+                    "type": "integer"
+                  },
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "gpt-5-mini"
+                    ]
+                  },
+                  "webSearch": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pipelines/factcheck/runs": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "mode",
+                  "fields",
+                  "scope",
+                  "maxItems",
+                  "confirmation"
+                ],
+                "properties": {
+                  "mode": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "movie"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "series"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "anime"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "game"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "music"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "diagnosis"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "city"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "danetki"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
+                        ]
+                      }
+                    ]
+                  },
+                  "fields": {
+                    "minItems": 1,
+                    "maxItems": 60,
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "*"
+                          ]
+                        },
+                        {
+                          "minLength": 1,
+                          "maxLength": 80,
+                          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  "scope": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "all"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "selected"
+                        ]
+                      }
+                    ]
+                  },
+                  "itemIds": {
+                    "maxItems": 500,
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "minLength": 1,
+                      "maxLength": 255,
+                      "type": "string"
+                    }
+                  },
+                  "query": {
+                    "maxLength": 160,
+                    "type": "string"
+                  },
+                  "maxItems": {
+                    "minimum": 1,
+                    "maximum": 500,
+                    "default": 100,
+                    "type": "integer"
+                  },
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "gpt-5-mini"
                     ]
                   },
                   "webSearch": {
@@ -9086,6 +10529,64 @@
         }
       }
     },
+    "/api/v1/admin/pipeline-runs/{id}/retry-unresolved": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pipeline-runs/{id}/reprocess-results": {
+      "post": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          },
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
     "/api/v1/admin/pipeline-runs/{id}/continue": {
       "post": {
         "parameters": [
@@ -9148,6 +10649,151 @@
     },
     "/api/v1/admin/integrations": {
       "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/integrations/openai/portrait-recovery": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "confirmation",
+                  "portraitBatch",
+                  "mapped",
+                  "discard"
+                ],
+                "properties": {
+                  "confirmation": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  },
+                  "portraitBatch": {
+                    "type": "string",
+                    "enum": [
+                      "character-expansion-330"
+                    ]
+                  },
+                  "mapped": {
+                    "minItems": 87,
+                    "maxItems": 87,
+                    "type": "array",
+                    "items": {
+                      "additionalProperties": false,
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "file"
+                      ],
+                      "properties": {
+                        "id": {
+                          "pattern": "^character:[a-z0-9-]+$",
+                          "type": "string"
+                        },
+                        "file": {
+                          "pattern": "^[0-9a-f]{64}\\.webp$",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "discard": {
+                    "minItems": 64,
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "pattern": "^[0-9a-f]{64}\\.webp$",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/integrations/openai/portrait-test": {
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "confirmation"
+                ],
+                "properties": {
+                  "confirmation": {
+                    "type": "boolean",
+                    "enum": [
+                      true
+                    ]
+                  },
+                  "portraitId": {
+                    "type": "string",
+                    "enum": [
+                      "sherlock-holmes"
+                    ]
+                  },
+                  "portraitBatch": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character-expansion-50"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character-expansion-330"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/api/v1/admin/integrations/openai/portrait-test/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response"
@@ -9928,6 +11574,30 @@
                   "enum": [
                     "danetki"
                   ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
+                  ]
                 }
               ]
             },
@@ -10096,6 +11766,30 @@
                         "type": "string",
                         "enum": [
                           "danetki"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "connections"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "animal"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "book"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "character"
                         ]
                       }
                     ]
@@ -10772,6 +12466,30 @@
                   "type": "string",
                   "enum": [
                     "danetki"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "connections"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "animal"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "book"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "character"
                   ]
                 }
               ]

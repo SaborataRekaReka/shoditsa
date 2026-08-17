@@ -75,6 +75,18 @@ describe('danetki public payload', () => {
     expect(digest).not.toContain(token)
   })
 
+  it('exposes only safe catalog metadata when it is present', () => {
+    expect(toPublicDanetka({
+      ...payload,
+      slug: 'zakrytaya-komnata',
+      audience: 'adult',
+      tone: 'mystery',
+      estimatedMinutes: 8,
+      sourceNote: 'Служебная заметка',
+    })).toMatchObject({ slug: 'zakrytaya-komnata', audience: 'adult', tone: 'mystery', estimatedMinutes: 8 })
+    expect(toPublicDanetka({ ...payload, sourceNote: 'Служебная заметка' })).not.toHaveProperty('sourceNote')
+  })
+
   it('passes the question turn around the room in join order', () => {
     const members = ['owner', 'second', 'third', 'fourth']
     expect(nextDanetkiTurnUserId(members, 'owner')).toBe('second')

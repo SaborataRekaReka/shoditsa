@@ -4687,7 +4687,9 @@ function GameApp() {
 
   const navigateToPlayerRoute = useCallback((target: ReturnType<typeof playerRouteFromPathname>, replace = false) => {
     if (target.screen === 'danetki') return navigate({ to: '/games/$mode', params: { mode: 'danetki' }, replace })
-    if (target.screen === 'danetki-catalog') return navigate({ to: '/danetki', replace })
+    if (target.screen === 'danetki-catalog') return target.danetkiCollection
+      ? navigate({ to: '/danetki/$slug', params: { slug: target.danetkiCollection }, replace })
+      : navigate({ to: '/danetki', replace })
     if (target.screen === 'danetki-story' && target.danetkiSlug) return navigate({ to: '/danetki/$slug', params: { slug: target.danetkiSlug }, replace })
     if (target.screen === 'friends-intro') return navigate({ to: '/games/together', replace })
     if (target.screen === 'friends-room') return navigate({ to: '/games/together', replace })
@@ -4739,6 +4741,7 @@ function GameApp() {
       legalDocument: routedScreen === 'legal' ? playerRouteFromPathname(routeLocation.pathname).legalDocument : undefined,
       inviteToken: routedScreen === 'danetki-join' ? playerRouteFromPathname(routeLocation.pathname).inviteToken : undefined,
       danetkiSlug: routedScreen === 'danetki-story' ? playerRouteFromPathname(routeLocation.pathname).danetkiSlug : undefined,
+      danetkiCollection: routedScreen === 'danetki-catalog' ? playerRouteFromPathname(routeLocation.pathname).danetkiCollection : undefined,
     }
     const desiredPath = pathnameForPlayerRoute(target)
     if (applyingRouteRef.current) {
@@ -5104,20 +5107,20 @@ function GameApp() {
     })
   }
 
-  const startDanetki = (roomMode: 'solo' | 'group') => {
+  const startDanetki = (roomMode: 'solo' | 'group', itemId?: string) => {
     if (startServerSession.isPending) return
     setServerActionError('')
     startServerSession.mutate({
       key: crypto.randomUUID(),
-      body: { kind: 'daily', mode: 'danetki', roomMode },
+      body: { kind: 'daily', mode: 'danetki', roomMode, ...(itemId ? { itemId } : {}) },
       backTarget: 'hub',
     })
   }
 
-  const startFreePlayDanetki = (roomMode: 'solo' | 'group') => {
+  const startFreePlayDanetki = (roomMode: 'solo' | 'group', itemId?: string) => {
     if (startServerSession.isPending) return
     setServerActionError('')
-    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'free_play', mode: 'danetki', roomMode }, backTarget: 'hub' })
+    startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'free_play', mode: 'danetki', roomMode, ...(itemId ? { itemId } : {}) }, backTarget: 'hub' })
   }
 
   const continueDanetki = () => {
@@ -5488,7 +5491,7 @@ function GameApp() {
 
     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} canCreateGroupRoom={canCreateFriendsRoomAccess} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onCreateRoom={() => selectFriendsRoom('danetki')} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
-    {screen === 'danetki-catalog' && <DanetkiCatalogPage onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+    {screen === 'danetki-catalog' && <DanetkiCatalogPage collection={playerRouteFromPathname(routeLocation.pathname).danetkiCollection} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'danetki-story' && <DanetkiStoryPage slug={playerRouteFromPathname(routeLocation.pathname).danetkiSlug ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 

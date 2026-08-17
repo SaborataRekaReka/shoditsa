@@ -39,27 +39,27 @@ type Props = {
 const errorText = (error: unknown) => error instanceof ApiClientError ? error.message : error instanceof Error ? error.message : 'Не удалось выполнить действие'
 const localTime = (value: string) => new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
 
-function DanetkiRegistrationOffer({ placement, sessionId, questionCount }: { placement: Extract<DanetkiRegistrationPlacement, 'investigation' | 'result'>; sessionId: string; questionCount: number }) {
+function DanetkiRegistrationOffer({ placement, sessionId, questionCount, story }: { placement: Extract<DanetkiRegistrationPlacement, 'investigation' | 'result'>; sessionId: string; questionCount: number; story?: string }) {
   const { session: authSession, loading } = useAuthSession()
   const viewTracked = useRef(false)
   const guest = !authSession || authSession.isAnonymous
   const returnUrl = currentDanetkiReturnUrl()
-  const href = danetkiRegistrationHref(placement, returnUrl)
+  const href = danetkiRegistrationHref(placement, returnUrl, story)
 
   useEffect(() => {
     if (loading || !guest || viewTracked.current) return
     viewTracked.current = true
-    const payload = { placement, mode: 'danetki', questionCount }
+    const payload = { placement, mode: 'danetki', questionCount, story: story ?? null }
     trackClientEvent('danetki_registration_offer_view', payload, { gameSessionId: sessionId })
     trackMetrikaGoal('danetki_registration_offer_view', payload)
-  }, [guest, loading, placement, questionCount, sessionId])
+  }, [guest, loading, placement, questionCount, sessionId, story])
 
   if (loading) return null
   if (!guest) return placement === 'result' ? <section className="danetki-registration-offer is-saved" aria-label="Прогресс сохранён"><span><CheckCircle2 aria-hidden="true" /></span><div><strong>Расследование сохранено</strong><p>Результат, серия дней и статистика доступны в вашем профиле.</p></div></section> : null
 
   const click = () => {
-    rememberDanetkiRegistrationIntent(placement, returnUrl)
-    const payload = { placement, mode: 'danetki', questionCount, returnUrl }
+    rememberDanetkiRegistrationIntent(placement, returnUrl, story)
+    const payload = { placement, mode: 'danetki', questionCount, returnUrl, story: story ?? null }
     trackClientEvent('danetki_registration_offer_clicked', payload, { gameSessionId: sessionId })
     trackMetrikaGoal('danetki_registration_offer_clicked', payload)
   }
@@ -355,7 +355,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         </>}
       </section>
 
-      {session.status === 'playing' && state.questionCount >= 3 && <DanetkiRegistrationOffer placement="investigation" sessionId={session.id} questionCount={state.questionCount} />}
+      {session.status === 'playing' && state.questionCount >= 3 && <DanetkiRegistrationOffer placement="investigation" sessionId={session.id} questionCount={state.questionCount} story={state.puzzle.id} />}
 
       {error && <InlineAlert tone="danger" className="danetki-error" onDismiss={() => setError('')}>{error}</InlineAlert>}
       {session.status === 'playing' ? <div className="danetki-session-actions">
@@ -374,7 +374,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
           </div>
         </div>
         <div className="danetki-outcome__conversion">
-          <DanetkiRegistrationOffer placement="result" sessionId={session.id} questionCount={state.questionCount} />
+          <DanetkiRegistrationOffer placement="result" sessionId={session.id} questionCount={state.questionCount} story={state.puzzle.id} />
           <div><a href="/danetki"><BookOpen aria-hidden="true" /> Все данетки с ответами</a><ActionButton type="button" className="danetki-outcome__action" onClick={onHome}>К другим играм <ArrowRight aria-hidden="true" /></ActionButton></div>
         </div>
       </section>}

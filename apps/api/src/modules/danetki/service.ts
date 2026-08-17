@@ -82,12 +82,16 @@ export const toPublicDanetka = (value: unknown): PublicDanetka => {
   }
   return {
     id: payload.id,
+    ...(typeof payload.slug === 'string' ? { slug: payload.slug } : {}),
     titleRu: payload.titleRu,
     condition: payload.condition,
     difficulty: payload.difficulty as PublicDanetka['difficulty'],
     genres: textArray(payload.genres),
     starterQuestions: textArray(payload.starterQuestions),
     contentWarnings: textArray(payload.contentWarnings),
+    ...(['family', 'teen', 'adult'].includes(String(payload.audience)) ? { audience: payload.audience as PublicDanetka['audience'] } : {}),
+    ...(['light', 'warm', 'wonder', 'mystery', 'tense', 'dark'].includes(String(payload.tone)) ? { tone: payload.tone as PublicDanetka['tone'] } : {}),
+    ...(typeof payload.estimatedMinutes === 'number' ? { estimatedMinutes: payload.estimatedMinutes } : {}),
   }
 }
 
@@ -122,7 +126,7 @@ export const nextDanetkiTurnUserId = (memberIds: string[], currentUserId: string
 const assertDanetkiStartReplay = async (
   tx: Transaction,
   session: SessionRow,
-  input: { kind: 'daily' | 'archive' | 'free_play'; roomMode: 'solo' | 'group' },
+  input: { kind: 'daily' | 'archive' | 'free_play'; roomMode: 'solo' | 'group'; itemId?: string },
   puzzleDate: string,
 ) => {
   const state = (await tx.select({ roomMode: danetkiSessionState.roomMode }).from(danetkiSessionState)
@@ -134,6 +138,13 @@ const assertDanetkiStartReplay = async (
     || state?.roomMode !== input.roomMode
   ) {
     throw new ApiError(409, 'IDEMPOTENCY_CONFLICT', 'Этот ключ уже использован для другого запуска Данетки')
+  }
+  if (input.itemId) {
+    const answer = (await tx.select({ itemId: contentItemVersions.itemId }).from(contentItemVersions)
+      .where(eq(contentItemVersions.id, session.answerItemVersionId)).limit(1))[0]
+    if (answer?.itemId !== input.itemId) {
+      throw new ApiError(409, 'IDEMPOTENCY_CONFLICT', 'Этот ключ уже использован для другой Данетки')
+    }
   }
 }
 
@@ -237,6 +248,21 @@ const resolveFreePlayPuzzle = async (tx: Transaction) => {
     )).orderBy(asc(contentItemVersions.sortOrder))
   if (!pool.length) throw new ApiError(503, 'DANETKI_CONTENT_POOL_EMPTY', 'Нет доступных данеток для запуска')
   const selected = pool[stableIndex(randomBytes(32).toString('hex'), pool.length)]
+  toPublicDanetka(selected.payload)
+  return { revisionId, answerItemVersionId: selected.id }
+}
+
+const resolveSelectedPuzzle = async (tx: Transaction, itemId: string) => {
+  const revisionId = await activeRevisionId(tx)
+  const selected = (await tx.select({ id: contentItemVersions.id, payload: contentItemVersions.payload })
+    .from(contentItemVersions).where(and(
+      eq(contentItemVersions.revisionId, revisionId),
+      eq(contentItemVersions.mode, 'danetki'),
+      eq(contentItemVersions.itemId, itemId),
+      eq(contentItemVersions.allowedInGame, true),
+      inArray(contentItemVersions.contentStatus, ['test', 'ready']),
+    )).limit(1))[0]
+  if (!selected) throw new ApiError(404, 'DANETKI_NOT_FOUND', 'Эта данетка пока недоступна для игры')
   toPublicDanetka(selected.payload)
   return { revisionId, answerItemVersionId: selected.id }
 }
@@ -351,6 +377,7 @@ export const startDanetkiSession = async (db: Database, user: {
   kind: 'daily' | 'archive' | 'free_play'
   roomMode: 'solo' | 'group'
   archiveDate?: string | null
+  itemId?: string
   idempotencyKey?: string
   /**
    * A friends-room launch is an independent multiplayer session that may use
@@ -370,6 +397,7 @@ export const startDanetkiSession = async (db: Database, user: {
   const puzzleDate = input.kind === 'daily' || input.kind === 'free_play' ? today : input.archiveDate
   if (!puzzleDate) throw new ApiError(422, 'ARCHIVE_DATE_REQUIRED', 'Для архивной игры нужна дата')
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
+  if (input.kind === 'archive' && input.itemId) throw new ApiError(422, 'DANETKI_ARCHIVE_SELECTION_UNSUPPORTED', 'Для архива данетка определяется выбранной датой')
   const rules = await loadAssignedEconomyRules(db, user.id, user.role, config.economy.v4RolloutPercent)
 
   return db.transaction(async (tx) => {
@@ -384,6 +412,17 @@ export const startDanetkiSession = async (db: Database, user: {
       const access = await canStartArchiveSession(tx as unknown as Database, user.id, puzzleDate, config, new Date(), { mode: 'danetki', period: 'all', difficulty: null })
       if (access.source === 'before-launch') throw new ApiError(422, 'ARCHIVE_DATE_BEFORE_LAUNCH', 'Эта дата была до запуска архива', { archiveDate: puzzleDate, archiveFirstDate: config.commerce.archiveFirstDate })
       if (!access.allowed) throw new ApiError(403, 'ARCHIVE_CLUB_REQUIRED', 'Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем', { archiveDate: puzzleDate, freeFrom: access.freeFrom })
+    }
+
+    if (input.kind === 'daily' && input.itemId && !input.roomInstance) {
+      await tx.insert(danetkiDailyUsage).values({ userId: user.id, activityDate: today }).onConflictDoNothing()
+      const selectedDailyUsage = (await tx.select().from(danetkiDailyUsage).where(and(
+        eq(danetkiDailyUsage.userId, user.id),
+        eq(danetkiDailyUsage.activityDate, today),
+      )).for('update').limit(1))[0]
+      if (selectedDailyUsage.dailyRooms > 0) {
+        throw new ApiError(409, 'DANETKI_DAILY_ALREADY_STARTED', 'Бесплатная данетка на сегодня уже запущена')
+      }
     }
 
     let usage: typeof danetkiDailyUsage.$inferSelect | null = null
@@ -423,12 +462,13 @@ export const startDanetkiSession = async (db: Database, user: {
       })
     }
 
-    const challenge = input.kind === 'free_play' ? null : await resolveChallenge(tx, puzzleDate)
-    const freePlayPuzzle = input.kind === 'free_play' ? await resolveFreePlayPuzzle(tx) : null
+    const selectedPuzzle = input.itemId ? await resolveSelectedPuzzle(tx, input.itemId) : null
+    const challenge = input.kind === 'free_play' || selectedPuzzle ? null : await resolveChallenge(tx, puzzleDate)
+    const freePlayPuzzle = selectedPuzzle ?? (input.kind === 'free_play' ? await resolveFreePlayPuzzle(tx) : null)
     const inserted = await tx.insert(gameSessions).values({
       userId: user.id,
       authSessionId: user.authSessionId,
-      challengeId: input.roomInstance ? null : challenge?.id ?? null,
+      challengeId: input.roomInstance || selectedPuzzle ? null : challenge?.id ?? null,
       kind: input.kind,
       mode: 'danetki',
       period: 'all',
@@ -439,7 +479,7 @@ export const startDanetkiSession = async (db: Database, user: {
       rulesVersion: rules.version,
       startIdempotencyKey: input.idempotencyKey,
     }).onConflictDoNothing().returning()
-    const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play' || input.roomInstance
+    const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play' || input.roomInstance || selectedPuzzle
       ? and(eq(gameSessions.userId, user.id), eq(gameSessions.startIdempotencyKey, input.idempotencyKey!))
       : and(eq(gameSessions.userId, user.id), eq(gameSessions.challengeId, challenge!.id))).limit(1))[0]
     if (!session) throw new ApiError(503, 'DANETKI_SESSION_NOT_READY', 'Не удалось создать игровую сессию')

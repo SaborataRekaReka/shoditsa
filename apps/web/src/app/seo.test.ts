@@ -96,16 +96,20 @@ describe('search index contract', () => {
 
   it('publishes a separate Danetki catalog and story pages without cannibalizing the game landing', () => {
     const catalog = seoRouteFromPathname('/danetki')
+    const family = seoRouteFromPathname('/danetki/dlya-detey')
     const story = seoRouteFromPathname('/danetki/verevka')
     const game = seoRouteFromPathname('/games/danetki')
     expect(catalog.kind).toBe('danetki-catalog')
     expect(catalog.indexable).toBe(true)
     expect(catalog.title).toContain('Данетки с ответами')
+    expect(family.kind).toBe('danetki-catalog')
+    expect(family.title).toContain('Данетки для детей')
+    expect(family.canonicalPath).toBe('/danetki/dlya-detey')
     expect(story.kind).toBe('danetki-story')
     expect(story.indexable).toBe(true)
     expect(story.title).toContain('Верёвка')
     expect(game.title).toContain('Данетки онлайн')
-    expect(new Set([catalog.canonicalPath, story.canonicalPath, game.canonicalPath]).size).toBe(3)
+    expect(new Set([catalog.canonicalPath, family.canonicalPath, story.canonicalPath, game.canonicalPath]).size).toBe(4)
   })
 
   it('points a loaded session at its public game while keeping it out of the index', () => {
