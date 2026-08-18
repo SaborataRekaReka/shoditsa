@@ -405,6 +405,17 @@ describe('deterministic rules', () => {
     expect(hints.find((hint) => hint.key === 'animal_family')).toMatchObject({ status: 'miss' })
     expect(hints.find((hint) => hint.key === 'body_mass')).toMatchObject({ direction: 'up' })
   })
+  it('keeps animal mass visible when the answer has no mass data', () => {
+    const animal = {
+      id: 'animal:guess', mode: 'animal', titleRu: 'Зверь', titleOriginal: '', alternativeTitles: [],
+      popularityScore: 1, bodyMassKg: 12.5,
+    } as TitleItem
+
+    expect(compareTitles(animal, { ...animal, id: 'animal:answer', bodyMassKg: null }).find((hint) => hint.key === 'body_mass'))
+      .toMatchObject({ label: 'Масса', value: '12,5 кг', status: 'unknown', direction: null })
+    expect(compareTitles({ ...animal, bodyMassKg: null }, animal).find((hint) => hint.key === 'body_mass'))
+      .toMatchObject({ label: 'Масса', value: 'Нет данных', status: 'unknown', direction: null })
+  })
   it('loads the complete book roster and compares literary criteria through the shared mode registry', () => {
     const books = JSON.parse(readFileSync(new URL('../../../public/data/libraries/books/items.json', import.meta.url), 'utf8')) as TitleItem[]
     const nineteenEightyFour = books.find((item) => item.id === 'book-167')!
