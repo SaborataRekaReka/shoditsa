@@ -5123,6 +5123,14 @@ function GameApp() {
     startServerSession.mutate({ key: crypto.randomUUID(), body: { kind: 'free_play', mode: 'danetki', roomMode, ...(itemId ? { itemId } : {}) }, backTarget: 'hub' })
   }
 
+  const tryCatalogDanetki = (itemId: string) => {
+    if ((serverRuntime.dashboard?.danetkiAccess.dailyRoomsStarted ?? 0) === 0) {
+      startDanetki('solo', itemId)
+      return
+    }
+    startFreePlayDanetki('solo', itemId)
+  }
+
   const continueDanetki = () => {
     if (!activeDanetkiSessionId) return
     setServerSessionId(activeDanetkiSessionId)
@@ -5491,9 +5499,9 @@ function GameApp() {
 
     {screen === 'danetki' && <DanetkiLobbyPage date={serverRuntime.meta?.moscowDate ?? getMoscowDate()} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} canCreateGroupRoom={canCreateFriendsRoomAccess} onHome={goHome} onBack={goHome} onArchive={() => setScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onStart={startDanetki} onStartFreePlay={startFreePlayDanetki} onCreateRoom={() => selectFriendsRoom('danetki')} onContinue={activeDanetkiSessionId ? continueDanetki : undefined} busy={startServerSession.isPending} error={serverActionError} />}
 
-    {screen === 'danetki-catalog' && <DanetkiCatalogPage collection={playerRouteFromPathname(routeLocation.pathname).danetkiCollection} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+    {screen === 'danetki-catalog' && <DanetkiCatalogPage collection={playerRouteFromPathname(routeLocation.pathname).danetkiCollection} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} busy={startServerSession.isPending} onTry={(item) => tryCatalogDanetki(item.id)} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'danetki-story' && <DanetkiStoryPage slug={playerRouteFromPathname(routeLocation.pathname).danetkiSlug ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
+    {screen === 'danetki-story' && <DanetkiStoryPage slug={playerRouteFromPathname(routeLocation.pathname).danetkiSlug ?? ''} access={serverRuntime.dashboard?.danetkiAccess} ticketBalance={serverRuntime.dashboard?.wallet.balance ?? 0} busy={startServerSession.isPending} onTry={(item) => tryCatalogDanetki(item.id)} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
     {screen === 'danetki-join' && <DanetkiJoinPage token={playerRouteFromPathname(routeLocation.pathname).inviteToken ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onJoined={(session) => activateServerSession(session, 'hub')} />}
 

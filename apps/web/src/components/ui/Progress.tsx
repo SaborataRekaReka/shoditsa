@@ -1,17 +1,20 @@
 import type { ReactNode } from 'react'
 import './Progress.css'
 
-export function SegmentedProgress({ value, max = 10, label = 'Использовано попыток', valueLabel, className = '' }: {
+export function SegmentedProgress({ value, max = 10, segments = max, label = 'Использовано попыток', valueLabel, className = '' }: {
   value: number
   max?: number
+  segments?: number
   label?: ReactNode
   valueLabel?: ReactNode
   className?: string
 }) {
+  const segmentCount = Math.max(1, Math.round(segments))
+  const usedSegments = value <= 0 || max <= 0 ? 0 : Math.min(segmentCount, Math.ceil(value / max * segmentCount))
   return <div className={`progress-block ui-segmented-progress ${className}`.trim()}>
     <div className="progress-copy"><span>{label}</span><strong>{valueLabel ?? <>{Math.min(value, max)} <i>из {max}</i></>}</strong></div>
-    <div className="progress-track" aria-label={`${String(label)}: ${value} из ${max}`}>
-      {Array.from({ length: max }, (_, index) => <i key={index} className={index < value ? 'used' : ''} />)}
+    <div className="progress-track" role="progressbar" aria-label={`${String(label)}: ${value} из ${max}`} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} style={{ gridTemplateColumns: `repeat(${segmentCount}, minmax(0, 1fr))` }}>
+      {Array.from({ length: segmentCount }, (_, index) => <i key={index} className={index < usedSegments ? 'used' : ''} />)}
     </div>
   </div>
 }

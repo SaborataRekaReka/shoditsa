@@ -43,6 +43,16 @@ export const danetkiSlug = (title: string) => Array.from(title.toLocaleLowerCase
 
 export const danetkiStoryPath = (item: Pick<DanetkiCatalogItem, 'slug'>) => `/danetki/${item.slug}`
 
+export const danetkiCatalogPlayState = (
+  access: { dailyRoomsStarted: number; nextSoloCost: number } | undefined,
+  ticketBalance: number,
+) => {
+  const dailyAvailable = (access?.dailyRoomsStarted ?? 0) === 0
+  const cost = dailyAvailable ? 0 : access?.nextSoloCost ?? 0
+  const shortage = Math.max(0, cost - ticketBalance)
+  return { dailyAvailable, cost, shortage, allowed: shortage === 0 }
+}
+
 export const DANETKI_CATALOG_ITEMS = (catalogItems as DanetkiCatalogItem[])
   .filter((item) => item.allowedInGame && item.indexable && item.contentStatus === 'ready' && item.slug.trim() && item.titleRu.trim() && item.condition.trim() && item.solution.trim())
   .sort((left, right) => right.popularityScore - left.popularityScore || left.titleRu.localeCompare(right.titleRu, 'ru-RU'))

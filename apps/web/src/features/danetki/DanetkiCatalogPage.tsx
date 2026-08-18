@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowRight, BookOpen, CheckCircle2, Clock3, HelpCircle, Play, Sparkles } from 'lucide-react'
+import type { DashboardResponse } from '@shoditsa/contracts'
+import { ArrowRight, BookOpen, CheckCircle2, Clock3, HelpCircle, Play, Sparkles, Ticket } from 'lucide-react'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
 import { ControlButton } from '../../components/ui'
 import {
   DANETKI_CATALOG_ITEMS,
+  danetkiCatalogPlayState,
   danetkiCatalogItemBySlug,
   danetkiDifficultyLabel,
   danetkiRelatedItems,
@@ -26,6 +28,13 @@ type NavigationProps = {
   onStats: () => void
   onRules: () => void
   onReview: () => void
+}
+
+type CatalogPlayProps = {
+  access?: DashboardResponse['danetkiAccess']
+  ticketBalance: number
+  busy: boolean
+  onTry: (item: DanetkiCatalogItem) => void
 }
 
 const playHref = (placement: 'catalog' | 'story', item?: DanetkiCatalogItem, collection?: DanetkiCollectionSlug) => {
@@ -52,21 +61,62 @@ const GENERAL_GUIDE_STEPS = [
   'Соберите версию, объясняющую каждую странность условия, и только затем откройте ответ.',
 ] as const
 
-const StoryCard = ({ item, index }: { item: DanetkiCatalogItem; index: number }) => <article className="danetki-catalog-card">
-  <div className="danetki-catalog-card__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
-  <div className="danetki-catalog-card__copy">
-    <div className="danetki-catalog-card__meta">
-      <span>{danetkiDifficultyLabel(item.difficulty)}</span>
-      {item.genres.slice(0, 1).map((genre) => <span key={genre}>{genre}</span>)}
-      <span><Clock3 aria-hidden="true" /> {item.estimatedMinutes} мин</span>
-    </div>
-    <h2><a href={danetkiStoryPath(item)}>{item.titleRu}</a></h2>
-    <p>{item.condition}</p>
-    <a className="danetki-catalog-card__action" href={danetkiStoryPath(item)}>Проверить свою версию <ArrowRight aria-hidden="true" /></a>
-  </div>
-</article>
+const StoryCard = ({ item, index, placement, access, ticketBalance, busy, onTry }: {
+  item: DanetkiCatalogItem
+  index: number
+  placement: 'catalog' | 'story'
+} & CatalogPlayProps) => {
+  const { dailyAvailable, cost, shortage } = danetkiCatalogPlayState(access, ticketBalance)
+  const disabled = busy || !access || shortage > 0
+  const accessLabel = !access
+    ? 'Проверяем доступ…'
+    : dailyAvailable
+      ? 'Бесплатно сегодня'
+      : cost === 0
+        ? 'Включено в клуб'
+        : `${cost} билетов`
+  const buttonTitle = !access
+    ? 'Проверяем доступ к игре'
+    : shortage > 0
+    ? `Не хватает ${shortage} билетов`
+    : dailyAvailable
+      ? 'Использовать бесплатную данетку на сегодня'
+      : cost === 0
+        ? 'Начать клубную игру'
+        : `Начать игру за ${cost} билетов`
 
-export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & { collection?: DanetkiCollectionSlug }) {
+  return <article className="danetki-catalog-card">
+    <div className="danetki-catalog-card__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</div>
+    <div className="danetki-catalog-card__copy">
+      <div className="danetki-catalog-card__meta">
+        <span>{danetkiDifficultyLabel(item.difficulty)}</span>
+        {item.genres.slice(0, 1).map((genre) => <span key={genre}>{genre}</span>)}
+        <span><Clock3 aria-hidden="true" /> {item.estimatedMinutes} мин</span>
+      </div>
+      <h2><a href={danetkiStoryPath(item)}>{item.titleRu}</a></h2>
+      <p>{item.condition}</p>
+      <div className="danetki-catalog-card__actions">
+        <a className="danetki-catalog-card__action danetki-catalog-card__action--open" href={danetkiStoryPath(item)}><BookOpen aria-hidden="true" /> Открыть</a>
+        <ControlButton
+          className="danetki-catalog-card__action danetki-catalog-card__action--try"
+          disabled={disabled}
+          title={buttonTitle}
+          aria-label={`Попробовать «${item.titleRu}». ${shortage > 0 ? buttonTitle : accessLabel}`}
+          onClick={() => {
+            trackPlayClick(placement, item)
+            onTry(item)
+          }}
+        ><Play aria-hidden="true" /> {busy ? 'Запускаем…' : 'Попробовать'}</ControlButton>
+      </div>
+      <span className={`danetki-catalog-card__play-note${shortage > 0 ? ' is-unavailable' : ''}`}>
+        {!access || dailyAvailable ? <Sparkles aria-hidden="true" /> : <Ticket aria-hidden="true" />}
+        {shortage > 0 ? buttonTitle : accessLabel}
+      </span>
+    </div>
+  </article>
+}
+
+export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, onTry, ...props }: NavigationProps & CatalogPlayProps & { collection?: DanetkiCollectionSlug }) {
   const collectionDefinition = collection ? danetkiCollectionDefinition(collection) : null
   const scopeItems = useMemo(() => collection
     ? danetkiCollectionItems(collection)
@@ -126,7 +176,7 @@ export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & {
         {!collectionDefinition && <div className="danetki-catalog-filters" role="group" aria-label="Фильтр данеток">
           {filters.map((entry) => <ControlButton key={entry.id} type="button" aria-pressed={filter === entry.id} onClick={() => setFilter(entry.id)}><span>{entry.label}</span><strong>{entry.count}</strong></ControlButton>)}
         </div>}
-        <div className="danetki-catalog-grid">{filteredItems.map((item, index) => <StoryCard key={item.id} item={item} index={index} />)}</div>
+        <div className="danetki-catalog-grid">{filteredItems.map((item, index) => <StoryCard key={item.id} item={item} index={index} placement="catalog" access={access} ticketBalance={ticketBalance} busy={busy} onTry={onTry} />)}</div>
       </section>
 
       <section className="danetki-catalog-copy" aria-labelledby="danetki-copy-title">
@@ -146,7 +196,7 @@ export function DanetkiCatalogPage({ collection, ...props }: NavigationProps & {
   </div>
 }
 
-export function DanetkiStoryPage({ slug, ...props }: NavigationProps & { slug: string }) {
+export function DanetkiStoryPage({ slug, access, ticketBalance, busy, onTry, ...props }: NavigationProps & CatalogPlayProps & { slug: string }) {
   const item = danetkiCatalogItemBySlug(slug)
   const answerTracked = useRef(false)
 
@@ -202,11 +252,18 @@ export function DanetkiStoryPage({ slug, ...props }: NavigationProps & { slug: s
 
         <aside className="danetki-story__play">
           <div><span>Хотите настоящее расследование?</span><h2>Задавайте вопросы ИИ-ведущему</h2><p>В игре ответ скрыт: ведущий реагирует на версии и помогает шаг за шагом восстановить историю.</p></div>
-          <a className="ui-button ui-button--primary" href={playHref('story', item)} onClick={() => trackPlayClick('story', item)}><Play aria-hidden="true" /> Играть без спойлеров</a>
+          <ControlButton
+            className="ui-button ui-button--primary"
+            disabled={busy || !access || (access.dailyRoomsStarted > 0 && access.nextSoloCost > ticketBalance)}
+            onClick={() => {
+              trackPlayClick('story', item)
+              onTry(item)
+            }}
+          ><Play aria-hidden="true" /> {busy ? 'Запускаем…' : 'Играть без спойлеров'}</ControlButton>
         </aside>
       </article>
 
-      <section className="danetki-story-related" aria-labelledby="related-title"><div className="danetki-catalog-section-head"><div><span>Следующие дела</span><h2 id="related-title">Похожие данетки</h2></div><a href="/danetki">Все истории <ArrowRight /></a></div><div className="danetki-catalog-grid">{related.map((candidate, index) => <StoryCard key={candidate.id} item={candidate} index={index} />)}</div></section>
+      <section className="danetki-story-related" aria-labelledby="related-title"><div className="danetki-catalog-section-head"><div><span>Следующие дела</span><h2 id="related-title">Похожие данетки</h2></div><a href="/danetki">Все истории <ArrowRight /></a></div><div className="danetki-catalog-grid">{related.map((candidate, index) => <StoryCard key={candidate.id} item={candidate} index={index} placement="story" access={access} ticketBalance={ticketBalance} busy={busy} onTry={onTry} />)}</div></section>
     </main>
   </div>
 }

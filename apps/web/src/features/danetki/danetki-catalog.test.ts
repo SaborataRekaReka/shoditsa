@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DANETKI_CATALOG_ITEMS, danetkiCatalogItemBySlug, danetkiSlug, danetkiStoryPath } from './danetki-catalog'
+import { DANETKI_CATALOG_ITEMS, danetkiCatalogItemBySlug, danetkiCatalogPlayState, danetkiSlug, danetkiStoryPath } from './danetki-catalog'
 import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from './danetki-collections'
 
 describe('danetki catalog', () => {
@@ -31,5 +31,26 @@ describe('danetki catalog', () => {
     expect(easy.every((item) => item.difficulty === 'easy')).toBe(true)
     expect(newest).toHaveLength(12)
     expect(newest.map((item) => item.publishedAt)).toEqual([...newest.map((item) => item.publishedAt)].sort().reverse())
+  })
+
+  it('uses the daily game before charging tickets for a selected story', () => {
+    expect(danetkiCatalogPlayState({ dailyRoomsStarted: 0, nextSoloCost: 90 }, 0)).toEqual({
+      dailyAvailable: true,
+      cost: 0,
+      shortage: 0,
+      allowed: true,
+    })
+    expect(danetkiCatalogPlayState({ dailyRoomsStarted: 1, nextSoloCost: 90 }, 240)).toEqual({
+      dailyAvailable: false,
+      cost: 90,
+      shortage: 0,
+      allowed: true,
+    })
+    expect(danetkiCatalogPlayState({ dailyRoomsStarted: 1, nextSoloCost: 90 }, 40)).toEqual({
+      dailyAvailable: false,
+      cost: 90,
+      shortage: 50,
+      allowed: false,
+    })
   })
 })

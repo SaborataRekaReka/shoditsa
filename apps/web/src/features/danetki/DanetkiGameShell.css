@@ -1,0 +1,417 @@
+/* Danetki use the same compact session rhythm as the catalog guessing games. */
+.danetki-page--session .danetki-main {
+  width: calc(100% - 28px);
+  max-width: 820px;
+  margin-inline: auto;
+  padding: 24px 14px 64px;
+}
+
+.danetki-page--session .danetki-main > .game-screen-shell__nav { width: 100%; }
+.danetki-page--session .danetki-main .game-screen-shell__content { width: 100%; }
+.danetki-page--session .danetki-game-heading { min-height: 0; margin-bottom: 18px; }
+.danetki-page--session .danetki-game-heading h1 { margin: 5px 0 10px; }
+.danetki-page--session .danetki-mini-ticket { background: var(--mode-danetki-brand); border-color: color-mix(in srgb, var(--mode-danetki-brand) 66%, white); }
+
+.danetki-case-brief {
+  margin-bottom: 12px;
+  padding: 18px 18px 16px;
+  color: var(--color-text);
+  background:
+    linear-gradient(115deg, color-mix(in srgb, var(--mode-danetki-brand) 13%, transparent), transparent 72%),
+    var(--color-surface);
+  border: 1px solid var(--color-line-strong);
+  border-left: 5px solid var(--mode-danetki-brand);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-tile);
+}
+.danetki-case-brief > header,
+.danetki-case-brief > footer { display: flex; align-items: center; gap: 10px; }
+.danetki-case-brief > header { justify-content: space-between; }
+.danetki-case-brief > header > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.danetki-case-brief > header svg { width: 15px; height: 15px; }
+.danetki-case-brief > header strong {
+  color: var(--color-muted);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.danetki-case-brief > p {
+  margin: 15px 0 17px;
+  color: var(--color-paper);
+  font: 500 clamp(20px, 3.2vw, 26px)/1.36 Oswald, sans-serif;
+  letter-spacing: .005em;
+}
+.danetki-case-brief > footer {
+  padding-top: 12px;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.danetki-case-brief > footer > span:first-child { flex: 1; }
+.danetki-host-status {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.danetki-host-status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 9px color-mix(in srgb, var(--color-primary) 62%, transparent);
+}
+.danetki-host-status--processing i,
+.danetki-host-status--queued i { animation: danetki-pulse 1.2s ease-in-out infinite; }
+.danetki-host-status--offline i,
+.danetki-host-status--error i { background: var(--color-danger); box-shadow: none; }
+.danetki-host-status--reconnecting i { background: var(--color-accent); }
+.danetki-host-retry { margin-left: auto; color: var(--color-primary); }
+.danetki-host-retry svg { width: 14px; height: 14px; }
+
+.danetki-page--session .danetki-progress-row { margin-bottom: 12px; }
+.danetki-page--session .danetki-question-progress { margin: 0; }
+.danetki-page--session .danetki-question-progress .progress-track i.used { background: var(--mode-danetki-brand); }
+.danetki-page--session .danetki-progress-row .hint-trigger { flex-basis: 112px; }
+
+.danetki-page--session .danetki-investigation {
+  margin: 0;
+  overflow: visible;
+  color: var(--color-text);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.danetki-page--session .danetki-room-toolbar {
+  min-height: 48px;
+  margin: 0 2px 8px;
+  padding: 0;
+  color: var(--color-text);
+  background: transparent;
+  border: 0;
+}
+.danetki-page--session .danetki-room-summary { min-width: 0; display: grid; gap: 2px; }
+.danetki-page--session .danetki-room-summary > strong {
+  color: var(--color-text);
+  font: 500 21px/1 Oswald, sans-serif;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.danetki-page--session .danetki-room-summary > small { color: var(--color-muted); font-size: 10px; }
+.danetki-page--session .danetki-members { margin-left: 4px; }
+.danetki-page--session .danetki-avatar { width: 30px; height: 30px; border-width: 2px; font-size: 10px; }
+.danetki-page--session .danetki-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.danetki-page--session .danetki-room-tools { margin-left: auto; }
+.danetki-page--session .danetki-room-tools .ui-button {
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  overflow: hidden;
+  justify-content: center;
+  color: var(--color-muted);
+  font-size: 0;
+}
+.danetki-page--session .danetki-room-tools .ui-button svg { width: 16px; height: 16px; }
+.danetki-page--session .danetki-question-count {
+  min-height: 30px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 1px solid var(--color-primary-border);
+  border-radius: 9px;
+  color: var(--color-ink);
+  background: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.danetki-page--session .danetki-question-count i { font-style: normal; font-size: 9px; opacity: .62; }
+.danetki-page--session .danetki-question-count svg { width: 12px; height: 12px; }
+.danetki-page--session .danetki-investigation::before,
+.danetki-page--session .danetki-investigation::after {
+  content: none !important;
+  display: none !important;
+}
+.danetki-page--session .danetki-messages {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: min(62vh, 580px) !important;
+  padding: 22px 18px;
+  gap: 14px;
+  overflow-y: auto;
+  background-color: var(--color-bg);
+  background-image: url('/media/danetki/chat-detective-pattern-417702014.svg');
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 760px 760px;
+  border: 1px solid color-mix(in srgb, var(--mode-danetki-brand) 28%, var(--color-line-strong));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-tile), inset 0 1px 0 rgba(255, 255, 255, .025);
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+.danetki-page--session .danetki-messages::-webkit-scrollbar {
+  width: 8px;
+}
+.danetki-page--session .danetki-messages::-webkit-scrollbar-track {
+  margin-block: 12px;
+  background: transparent;
+}
+.danetki-page--session .danetki-messages::-webkit-scrollbar-thumb {
+  min-height: 42px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(218, 211, 190, .62);
+  background-clip: padding-box;
+}
+.danetki-page--session .danetki-messages::-webkit-scrollbar-button,
+.danetki-page--session .danetki-messages::-webkit-scrollbar-button:single-button,
+.danetki-page--session .danetki-messages::-webkit-scrollbar-button:vertical:decrement,
+.danetki-page--session .danetki-messages::-webkit-scrollbar-button:vertical:increment,
+.danetki-page--session .danetki-messages::-webkit-scrollbar-button:start:decrement,
+.danetki-page--session .danetki-messages::-webkit-scrollbar-button:end:increment,
+.danetki-page--session .danetki-messages::-webkit-scrollbar-corner {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  border: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  -webkit-appearance: none !important;
+}
+.danetki-page--session .danetki-message {
+  min-width: 0;
+  max-width: min(82%, 580px);
+  align-self: flex-start;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  animation: tileIn .24s var(--ease) both;
+}
+.danetki-page--session .danetki-message.is-mine { align-self: flex-end; flex-direction: row-reverse; }
+.danetki-page--session .danetki-message__avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-line));
+  border-radius: 50%;
+  color: var(--color-ink);
+  background: var(--color-primary);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 850;
+  box-shadow: 0 4px 13px rgba(0, 0, 0, .2);
+}
+.danetki-page--session .danetki-message__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.danetki-page--session .danetki-message__bubble {
+  --danetki-bubble-fill: #23342a;
+  min-width: 108px;
+  padding: 12px 14px 13px;
+  position: relative;
+  color: #f0eee5;
+  background: var(--danetki-bubble-fill);
+  border: 0;
+  border-radius: 17px 17px 17px 0;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, .18);
+}
+.danetki-page--session .danetki-message__bubble::before {
+  content: none;
+  display: none;
+}
+.danetki-page--session .danetki-message__bubble::after {
+  content: '';
+  position: absolute;
+  right: auto;
+  bottom: 0;
+  left: -8px;
+  width: 12px;
+  height: 13px;
+  border: 0 !important;
+  background: var(--danetki-bubble-fill);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  transform: none;
+}
+.danetki-page--session .danetki-message.is-ai .danetki-message__bubble {
+  background: var(--danetki-bubble-fill);
+  border: 0;
+  border-radius: 17px 17px 17px 0;
+}
+.danetki-page--session .danetki-message.is-ai.is-yes .danetki-message__bubble {
+  --danetki-bubble-fill: #1f3a29;
+}
+.danetki-page--session .danetki-message.is-ai.is-no .danetki-message__bubble {
+  --danetki-bubble-fill: #342927;
+}
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble {
+  --danetki-bubble-fill: #478f62;
+  color: #f7fbf5;
+  background: var(--danetki-bubble-fill);
+  border: 0;
+  border-radius: 17px 17px 0 17px;
+  box-shadow: 0 10px 25px rgba(24, 83, 50, .26);
+}
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble::after {
+  right: -8px;
+  left: auto;
+  border: 0 !important;
+  background: var(--danetki-bubble-fill);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+.danetki-page--session .danetki-message__bubble > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 5px;
+}
+.danetki-page--session .danetki-message__author {
+  margin: 0;
+  color: #9fd3aa;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .04em;
+}
+.danetki-page--session .danetki-message.is-mine .danetki-message__author { color: #e5f6e9; }
+.danetki-page--session .danetki-message__bubble time,
+.danetki-page--session .danetki-message__bubble header small { margin: 0; color: #93a398; font-size: 10px; }
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble time,
+.danetki-page--session .danetki-message.is-mine .danetki-message__bubble header small { color: rgba(238, 250, 241, .72); }
+.danetki-page--session .danetki-message__bubble p { margin: 0; color: inherit; font-size: 15px; line-height: 1.48; overflow-wrap: anywhere; }
+.danetki-page--session .danetki-message.is-pending { opacity: .74; }
+.danetki-page--session .danetki-message.is-pending .ui-control { margin-top: 7px; color: inherit; text-decoration: underline; }
+.danetki-page--session .danetki-typing {
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.danetki-page--session .danetki-typing > span:last-child {
+  min-width: 50px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--color-line-strong);
+  border-radius: 15px 15px 15px 5px;
+  background: linear-gradient(145deg, #203429, #17271f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.danetki-page--session .danetki-typing i { width: 5px; height: 5px; border-radius: 50%; background: var(--color-primary); animation: danetki-pulse 1s ease-in-out infinite; }
+.danetki-page--session .danetki-typing i:nth-child(2) { animation-delay: .14s; }
+.danetki-page--session .danetki-typing i:nth-child(3) { animation-delay: .28s; }
+
+.danetki-page--session .danetki-search-area { margin: 12px 0; }
+.danetki-page--session .danetki-composer {
+  min-height: 58px;
+  padding: 6px 6px 6px 17px;
+  border: 1px solid var(--color-paper-line);
+  border-radius: 18px;
+  background: var(--color-paper);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 8px;
+  align-items: center;
+  box-shadow: var(--shadow-paper);
+}
+.danetki-page--session .danetki-composer textarea {
+  width: 100%;
+  min-height: 34px;
+  max-height: 112px;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  resize: none;
+  color: var(--color-ink);
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.danetki-page--session .danetki-composer textarea:focus { border: 0; box-shadow: none; }
+.danetki-page--session .danetki-composer textarea::placeholder { color: #756e62; }
+.danetki-page--session .danetki-composer .danetki-composer__send {
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0;
+  color: var(--color-paper);
+  background: var(--mode-danetki-brand);
+  border-color: color-mix(in srgb, var(--mode-danetki-brand) 74%, white);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 2px 0 color-mix(in srgb, var(--color-ink) 28%, transparent);
+  display: grid;
+  place-items: center;
+}
+.danetki-page--session .danetki-composer .danetki-composer__send:hover { background: color-mix(in srgb, var(--mode-danetki-brand) 84%, white); }
+.danetki-page--session .danetki-composer .danetki-composer__send:disabled { color: color-mix(in srgb, var(--color-paper) 76%, var(--mode-danetki-brand)); }
+.danetki-page--session .danetki-composer .danetki-composer__send svg { width: 22px; height: 22px; stroke-width: 2.6; }
+.danetki-composer-actions {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.danetki-composer-actions .ui-button:first-child { min-height: 38px; }
+.danetki-composer-actions .ui-button:last-child { min-height: 38px; margin-left: auto; color: var(--color-muted); }
+
+.danetki-page--session .danetki-registration-offer { margin-top: 12px; }
+.danetki-page--session .danetki-outcome { margin-top: 12px; }
+
+@media (min-width: 720px) {
+  .danetki-page--session .danetki-main { padding: 36px 14px 80px; }
+}
+
+@media (max-width: 719px) {
+  .danetki-page--session .danetki-main { width: calc(100% - 20px); padding: 20px 14px 48px; }
+  .danetki-case-brief { padding: 15px 15px 14px; }
+  .danetki-case-brief > p { font-size: 20px; }
+  .danetki-case-brief > footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .danetki-page--session .danetki-progress-row .hint-trigger { flex-basis: 94px; }
+  .danetki-page--session .danetki-room-summary > strong { font-size: 18px; }
+  .danetki-page--session .danetki-room-summary > small { display: none; }
+  .danetki-page--session .danetki-members { display: none; }
+  .danetki-page--session .danetki-question-count { margin-left: auto; }
+  .danetki-page--session .danetki-messages { max-height: min(60vh, 520px) !important; padding: 16px 12px; }
+  .danetki-page--session .danetki-message { max-width: 88%; }
+  .danetki-page--session .danetki-search-area { top: 58px; padding: 7px; border-radius: 18px; }
+  .danetki-page--session .danetki-composer { padding-left: 13px; }
+  .danetki-page--session .danetki-composer textarea { font-size: 16px; }
+  .danetki-composer-actions .ui-button { padding-inline: 10px; font-size: 11px; }
+}
+
+@media (max-width: 420px) {
+  .danetki-page--session .danetki-mini-ticket { width: 68px; height: 68px; }
+  .danetki-page--session .danetki-room-tools { gap: 5px; }
+  .danetki-page--session .danetki-message { max-width: 94%; }
+  .danetki-page--session .danetki-message__avatar { width: 28px; height: 28px; flex-basis: 28px; }
+  .danetki-composer-actions .ui-button:first-child { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .danetki-host-status--processing i,
+  .danetki-host-status--queued i,
+  .danetki-page--session .danetki-typing i { animation: none; }
+}
