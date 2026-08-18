@@ -61,6 +61,10 @@ describe('game-core invariants', () => {
         const hints = compareTitles(item, item)
         expect(hints.length).toBeGreaterThan(0)
         for (const hint of hints) {
+          if (mode === 'animal' && hint.key === 'body_mass' && item.bodyMassKg == null) {
+            expect(hint).toMatchObject({ value: 'Нет данных', status: 'unknown', direction: null })
+            continue
+          }
           expect(hint.status).toBe('match')
           expect(hint.direction).toBeNull()
           expect(isKnownComparisonText(hint.value)).toBe(true)
