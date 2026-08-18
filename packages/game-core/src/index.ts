@@ -1547,16 +1547,19 @@ export const compareCities = (guess: TitleItem, answer: TitleItem): Hint[] => {
 const animalMassHint = (guess: number | null | undefined, answer: number | null | undefined): Hint => {
   const guessMass = Number(guess)
   const answerMass = Number(answer)
-  if (!Number.isFinite(guessMass) || guessMass <= 0 || !Number.isFinite(answerMass) || answerMass <= 0) {
+  if (!Number.isFinite(guessMass) || guessMass <= 0) {
     return { key: 'body_mass', label: 'Масса', value: 'Нет данных', status: 'unknown', direction: null }
   }
-  const ratio = Math.max(guessMass, answerMass) / Math.min(guessMass, answerMass)
-  const status: MatchStatus = ratio <= 1.1 ? 'match' : ratio <= 2.5 ? 'close' : 'miss'
   const formatMass = (value: number) => value >= 1000
     ? `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value / 1000)} т`
     : value >= 1
       ? `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value)} кг`
       : `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 }).format(value * 1000)} г`
+  if (!Number.isFinite(answerMass) || answerMass <= 0) {
+    return { key: 'body_mass', label: 'Масса', value: formatMass(guessMass), status: 'unknown', direction: null }
+  }
+  const ratio = Math.max(guessMass, answerMass) / Math.min(guessMass, answerMass)
+  const status: MatchStatus = ratio <= 1.1 ? 'match' : ratio <= 2.5 ? 'close' : 'miss'
   return {
     key: 'body_mass',
     label: 'Масса',
@@ -1602,7 +1605,7 @@ export const compareAnimals = (guess: TitleItem, answer: TitleItem): Hint[] => {
     ...(answerDiets.length ? [listHint('diets', 'Питание', guess.diets, answer.diets)] : []),
     ...(answerLocomotion.length ? [listHint('locomotion', 'Передвижение', guess.locomotion, answer.locomotion)] : []),
     ...(knownComparisonText(answer.reproduction) ? [scalarHint('reproduction', 'Размножение', guess.reproduction, answer.reproduction)] : []),
-    ...(answer.bodyMassKg != null ? [animalMassHint(guess.bodyMassKg, answer.bodyMassKg)] : []),
+    animalMassHint(guess.bodyMassKg, answer.bodyMassKg),
     ...(answer.legCount != null ? [{
       key: 'leg_count',
       label: 'Число ног',
