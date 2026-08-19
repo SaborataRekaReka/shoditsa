@@ -15,6 +15,7 @@ import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { danetkiCatalogItemBySlug, danetkiDifficultyLabel, danetkiStoryPath } from './danetki-catalog'
 import { rememberDanetkiTrafficContext } from './danetki-registration-attribution'
+import { DanetkiRecommendations } from './DanetkiRecommendations'
 import './DanetkiGamePage.css'
 import './DanetkiEntryPages.css'
 
@@ -165,6 +166,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
       </AdmissionTitleTicket>
       </section>
     </GameScreenShell>
+    <DanetkiRecommendations placement="landing-bottom" />
   </>
 }
 

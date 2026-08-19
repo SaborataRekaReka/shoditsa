@@ -377,6 +377,7 @@ export const ClientEventSchema = Type.Object({
     'danetki_landing_view', 'danetki_start_clicked', 'danetki_first_question', 'danetki_catalog_view',
     'danetki_story_view', 'danetki_story_answer_opened', 'danetki_catalog_play_clicked',
     'danetki_registration_offer_view', 'danetki_registration_offer_clicked', 'danetki_registration_succeeded',
+    'danetki_result_view', 'danetki_cross_game_offer_view', 'danetki_cross_game_clicked',
     'friends_room_created', 'friends_room_started', 'friends_room_free_block_started', 'friends_room_block_completed',
     'friends_room_intermission_view', 'friends_room_continue_clicked', 'friends_room_continued',
     'friends_room_ended_at_intermission', 'friends_room_guest_joined', 'friends_room_guest_registered',

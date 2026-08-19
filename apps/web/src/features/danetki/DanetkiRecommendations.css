@@ -1,0 +1,69 @@
+.danetki-recommendations {
+  width: min(calc(100% - 32px), 1120px);
+  margin: clamp(28px, 5vw, 52px) auto clamp(38px, 6vw, 70px);
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid var(--color-paper-line);
+  border-radius: var(--radius-lg);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-paper);
+}
+
+.danetki-recommendations__header { max-width: 760px; margin-bottom: 18px; }
+.danetki-recommendations__header > span { color: var(--color-success-ink); display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+.danetki-recommendations__header > span svg { width: 16px; height: 16px; }
+.danetki-recommendations__header h2 { margin: 6px 0 7px; font: 500 clamp(27px, 4vw, 38px)/1.04 Oswald, sans-serif; text-transform: uppercase; text-wrap: balance; }
+.danetki-recommendations__header p { margin: 0; color: var(--color-paper-muted); font-size: 14px; line-height: 1.55; }
+
+.danetki-recommendations__grid {
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 1.22fr repeat(2, minmax(0, .89fr));
+  gap: 10px;
+}
+
+.danetki-recommendation-card {
+  --danetki-recommendation-color: var(--color-primary);
+  position: relative;
+  min-width: 0;
+  min-height: 186px;
+  padding: 17px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--danetki-recommendation-color) 42%, var(--color-paper-line));
+  border-radius: 15px;
+  color: var(--color-paper);
+  background: var(--color-ink);
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  grid-template-rows: auto 1fr auto;
+  align-items: start;
+  gap: 10px;
+  text-decoration: none;
+  isolation: isolate;
+}
+
+.danetki-recommendation-card > img { position: absolute; inset: 0; z-index: -3; width: 100%; height: 100%; object-fit: cover; filter: saturate(.75) contrast(1.04); transition: transform .35s var(--ease), filter .25s ease; }
+.danetki-recommendation-card__veil { position: absolute; inset: 0; z-index: -2; background: linear-gradient(110deg, color-mix(in srgb, var(--color-shadow) 96%, transparent), color-mix(in srgb, var(--color-shadow) 72%, transparent) 62%, color-mix(in srgb, var(--color-shadow) 34%, transparent)); }
+.danetki-recommendation-card__icon { width: 38px; height: 38px; border-radius: 11px; color: var(--color-ink); background: var(--danetki-recommendation-color); display: grid; place-items: center; }
+.danetki-recommendation-card__icon svg { width: 19px; height: 19px; }
+.danetki-recommendation-card__copy { min-width: 0; grid-column: 1 / -1; align-self: end; display: grid; gap: 5px; }
+.danetki-recommendation-card__copy small { color: color-mix(in srgb, var(--color-paper) 76%, transparent); font-size: 12px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.danetki-recommendation-card__copy strong { color: var(--color-paper); font: 500 clamp(23px, 3vw, 30px)/1.02 Oswald, sans-serif; text-transform: uppercase; }
+.danetki-recommendation-card__copy > span { max-width: 440px; color: color-mix(in srgb, var(--color-paper) 82%, transparent); font-size: 13px; line-height: 1.42; }
+.danetki-recommendation-card__action { grid-column: 3; grid-row: 1; min-height: 38px; padding: 0 11px; border-radius: 20px; color: var(--color-ink); background: var(--danetki-recommendation-color); display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 850; }
+.danetki-recommendation-card__action svg { width: 15px; height: 15px; }
+.danetki-recommendation-card:hover { color: var(--color-paper); }
+.danetki-recommendation-card:hover > img { transform: scale(1.025); filter: saturate(.9) contrast(1.04); }
+
+@media (max-width: 860px) {
+  .danetki-recommendations__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .danetki-recommendation-card.is-primary { grid-column: 1 / -1; min-height: 210px; }
+}
+
+@media (max-width: 620px) {
+  .danetki-recommendations { width: calc(100% - 20px); padding: 17px; border-radius: var(--radius-md); }
+  .danetki-recommendations__grid { grid-template-columns: minmax(0, 1fr); }
+  .danetki-recommendation-card.is-primary { grid-column: auto; }
+  .danetki-recommendation-card { min-height: 184px; }
+  .danetki-recommendation-card__action { padding-inline: 10px; }
+}

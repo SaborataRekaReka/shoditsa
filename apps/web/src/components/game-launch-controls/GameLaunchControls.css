@@ -42,7 +42,7 @@
 .game-option-trigger__end,
 .game-option-trigger__value { min-width: 0; display: flex; align-items: center; }
 .game-option-trigger__meta { justify-content: space-between; gap: 8px; }
-.game-option-trigger__label { gap: 5px; color: var(--color-paper-muted); font-size: 10px; font-weight: 800; letter-spacing: .12em; line-height: 1; text-transform: uppercase; }
+.game-option-trigger__label { gap: 5px; color: var(--color-paper-muted); font-size: 12px; font-weight: 800; letter-spacing: .08em; line-height: 1; text-transform: uppercase; }
 .game-option-trigger__label svg { width: 12px; height: 12px; flex: none; color: var(--color-success-ink); }
 .game-option-trigger__end { gap: 4px; color: var(--color-paper-muted-2); font: 500 13px/1 Oswald, sans-serif; }
 .game-option-trigger__end svg { width: 12px; height: 12px; }
@@ -67,7 +67,7 @@
   animation: gameOptionMenuIn .18s var(--ease) both;
 }
 @keyframes gameOptionMenuIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.game-option-menu__head { padding: 4px 8px 3px; color: var(--color-paper-muted); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.game-option-menu__head { padding: 4px 8px 3px; color: var(--color-paper-muted); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 
 .game-option {
   width: 100%;
@@ -95,7 +95,7 @@
 .game-option--muted { color: var(--color-paper-muted); }
 .game-option__copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .game-option__copy strong { font-size: 12px; font-weight: 800; }
-.game-option__copy small { color: var(--color-paper-muted-2); font-size: 11px; line-height: 1.35; }
+.game-option__copy small { color: var(--color-paper-muted-2); font-size: 13px; line-height: 1.35; }
 .game-option__status {
   min-height: 24px;
   padding: 0 7px;
@@ -105,7 +105,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: .06em;
   line-height: 1;
@@ -137,7 +137,7 @@
 }
 @media (max-width: 680px) {
   .game-option-trigger { padding: 7px 8px; }
-  .game-option-trigger__label { font-size: 9px; letter-spacing: .09em; }
+  .game-option-trigger__label { font-size: 12px; letter-spacing: .05em; }
   .game-option-trigger__value { gap: 4px; }
   .game-option-trigger__value > strong { font-size: 12px; }
   .game-launch-controls__option .game-option-menu {

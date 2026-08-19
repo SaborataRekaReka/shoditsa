@@ -3909,7 +3909,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   if (!session) return <><AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} /><main className="loading loading--error" role="alert"><AlertTriangle /><h1>Сеанс не открылся</h1><p>{apiErrorMessage(game.error)}</p><ActionButton onClick={onBack}>Назад</ActionButton></main></>
   if (session.engine === 'danetki_chat' && session.danetki) {
     const DanetkiRenderer = SESSION_RENDERER_BY_ENGINE.danetki_chat
-    return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
+    return <DanetkiRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} onPlayNext={onPlayNext} />
   }
   if (session.engine === 'connections_grid' && session.connections) {
     const ConnectionsRenderer = SESSION_RENDERER_BY_ENGINE.connections_grid

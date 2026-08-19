@@ -642,6 +642,7 @@ export const GAME_SEO = {
     mode: 'danetki',
     shortName: 'Данетки',
     internalLinkLabel: 'Данетки онлайн',
+    relatedModes: ['diagnosis', 'character', 'animal'],
     title: 'Данетки онлайн — играть бесплатно с ИИ-ведущим | Сходится!',
     description: 'Играйте в данетки онлайн бесплатно: раскройте необычную историю вопросами с ответами «да» и «нет». ИИ-ведущий, одиночная и совместная игра.',
     canonicalPath: '/games/danetki',

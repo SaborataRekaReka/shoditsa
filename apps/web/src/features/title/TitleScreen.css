@@ -188,5 +188,5 @@
   .game-screen-shell.title-screen.game-screen-shell--title { padding-inline: 10px; }
   .title-game-mark { grid-template-columns: 44px minmax(0, 1fr); column-gap: 9px; }
   .title-game-mark > span { width: 44px; height: 44px; }
-  .title-game-mark > i { font-size: 10px; letter-spacing: .09em; overflow-wrap: anywhere; }
+  .title-game-mark > i { font-size: 12px; letter-spacing: .06em; overflow-wrap: anywhere; }
 }

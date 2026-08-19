@@ -28,6 +28,7 @@ export type EventName =
   | 'danetki_landing_view' | 'danetki_start_clicked' | 'danetki_first_question'
   | 'danetki_catalog_view' | 'danetki_story_view' | 'danetki_story_answer_opened' | 'danetki_catalog_play_clicked'
   | 'danetki_registration_offer_view' | 'danetki_registration_offer_clicked' | 'danetki_registration_succeeded'
+  | 'danetki_result_view' | 'danetki_cross_game_offer_view' | 'danetki_cross_game_clicked'
   | 'final_choice_shown' | 'final_choice_candidate_selected' | 'final_choice_submitted'
   | 'final_choice_reveal_opened' | 'final_choice_reveal_cancelled' | 'final_choice_revealed' | 'final_choice_timed_out'
   | 'final_choice_unavailable'

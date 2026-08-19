@@ -20,6 +20,7 @@ import {
   danetkiCollectionItems,
   type DanetkiCollectionSlug,
 } from './danetki-collections'
+import { DanetkiRecommendations } from './DanetkiRecommendations'
 import './DanetkiCatalogPage.css'
 
 type NavigationProps = {
@@ -192,6 +193,7 @@ export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, on
           {(collectionDefinition?.guideSteps ?? GENERAL_GUIDE_STEPS).map((step, index) => <li key={step}><strong>{String(index + 1).padStart(2, '0')}</strong><span>{step}</span></li>)}
         </ol>
       </section>
+      <DanetkiRecommendations placement="catalog-bottom" />
     </main>
   </div>
 }
