@@ -118,7 +118,7 @@
 .admit-ticket__body { min-width: 0; padding: 16px; text-align: left; }
 .ticket-kicker { min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
 .ticket-kicker span { padding: 4px 7px; border: 1px solid var(--color-paper-line); border-radius: 999px; white-space: nowrap; }
-.ticket-kicker small { white-space: nowrap; }
+.ticket-kicker small { font-size: 12px; white-space: nowrap; }
 .ticket-kicker i { width: 3px; height: 3px; background: var(--color-paper-line); border-radius: 50%; }
 .admit-ticket h2 { margin: 11px 0 7px; font: 500 20px Oswald, sans-serif; text-transform: uppercase; }
 .admit-ticket__body > p { margin: 0; color: var(--color-paper-muted); font-size: 12px; line-height: 1.55; }
