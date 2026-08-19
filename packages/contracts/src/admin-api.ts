@@ -64,6 +64,111 @@ export type AdminDashboardResponse = {
   recentRuns: Array<Record<string, unknown>>
 }
 
+export type AdminAcquisitionFunnelPeriod = 7 | 14 | 31
+
+export type AdminAcquisitionFunnelBreakdown = {
+  key: string
+  label: string
+  searchEngine?: string
+  organicLandings: number
+  organicUsers: number | null
+  starts: number
+  completions: number
+  nextClicks: number
+  nextStarts: number
+  signUps: number
+  landingToStartRate: number | null
+  startToCompleteRate: number | null
+  landingToSignUpRate: number | null
+}
+
+export type AdminAcquisitionActivityBreakdown = {
+  key: string
+  label: string
+  sessionStarts: number
+  sessionCompletions: number
+  nextClicks: number
+  nextStarts: number
+}
+
+export type AdminAcquisitionFunnelResponse = {
+  periodDays: AdminAcquisitionFunnelPeriod
+  generatedAt: string
+  window: { from: string; to: string }
+  attributionWindowDays: 7
+  summary: {
+    organicLandings: number
+    organicUsers: number | null
+    starts: number
+    completions: number
+    nextClicks: number
+    nextStarts: number
+    signUps: number
+    landingToStartRate: number | null
+    startToCompleteRate: number | null
+    completeToNextStartRate: number | null
+    landingToSignUpRate: number | null
+    activity: {
+      sessionStarts: number
+      sessionCompletions: number
+      nextClicks: number
+      nextStarts: number
+    }
+  }
+  coverage: {
+    lifecycleEvents: number
+    lifecycleEventsWithAcquisition: number
+    lifecycleEventRate: number | null
+    pageViews: number
+    pageViewsWithSource: number
+    pageViewsWithAcquisition: number
+    successfulSignUps: number
+    signUpsAttributedToOrganic: number
+    signUpAttributionRate: number | null
+    unkeyedOrganicEvents: number
+    clientEventRetentionDays: 38
+    retentionTruncationPossible: boolean
+    limitations: string[]
+  }
+  dataSources: {
+    strategy: 'raw' | 'raw_with_daily_archive'
+    windowKind: 'completed_utc_days'
+    eventTotalsExact: boolean
+    acquisitionTotalsExact: boolean
+    uniqueUsersExact: boolean
+    raw: {
+      from: string
+      to: string
+      retentionDays: 38
+      exactWindowReady: boolean
+      retentionStartedAt: string | null
+      retentionReadyAt: string | null
+    }
+    daily: null | {
+      from: string
+      to: string
+      expectedCompleteDays: number
+      confirmedCompleteDays: number
+      privacyPreserving: true
+      role: 'activity_archive'
+      complete: boolean
+    }
+  }
+  byLanding: AdminAcquisitionFunnelBreakdown[]
+  byMode: AdminAcquisitionFunnelBreakdown[]
+  activityByMode: AdminAcquisitionActivityBreakdown[]
+  dailyActivityArchive: null | {
+    from: string
+    to: string
+    complete: boolean
+    sessionStarts: number
+    sessionCompletions: number
+    nextClicks: number
+    nextStarts: number
+    byDestinationMode: AdminAcquisitionActivityBreakdown[]
+  }
+}
+
 export type AdminUserListItem = {
   id: string
   email: string

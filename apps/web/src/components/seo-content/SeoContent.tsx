@@ -22,6 +22,7 @@ import {
   Tv,
 } from 'lucide-react'
 import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, type GameSeoContent, type SeoGameMode } from '../../app/seo-content'
+import { PUBLIC_GAME_LINKS } from '../../app/public-game-links'
 import { trackMetrikaGoal } from '../../app/metrics'
 import './SeoContent.css'
 
@@ -215,7 +216,7 @@ export function HomeSeoContent() {
         </section>
         <nav className="hub-guide__game-links" aria-label="Все ежедневные игры">
           <span><Route aria-hidden="true" /> Все игровые маршруты</span>
-          <div>{INDEXABLE_GAME_CONTENT.map((game) => <a key={game.mode} href={game.canonicalPath}>{game.internalLinkLabel ?? game.shortName}</a>)}</div>
+          <div>{PUBLIC_GAME_LINKS.map((game) => <a key={game.mode} href={game.href}>{game.label}</a>)}</div>
         </nav>
       </div>
     </div>

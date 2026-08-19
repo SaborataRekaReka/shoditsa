@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, DoorOpen, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
+import { PUBLIC_GAME_LINKS } from '../../app/public-game-links'
 import { api, queryKeys } from '../../api/client'
 import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
 import { canCreateFriendsRoom, canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/friends-room/friends-room-access'
@@ -309,18 +310,8 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
       <nav className="app-footer__games" aria-label="Все игры">
         <span>Все игры</span>
         <div>
-          <a href="/games/movie">Кино</a>
-          <a href="/games/series">Сериалы</a>
-          <a href="/games/anime">Угадай аниме</a>
-          <a href="/games/game">Угадай видеоигру</a>
-          <a href="/games/city">Города</a>
-          <a href="/games/music">Угадай исполнителя</a>
-          <a href="/games/diagnosis">Угадай диагноз</a>
-          <a href="/games/animal">Угадай животное</a>
-          <a href="/games/book">Угадай книгу</a>
-          <a href="/games/danetki">Данетки онлайн</a>
+          {PUBLIC_GAME_LINKS.map((game) => <a key={game.mode} href={game.href}>{game.label}</a>)}
           <a href="/danetki">Данетки с ответами</a>
-          <a href="/games/connections">Связи</a>
         </div>
       </nav>
       <div className="app-footer__bottom">

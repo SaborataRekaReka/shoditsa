@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { and, eq, ne } from 'drizzle-orm'
 import { loadConfig, type AppConfig } from '@shoditsa/config'
 import {
+  clientEvents,
   contentReports,
   contentItemVersions,
   createDatabase,
@@ -94,6 +95,23 @@ describe('guest to permanent account lifecycle', () => {
 
     const firstGuest = await createGuest()
     const firstCompletion = await completeDaily(firstGuest.cookie, 'movie')
+    const firstClientEventId = crypto.randomUUID()
+    const firstClientEvent = {
+      eventId: firstClientEventId,
+      eventName: 'mode_opened',
+      occurredAt: new Date().toISOString(),
+      gameSessionId: firstCompletion.sessionId,
+      route: '/games/movie',
+      properties: { mode: 'movie', acquisition: 'organic' },
+    }
+    const firstClientEventResponse = await app.inject({
+      method: 'POST',
+      url: '/api/v1/client-events/batch',
+      headers: { cookie: firstGuest.cookie },
+      payload: { events: [firstClientEvent] },
+    })
+    expect(firstClientEventResponse.statusCode, firstClientEventResponse.body).toBe(200)
+    expect(firstClientEventResponse.json()).toEqual({ accepted: 1, duplicates: 0, rejected: 0 })
     await database.db.insert(contentReports).values({
       userId: firstGuest.userId,
       sessionId: firstCompletion.sessionId,
@@ -126,6 +144,24 @@ describe('guest to permanent account lifecycle', () => {
     expect(afterRegistration.today.completedModes).toContain('movie')
     expect(afterRegistration.stats.find((entry: { mode: string }) => entry.mode === 'movie')).toMatchObject({ played: 1, won: 1 })
     expect((await database.db.select().from(user).where(eq(user.id, firstGuest.userId))).length).toBe(0)
+    expect(await database.db.select({
+      userId: clientEvents.userId,
+      gameSessionId: clientEvents.gameSessionId,
+      properties: clientEvents.properties,
+    }).from(clientEvents).where(eq(clientEvents.eventId, firstClientEventId))).toEqual([{
+      userId: accountUserId,
+      gameSessionId: firstCompletion.sessionId,
+      properties: { mode: 'movie', acquisition: 'organic' },
+    }])
+
+    const replayAfterRegistration = await app.inject({
+      method: 'POST',
+      url: '/api/v1/client-events/batch',
+      headers: { cookie: accountCookie },
+      payload: { events: [firstClientEvent] },
+    })
+    expect(replayAfterRegistration.statusCode, replayAfterRegistration.body).toBe(200)
+    expect(replayAfterRegistration.json()).toEqual({ accepted: 0, duplicates: 1, rejected: 0 })
 
     const archive = await app.inject({ method: 'GET', url: '/api/v1/archive?mode=movie', headers: { cookie: accountCookie } })
     expect(archive.statusCode).toBe(200)
@@ -135,6 +171,22 @@ describe('guest to permanent account lifecycle', () => {
     const targetBeforeSecondMerge = afterRegistration.wallet.balance as number
     const secondGuest = await createGuest()
     const secondCompletion = await completeDaily(secondGuest.cookie, 'movie')
+    const secondClientEventId = crypto.randomUUID()
+    const secondClientEventResponse = await app.inject({
+      method: 'POST',
+      url: '/api/v1/client-events/batch',
+      headers: { cookie: secondGuest.cookie },
+      payload: { events: [{
+        eventId: secondClientEventId,
+        eventName: 'mode_opened',
+        occurredAt: new Date().toISOString(),
+        gameSessionId: secondCompletion.sessionId,
+        route: '/games/movie',
+        properties: { mode: 'movie', acquisition: 'organic', merge: 'existing-account' },
+      }] },
+    })
+    expect(secondClientEventResponse.statusCode, secondClientEventResponse.body).toBe(200)
+    expect(secondClientEventResponse.json()).toEqual({ accepted: 1, duplicates: 0, rejected: 0 })
     await database.db.insert(contentReports).values({
       userId: secondGuest.userId,
       sessionId: secondCompletion.sessionId,
@@ -162,6 +214,16 @@ describe('guest to permanent account lifecycle', () => {
     expect(mergedArchive.statusCode).toBe(200)
     expect(mergedArchive.json().items).toHaveLength(1)
     expect(mergedArchive.json().items[0]).toMatchObject({ status: 'won', attemptsCount: 1 })
+
+    expect(await database.db.select({
+      userId: clientEvents.userId,
+      gameSessionId: clientEvents.gameSessionId,
+      properties: clientEvents.properties,
+    }).from(clientEvents).where(eq(clientEvents.eventId, secondClientEventId))).toEqual([{
+      userId: accountUserId,
+      gameSessionId: mergedArchive.json().items[0].id,
+      properties: { mode: 'movie', acquisition: 'organic', merge: 'existing-account' },
+    }])
 
     const preservedReports = await database.db.select().from(contentReports).where(eq(contentReports.userId, accountUserId))
     expect(preservedReports.filter((entry) => entry.comment?.includes('guest report') || entry.comment?.includes('duplicate session report'))).toEqual(

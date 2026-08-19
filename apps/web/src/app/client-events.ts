@@ -1,6 +1,12 @@
+import { ANALYTICS_CONSENT_EVENT, canonicalAnalyticsPath, consentedAnalyticsEntryParams, storedAnalyticsConsent } from './metrics'
+
 export type EventName =
   | 'page_view'
   | 'mode_opened'
+  | 'game_session_start'
+  | 'game_session_complete'
+  | 'game_next_clicked'
+  | 'game_next_start'
   | 'client_error'
   | 'api_error'
   | 'network_offline'
@@ -48,38 +54,89 @@ type EventProperty = string | number | boolean | null
 
 const STORAGE_KEY = 'shoditsa:client-events:v1'
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
+const ATTRIBUTION_PROPERTIES = new Set(['acquisition_id', 'entry_path', 'entry_source', 'entry_search_engine', 'entry_referrer_host'])
 let flushing = false
 
 const read = (): QueuedEvent[] => {
   try { const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); return Array.isArray(parsed) ? parsed.slice(-100) : [] } catch { return [] }
 }
-const write = (events: QueuedEvent[]) => localStorage.setItem(STORAGE_KEY, JSON.stringify(events.slice(-100)))
+const write = (events: QueuedEvent[]) => {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(events.slice(-100))) } catch { /* analytics must never block gameplay */ }
+}
+export const clearQueuedClientEvents = () => write([])
+export const purgeQueuedClientEventAttribution = () => write(read().map((event) => ({
+  ...event,
+  properties: Object.fromEntries(Object.entries(event.properties ?? {}).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key))),
+})))
+
+const safeProperty = (key: string, value: unknown): EventProperty | undefined => {
+  if (key.length > 80) return undefined
+  if (value === null || typeof value === 'boolean') return value
+  if (typeof value === 'number') return Number.isFinite(value) ? value : undefined
+  if (typeof value !== 'string') return undefined
+  if (/(?:url|path|route)$/i.test(key) && value.startsWith('/')) {
+    try { return canonicalAnalyticsPath(new URL(value, window.location.origin).pathname) } catch { return '/other' }
+  }
+  return value.slice(0, 500)
+}
 const fingerprint = (value: string) => {
   let hash = 2166136261
   for (let index = 0; index < value.length; index += 1) hash = Math.imul(hash ^ value.charCodeAt(index), 16777619)
   return `fnv1a:${(hash >>> 0).toString(16)}`
 }
 
-export const trackClientEvent = (eventName: EventName, properties: Record<string, unknown> = {}, context: Partial<Pick<QueuedEvent, 'requestId' | 'errorCode' | 'gameSessionId' | 'stackFingerprint'>> = {}) => {
-  const safeProperties = Object.fromEntries(Object.entries(properties).flatMap(([key, value]) => {
-    if (value === null || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return [[key, value as EventProperty]]
-    return []
+/**
+ * Builds a stable UUID-shaped identity from a server-owned UUID and an event
+ * name. The database already treats eventId as an idempotency key, so a page
+ * reload can safely retry a lifecycle event without creating another row.
+ * This is not a security primitive; the server session UUID remains in the
+ * typed gameSessionId field and is not copied into event properties.
+ */
+export const deterministicClientEventId = (namespace: string, eventName: EventName) => {
+  const source = `${namespace}:${eventName}`
+  const words = [2166136261, 2166136261 ^ 0x9e3779b9, 2166136261 ^ 0x85ebca6b, 2166136261 ^ 0xc2b2ae35]
+  for (let index = 0; index < source.length; index += 1) {
+    const code = source.charCodeAt(index)
+    for (let word = 0; word < words.length; word += 1) {
+      words[word] = Math.imul(words[word] ^ (code + word * 31), 16777619)
+    }
+  }
+  const hex = words.map((word) => (word >>> 0).toString(16).padStart(8, '0')).join('').split('')
+  hex[12] = '5'
+  hex[16] = ((Number.parseInt(hex[16] ?? '0', 16) & 0x3) | 0x8).toString(16)
+  const compact = hex.join('')
+  return `${compact.slice(0, 8)}-${compact.slice(8, 12)}-${compact.slice(12, 16)}-${compact.slice(16, 20)}-${compact.slice(20)}`
+}
+
+export const trackClientEvent = (eventName: EventName, properties: Record<string, unknown> = {}, context: Partial<Pick<QueuedEvent, 'eventId' | 'requestId' | 'errorCode' | 'gameSessionId' | 'stackFingerprint'>> = {}) => {
+  const callerProperties = Object.fromEntries(Object.entries(properties).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key)))
+  const attributedProperties = { ...callerProperties, ...consentedAnalyticsEntryParams() }
+  const safeProperties = Object.fromEntries(Object.entries(attributedProperties).flatMap(([key, value]) => {
+    const safeValue = safeProperty(key, value)
+    return safeValue === undefined ? [] : [[key, safeValue]]
   }))
   const event: QueuedEvent = {
-    eventId: crypto.randomUUID(), eventName, occurredAt: new Date().toISOString(), route: window.location.pathname,
-    appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev'), properties: safeProperties, ...context,
+    eventId: crypto.randomUUID(), eventName, occurredAt: new Date().toISOString(), route: canonicalAnalyticsPath(window.location.pathname),
+    appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev').slice(0, 80), properties: safeProperties,
+    ...context,
+    ...(context.requestId ? { requestId: context.requestId.slice(0, 120) } : {}),
+    ...(context.errorCode ? { errorCode: context.errorCode.slice(0, 120) } : {}),
+    ...(context.stackFingerprint ? { stackFingerprint: context.stackFingerprint.slice(0, 160) } : {}),
   }
   if (eventName === 'client_error' && !event.stackFingerprint) event.stackFingerprint = fingerprint(String(safeProperties.message ?? 'client_error'))
-  write([...read(), event]); void flushClientEvents()
+  const queued = read()
+  write(queued.some((entry) => entry.eventId === event.eventId) ? queued : [...queued, event])
+  void flushClientEvents()
 }
 
 export const flushClientEvents = async () => {
   if (flushing || !navigator.onLine) return
+  if (storedAnalyticsConsent() !== 'accepted') purgeQueuedClientEventAttribution()
   const events = read().slice(0, 50); if (!events.length) return
   flushing = true
   try {
     const response = await fetch(`${API_BASE}/client-events/batch`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ events }) })
-    if (response.ok) {
+    if (response.ok || [400, 413, 422].includes(response.status)) {
       const sent = new Set(events.map((event) => event.eventId))
       write(read().filter((entry) => !sent.has(entry.eventId)))
     }
@@ -87,8 +144,21 @@ export const flushClientEvents = async () => {
   finally { flushing = false }
 }
 
+export const trackConsentedLanding = () => {
+  const acquisitionId = consentedAnalyticsEntryParams().acquisition_id
+  if (typeof acquisitionId !== 'string' || !acquisitionId) return
+  trackClientEvent('page_view', { consent_granted: true }, {
+    eventId: deterministicClientEventId(acquisitionId, 'page_view'),
+  })
+}
+
 export const initClientEvents = () => {
-  trackClientEvent('page_view', { route: window.location.pathname })
+  trackClientEvent('page_view')
+  window.addEventListener(ANALYTICS_CONSENT_EVENT, (event) => {
+    const consent = (event as CustomEvent<{ consent?: string }>).detail?.consent
+    if (consent === 'rejected') purgeQueuedClientEventAttribution()
+    if (consent === 'accepted') trackConsentedLanding()
+  })
   addEventListener('online', () => { trackClientEvent('network_online'); void flushClientEvents() })
   addEventListener('offline', () => trackClientEvent('network_offline'))
   addEventListener('error', (event) => trackClientEvent('client_error', { message: String(event.message || 'window_error').slice(0, 500) }))

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { LogOut } from 'lucide-react'
 import { api, ApiClientError, queryKeys } from '../../api/client'
-import { trackMetrikaGoal } from '../../app/metrics'
+import { markAnalyticsOAuthReturnPending, trackMetrikaGoal } from '../../app/metrics'
+import { clearQueuedClientEvents } from '../../app/client-events'
 import { ActionButton } from '../../components/app-shell/AppShell'
 import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
 import { authErrorMessage, resetPasswordTokenFromLocation } from '../auth/auth-helpers'
@@ -227,6 +228,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
       const oauthUrl = typeof response?.url === 'string' ? response.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
+      markAnalyticsOAuthReturnPending()
       redirected = true
       window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {
@@ -248,6 +250,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
     try {
       const accountEmail = session?.email ?? ''
       await api.signOut()
+      clearQueuedClientEvents()
       trackMetrikaGoal('auth_success', { action: 'sign_out' })
       setRegister(false)
       setForgotMode(false)

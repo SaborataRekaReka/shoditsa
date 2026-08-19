@@ -316,6 +316,20 @@
       "when": 1787100000000,
       "tag": "0044_danetki_conversion_events",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1787115600000,
+      "tag": "0045_game_funnel_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1787121302334,
+      "tag": "0046_grey_christian_walker",
+      "breakpoints": true
     }
   ]
 }

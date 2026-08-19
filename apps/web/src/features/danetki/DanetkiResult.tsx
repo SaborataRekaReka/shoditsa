@@ -5,7 +5,7 @@ import type { TitleMode } from '../../types'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
-import { trackNextGameStart } from '../../app/game-analytics'
+import { trackNextGameClick } from '../../app/game-analytics'
 import { ControlButton } from '../../components/ui'
 import { ResultActionBar } from '../result/ResultActionBar'
 import { DanetkiRegistrationOffer } from './DanetkiRegistrationOffer'
@@ -64,8 +64,13 @@ export function DanetkiResult({
 
   const playNext = (mode: TitleMode) => {
     const payload = { outcome: status, placement: 'result', story, questionCount }
-    trackNextGameStart('danetki', mode, payload)
-    trackClientEvent('danetki_cross_game_clicked', { fromMode: 'danetki', toMode: mode, ...payload }, { gameSessionId: sessionId })
+    const transitionId = trackNextGameClick('danetki', mode, payload)
+    trackClientEvent('danetki_cross_game_clicked', {
+      fromMode: 'danetki',
+      toMode: mode,
+      transition_id: transitionId,
+      ...payload,
+    }, { gameSessionId: sessionId })
     onPlayNext(mode)
   }
 

@@ -246,17 +246,32 @@ describe('admin API guard, workspace and telemetry', () => {
       eventId: telemetryEventId,
       eventName: 'page_view',
       occurredAt: new Date().toISOString(),
-      route: '/admin',
+      route: '/danetki/join/private-invite-token',
       appVersion: 'integration',
-      properties: { surface: 'admin', accessToken: 'must-not-be-stored' },
+      properties: {
+        surface: 'admin',
+        accessToken: 'must-not-be-stored',
+        returnUrl: '/sessions/27e0927b-9720-4e72-b831-15fa9c8f38eb?token=must-not-be-stored',
+      },
     }
     const first = await app.inject({ method: 'POST', url: '/api/v1/client-events/batch', payload: { events: [event] } })
     const replay = await app.inject({ method: 'POST', url: '/api/v1/client-events/batch', payload: { events: [event] } })
     expect(first.statusCode, first.body).toBe(200)
-    expect(first.json()).toEqual({ accepted: 1, duplicates: 0 })
-    expect(replay.json()).toEqual({ accepted: 0, duplicates: 1 })
-    const storedEvent = await database.db.select({ properties: clientEvents.properties }).from(clientEvents).where(eq(clientEvents.eventId, telemetryEventId)).limit(1)
-    expect(storedEvent[0]?.properties).toEqual({ surface: 'admin' })
+    expect(first.json()).toEqual({ accepted: 1, duplicates: 0, rejected: 0 })
+    expect(replay.json()).toEqual({ accepted: 0, duplicates: 1, rejected: 0 })
+    const stale = await app.inject({ method: 'POST', url: '/api/v1/client-events/batch', payload: { events: [{ ...event, eventId: crypto.randomUUID(), occurredAt: new Date(Date.now() - 8 * 86_400_000).toISOString() }] } })
+    expect(stale.statusCode, stale.body).toBe(200)
+    expect(stale.json()).toEqual({ accepted: 0, duplicates: 0, rejected: 1 })
+    const lifecycleWithoutSession = await app.inject({
+      method: 'POST',
+      url: '/api/v1/client-events/batch',
+      payload: { events: [{ ...event, eventId: crypto.randomUUID(), eventName: 'game_session_start' }] },
+    })
+    expect(lifecycleWithoutSession.statusCode, lifecycleWithoutSession.body).toBe(200)
+    expect(lifecycleWithoutSession.json()).toEqual({ accepted: 0, duplicates: 0, rejected: 1 })
+    const storedEvent = await database.db.select({ properties: clientEvents.properties, route: clientEvents.route }).from(clientEvents).where(eq(clientEvents.eventId, telemetryEventId)).limit(1)
+    expect(storedEvent[0]?.properties).toEqual({ surface: 'admin', returnUrl: '/sessions/:id' })
+    expect(storedEvent[0]?.route).toBe('/danetki/join')
 
     const timeline = await app.inject({
       method: 'GET',

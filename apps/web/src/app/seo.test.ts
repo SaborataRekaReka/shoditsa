@@ -2,8 +2,32 @@ import { describe, expect, it } from 'vitest'
 import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS } from './seo-content'
 import { normalizeSeoPathname, seoRouteForRuntime, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
 import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from '../features/danetki/danetki-collections'
+import { PUBLIC_GAME_LINKS } from './public-game-links'
+import { STATIC_INDEXABLE_PATHS, renderSitemap } from './static-index'
 
 describe('search index contract', () => {
+  it('keeps public navigation aligned with every indexable game mode', () => {
+    expect(PUBLIC_GAME_LINKS).toHaveLength(INDEXABLE_GAME_SEO.length)
+    expect(PUBLIC_GAME_LINKS.map((game) => game.mode)).toEqual(INDEXABLE_GAME_SEO.map((game) => game.mode))
+    expect(PUBLIC_GAME_LINKS.map((game) => game.href)).toEqual(INDEXABLE_GAME_SEO.map((game) => game.canonicalPath))
+    expect(PUBLIC_GAME_LINKS).toContainEqual(expect.objectContaining({
+      mode: 'character',
+      href: '/games/character',
+      label: expect.stringContaining('персонажа'),
+    }))
+  })
+
+  it('generates a complete sitemap without synthetic deployment dates', () => {
+    const sitemap = renderSitemap()
+    const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
+
+    expect(new Set(STATIC_INDEXABLE_PATHS).size).toBe(STATIC_INDEXABLE_PATHS.length)
+    expect(locations).toHaveLength(STATIC_INDEXABLE_PATHS.length)
+    expect(locations).toContain('https://shoditsa.ru/games/character')
+    expect(locations).toContain('https://shoditsa.ru/danetki')
+    expect(sitemap).not.toContain('<lastmod>')
+  })
+
   it('publishes one unique, indexable landing page for every canonical game mode', () => {
     const titles = new Set<string>()
     const descriptions = new Set<string>()

@@ -9,10 +9,14 @@ type MetrikaParamValue = string | number | boolean
 const METRIKA_COUNTER_ID = 110517987
 const METRIKA_SCRIPT_ID = 'yandex-metrika-script'
 const ANALYTICS_ENTRY_STORAGE_KEY = 'shoditsa:analytics-entry:v1'
+const ANALYTICS_OAUTH_RETURN_STORAGE_KEY = 'shoditsa:analytics-oauth-return:v1'
+const ANALYTICS_OAUTH_RETURN_TTL_MS = 15 * 60_000
 export const ANALYTICS_CONSENT_STORAGE_KEY = 'shoditsa:analytics-consent:v1'
+export const ANALYTICS_CONSENT_EVENT = 'shoditsa:analytics-consent-changed'
 export type AnalyticsConsent = 'accepted' | 'rejected'
 
 type AnalyticsEntry = {
+  acquisitionId: string
   url: string
   path: string
   referrer: string
@@ -33,26 +37,73 @@ declare global {
 type MetrikaStub = ((...args: unknown[]) => void) & { a?: unknown[][]; l?: number }
 
 const searchEngineFromHost = (hostname: string) => {
-  const host = hostname.toLowerCase().replace(/^www\./, '')
-  if (host === 'yandex.ru' || host.includes('.yandex.') || host.startsWith('yandex.')) return 'yandex'
-  if (host === 'google.com' || host.endsWith('.google.com') || host.startsWith('google.')) return 'google'
-  if (host === 'bing.com' || host.endsWith('.bing.com')) return 'bing'
-  if (host === 'duckduckgo.com' || host.endsWith('.duckduckgo.com')) return 'duckduckgo'
+  const host = hostname.toLowerCase().replace(/^(?:www|m)\./, '')
+  if (/^yandex\.(?:az|by|co\.il|kg|kz|md|ru|tj|tm|com\.tr|uz|com)$/.test(host) || host === 'ya.ru') return 'yandex'
+  if (/^google\.(?:[a-z]{2,3}|com\.[a-z]{2}|co\.[a-z]{2})$/.test(host)) return 'google'
+  if (host === 'bing.com') return 'bing'
+  if (host === 'duckduckgo.com') return 'duckduckgo'
   if (host === 'go.mail.ru') return 'mailru'
   return ''
+}
+
+const preservesAcquisitionHost = (hostname: string) => {
+  const host = hostname.toLowerCase().replace(/^www\./, '')
+  return /^(?:oauth|id)\.yandex\.(?:az|by|co\.il|kg|kz|md|ru|tj|tm|com\.tr|uz|com)$/.test(host)
+    || host === 'accounts.google.com'
+}
+
+const uuid = (value: unknown) => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value) ? value : ''
+export const canonicalAnalyticsPath = (value: string) => {
+  const path = value.startsWith('/') ? value : '/'
+  if (/^\/sessions\/[^/]+/.test(path)) return '/sessions/:id'
+  if (/^\/danetki\/join\/[^/]+/.test(path)) return '/danetki/join'
+  if (/^\/specials\/[^/]+/.test(path)) return '/specials/:pack'
+  if (/^\/auth(?:\/|$)/.test(path)) return '/auth'
+  if (path.length > 160 || !/^\/[a-zA-Z0-9_~%./:@-]*$/.test(path)) return '/other'
+  return path
+}
+const safeNavigationUrl = (value: unknown) => {
+  if (typeof value !== 'string' || !value) return ''
+  try {
+    const parsed = new URL(value, typeof window === 'undefined' ? 'https://shoditsa.ru' : window.location.origin)
+    return `${parsed.origin}${canonicalAnalyticsPath(parsed.pathname)}`
+  } catch {
+    return ''
+  }
+}
+const safeReferrerUrl = (value: unknown) => {
+  if (typeof value !== 'string' || !value) return ''
+  try { return new URL(value).origin } catch { return '' }
+}
+
+export const markAnalyticsOAuthReturnPending = () => {
+  if (typeof window === 'undefined') return
+  try { window.sessionStorage.setItem(ANALYTICS_OAUTH_RETURN_STORAGE_KEY, String(Date.now())) } catch { /* optional attribution only */ }
+}
+
+const consumeAnalyticsOAuthReturnPending = () => {
+  if (typeof window === 'undefined') return false
+  try {
+    const startedAt = Number(window.sessionStorage.getItem(ANALYTICS_OAUTH_RETURN_STORAGE_KEY))
+    window.sessionStorage.removeItem(ANALYTICS_OAUTH_RETURN_STORAGE_KEY)
+    return Number.isFinite(startedAt) && startedAt > 0 && Date.now() - startedAt <= ANALYTICS_OAUTH_RETURN_TTL_MS
+  } catch {
+    return false
+  }
 }
 
 const readAnalyticsEntry = (): AnalyticsEntry | null => {
   if (typeof window === 'undefined') return null
   try {
     const value = JSON.parse(window.sessionStorage.getItem(ANALYTICS_ENTRY_STORAGE_KEY) ?? 'null') as Partial<AnalyticsEntry> | null
-    if (!value?.url || !value.path || !value.source) return null
+    if (!value?.url || !value.path || !['organic_search', 'direct', 'referral'].includes(String(value.source))) return null
     return {
-      url: value.url,
-      path: value.path,
-      referrer: value.referrer ?? '',
+      acquisitionId: uuid(value.acquisitionId),
+      url: safeNavigationUrl(value.url),
+      path: canonicalAnalyticsPath(value.path),
+      referrer: safeReferrerUrl(value.referrer),
       referrerHost: value.referrerHost ?? '',
-      source: value.source,
+      source: value.source as AnalyticsEntry['source'],
       searchEngine: value.searchEngine ?? '',
     }
   } catch {
@@ -62,14 +113,21 @@ const readAnalyticsEntry = (): AnalyticsEntry | null => {
 
 export const captureAnalyticsEntry = () => {
   if (typeof window === 'undefined') return
+  if (storedAnalyticsConsent() === 'rejected') return
   let referrerHost = ''
   try { referrerHost = document.referrer ? new URL(document.referrer).hostname : '' } catch { /* ignore invalid referrers */ }
-  if (referrerHost === window.location.hostname && readAnalyticsEntry()) return
+  const existing = readAnalyticsEntry()
+  const oauthReturnPending = consumeAnalyticsOAuthReturnPending()
+  if (existing && (oauthReturnPending || referrerHost === window.location.hostname || preservesAcquisitionHost(referrerHost))) {
+    try { window.sessionStorage.setItem(ANALYTICS_ENTRY_STORAGE_KEY, JSON.stringify({ ...existing, acquisitionId: existing.acquisitionId || crypto.randomUUID() })) } catch { /* ignore unavailable storage */ }
+    return
+  }
   const searchEngine = searchEngineFromHost(referrerHost)
   const entry: AnalyticsEntry = {
-    url: window.location.href,
-    path: window.location.pathname,
-    referrer: document.referrer,
+    acquisitionId: crypto.randomUUID(),
+    url: safeNavigationUrl(window.location.href),
+    path: canonicalAnalyticsPath(window.location.pathname),
+    referrer: safeReferrerUrl(document.referrer),
     referrerHost,
     source: searchEngine ? 'organic_search' : document.referrer ? 'referral' : 'direct',
     searchEngine,
@@ -77,16 +135,21 @@ export const captureAnalyticsEntry = () => {
   try { window.sessionStorage.setItem(ANALYTICS_ENTRY_STORAGE_KEY, JSON.stringify(entry)) } catch { /* ignore unavailable storage */ }
 }
 
-const analyticsEntryParams = (): Record<string, MetrikaParamValue> => {
+export const analyticsEntryParams = (): Record<string, MetrikaParamValue> => {
   const entry = readAnalyticsEntry()
   if (!entry) return {}
   return {
+    ...(entry.acquisitionId ? { acquisition_id: entry.acquisitionId } : {}),
     entry_path: entry.path,
     entry_source: entry.source,
     ...(entry.searchEngine ? { entry_search_engine: entry.searchEngine } : {}),
     ...(entry.referrerHost ? { entry_referrer_host: entry.referrerHost } : {}),
   }
 }
+
+export const consentedAnalyticsEntryParams = (): Record<string, MetrikaParamValue> => (
+  storedAnalyticsConsent() === 'accepted' ? analyticsEntryParams() : {}
+)
 
 export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
   if (typeof window === 'undefined') return null
@@ -133,11 +196,18 @@ export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
   if (typeof window === 'undefined') return
   window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, consent)
   if (consent === 'accepted') {
+    if (!readAnalyticsEntry()) captureAnalyticsEntry()
+    window.dispatchEvent(new CustomEvent(ANALYTICS_CONSENT_EVENT, { detail: { consent } }))
     initMetrika()
     return
   }
 
+  window.dispatchEvent(new CustomEvent(ANALYTICS_CONSENT_EVENT, { detail: { consent } }))
+
+  try { window.sessionStorage.removeItem(ANALYTICS_ENTRY_STORAGE_KEY) } catch { /* ignore unavailable storage */ }
+  try { window.sessionStorage.removeItem(ANALYTICS_OAUTH_RETURN_STORAGE_KEY) } catch { /* ignore unavailable storage */ }
   try { window.ym?.(METRIKA_COUNTER_ID, 'destruct') } catch { /* ignore cleanup errors */ }
+  window.ym = undefined
   window.__SHODITSA_METRIKA_INITIALIZED__ = false
   document.getElementById(METRIKA_SCRIPT_ID)?.remove()
   const cookieNames = ['_ym_uid', '_ym_d', '_ym_isad', '_ym_visorc', '_ym_metrika_enabled', '_ym_fa', '_ym_ucs']
@@ -158,7 +228,7 @@ const pushMetric = (metric: RefactorMetric) => {
   window.__SEANS_REFACTOR_METRICS__.push(metric)
 }
 
-const canUseMetrika = () => typeof window !== 'undefined' && typeof window.ym === 'function'
+const canUseMetrika = () => typeof window !== 'undefined' && storedAnalyticsConsent() === 'accepted' && typeof window.ym === 'function'
 const normalizeMetrikaParams = (meta?: Record<string, unknown>) => {
   if (!meta) return undefined
   const allowedEntries = Object.entries(meta).filter(([, value]) => {
@@ -176,7 +246,7 @@ export const initMetrikaDataLayer = () => {
 
 export const trackMetrikaGoal = (goal: string, meta?: Record<string, unknown>) => {
   if (!canUseMetrika()) return
-  const params = normalizeMetrikaParams({ ...analyticsEntryParams(), ...(meta ?? {}) })
+  const params = normalizeMetrikaParams({ ...(meta ?? {}), ...consentedAnalyticsEntryParams() })
   try {
     if (params) {
       window.ym?.(METRIKA_COUNTER_ID, 'reachGoal', goal, params)
@@ -191,7 +261,7 @@ export const trackMetrikaGoal = (goal: string, meta?: Record<string, unknown>) =
 export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {
   if (!canUseMetrika()) return
   const params = normalizeMetrikaParams({ screen, ...(meta ?? {}) })
-  const virtualUrl = `${window.location.pathname}#${screen}`
+  const virtualUrl = `${canonicalAnalyticsPath(window.location.pathname)}#${screen}`
   try {
     window.ym?.(METRIKA_COUNTER_ID, 'hit', virtualUrl, {
       title: document.title,

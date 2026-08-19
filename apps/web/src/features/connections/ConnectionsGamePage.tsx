@@ -22,8 +22,8 @@ import {
   X,
 } from 'lucide-react'
 import { api, ApiClientError, queryKeys } from '../../api/client'
-import { trackClientEvent } from '../../app/client-events'
-import { trackGameCompleteOnce, trackNextGameStart } from '../../app/game-analytics'
+import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
+import { trackGameCompleteOnce, trackNextGameClick } from '../../app/game-analytics'
 import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
@@ -230,7 +230,10 @@ export function ConnectionsGamePage({
       groupsSolved: state.solvedGroups.length,
       hintsUsed: state.hints.length,
       rulesVersion: session.rulesVersion,
-    }, { gameSessionId: sessionId })
+    }, {
+      eventId: deterministicClientEventId(sessionId, 'connections_started'),
+      gameSessionId: sessionId,
+    })
   }, [session, sessionId, state])
 
   useEffect(() => {
@@ -246,7 +249,10 @@ export function ConnectionsGamePage({
       hintsUsed: state.hints.length,
       outcome: state.status,
       rulesVersion: session.rulesVersion,
-    }, { gameSessionId: sessionId })
+    }, {
+      eventId: deterministicClientEventId(sessionId, 'connections_completed'),
+      gameSessionId: sessionId,
+    })
   }, [session, sessionId, state, terminal])
 
   const toggle = (tileId: string) => {
@@ -477,7 +483,7 @@ export function ConnectionsGamePage({
             onChallenge={() => void shareChallenge()}
             onNext={() => {
               if (nextMode) {
-                trackNextGameStart('connections', nextMode, { outcome: state.status })
+                trackNextGameClick('connections', nextMode, { outcome: state.status })
                 onPlayNext(nextMode)
                 return
               }

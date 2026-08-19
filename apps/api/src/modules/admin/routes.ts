@@ -34,7 +34,7 @@ import {
   account, adminUserNotes, appSettings, attendanceStats, auditLog, authEvents, backgroundJobs, clientEvents,
   contentAliases, contentItems, contentItemTags, contentItemVersions, contentQualityIssues, contentReports, contentReviewDecisions, contentRevisionModes, contentTags,
   contentPacks, contentRevisions, contentWorkspaceChanges, contentWorkspaces, dailyAttendance, dailyChallenges, gameAttempts, gameHintChoices,
-  danetkiDailyUsage, economyRuleAssignments, economyRuleSets, freePlayUsage, friendsRoomDailyUsage,
+  danetkiDailyUsage, danetkiSessionMembers, economyRuleAssignments, economyRuleSets, freePlayUsage, friendsRoomDailyUsage,
   gameSessions, legacyImports, periodEntitlements, pipelineRunItems, pipelineRuns, playerProfiles, promoCodes,
   promoRedemptions, session, user, userEntitlements, userModeStats, walletAccounts, walletLedger, type Database,
 } from '@shoditsa/database'
@@ -52,6 +52,7 @@ import { deleteIntegrationSecret, integrationStatuses, loadIntegrationEnvironmen
 import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
 import { inspectReleaseContent } from './release-content-service.js'
+import { loadAdminAcquisitionFunnel } from './acquisition-funnel-service.js'
 import { getOpenAiPortraitTest, openAiPortraitBatchIds, startOpenAiPortraitTest, type OpenAiPortraitBatch } from './openai-portrait-test.js'
 import { createCloudPaymentsProvider } from '../commerce/providers/cloudpayments.js'
 import {
@@ -2107,6 +2108,13 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     const counts = revision ? await deps.db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, revision.id)) : []
     return { activeRevision: revision ? { id: revision.id, version: revision.version, createdAt: revision.createdAt, counts } : null, workspace: await workspaceSummary(deps.db, actor), counters: rows<Record<string, number>>(counters)[0], recentReports, recentChanges, recentRuns }
   })
+  app.get('/api/v1/admin/acquisition-funnel', {
+    schema: { querystring: Type.Object({ days: Type.Optional(Type.Union([Type.Literal(7), Type.Literal(14), Type.Literal(31)])) }, { additionalProperties: false }) },
+  }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const days = (request.query as { days?: 7 | 14 | 31 }).days ?? 14
+    return loadAdminAcquisitionFunnel(deps.db, days)
+  })
   app.get('/api/v1/admin/events', { schema: { querystring: AdminEventsQuerySchema } }, async (request, reply) => {
     await admin(request, reply, deps); const query = request.query as AdminEventsQuery; const items = await loadAdminTimeline(deps.db, query); const limit = query.limit ?? 50
     return { items: items.slice(0, limit), nextCursor: items.length > limit ? items[limit - 1].occurredAt : null }
@@ -2316,17 +2324,69 @@ export const registerAdminRoutes = async (app: FastifyInstance, deps: Deps) => {
   registerSystemRoutes(app, deps)
 }
 
+const canonicalClientEventRoute = (value?: string) => {
+  const path = value?.split(/[?#]/, 1)[0] ?? ''
+  if (/^\/sessions\/[^/]+/.test(path)) return '/sessions/:id'
+  if (/^\/danetki\/join\/[^/]+/.test(path)) return '/danetki/join'
+  if (/^\/specials\/[^/]+/.test(path)) return '/specials/:pack'
+  if (/^\/auth(?:\/|$)/.test(path)) return '/auth'
+  if (!path || path.length > 160 || !/^\/[a-zA-Z0-9_~%./:@-]*$/.test(path)) return '/other'
+  return path
+}
+
+const safeClientEventProperty = (key: string, value: string | number | boolean | null) => {
+  if (/(?:token|password|secret|authorization|cookie|api[_-]?key|session[_-]?id)/i.test(key)) return undefined
+  if (typeof value !== 'string' || !/(?:url|path|route)$/i.test(key)) return value
+  if (value.startsWith('/')) return canonicalClientEventRoute(value)
+  try { return new URL(value).origin } catch { return '/other' }
+}
+
 export const registerClientEventRoutes = async (app: FastifyInstance, deps: Deps) => {
   app.post('/api/v1/client-events/batch', { schema: { body: ClientEventsBatchBodySchema }, config: { rateLimit: { max: 60, timeWindow: '1 minute' } }, bodyLimit: 64 * 1024 }, async (request) => {
     const actor = await getRequestUser(request, deps.auth, deps.db, true, deps.config); const body = request.body as ClientEventsBatchBody
-    const cutoff = Date.now() + 5 * 60_000
-    const values = body.events.map((event) => {
+    const now = Date.now()
+    const futureCutoff = now + 5 * 60_000
+    const historyCutoff = now - 7 * 86_400_000
+    const gameSessionIds = [...new Set(body.events.flatMap((event) => event.gameSessionId ? [event.gameSessionId] : []))]
+    const accessibleSessionIds = new Set<string>()
+    const ownedSessionIds = new Set<string>()
+    const ownerOnlyLifecycleEvents = new Set(['game_session_start', 'game_session_complete', 'game_next_start', 'danetki_room_started', 'danetki_room_completed', 'connections_started', 'connections_completed'])
+    if (gameSessionIds.length) {
+      const sessions = await deps.db.select({ id: gameSessions.id, ownerUserId: gameSessions.userId }).from(gameSessions)
+        .leftJoin(danetkiSessionMembers, and(
+          eq(danetkiSessionMembers.sessionId, gameSessions.id),
+          eq(danetkiSessionMembers.userId, actor!.id),
+          isNull(danetkiSessionMembers.leftAt),
+        ))
+        .where(and(
+          inArray(gameSessions.id, gameSessionIds),
+          or(eq(gameSessions.userId, actor!.id), eq(danetkiSessionMembers.userId, actor!.id)),
+        ))
+      for (const session of sessions) {
+        accessibleSessionIds.add(session.id)
+        if (session.ownerUserId === actor!.id) ownedSessionIds.add(session.id)
+      }
+    }
+    const acceptedEvents = body.events.filter((event) => {
       const occurredAt = new Date(event.occurredAt)
-      if (occurredAt.getTime() > cutoff || occurredAt.getTime() < Date.now() - 7 * 86_400_000) throw new ApiError(422, 'EVENT_TIME_INVALID', 'Время события вне допустимого диапазона')
-      const properties = Object.fromEntries(Object.entries(event.properties ?? {}).filter(([key]) => !/(?:token|password|secret|authorization|cookie|api[_-]?key|session[_-]?id)/i.test(key)))
-      return { ...event, occurredAt, userId: actor!.id, authSessionId: actor!.authSessionId, properties, gameSessionId: event.gameSessionId ?? null }
+      const timestamp = occurredAt.getTime()
+      if (!Number.isFinite(timestamp) || timestamp > futureCutoff || timestamp < historyCutoff) return false
+      if (ownerOnlyLifecycleEvents.has(event.eventName) && !event.gameSessionId) return false
+      if (event.gameSessionId && !accessibleSessionIds.has(event.gameSessionId)) return false
+      if (event.gameSessionId && ownerOnlyLifecycleEvents.has(event.eventName) && !ownedSessionIds.has(event.gameSessionId)) return false
+      return true
     })
-    const inserted = await deps.db.insert(clientEvents).values(values).onConflictDoNothing().returning({ id: clientEvents.id })
-    return { accepted: inserted.length, duplicates: values.length - inserted.length }
+    const values = acceptedEvents.map((event) => {
+      const occurredAt = new Date(event.occurredAt)
+      const properties = Object.fromEntries(Object.entries(event.properties ?? {}).flatMap(([key, value]) => {
+        const safeValue = safeClientEventProperty(key, value)
+        return safeValue === undefined ? [] : [[key, safeValue]]
+      }))
+      return { ...event, occurredAt, route: canonicalClientEventRoute(event.route), userId: actor!.id, authSessionId: actor!.authSessionId, properties, gameSessionId: event.gameSessionId ?? null }
+    })
+    const inserted = values.length
+      ? await deps.db.insert(clientEvents).values(values).onConflictDoNothing().returning({ id: clientEvents.id })
+      : []
+    return { accepted: inserted.length, duplicates: values.length - inserted.length, rejected: body.events.length - values.length }
   })
 }

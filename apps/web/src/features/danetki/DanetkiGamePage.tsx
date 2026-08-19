@@ -4,13 +4,14 @@ import type { GameResponse, GameSessionSnapshot } from '@shoditsa/contracts'
 import { ArrowUp, CalendarDays, Check, Copy, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, RefreshCw, Sparkles, Users } from 'lucide-react'
 import { api, ApiClientError, danetkiEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
-import { trackClientEvent } from '../../app/client-events'
+import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { trackGameCompleteOnce } from '../../app/game-analytics'
 import type { TitleMode } from '../../types'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { withFilledDanetkiVisualFixture } from './DanetkiGamePage.fixture'
+import { isFreshDanetkiCompletion } from './danetki-analytics'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { ControlButton, DialogSurface, InlineAlert, SegmentedProgress, TextArea, TextInput } from '../../components/ui'
 import { DanetkiRegistrationOffer } from './DanetkiRegistrationOffer'
@@ -58,7 +59,6 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   const wasNearBottom = useRef(true)
   const previousMessageCount = useRef(state.messages.length)
   const sendKey = useRef<string | null>(null)
-  const completionTracked = useRef(false)
   const previousSessionStatus = useRef(session.status)
   const limitTracked = useRef(false)
 
@@ -111,19 +111,24 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   }, [session.kind, sessionId, state.questionCount, state.roomMode])
 
   useEffect(() => {
-    const completedNow = previousSessionStatus.current === 'playing' && session.status !== 'playing'
+    const completedNow = isFreshDanetkiCompletion(previousSessionStatus.current, session.status)
     previousSessionStatus.current = session.status
-    if (completedNow) {
-      trackGameCompleteOnce(sessionId, {
-        mode: 'danetki',
-        kind: session.kind,
-        outcome: session.status,
-        attempts: state.questionCount,
-        room_mode: state.roomMode,
-      })
-    }
-    if (session.status === 'playing' || completionTracked.current) return
-    completionTracked.current = true
+    if (!completedNow || !isOwner) return
+    trackGameCompleteOnce(sessionId, {
+      mode: 'danetki',
+      kind: session.kind,
+      outcome: session.status,
+      attempts: state.questionCount,
+      room_mode: state.roomMode,
+    })
+    void Promise.all([
+      client.invalidateQueries({ queryKey: queryKeys.dashboard }),
+      client.invalidateQueries({ queryKey: queryKeys.ledger }),
+    ])
+  }, [client, isOwner, session.id, session.kind, session.status, state.questionCount, state.roomMode])
+
+  useEffect(() => {
+    if (!isOwner || session.status === 'playing') return
     const balanceBefore = runtime.dashboard?.wallet.balance ?? 0
     const amount = session.status === 'won' && session.kind === 'daily' && isOwner ? runtime.dashboard?.economyRules.danetki.ownerDailyCompletionReward ?? 10 : 0
     trackClientEvent('danetki_room_completed', {
@@ -143,12 +148,11 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
       streak: runtime.dashboard?.attendance?.currentDailyStreak ?? 0,
       rulesVersion: session.rulesVersion,
       hasClub: runtime.dashboard?.membership.active ?? false,
-    }, { gameSessionId: session.id })
-    void Promise.all([
-      client.invalidateQueries({ queryKey: queryKeys.dashboard }),
-      client.invalidateQueries({ queryKey: queryKeys.ledger }),
-    ])
-  }, [client, isOwner, runtime.dashboard, session.id, session.kind, session.rulesVersion, session.status, state.questionCount, state.roomMode])
+    }, {
+      eventId: deterministicClientEventId(session.id, 'danetki_room_completed'),
+      gameSessionId: session.id,
+    })
+  }, [isOwner, runtime.dashboard, session.id, session.kind, session.rulesVersion, session.status, state.questionCount, state.roomMode])
 
   useEffect(() => {
     if (state.questionsRemaining > 0 || limitTracked.current) return

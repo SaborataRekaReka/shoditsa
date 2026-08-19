@@ -1200,12 +1200,34 @@ export const clientEvents = pgTable('client_events', {
   properties: jsonb().notNull().default({}),
   createdAt: now(),
 }, (table) => [
-  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','danetki_landing_view','danetki_start_clicked','danetki_first_question','danetki_catalog_view','danetki_story_view','danetki_story_answer_opened','danetki_catalog_play_clicked','danetki_registration_offer_view','danetki_registration_offer_clicked','danetki_registration_succeeded','danetki_result_view','danetki_cross_game_offer_view','danetki_cross_game_clicked','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable','connections_started','connections_guess_submitted','connections_one_away','connections_group_solved','connections_hint_used','connections_completed','connections_shared','connections_report_submitted')`),
+  check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','game_session_start','game_session_complete','game_next_clicked','game_next_start','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','danetki_landing_view','danetki_start_clicked','danetki_first_question','danetki_catalog_view','danetki_story_view','danetki_story_answer_opened','danetki_catalog_play_clicked','danetki_registration_offer_view','danetki_registration_offer_clicked','danetki_registration_succeeded','danetki_result_view','danetki_cross_game_offer_view','danetki_cross_game_clicked','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable','connections_started','connections_guess_submitted','connections_one_away','connections_group_solved','connections_hint_used','connections_completed','connections_shared','connections_report_submitted')`),
   index('client_event_occurred_idx').on(table.occurredAt),
   index('client_event_user_occurred_idx').on(table.userId, table.occurredAt),
   index('client_event_game_session_idx').on(table.gameSessionId),
   index('client_event_request_idx').on(table.requestId),
   index('client_event_name_idx').on(table.eventName),
+])
+
+/**
+ * Privacy-preserving long-term telemetry. Raw client events keep their short
+ * retention window; only daily counts and coarse acquisition dimensions live
+ * here so 31-day and later trend reports do not silently lose their baseline.
+ */
+export const analyticsEventDaily = pgTable('analytics_event_daily', {
+  activityDate: date('activity_date').notNull(),
+  eventName: text('event_name').notNull(),
+  entrySource: text('entry_source').notNull().default('unknown'),
+  searchEngine: text('search_engine').notNull().default(''),
+  entryPath: text('entry_path').notNull().default(''),
+  mode: text().notNull().default(''),
+  eventsCount: integer('events_count').notNull().default(0),
+  usersCount: integer('users_count').notNull().default(0),
+  acquisitionsCount: integer('acquisitions_count').notNull().default(0),
+  updatedAt: now(),
+}, (table) => [
+  primaryKey({ columns: [table.activityDate, table.eventName, table.entrySource, table.searchEngine, table.entryPath, table.mode] }),
+  index('analytics_event_daily_source_date_idx').on(table.entrySource, table.activityDate),
+  index('analytics_event_daily_event_date_idx').on(table.eventName, table.activityDate),
 ])
 
 export const authEvents = pgTable('auth_events', {

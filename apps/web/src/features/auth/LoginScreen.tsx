@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import './LoginScreen.css'
 import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
-import { trackMetrikaGoal } from '../../app/metrics'
+import { markAnalyticsOAuthReturnPending, trackMetrikaGoal } from '../../app/metrics'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ApiClientError, api } from '../../api/client'
@@ -284,6 +284,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       const oauthUrl = typeof payload?.url === 'string' ? payload.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex', ...danetkiAcquisitionMeta() })
+      markAnalyticsOAuthReturnPending()
       redirected = true
       window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {

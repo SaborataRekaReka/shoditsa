@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url'
 import { and, eq, inArray, lt, sql } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import {
-  backgroundJobs, clientEvents, contentItemVersions, contentQualityIssues, contentRevisions, createDatabase,
+  backgroundJobs, contentItemVersions, contentQualityIssues, contentRevisions, createDatabase,
   pipelineRunItems, pipelineRuns, playerProfiles, session, user, walletAccounts,
 } from '@shoditsa/database'
 import { buildWorkspaceRevision, validateContentPayload } from './modules/admin/content-service.js'
@@ -24,6 +24,7 @@ import { ApiError } from './lib/errors.js'
 import { reconcileCommerceOrders } from './modules/commerce/service.js'
 import { handleDanetkiJob } from './modules/danetki/worker.js'
 import { runContentRetention, runGameLifecycleCleanup } from './modules/maintenance/service.js'
+import { rollupClientEventRetention } from './modules/stats/analytics-rollup-service.js'
 import { contentDuplicateGroups, isAllowedInRegularGame } from '@shoditsa/game-core'
 import {
   buildFactcheckPreview, factcheckRetryFields, mergeFactcheckResearchResults,
@@ -100,6 +101,12 @@ const ensureScheduledMaintenanceJobs = async (now = new Date()) => {
     {
       type: 'content_retention',
       idempotencyKey: `scheduled:content-retention:${dayBucket}`,
+      payload: { scheduledAt: now.toISOString() },
+      maxAttempts: 3,
+    },
+    {
+      type: 'client_event_retention',
+      idempotencyKey: `scheduled:client-event-retention:${dayBucket}`,
       payload: { scheduledAt: now.toISOString() },
       maxAttempts: 3,
     },
@@ -1254,8 +1261,7 @@ const handleJob = async (job: typeof backgroundJobs.$inferSelect) => {
     return { exportedAt: new Date().toISOString(), items: events }
   }
   if (job.type === 'client_event_retention') {
-    const removed = await db.delete(clientEvents).where(lt(clientEvents.occurredAt, new Date(Date.now() - 30 * 86_400_000))).returning({ id: clientEvents.id })
-    return { removed: removed.length }
+    return rollupClientEventRetention(db)
   }
   if (job.type === 'commerce_reconcile') return reconcileCommerceOrders(db, config)
   if (job.type === 'game_lifecycle_cleanup') return runGameLifecycleCleanup(db)

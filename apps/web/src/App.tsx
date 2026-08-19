@@ -40,7 +40,7 @@ import {
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { trackDiagnosisGoal } from './app/diagnosis-analytics'
-import { trackGameCompleteOnce, trackGameStartOnce, trackNextGameStart } from './app/game-analytics'
+import { trackConfirmedServerStart, trackGameCompleteOnce, trackGameStartOnce, trackNextGameClick, trackObservedServerStart, trackServerGameCompleteObserved } from './app/game-analytics'
 import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
 import { applyRuntimeSeo } from './app/seo'
 import { publicAssetUrl } from './app/public-asset'
@@ -121,7 +121,7 @@ import { GameScreenShell } from './components/game-shell/GameScreenShell'
 import { AdmissionTitleTicket, DiagnosisTitleCard, MusicTitleTicket, TicketKicker } from './components/title-ticket'
 import { ControlButton, DialogSurface, InlineAlert, SegmentedProgress, Tabs, TextInput } from './components/ui'
 import { SearchCombobox } from './components/search-combobox'
-import { trackClientEvent } from './app/client-events'
+import { deterministicClientEventId, trackClientEvent } from './app/client-events'
 import { canCreateFriendsRoom, canUseFriendsRoom, currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './features/friends-room/friends-room-access'
 import { SESSION_RENDERER_BY_ENGINE } from './features/game-session/session-renderers'
 import { DtfCommentFeed, DtfCommentIntro, type DtfCommentCardData } from './features/dtf-comments/DtfCommentFeed'
@@ -1407,6 +1407,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
       content: <CategoryTicket key={config.mode} {...config} href={pathnameForPlayerRoute({ screen: 'title', mode: configMode })} poolCount={titleCounts[configMode]} status={status} attempts={savedGame ? savedGameAttemptCount(savedGame) : null} onClick={handleClick} />,
     }
   })
+  const publicGameCount = mainRouteCards.length + Number(connectionsEnabled) + Number(danetkiEnabled)
   const useArcCarousel = arcPreview || codapressPreview
 
   return <>
@@ -1418,7 +1419,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
         <div className="hub-hero">
           <div className="hub-hero__copy">
             <div className="hub-hero__facts" aria-label="Об игре">
-              <span><Gamepad2 /><strong>9 игр</strong></span>
+              <span><Gamepad2 /><strong>{publicGameCount} игр</strong></span>
               <span><CalendarDays /><strong>Новые загадки каждый день</strong></span>
               <span><Target /><strong>10 попыток</strong></span>
             </div>
@@ -1430,8 +1431,8 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
               </h1>
               : <h1>Все сойдется!</h1>}
             <p>{codapressPreview
-              ? 'Девять игровых премьер. Семь ежедневных загадок. Один маршрут, который хочется закрыть до конца.'
-              : 'Кино, сериалы, аниме, игры, города, музыка, диагнозы, связи и данетки. Каждый день — новая загадка, которую можно раскрыть по подсказкам.'}</p>
+              ? `${publicGameCount} игровых форматов. Новые загадки каждый день. Один маршрут, который хочется закрыть до конца.`
+              : 'Угадывайте фильмы, сериалы, аниме, видеоигры, города, исполнителей, диагнозы, животных, книги и персонажей — или решайте связи и данетки. Каждый день — новая загадка.'}</p>
             <div className="hub-hero__actions">
               <ActionButton onClick={() => {
                 trackMetrikaGoal('hub_scroll_to_games')
@@ -3380,7 +3381,7 @@ function Game({
         challengeOutcome={challenge ? challengeOutcome(attempts.length, challenge.opponentAttempts) : undefined}
         opponentAttempts={challenge?.opponentAttempts}
         onNext={() => {
-          if (nextMode) trackNextGameStart(mode, nextMode, { outcome: status })
+          if (nextMode) trackNextGameClick(mode, nextMode, { outcome: status })
           if (routeCompleted) onHome()
           else onPlayNext(nextMode)
         }}
@@ -3599,6 +3600,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const hintKeyRef = useRef<string | null>(null)
   const game = useQuery({ queryKey: queryKeys.game(sessionId), queryFn: () => api.game(sessionId), refetchOnWindowFocus: true })
   const session = game.data?.session
+  const sessionOwnsLifecycle = session?.engine !== 'danetki_chat'
+    || Boolean(session.danetki.members.some((member) => member.userId === session.danetki.currentUserId && member.role === 'owner'))
   const packDetail = useQuery({
     queryKey: queryKeys.pack(session?.packId ?? ''),
     queryFn: () => api.pack(session!.packId!),
@@ -3777,6 +3780,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     mutationFn: ({ packId, position }: { packId: string; position: number }) => api.startPack(packId, position),
     onSuccess: (response) => {
       setMessage('')
+      trackConfirmedServerStart(response.session.id, {
+        mode: response.session.mode,
+        period: response.session.period,
+        kind: response.session.kind,
+        state: 'new',
+      })
       onPackSession(response.session)
     },
     onError: (error) => setMessage(apiErrorMessage(error)),
@@ -3803,14 +3812,23 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setGameMatchStripOpen(true)
     applyRuntimeSeo(window.location.pathname, `/games/${session.mode}`)
     if (session.status === 'playing' || session.status === 'final_choice') {
-      trackGameStartOnce(session.id, {
+      if (sessionOwnsLifecycle) trackObservedServerStart(session.id, {
         mode: session.mode,
         period: session.period,
         kind: session.kind,
-        state: session.attemptsCount > 0 ? 'resumed' : 'new',
+        state: (session.engine === 'danetki_chat' ? session.danetki.questionCount : session.attemptsCount) > 0 ? 'resumed' : 'new',
+      })
+    } else if (sessionOwnsLifecycle && ['won', 'lost', 'expired'].includes(session.status)) {
+      trackServerGameCompleteObserved(session.id, {
+        mode: session.mode,
+        period: session.period,
+        kind: session.kind,
+        outcome: session.status,
+        attempts: session.attemptsCount,
+        completionType: session.completionType ?? 'standard',
       })
     }
-  }, [session?.id, session?.mode])
+  }, [sessionOwnsLifecycle, session?.completionType, session?.id, session?.kind, session?.mode, session?.period, session?.status, session?.attemptsCount])
 
   useEffect(() => {
     if (session?.status !== 'final_choice' || !session.finalChoice) return
@@ -4142,7 +4160,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => {
-            if (nextMode) trackNextGameStart(session.mode, nextMode, { outcome: session.status })
+            if (nextMode) trackNextGameClick(session.mode, nextMode, { outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
           }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
@@ -4425,6 +4443,14 @@ function GameApp() {
         return
       }
       activateServerSession(response.session, variables.backTarget)
+      if (response.session.status === 'playing' || response.session.status === 'final_choice') {
+        trackConfirmedServerStart(response.session.id, {
+          mode: response.session.mode,
+          period: response.session.period,
+          kind: response.session.kind,
+          state: response.session.attemptsCount > 0 ? 'resumed' : 'new',
+        })
+      }
       if (variables.body.mode === 'danetki') {
         const isExtra = variables.body.kind === 'free_play'
         const roomMode = variables.body.roomMode ?? 'solo'
@@ -4448,7 +4474,10 @@ function GameApp() {
           streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
           rulesVersion: response.session.rulesVersion,
           hasClub: clubFreePlay,
-        }, { gameSessionId: response.session.id })
+        }, {
+          eventId: deterministicClientEventId(response.session.id, 'danetki_room_started'),
+          gameSessionId: response.session.id,
+        })
         if (cost > 0) trackClientEvent('ticket_spent', {
           balanceBefore: wallet.tickets,
           balanceAfter: wallet.tickets - cost,
@@ -4463,7 +4492,10 @@ function GameApp() {
           streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
           rulesVersion: response.session.rulesVersion,
           hasClub: clubFreePlay,
-        }, { gameSessionId: response.session.id })
+        }, {
+          eventId: deterministicClientEventId(response.session.id, 'ticket_spent'),
+          gameSessionId: response.session.id,
+        })
       }
       await queryClient.invalidateQueries({ queryKey: queryKeys.dashboard })
     },
@@ -4484,6 +4516,12 @@ function GameApp() {
     },
     onSuccess: async (session, variables) => {
       activateServerSession(session, variables.backTarget)
+      trackConfirmedServerStart(session.id, {
+        mode: session.mode,
+        period: session.period,
+        kind: session.kind,
+        state: session.attemptsCount > 0 ? 'resumed' : 'new',
+      })
       trackClientEvent('free_play_started', {
         balanceBefore: session.balanceAfter + session.cost,
         balanceAfter: session.balanceAfter,
@@ -4498,7 +4536,10 @@ function GameApp() {
         streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
         rulesVersion: session.rulesVersion,
         hasClub: session.accessSource === 'club',
-      }, { gameSessionId: session.id })
+      }, {
+        eventId: deterministicClientEventId(session.id, 'free_play_started'),
+        gameSessionId: session.id,
+      })
       if (session.cost > 0) trackClientEvent('ticket_spent', {
         balanceBefore: session.balanceAfter + session.cost,
         balanceAfter: session.balanceAfter,
@@ -4513,9 +4554,15 @@ function GameApp() {
         streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
         rulesVersion: session.rulesVersion,
         hasClub: false,
-      }, { gameSessionId: session.id })
+      }, {
+        eventId: deterministicClientEventId(session.id, 'ticket_spent'),
+        gameSessionId: session.id,
+      })
       if (session.accessSource === 'club') {
-        trackClientEvent('club_free_play_started', { mode: session.mode, hasClub: true })
+        trackClientEvent('club_free_play_started', { mode: session.mode, hasClub: true }, {
+          eventId: deterministicClientEventId(session.id, 'club_free_play_started'),
+          gameSessionId: session.id,
+        })
         trackMetrikaGoal('club_free_play_started', { mode: session.mode })
       }
       await Promise.all([
@@ -5519,7 +5566,10 @@ function GameApp() {
 
     {screen === 'specials' && <SpecialsScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(session) => activateServerSession(session, 'hub')} />}
+    {screen === 'special' && <SpecialDetailScreen packId={playerRouteFromPathname(routeLocation.pathname).packId ?? ''} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} onSession={(session) => {
+      trackConfirmedServerStart(session.id, { mode: session.mode, period: session.period, kind: session.kind, state: 'new' })
+      activateServerSession(session, 'hub')
+    }} />}
 
     {screen === 'create-game' && <CreateGameScreen onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
@@ -5591,6 +5641,7 @@ function GameApp() {
       if (diagnosisPreviewSession) {
         const session = diagnosisPreviewSession
         setDiagnosisPreviewSession(null)
+        trackConfirmedServerStart(session.id, { mode: session.mode, period: session.period, kind: session.kind, state: 'new' })
         activateServerSession(session, 'title')
         return
       }

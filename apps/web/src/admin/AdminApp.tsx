@@ -8,7 +8,7 @@ import {
   RotateCcw, Rows3, Save, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2,
   UsersRound, WandSparkles, X,
 } from 'lucide-react'
-import { CATALOG_HINT_COPY, CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
+import { CATALOG_HINT_COPY, CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type AdminAcquisitionFunnelResponse, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
 import { publicAssetUrl } from '../app/public-asset'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { adminCommentUnlockLabel, adminContentComments } from './content-comments'
@@ -425,8 +425,97 @@ function ContentRevisionControl({ activeRevision, navigate, notify }: {
   </section>
 }
 
+const acquisitionRate = (value: number | null) => value == null ? '—' : `${value.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}%`
+
+function AcquisitionFunnelPanel({
+  data,
+  loading,
+  error,
+  days,
+  onDaysChange,
+  retry,
+}: {
+  data?: AdminAcquisitionFunnelResponse
+  loading: boolean
+  error: Error | null
+  days: 7 | 14 | 31
+  onDaysChange: (days: 7 | 14 | 31) => void
+  retry: () => void
+}) {
+  const coverage = data?.coverage.lifecycleEventRate ?? null
+  const coverageTone = coverage == null ? 'unknown' : coverage >= 80 ? 'good' : coverage >= 50 ? 'warning' : 'danger'
+  const sourceStrategy = data?.dataSources.strategy ?? 'raw'
+  const sourceLabel = data && !data.dataSources.eventTotalsExact
+    ? 'RAW · ЧАСТИЧНО'
+    : sourceStrategy === 'raw_with_daily_archive' ? 'RAW · DAILY АРХИВ' : 'RAW'
+  return <section className="admin-panel admin-acquisition">
+    <header>
+      <div><span>SEO → продукт</span><h2>Поисковая воронка <i className={`admin-acquisition__source is-${sourceStrategy}`}>{sourceLabel}</i></h2></div>
+      <div className="admin-acquisition__period" aria-label="Период отчёта">
+        {([7, 14, 31] as const).map((period) => <button key={period} type="button" aria-pressed={days === period} className={days === period ? 'is-active' : ''} onClick={() => onDaysChange(period)}>{period} дней</button>)}
+      </div>
+    </header>
+    {loading && <div className="admin-acquisition__state"><LoaderCircle className="admin-spin" /> Собираем воронку…</div>}
+    {error && <div className="admin-acquisition__state is-error"><span>Воронка временно недоступна: {errorText(error)}</span><button className="admin-btn admin-btn--secondary" onClick={retry}><RefreshCw />Повторить</button></div>}
+    {data && <>
+      {!data.dataSources.eventTotalsExact && <div className="admin-acquisition__quality"><AlertTriangle /><span><strong>Срез пока частичный</strong><small>Показаны только фактически доступные raw-события; отсутствующие дни не подставлены нулями и точные выводы по конверсии пока преждевременны.</small></span></div>}
+      <div className="admin-acquisition__metrics">
+        <article><span><Search /></span><small>Поисковые входы</small><strong>{data.summary.organicLandings.toLocaleString('ru-RU')}</strong><em>{data.summary.organicUsers == null ? 'уникальные не суммируются' : `${data.summary.organicUsers.toLocaleString('ru-RU')} пользователей`}</em></article>
+        <article><span><Play /></span><small>Начали игру</small><strong>{data.summary.starts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToStartRate)} от входов · {data.summary.activity.sessionStarts} сессий</em></article>
+        <article><span><BadgeCheck /></span><small>Завершили</small><strong>{data.summary.completions.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.startToCompleteRate)} от стартов · {data.summary.activity.sessionCompletions} сессий</em></article>
+        <article><span><ChevronRight /></span><small>Начали следующую</small><strong>{data.summary.nextStarts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.completeToNextStartRate)} от завершений · {data.summary.activity.nextStarts} переходов</em></article>
+        <article><span><UserRound /></span><small>Регистрации</small><strong>{data.summary.signUps.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToSignUpRate)} от входов</em></article>
+        <article className={`is-${coverageTone}`}><span><Database /></span><small>Покрытие raw</small><strong>{acquisitionRate(coverage)}</strong><em>{data.coverage.lifecycleEventsWithAcquisition} из {data.coverage.lifecycleEvents}</em></article>
+      </div>
+      {data.summary.organicLandings === 0 && <div className="admin-acquisition__empty"><Search /><span><strong>Атрибутированных поисковых входов пока нет</strong><small>Это не означает нулевой органический трафик: без согласия технические события не получают поисковые параметры и остаются вне SEO-воронки.</small></span></div>}
+      <div className="admin-acquisition__breakdowns">
+        <section>
+          <header><div><span>Точки входа</span><h3>Страницы из поиска</h3></div></header>
+          <div className="admin-acquisition__table-wrap"><table><thead><tr><th>Страница</th><th>Входы</th><th>Старт</th><th>Финиш</th><th>Рег.</th></tr></thead><tbody>
+            {data.byLanding.slice(0, 7).map((entry) => <tr key={entry.key}><td><strong>{entry.label}</strong><small>{entry.searchEngine ?? 'Не определён'}</small></td><td>{entry.organicLandings}</td><td>{entry.starts}<small>{acquisitionRate(entry.landingToStartRate)}</small></td><td>{entry.completions}<small>{acquisitionRate(entry.startToCompleteRate)}</small></td><td>{entry.signUps}<small>{acquisitionRate(entry.landingToSignUpRate)}</small></td></tr>)}
+            {!data.byLanding.length && <tr><td colSpan={5}>Данных для разбивки пока нет</td></tr>}
+          </tbody></table></div>
+        </section>
+        <section>
+          <header><div><span>Игровой спрос</span><h3>Режим входа</h3></div></header>
+          <div className="admin-acquisition__table-wrap"><table><thead><tr><th>Игра</th><th>Входы</th><th>Старт</th><th>Финиш</th><th>Рег.</th></tr></thead><tbody>
+            {data.byMode.slice(0, 7).map((entry) => <tr key={entry.key}><td><strong>{entry.label}</strong></td><td>{entry.organicLandings}</td><td>{entry.starts}<small>{acquisitionRate(entry.landingToStartRate)}</small></td><td>{entry.completions}<small>{acquisitionRate(entry.startToCompleteRate)}</small></td><td>{entry.signUps}<small>{acquisitionRate(entry.landingToSignUpRate)}</small></td></tr>)}
+            {!data.byMode.length && <tr><td colSpan={5}>Данных для разбивки пока нет</td></tr>}
+          </tbody></table></div>
+        </section>
+      </div>
+      {!!data.activityByMode.length && <section className="admin-acquisition__activity">
+        <header><div><span>Отдельная метрика</span><h3>Сессии по фактическому режиму</h3></div><small>Объём действий, не этапы cohort-воронки</small></header>
+        <div>{data.activityByMode.slice(0, 6).map((entry) => <span key={entry.key}><small>{entry.label}</small><strong>{entry.sessionStarts} / {entry.sessionCompletions}</strong><em>старт / финиш</em></span>)}</div>
+      </section>}
+      {data.dailyActivityArchive && <section className="admin-acquisition__archive">
+        <header><div><span>Отдельный источник</span><h3>Daily-архив активности</h3></div><small>{data.dailyActivityArchive.complete ? 'Полный архив' : 'Частичные данные'} · не участвует в конверсии и unique users</small></header>
+        <div>
+          <span><small>Стартов сессий</small><strong>{data.dailyActivityArchive.sessionStarts.toLocaleString('ru-RU')}</strong></span>
+          <span><small>Завершений</small><strong>{data.dailyActivityArchive.sessionCompletions.toLocaleString('ru-RU')}</strong></span>
+          <span><small>Кликов «дальше»</small><strong>{data.dailyActivityArchive.nextClicks.toLocaleString('ru-RU')}</strong></span>
+          <span><small>Следующих игр</small><strong>{data.dailyActivityArchive.nextStarts.toLocaleString('ru-RU')}</strong></span>
+        </div>
+      </section>}
+      <footer className="admin-acquisition__foot">
+        <span><Database /> client_events + auth_events · {compactDate(data.generatedAt)}</span>
+        <span>Только завершённые UTC-дни.</span>
+        <span>Без согласия first-party события остаются без acquisition/referrer/search; такие пропуски не считаются прямым трафиком.</span>
+        {data.dataSources.daily
+          ? <span className={!data.dataSources.daily.complete ? 'is-warning' : ''}>Воронка целиком рассчитана по raw. Отдельный daily-архив: {data.dataSources.daily.confirmedCompleteDays}/{data.dataSources.daily.expectedCompleteDays} завершённых UTC-дней; агрегаты не складываются с raw.</span>
+          : <span>Точный raw-срез; регистрация связывается с входом в окне {data.attributionWindowDays} дней.</span>}
+        {!data.dataSources.raw.exactWindowReady && <span className="is-warning">31-дневное raw-окно ещё накапливается{data.dataSources.raw.retentionReadyAt ? ` до ${compactDate(data.dataSources.raw.retentionReadyAt)}` : ''}; значения частичные, пропуски не считаются нулями.</span>}
+        {!data.dataSources.eventTotalsExact && data.dataSources.raw.exactWindowReady && <span className="is-warning">Raw-срез неполон: сработал защитный лимит строк.</span>}
+        {data.coverage.unkeyedOrganicEvents > 0 && <span className="is-warning">Без acquisition_id: {data.coverage.unkeyedOrganicEvents} органических событий — они не включены в конверсии.</span>}
+      </footer>
+    </>}
+  </section>
+}
+
 function DashboardPage({ navigate, notify }: { navigate: (section: Section, id?: string | null) => void; notify: (tone: Notice['tone'], text: string) => void }) {
+  const [acquisitionDays, setAcquisitionDays] = useState<7 | 14 | 31>(14)
   const dashboard = useQuery({ queryKey: ['admin', 'dashboard'], queryFn: adminApi.dashboard, refetchInterval: 15_000 })
+  const acquisition = useQuery({ queryKey: ['admin', 'acquisition-funnel', acquisitionDays], queryFn: () => adminApi.acquisitionFunnel(acquisitionDays), staleTime: 60_000 })
   if (dashboard.isLoading) return <Loading />
   if (dashboard.error || !dashboard.data) return <ErrorState error={dashboard.error} retry={() => void dashboard.refetch()} />
   const { counters } = dashboard.data
@@ -436,8 +525,9 @@ function DashboardPage({ navigate, notify }: { navigate: (section: Section, id?:
     ['Активны за 24 часа', counters.activeUsers24h, UsersRound, 'users'], ['Сессии за 24 часа', counters.sessionsStarted24h, Play, 'events'],
   ] as const
   return <>
-    <PageHead eyebrow="Оперативная сводка" title="Обзор" description="То, что требует внимания прямо сейчас." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void dashboard.refetch()}><RefreshCw />Обновить</button>} />
+    <PageHead eyebrow="Оперативная сводка" title="Обзор" description="То, что требует внимания прямо сейчас." actions={<button className="admin-btn admin-btn--secondary" onClick={() => { void dashboard.refetch(); void acquisition.refetch() }}><RefreshCw />Обновить</button>} />
     <div className="admin-kpis">{cards.map(([label, value, Icon, section]) => <button key={label} onClick={() => navigate(section)}><span><Icon /></span><strong>{value}</strong><small>{label}</small><ChevronRight /></button>)}</div>
+    <AcquisitionFunnelPanel data={acquisition.data} loading={acquisition.isLoading} error={acquisition.error} days={acquisitionDays} onDaysChange={setAcquisitionDays} retry={() => void acquisition.refetch()} />
     <div className="admin-dashboard-grid">
       <section className="admin-panel admin-attention"><header><div><span>Требует внимания</span><h2>Очередь на сегодня</h2></div><button onClick={() => navigate('reports')}>Вся очередь <ChevronRight /></button></header>
         {dashboard.data.recentReports.length ? <div className="admin-feed">{dashboard.data.recentReports.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('reports', String(item.id))}><span className="admin-feed__icon"><Bug /></span><span><strong>{REPORT_REASON[String(item.reason)] ?? title(item.reason)}</strong><small>{title(item.itemId)} · {compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Очередь пуста" text="Новых сообщений от игроков нет." icon={<BadgeCheck />} />}
