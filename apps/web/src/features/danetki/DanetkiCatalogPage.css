@@ -50,7 +50,7 @@
   align-items: center;
   gap: 9px;
   color: #75c78d;
-  font-size: .74rem;
+  font-size: .75rem;
   font-weight: 800;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -115,7 +115,7 @@
 
 .danetki-catalog-facts dt {
   color: #8e988c;
-  font-size: .74rem;
+  font-size: .75rem;
   letter-spacing: .1em;
   text-transform: uppercase;
 }
@@ -141,7 +141,7 @@
 
 .danetki-catalog-section-head > div > span {
   color: #70bd85;
-  font-size: .72rem;
+  font-size: .75rem;
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -202,7 +202,7 @@
   border-radius: 999px;
   color: #8f988c;
   background: #222b22;
-  font-size: .68rem;
+  font-size: .75rem;
 }
 
 .danetki-catalog-filters button:hover,
@@ -257,7 +257,7 @@
   border-radius: 999px;
   color: #79c78f;
   background: #233027;
-  font: 800 .7rem/1 monospace;
+  font: 800 .75rem/1 monospace;
 }
 
 .danetki-catalog-collection-link {
@@ -328,7 +328,7 @@
   border: 1px solid #3b473c;
   border-radius: 999px;
   color: #a8b1a6;
-  font-size: .7rem;
+  font-size: .75rem;
   text-transform: capitalize;
 }
 
@@ -417,7 +417,7 @@
   gap: 5px;
   margin-top: 8px;
   color: #7f9985;
-  font-size: .68rem;
+  font-size: .75rem;
   font-weight: 700;
 }
 
@@ -552,7 +552,7 @@
 
 .danetki-story__stamp small {
   align-self: end;
-  font-size: .7rem;
+  font-size: .75rem;
   letter-spacing: .14em;
   text-transform: uppercase;
 }
@@ -571,7 +571,7 @@
 .danetki-story__condition > span,
 .danetki-story__questions > span {
   color: #78c58f;
-  font-size: .72rem;
+  font-size: .75rem;
   font-weight: 800;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -713,7 +713,7 @@
 
 .danetki-story__play > div > span {
   color: #78c58f;
-  font-size: .72rem;
+  font-size: .75rem;
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
