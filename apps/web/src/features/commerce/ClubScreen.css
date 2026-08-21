@@ -846,7 +846,7 @@
   }
 
   .club-entry__copy > p {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .club-entry__actions {
@@ -892,15 +892,15 @@
   }
 
   .club-content-card.ui-button {
-    height: 152px;
-    min-height: 152px;
+    height: 184px;
+    min-height: 184px;
   }
 
   .club-content-card--special.ui-button {
     height: auto;
-    min-height: 410px;
+    min-height: 456px;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 180px minmax(0, 1fr) 52px;
+    grid-template-rows: 190px minmax(0, 1fr) 58px;
   }
 
   .club-content-card--special figure {
@@ -918,7 +918,7 @@
   }
 
   .club-content-card--special .club-content-card__copy p {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .club-content-card--special .club-content-card__copy em {
@@ -982,6 +982,32 @@
   .club-plan-card__header > strong {
     font-size: 41px;
   }
+
+  .club-entry__meta > span,
+  .club-entry__meta > strong,
+  .club-entry__service,
+  .club-entry__service .ui-button,
+  .club-section-heading > span,
+  .club-content-card__copy > span,
+  .club-content-card__copy p,
+  .club-content-card__action,
+  .club-plan-card__header > span,
+  .club-plan-card__header p,
+  .club-plan-card__note,
+  .club-plan-card .checkout-acceptance,
+  .club-plan-card .club-card__error { font-size: 14px; }
+
+  .club-content-card__action { min-height: 58px; }
+  .club-plan-card { min-height: 676px; }
+  .club-lobby-screen .ui-button,
+  .club-content-card--special .club-content-card__action,
+  .club-plan-card__badge { font-size: 14px; }
+  .club-pricing__back.ui-button {
+    width: 100%;
+    max-width: 100%;
+    padding-inline: 12px;
+    white-space: normal;
+  }
 }
 
 @media (max-width: 390px) {
@@ -995,7 +1021,7 @@
 
   .club-entry__actions .ui-button {
     padding-inline: 12px;
-    font-size: 10px;
+    font-size: 14px;
   }
 
   .club-entry__art {
@@ -1023,7 +1049,7 @@
   }
 
   .club-plan-card li {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 

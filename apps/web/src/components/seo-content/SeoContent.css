@@ -454,6 +454,14 @@
   .ticket-dossier__evidence { padding-right: 0; }
   .ticket-dossier__route { padding: 20px 0 0; border-top: 1px solid var(--color-paper-line); border-left: 0; }
   .ticket-dossier__legend { grid-template-columns: 1fr; }
+
+  .ticket-search-summary :is(span, p, a),
+  .ticket-dossier :is(summary, span, strong, small, p, li, a) { font-size: 14px; }
+  .ticket-dossier .ticket-dossier__rules > header span,
+  .ticket-dossier .ticket-dossier__rules li > strong,
+  .ticket-dossier .ticket-dossier__guide header span,
+  .ticket-dossier .ticket-dossier__route li strong,
+  .ticket-dossier .ticket-dossier__faq > header span { font-size: 14px; }
 }
 
 @media (min-width: 720px) {

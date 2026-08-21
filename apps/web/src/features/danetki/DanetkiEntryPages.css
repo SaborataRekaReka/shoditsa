@@ -89,3 +89,23 @@
   border-color: transparent;
 }.danetki-title-extras .ui-button:hover:not(:disabled) { color: var(--color-ink); background: var(--color-paper-2); }
 .danetki-selected-story{position:relative;display:grid;gap:3px;margin:12px 0 2px;padding:11px 12px;border:1px solid #b9ccb9;border-radius:11px;background:#edf5ec;color:#24372a}.danetki-selected-story>span{color:#477256;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.danetki-selected-story>strong{font-size:12px;line-height:1.25}.danetki-selected-story>small{color:#657269;font-size:9px}.danetki-selected-story>a{position:absolute;top:10px;right:11px;color:#346f50;font-size:9px;font-weight:800;text-underline-offset:2px}.danetki-selected-story>em{margin-top:4px;color:#8a5a2b;font-size:9px;font-style:normal;line-height:1.35}@media(max-width:420px){.danetki-selected-story>a{position:static;margin-top:3px}}
+
+@media (max-width: 719px) {
+  .danetki-title-screen .game-option-trigger__label,
+  .danetki-title-screen .game-option-trigger__end,
+  .danetki-title-screen .game-option-trigger__value > strong,
+  .danetki-title-screen .game-option-menu__head,
+  .danetki-title-screen .game-option__copy strong,
+  .danetki-title-screen .game-option__copy small,
+  .danetki-title-screen .game-option__status,
+  .danetki-title-screen .danetki-selected-story > span,
+  .danetki-title-screen .danetki-selected-story > strong,
+  .danetki-title-screen .danetki-selected-story > small,
+  .danetki-title-screen .danetki-selected-story > a,
+  .danetki-title-screen .danetki-selected-story > em,
+  .danetki-title-screen .danetki-entry__status,
+  .danetki-title-screen .danetki-entry__inline-error,
+  .danetki-title-screen .danetki-title-extras .ui-button { font-size: 14px; }
+  .danetki-title-screen .game-option-trigger,
+  .danetki-title-screen .danetki-title-extras .ui-button { min-height: 44px; }
+}

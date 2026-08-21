@@ -66,4 +66,8 @@
   .danetki-recommendation-card.is-primary { grid-column: auto; }
   .danetki-recommendation-card { min-height: 184px; }
   .danetki-recommendation-card__action { padding-inline: 10px; }
+  .danetki-recommendations__header > span,
+  .danetki-recommendation-card__copy small,
+  .danetki-recommendation-card__copy > span,
+  .danetki-recommendation-card__action { font-size: 14px; }
 }

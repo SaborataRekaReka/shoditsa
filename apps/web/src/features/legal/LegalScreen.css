@@ -148,10 +148,23 @@
   .legal-screen { padding: 14px 10px 50px; }
   .legal-document { padding: 24px 18px; border-radius: var(--radius-md); }
   .legal-nav { padding: 12px; }
-  .legal-nav a { padding-inline: 8px; font-size: 12px; }
+  .legal-nav a { padding-inline: 8px; font-size: 14px; }
   .legal-requisites > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .legal-tariff-table article { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .legal-tariff-table article > div:last-child { justify-items: start; }
+  .legal-screen__back,
+  .legal-nav > strong,
+  .legal-document > header > span,
+  .legal-document > header p,
+  .legal-requisites dt,
+  .legal-requisites dd,
+  .legal-tariff-table p,
+  .legal-tariff-table small,
+  .legal-data-table strong,
+  .legal-data-table span,
+  .legal-data-table small,
+  .legal-contact-cards small,
+  .legal-contact-cards strong { font-size: 14px; }
 }
 
 .cookie-consent {
@@ -186,4 +199,7 @@
   .cookie-consent { grid-template-columns: minmax(0, 1fr); }
   .cookie-consent__actions { display: grid; grid-template-columns: minmax(0, 1fr); }
   .cookie-consent button { width: 100%; }
+  .cookie-consent p,
+  .cookie-consent small,
+  .cookie-consent button { font-size: 14px; }
 }

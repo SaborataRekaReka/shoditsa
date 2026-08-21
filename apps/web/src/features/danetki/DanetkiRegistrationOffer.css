@@ -59,4 +59,7 @@
 @media (max-width: 620px) {
   .danetki-registration-offer { grid-template-columns: 36px minmax(0, 1fr); }
   .danetki-registration-offer > a { grid-column: 1 / -1; width: 100%; }
+  .danetki-registration-offer strong,
+  .danetki-registration-offer p,
+  .danetki-registration-offer > a { font-size: 14px; }
 }

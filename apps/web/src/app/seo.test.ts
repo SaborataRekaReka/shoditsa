@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS } from './seo-content'
 import { normalizeSeoPathname, seoRouteForRuntime, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
 import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from '../features/danetki/danetki-collections'
+import { DANETKI_CATALOG_ITEMS } from '../features/danetki/danetki-catalog'
 import { PUBLIC_GAME_LINKS } from './public-game-links'
 import { STATIC_INDEXABLE_PATHS, renderSitemap } from './static-index'
 
@@ -153,6 +154,26 @@ describe('search index contract', () => {
     expect(route.title).toContain('Данетка про альбатроса')
     expect(route.title).toContain('Мясо альбатроса')
     expect(route.description).toContain('Данетка про мясо альбатроса')
+  })
+
+  it('locks the established Danetki search cluster against accidental metadata drift', () => {
+    const protectedRoutes = [
+      ['/games/danetki', 'Данетки онлайн — играть бесплатно с ИИ-ведущим | Сходится!', 'Играйте в данетки онлайн бесплатно: раскройте необычную историю вопросами с ответами «да» и «нет». ИИ-ведущий, одиночная и совместная игра.'],
+      ['/danetki', 'Данетки с ответами — истории, загадки и игра онлайн | Сходится!', `Данетки с ответами: ${DANETKI_CATALOG_ITEMS.length} отобранных историй на логику. Читайте условие, проверьте разгадку или сыграйте с ИИ-ведущим онлайн.`],
+      ['/danetki/albatros', 'Данетка про альбатроса с ответом — «Мясо альбатроса» | Сходится!', 'Данетка про мясо альбатроса с полным ответом. Разгадайте классическую историю самостоятельно или сыграйте с ИИ-ведущим без спойлеров.'],
+    ] as const
+
+    for (const [pathname, title, description] of protectedRoutes) {
+      const route = seoRouteFromPathname(pathname)
+      expect(route).toMatchObject({ canonicalPath: pathname, title, description, indexable: true })
+    }
+
+    expect(DANETKI_COLLECTION_DEFINITIONS.map(({ canonicalPath, title }) => ({ canonicalPath, title }))).toEqual([
+      { canonicalPath: '/danetki/dlya-detey', title: 'Данетки для детей с ответами — логические загадки | Сходится!' },
+      { canonicalPath: '/danetki/slozhnye', title: 'Сложные данетки с ответами — трудные загадки | Сходится!' },
+      { canonicalPath: '/danetki/legkie', title: 'Лёгкие данетки с ответами — простые загадки | Сходится!' },
+      { canonicalPath: '/danetki/novye', title: 'Новые данетки с ответами — свежие истории | Сходится!' },
+    ])
   })
 
   it('points a loaded session at its public game while keeping it out of the index', () => {

@@ -55,6 +55,7 @@ type EventProperty = string | number | boolean | null
 const STORAGE_KEY = 'shoditsa:client-events:v1'
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
 const ATTRIBUTION_PROPERTIES = new Set(['acquisition_id', 'entry_path', 'entry_source', 'entry_search_engine', 'entry_referrer_host'])
+const CLIENT_EVENT_SESSION_STARTED_AT = Date.now()
 let flushing = false
 
 const read = (): QueuedEvent[] => {
@@ -68,6 +69,24 @@ export const purgeQueuedClientEventAttribution = () => write(read().map((event) 
   ...event,
   properties: Object.fromEntries(Object.entries(event.properties ?? {}).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key))),
 })))
+
+/**
+ * Events created while the consent banner is still open stay in the browser.
+ * If the visitor later accepts analytics, enrich those already queued events
+ * before their first upload. Rejection still strips all acquisition fields.
+ */
+export const backfillQueuedClientEventAttribution = () => {
+  const attribution = consentedAnalyticsEntryParams()
+  if (!Object.keys(attribution).length) return
+  write(read().map((event) => {
+    const occurredAt = Date.parse(event.occurredAt)
+    if (!Number.isFinite(occurredAt) || occurredAt < CLIENT_EVENT_SESSION_STARTED_AT) return event
+    return {
+      ...event,
+      properties: { ...(event.properties ?? {}), ...attribution },
+    }
+  }))
+}
 
 const safeProperty = (key: string, value: unknown): EventProperty | undefined => {
   if (key.length > 80) return undefined
@@ -131,7 +150,11 @@ export const trackClientEvent = (eventName: EventName, properties: Record<string
 
 export const flushClientEvents = async () => {
   if (flushing || !navigator.onLine) return
-  if (storedAnalyticsConsent() !== 'accepted') purgeQueuedClientEventAttribution()
+  const consent = storedAnalyticsConsent()
+  // Do not permanently lose a search entrance while the visitor is still
+  // deciding. Nothing leaves the browser until the choice is explicit.
+  if (consent === null) return
+  if (consent === 'rejected') purgeQueuedClientEventAttribution()
   const events = read().slice(0, 50); if (!events.length) return
   flushing = true
   try {
@@ -156,8 +179,15 @@ export const initClientEvents = () => {
   trackClientEvent('page_view')
   window.addEventListener(ANALYTICS_CONSENT_EVENT, (event) => {
     const consent = (event as CustomEvent<{ consent?: string }>).detail?.consent
-    if (consent === 'rejected') purgeQueuedClientEventAttribution()
-    if (consent === 'accepted') trackConsentedLanding()
+    if (consent === 'accepted') {
+      backfillQueuedClientEventAttribution()
+      trackConsentedLanding()
+      return
+    }
+    if (consent === 'rejected') {
+      purgeQueuedClientEventAttribution()
+      void flushClientEvents()
+    }
   })
   addEventListener('online', () => { trackClientEvent('network_online'); void flushClientEvents() })
   addEventListener('offline', () => trackClientEvent('network_offline'))

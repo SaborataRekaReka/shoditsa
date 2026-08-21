@@ -850,6 +850,19 @@
     gap: 14px;
   }
 
+  .header-economy span,
+  .mobile-app-nav__item > span,
+  .app-footer__brand p strong,
+  .app-footer__brand p span,
+  .app-footer__primary a,
+  .app-footer__games > span,
+  .app-footer__games a,
+  .app-footer__utility a,
+  .app-footer__utility button,
+  .app-footer__legal,
+  .app-footer__legal button,
+  .app-footer__copy { font-size: 14px; }
+
   .app-footer__head {
     display: grid;
     gap: 12px;
@@ -865,8 +878,8 @@
   }
 
   .app-footer__home img { width: 30px; height: 30px; }
-  .app-footer__brand p strong { font-size: 13px; }
-  .app-footer__brand p span { font-size: 12px; white-space: normal; }
+  .app-footer__brand p strong { font-size: 14px; }
+  .app-footer__brand p span { font-size: 14px; white-space: normal; }
 
   .app-footer__primary {
     width: auto;
@@ -888,7 +901,7 @@
     padding: 0 11px;
     border-color: rgba(242, 236, 223, .08);
     background: rgba(242, 236, 223, .025);
-    font-size: 12px;
+    font-size: 14px;
     scroll-snap-align: start;
   }
 
@@ -935,7 +948,7 @@
   .app-footer__utility > :nth-child(3) { grid-column: 1 / -1; }
 
   .app-footer__utility a,
-  .app-footer__utility button { min-height: 30px; font-size: 12px; }
+  .app-footer__utility button { min-height: 30px; font-size: 14px; }
 
   .app-footer__legal {
     display: grid;
@@ -947,7 +960,7 @@
   .app-footer__legal a,
   .app-footer__legal button {
     min-height: 28px;
-    font-size: 12px;
+    font-size: 14px;
     white-space: normal;
   }
   .app-footer__copy { text-align: left; }

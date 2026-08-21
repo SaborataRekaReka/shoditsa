@@ -25,7 +25,7 @@ export function CookieConsentBanner() {
   return <DialogRegion className="cookie-consent" ariaLabelledBy="cookie-consent-title">
     <div>
       <strong id="cookie-consent-title">Настройки cookie</strong>
-      <p>Необходимые данные сохраняют вход и игровой прогресс. Яндекс Метрика загружается только с вашего согласия; отказ не ограничивает сайт. Подробнее — в <a href="/legal/privacy">Политике конфиденциальности</a>.</p>
+      <p>Необходимые данные сохраняют вход и игровой прогресс. Аналитика помогает понять, какие игры находят в поиске и где игрокам становится неудобно. Яндекс Метрика загружается только с вашего согласия; отказ не ограничивает сайт. Подробнее — в <a href="/legal/privacy">Политике конфиденциальности</a>.</p>
       {current && <small>Текущий выбор: {current === 'accepted' ? 'аналитика разрешена' : 'только необходимые'}.</small>}
     </div>
     <div className="cookie-consent__actions">

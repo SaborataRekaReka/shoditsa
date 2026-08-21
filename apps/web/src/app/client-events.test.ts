@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearQueuedClientEvents, deterministicClientEventId, flushClientEvents, purgeQueuedClientEventAttribution, trackClientEvent, trackConsentedLanding } from './client-events'
+import { backfillQueuedClientEventAttribution, clearQueuedClientEvents, deterministicClientEventId, flushClientEvents, purgeQueuedClientEventAttribution, trackClientEvent, trackConsentedLanding } from './client-events'
 
 const values = new Map<string, string>()
 const storage = {
@@ -102,6 +102,55 @@ describe('first-party client event identities', () => {
     expect(queue[0]?.properties).toEqual({ mode: 'character' })
   })
 
+  it('keeps pre-consent lifecycle events local and attributes them after acceptance', async () => {
+    vi.stubGlobal('navigator', { onLine: true })
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 })
+    vi.stubGlobal('fetch', fetchMock)
+
+    trackClientEvent('game_session_start', { mode: 'character' })
+    await Promise.resolve()
+    expect(fetchMock).not.toHaveBeenCalled()
+
+    storage.setItem('shoditsa:analytics-consent:v1', 'accepted')
+    storage.setItem('shoditsa:analytics-entry:v1', JSON.stringify({
+      acquisitionId: '8c4f102e-317b-4a07-b8d6-80bdc99624ef',
+      url: 'https://shoditsa.ru/games/character',
+      path: '/games/character',
+      referrer: 'https://yandex.ru',
+      referrerHost: 'yandex.ru',
+      source: 'organic_search',
+      searchEngine: 'yandex',
+    }))
+    backfillQueuedClientEventAttribution()
+    await flushClientEvents()
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as { events: Array<{ properties: Record<string, unknown> }> }
+    expect(sent.events[0]?.properties).toMatchObject({
+      mode: 'character',
+      acquisition_id: '8c4f102e-317b-4a07-b8d6-80bdc99624ef',
+      entry_source: 'organic_search',
+      entry_search_engine: 'yandex',
+      entry_path: '/games/character',
+    })
+  })
+
+  it('uploads pre-consent technical events without attribution after rejection', async () => {
+    vi.stubGlobal('navigator', { onLine: true })
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 })
+    vi.stubGlobal('fetch', fetchMock)
+
+    trackClientEvent('game_session_start', { mode: 'character' })
+    await Promise.resolve()
+    expect(fetchMock).not.toHaveBeenCalled()
+
+    storage.setItem('shoditsa:analytics-consent:v1', 'rejected')
+    await flushClientEvents()
+
+    const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as { events: Array<{ properties: Record<string, unknown> }> }
+    expect(sent.events[0]?.properties).toEqual({ mode: 'character' })
+  })
+
   it('fails open when browser storage is unavailable', () => {
     vi.stubGlobal('localStorage', {
       ...storage,
@@ -150,6 +199,7 @@ describe('first-party client event identities', () => {
   })
 
   it('drops a permanently invalid queued batch so newer telemetry is not blocked', async () => {
+    storage.setItem('shoditsa:analytics-consent:v1', 'rejected')
     trackClientEvent('page_view')
     vi.stubGlobal('navigator', { onLine: true })
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 422 }))
