@@ -4,6 +4,7 @@ import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, DoorOpen, Gamepad2
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
 import { PUBLIC_GAME_LINKS } from '../../app/public-game-links'
+import { DANETKI_DISCOVERY_LINKS } from '../../app/danetki-discovery-links'
 import { api, queryKeys } from '../../api/client'
 import { notifyAuthSessionChanged, useAuthSession } from '../../features/auth/use-auth-session'
 import { canCreateFriendsRoom, canUseFriendsRoom, friendsRoomRegistrationHref } from '../../features/friends-room/friends-room-access'
@@ -313,6 +314,10 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
           {PUBLIC_GAME_LINKS.map((game) => <a key={game.mode} href={game.href}>{game.label}</a>)}
           <a href="/danetki">Данетки с ответами</a>
         </div>
+      </nav>
+      <nav className="app-footer__danetki" aria-label="Подборки и истории данеток">
+        <span>Данетки с ответами</span>
+        <div>{DANETKI_DISCOVERY_LINKS.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}</div>
       </nav>
       <div className="app-footer__bottom">
         <div className="app-footer__secondary">

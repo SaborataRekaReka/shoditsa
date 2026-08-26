@@ -4459,7 +4459,7 @@ function GameApp() {
             ? serverRuntime.dashboard?.danetkiAccess.nextGroupCost ?? 0
             : serverRuntime.dashboard?.danetkiAccess.nextSoloCost ?? 0
           : 0
-        trackClientEvent('danetki_room_started', {
+        const roomStartAnalytics = {
           balanceBefore: wallet.tickets,
           balanceAfter: wallet.tickets - cost,
           amount: cost,
@@ -4474,10 +4474,12 @@ function GameApp() {
           streak: serverRuntime.dashboard?.attendance?.currentDailyStreak ?? 0,
           rulesVersion: response.session.rulesVersion,
           hasClub: clubFreePlay,
-        }, {
+        }
+        trackClientEvent('danetki_room_started', roomStartAnalytics, {
           eventId: deterministicClientEventId(response.session.id, 'danetki_room_started'),
           gameSessionId: response.session.id,
         })
+        trackMetrikaGoal('danetki_room_started', roomStartAnalytics)
         if (cost > 0) trackClientEvent('ticket_spent', {
           balanceBefore: wallet.tickets,
           balanceAfter: wallet.tickets - cost,

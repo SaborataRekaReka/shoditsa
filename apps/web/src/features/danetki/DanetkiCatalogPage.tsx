@@ -53,7 +53,7 @@ const trackPlayClick = (placement: 'catalog' | 'story', item?: DanetkiCatalogIte
 
 const GENERAL_CATALOG_PARAGRAPHS = [
   'Данетки — это логические загадки, в которых известно только необычное происшествие. Игроки восстанавливают скрытую причинно-следственную связь вопросами, на которые ведущий отвечает «да» или «нет».',
-  'В каталоге собраны редакционные истории разной сложности. У каждой есть условие, стартовые вопросы и полный ответ под спойлером, а выбранную данетку можно расследовать с ИИ-ведущим без раскрытия решения.',
+  'В каталоге собраны редакционные истории разной сложности. У каждой есть условие, стартовые вопросы и полный ответ под спойлером, а выбранную данетку можно разыграть с ведущим без раскрытия решения.',
 ] as const
 
 const GENERAL_GUIDE_STEPS = [
@@ -153,7 +153,7 @@ export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, on
           <h1>{collectionDefinition?.heading ?? 'Данетки с ответами'}</h1>
           <p>{collectionDefinition?.lead ?? 'Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.'}</p>
           <div className="danetki-catalog-hero__actions">
-            <a className="ui-button ui-button--primary" href={playHref('catalog', undefined, collection)} onClick={() => trackPlayClick('catalog', undefined, collection)}><Play aria-hidden="true" /> Играть с ИИ без спойлеров</a>
+            <a className="ui-button ui-button--primary" href={playHref('catalog', undefined, collection)} onClick={() => trackPlayClick('catalog', undefined, collection)}><Play aria-hidden="true" /> Играть с ведущим</a>
             <a className="ui-button ui-button--secondary" href="#stories"><BookOpen aria-hidden="true" /> Смотреть истории</a>
           </div>
         </div>
@@ -247,13 +247,8 @@ export function DanetkiStoryPage({ slug, access, ticketBalance, busy, onTry, ...
           <ul>{item.starterQuestions.map((question) => <li key={question}><HelpCircle aria-hidden="true" /><span>{question}</span></li>)}</ul>
         </section>
 
-        <details className="danetki-story__answer" onToggle={(event) => onAnswerToggle(event.currentTarget.open)}>
-          <summary><span><strong><span className="danetki-story__answer-label--closed">Показать ответ</span><span className="danetki-story__answer-label--open">Скрыть ответ</span></strong><small>Откройте, когда соберёте свою версию</small></span><span aria-hidden="true">+</span></summary>
-          <div><span><CheckCircle2 aria-hidden="true" /> Авторская разгадка</span><p>{item.solution}</p></div>
-        </details>
-
         <aside className="danetki-story__play">
-          <div><span>Хотите настоящее расследование?</span><h2>Задавайте вопросы ИИ-ведущему</h2><p>В игре ответ скрыт: ведущий реагирует на версии и помогает шаг за шагом восстановить историю.</p></div>
+          <div><span>Ответ пока скрыт</span><h2>Сначала попробуйте сыграть</h2><p>Ведущий отвечает «да», «нет» или «неважно» и помогает шаг за шагом восстановить историю.</p></div>
           <ControlButton
             className="ui-button ui-button--primary"
             disabled={busy || !access || (access.dailyRoomsStarted > 0 && access.nextSoloCost > ticketBalance)}
@@ -261,8 +256,13 @@ export function DanetkiStoryPage({ slug, access, ticketBalance, busy, onTry, ...
               trackPlayClick('story', item)
               onTry(item)
             }}
-          ><Play aria-hidden="true" /> {busy ? 'Запускаем…' : 'Играть без спойлеров'}</ControlButton>
+          ><Play aria-hidden="true" /> {busy ? 'Запускаем…' : 'Играть с ведущим'}</ControlButton>
         </aside>
+
+        <details className="danetki-story__answer" onToggle={(event) => onAnswerToggle(event.currentTarget.open)}>
+          <summary><span><strong><span className="danetki-story__answer-label--closed">Все равно показать</span><span className="danetki-story__answer-label--open">Скрыть ответ</span></strong><small>Откроется готовая разгадка</small></span><span aria-hidden="true">+</span></summary>
+          <div><span><CheckCircle2 aria-hidden="true" /> Авторская разгадка</span><p>{item.solution}</p></div>
+        </details>
       </article>
 
       <section className="danetki-story-related" aria-labelledby="related-title"><div className="danetki-catalog-section-head"><div><span>Следующие дела</span><h2 id="related-title">Похожие данетки</h2></div><a href="/danetki">Все истории <ArrowRight /></a></div><div className="danetki-catalog-grid">{related.map((candidate, index) => <StoryCard key={candidate.id} item={candidate} index={index} placement="story" access={access} ticketBalance={ticketBalance} busy={busy} onTry={onTry} />)}</div></section>

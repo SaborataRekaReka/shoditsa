@@ -10,6 +10,7 @@ const METRIKA_COUNTER_ID = 110517987
 const METRIKA_SCRIPT_ID = 'yandex-metrika-script'
 const ANALYTICS_ENTRY_STORAGE_KEY = 'shoditsa:analytics-entry:v1'
 const ANALYTICS_OAUTH_RETURN_STORAGE_KEY = 'shoditsa:analytics-oauth-return:v1'
+const ANALYTICS_AUTH_INTENT_STORAGE_KEY = 'shoditsa:analytics-auth-intent:v1'
 const ANALYTICS_OAUTH_RETURN_TTL_MS = 15 * 60_000
 export const ANALYTICS_CONSENT_STORAGE_KEY = 'shoditsa:analytics-consent:v1'
 export const ANALYTICS_CONSENT_EVENT = 'shoditsa:analytics-consent-changed'
@@ -81,6 +82,30 @@ export const markAnalyticsOAuthReturnPending = () => {
   try { window.sessionStorage.setItem(ANALYTICS_OAUTH_RETURN_STORAGE_KEY, String(Date.now())) } catch { /* optional attribution only */ }
 }
 
+export type AnalyticsAuthIntent = 'sign_up' | 'sign_in'
+
+export const markAnalyticsAuthIntent = (intent: AnalyticsAuthIntent) => {
+  if (typeof window === 'undefined') return
+  try { window.sessionStorage.setItem(ANALYTICS_AUTH_INTENT_STORAGE_KEY, JSON.stringify({ intent, createdAt: Date.now() })) } catch { /* optional analytics only */ }
+}
+
+export const consumeAnalyticsAuthIntent = (): AnalyticsAuthIntent | null => {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = JSON.parse(window.sessionStorage.getItem(ANALYTICS_AUTH_INTENT_STORAGE_KEY) ?? 'null') as { intent?: unknown; createdAt?: unknown } | null
+    window.sessionStorage.removeItem(ANALYTICS_AUTH_INTENT_STORAGE_KEY)
+    if ((raw?.intent !== 'sign_up' && raw?.intent !== 'sign_in') || typeof raw.createdAt !== 'number') return null
+    return Date.now() - raw.createdAt <= ANALYTICS_OAUTH_RETURN_TTL_MS ? raw.intent : null
+  } catch {
+    return null
+  }
+}
+
+export const clearAnalyticsAuthIntent = () => {
+  if (typeof window === 'undefined') return
+  try { window.sessionStorage.removeItem(ANALYTICS_AUTH_INTENT_STORAGE_KEY) } catch { /* optional analytics only */ }
+}
+
 const consumeAnalyticsOAuthReturnPending = () => {
   if (typeof window === 'undefined') return false
   try {
@@ -150,6 +175,12 @@ export const analyticsEntryParams = (): Record<string, MetrikaParamValue> => {
 export const consentedAnalyticsEntryParams = (): Record<string, MetrikaParamValue> => (
   storedAnalyticsConsent() === 'accepted' ? analyticsEntryParams() : {}
 )
+
+export const analyticsAcquisitionHeaders = (): Record<string, string> => {
+  const entry = consentedAnalyticsEntryParams()
+  if (!entry.acquisition_id || !entry.entry_source || !entry.entry_path) return {}
+  return { 'X-Shoditsa-Acquisition': JSON.stringify(entry) }
+}
 
 export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
   if (typeof window === 'undefined') return null
@@ -256,6 +287,12 @@ export const trackMetrikaGoal = (goal: string, meta?: Record<string, unknown>) =
   } catch {
     // ignore metrika transport errors
   }
+}
+
+export const trackAuthOutcome = (outcome: AnalyticsAuthIntent, meta?: Record<string, unknown>) => {
+  const payload = { action: outcome, ...(meta ?? {}) }
+  trackMetrikaGoal('auth_success', payload)
+  trackMetrikaGoal(outcome === 'sign_up' ? 'sign_up_success' : 'sign_in_success', payload)
 }
 
 export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {

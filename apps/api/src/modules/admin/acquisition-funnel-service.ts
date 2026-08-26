@@ -31,6 +31,10 @@ export type AcquisitionSignUpRow = {
   eventId: string
   occurredAt: string | Date
   userId: string
+  acquisitionId?: string | null
+  entrySource?: string | null
+  searchEngine?: string | null
+  entryPath?: string | null
 }
 
 export type AcquisitionDailyRow = {
@@ -203,6 +207,24 @@ export const buildAdminAcquisitionFunnel = (
     if (!current || candidate.acquiredAt < current.acquiredAt) {
       acquisitionMap.set(mapKey, candidate)
     }
+  }
+
+  for (const entry of signUpEvents) {
+    const acquisitionId = text(entry.acquisitionId)
+    if (!acquisitionId || !organicSource(text(entry.entrySource))) continue
+    const acquiredAt = isoDate(entry.occurredAt)
+    if (!Number.isFinite(acquiredAt.getTime()) || acquiredAt < earliestAttribution || acquiredAt > to) continue
+    const candidate: Acquisition = {
+      id: acquisitionId,
+      userId: entry.userId,
+      acquiredAt,
+      entryPath: canonicalAnalyticsEntryPath(text(entry.entryPath)),
+      searchEngine: normalizeAnalyticsSearchEngine(text(entry.searchEngine)),
+      mode: entryModeOfPath(canonicalAnalyticsEntryPath(text(entry.entryPath))),
+    }
+    const mapKey = acquisitionMapKey(entry.userId, acquisitionId)
+    const current = acquisitionMap.get(mapKey)
+    if (!current || candidate.acquiredAt < current.acquiredAt) acquisitionMap.set(mapKey, candidate)
   }
 
   const cohort = [...acquisitionMap.values()].filter((entry) => entry.acquiredAt >= from && entry.acquiredAt <= to)
@@ -533,7 +555,9 @@ export const loadAdminAcquisitionFunnel = async (
       order by occurred_at asc
       limit ${RAW_EVENT_ROW_LIMIT + 1}`),
     db.execute(sql`
-      select id "eventId", occurred_at "occurredAt", user_id "userId"
+      select id "eventId", occurred_at "occurredAt", user_id "userId",
+        acquisition_id "acquisitionId", entry_source "entrySource",
+        search_engine "searchEngine", entry_path "entryPath"
       from auth_events
       where occurred_at >= ${registrationRawFrom}::timestamptz and occurred_at < ${reportTo}::timestamptz
         and event_name = 'sign_up' and result = 'success'

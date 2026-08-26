@@ -12,6 +12,7 @@ import type {
   FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomListResponse, FriendsRoomPreview, FriendsRoomResponse,
   ConnectionsGuessResponse, ConnectionsHintResponse,
 } from '@shoditsa/contracts'
+import { analyticsAcquisitionHeaders } from '../app/metrics'
 import { trackClientEvent } from '../app/client-events'
 
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
@@ -246,15 +247,15 @@ export const api = {
   }),
   reviewQueue: (params = new URLSearchParams({ mode: 'music', pendingOnly: 'true', limit: '30' })) => request<AdminReviewQueueResponse>(`${API_BASE}/admin/content-review?${params}`),
   reviewDecision: (itemId: string, field: string, decision: AdminContentReviewDecision, key: string) => request<AdminReviewDecisionResponse>(`${API_BASE}/admin/content-review/${encodeURIComponent(itemId)}/${encodeURIComponent(field)}`, { method: 'PUT', headers: { 'Idempotency-Key': key }, body: JSON.stringify(decision) }),
-  signIn: (email: string, password: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-in/email`, { method: 'POST', body: JSON.stringify({ email, password }) }),
+  signIn: (email: string, password: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-in/email`, { method: 'POST', headers: analyticsAcquisitionHeaders(), body: JSON.stringify({ email, password }) }),
   signInYandex: (callbackURL: string, registrationReferral?: string) => request<{ url?: string }>(`${AUTH_BASE}/sign-in/oauth2`, {
     method: 'POST',
-    headers: registrationReferral ? { 'X-Registration-Referral': registrationReferral } : undefined,
+    headers: { ...analyticsAcquisitionHeaders(), ...(registrationReferral ? { 'X-Registration-Referral': registrationReferral } : {}) },
     body: JSON.stringify({ providerId: 'yandex', callbackURL, disableRedirect: true }),
   }),
   signUp: (name: string, email: string, password: string, callbackURL: string, registrationReferral?: string) => request<AuthActionResponse>(`${AUTH_BASE}/sign-up/email`, {
     method: 'POST',
-    headers: registrationReferral ? { 'X-Registration-Referral': registrationReferral } : undefined,
+    headers: { ...analyticsAcquisitionHeaders(), ...(registrationReferral ? { 'X-Registration-Referral': registrationReferral } : {}) },
     body: JSON.stringify({ name, email, password, callbackURL }),
   }),
   requestPasswordReset: (email: string, redirectTo: string) => request<unknown>(`${AUTH_BASE}/request-password-reset`, {

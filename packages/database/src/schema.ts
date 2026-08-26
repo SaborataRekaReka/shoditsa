@@ -1241,10 +1241,16 @@ export const authEvents = pgTable('auth_events', {
   browser: text(),
   os: text(),
   device: text(),
+  acquisitionId: uuid('acquisition_id'),
+  entrySource: text('entry_source'),
+  searchEngine: text('search_engine'),
+  entryPath: text('entry_path'),
+  referrerHost: text('referrer_host'),
 }, (table) => [
   check('auth_event_name_check', sql`${table.eventName} in ('sign_up','sign_in','sign_out','email_verified','password_reset_requested','password_changed','sessions_revoked')`),
   check('auth_event_result_check', sql`${table.result} in ('success','failure')`),
   index('auth_event_user_occurred_idx').on(table.userId, table.occurredAt),
+  index('auth_event_acquisition_occurred_idx').on(table.acquisitionId, table.occurredAt),
 ])
 
 export const adminUserNotes = pgTable('admin_user_notes', {

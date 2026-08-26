@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { GAME_GUIDE_PRESENTATION, GAME_RULES, GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, type GameSeoContent, type SeoGameMode } from '../../app/seo-content'
 import { PUBLIC_GAME_LINKS } from '../../app/public-game-links'
+import { DANETKI_DISCOVERY_LINKS } from '../../app/danetki-discovery-links'
 import { trackMetrikaGoal } from '../../app/metrics'
 import './SeoContent.css'
 
@@ -195,6 +196,10 @@ export function GameArtifactSeoDetails({ mode }: { mode: SeoGameMode }) {
         <span><Sparkles aria-hidden="true" /> {presentation.linksLabel}</span>
         <div>{INDEXABLE_GAME_CONTENT.filter((game) => game.mode !== mode).map((game) => <a key={game.mode} href={game.canonicalPath}>{game.internalLinkLabel ?? game.shortName}</a>)}</div>
       </nav>
+      <nav className="ticket-dossier__links" aria-label="Данетки с ответами">
+        <span><Sparkles aria-hidden="true" /> Подборки и классические истории</span>
+        <div>{DANETKI_DISCOVERY_LINKS.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}</div>
+      </nav>
     </div>
     </details>
   </>
@@ -217,6 +222,10 @@ export function HomeSeoContent() {
         <nav className="hub-guide__game-links" aria-label="Все ежедневные игры">
           <span><Route aria-hidden="true" /> Все игровые маршруты</span>
           <div>{PUBLIC_GAME_LINKS.map((game) => <a key={game.mode} href={game.href}>{game.label}</a>)}</div>
+        </nav>
+        <nav className="hub-guide__game-links" aria-label="Данетки с ответами">
+          <span><Route aria-hidden="true" /> Подборки и классические истории</span>
+          <div>{DANETKI_DISCOVERY_LINKS.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}</div>
         </nav>
       </div>
     </div>

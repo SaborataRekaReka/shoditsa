@@ -63,6 +63,40 @@ type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
 const paramsId = Type.Object({ sessionId: UuidSchema }, { additionalProperties: false })
 const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
+const AUTH_ACQUISITION_HEADER = 'x-shoditsa-acquisition'
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
+type AuthAcquisition = {
+  acquisitionId: string
+  entrySource: 'organic_search' | 'direct' | 'referral'
+  searchEngine: string | null
+  entryPath: string
+  referrerHost: string | null
+}
+
+const canonicalAuthEntryPath = (value: unknown) => {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.length > 160 || !/^\/[a-zA-Z0-9_~%./:@-]*$/.test(value)) return null
+  if (/^\/sessions\/[^/]+/.test(value)) return '/sessions/:id'
+  if (/^\/danetki\/join\/[^/]+/.test(value)) return '/danetki/join'
+  if (/^\/specials\/[^/]+/.test(value)) return '/specials/:pack'
+  return value || '/'
+}
+
+const parseAuthAcquisition = (value: string | string[] | undefined): AuthAcquisition | null => {
+  if (typeof value !== 'string' || value.length > 1_200) return null
+  try {
+    const raw = JSON.parse(value) as Record<string, unknown>
+    const acquisitionId = typeof raw.acquisition_id === 'string' && UUID_PATTERN.test(raw.acquisition_id) ? raw.acquisition_id : null
+    const entrySource = raw.entry_source === 'organic_search' || raw.entry_source === 'direct' || raw.entry_source === 'referral' ? raw.entry_source : null
+    const entryPath = canonicalAuthEntryPath(raw.entry_path)
+    if (!acquisitionId || !entrySource || !entryPath) return null
+    const searchEngine = typeof raw.entry_search_engine === 'string' && /^[a-z0-9-]{1,32}$/i.test(raw.entry_search_engine) ? raw.entry_search_engine.toLowerCase() : null
+    const referrerHost = typeof raw.entry_referrer_host === 'string' && /^[a-z0-9.-]{1,253}$/i.test(raw.entry_referrer_host) ? raw.entry_referrer_host.toLowerCase() : null
+    return { acquisitionId, entrySource, searchEngine, entryPath, referrerHost }
+  } catch {
+    return null
+  }
+}
 
 const forwardAuthResponse = async (reply: FastifyReply, response: Response) => {
   reply.status(response.status)
@@ -242,6 +276,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
           : /\/request-password-reset\/?$/i.test(authPath) ? 'password_reset_requested'
             : /\/change-password\/?$/i.test(authPath) ? 'password_changed' : null
     const priorUser = eventName ? await getRequestUser(request, auth, db, false, config, true) : null
+    const acquisition = eventName ? parseAuthAcquisition(request.headers[AUTH_ACQUISITION_HEADER]) : null
     const url = new URL(request.url, config.authUrl)
     const response = await auth.handler(new Request(url, {
       method: request.method, headers: fromNodeHeaders(request.headers),
@@ -259,7 +294,14 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       const responseUserId = payload?.user?.id ?? null
       const candidateUserId = responseUserId ?? priorUser?.id ?? null
       const eventUser = candidateUserId ? await db.select({ id: user.id }).from(user).where(eq(user.id, candidateUserId)).limit(1) : []
-      if (eventUser[0]) await db.insert(authEvents).values({ userId: eventUser[0].id, authSessionId: null, eventName, result: response.ok ? 'success' : 'failure', requestId: request.id })
+      if (eventUser[0]) await db.insert(authEvents).values({
+        userId: eventUser[0].id,
+        authSessionId: null,
+        eventName,
+        result: response.ok ? 'success' : 'failure',
+        requestId: request.id,
+        ...(acquisition ? acquisition : {}),
+      })
     }
     return forwardAuthResponse(reply, response)
   } })

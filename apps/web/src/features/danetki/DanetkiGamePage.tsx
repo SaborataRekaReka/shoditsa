@@ -61,6 +61,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
   const sendKey = useRef<string | null>(null)
   const previousSessionStatus = useRef(session.status)
   const limitTracked = useRef(false)
+  const firstQuestionSource = useRef<'typed' | 'starter' | 'unknown'>('unknown')
 
   const refresh = async () => client.invalidateQueries({ queryKey: queryKeys.game(sessionId) })
   const inviteHref = (token: string) => {
@@ -105,7 +106,13 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     if (state.questionCount <= 0) return
     const storageKey = `shoditsa:danetki-engaged:${sessionId}`
     try { if (window.sessionStorage.getItem(storageKey)) return; window.sessionStorage.setItem(storageKey, '1') } catch { /* continue without deduplication */ }
-    const payload = { mode: 'danetki', sessionKind: session.kind, roomMode: state.roomMode, questionCount: state.questionCount }
+    const payload = {
+      mode: 'danetki',
+      sessionKind: session.kind,
+      roomMode: state.roomMode,
+      questionCount: state.questionCount,
+      entryMethod: firstQuestionSource.current,
+    }
     trackClientEvent('danetki_first_question', payload, { gameSessionId: sessionId })
     trackMetrikaGoal('danetki_first_question', payload)
   }, [session.kind, sessionId, state.questionCount, state.roomMode])
@@ -114,13 +121,15 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     const completedNow = isFreshDanetkiCompletion(previousSessionStatus.current, session.status)
     previousSessionStatus.current = session.status
     if (!completedNow || !isOwner) return
-    trackGameCompleteOnce(sessionId, {
-      mode: 'danetki',
+    const completionMeta = {
+      mode: 'danetki' as const,
       kind: session.kind,
       outcome: session.status,
       attempts: state.questionCount,
       room_mode: state.roomMode,
-    })
+    }
+    trackGameCompleteOnce(sessionId, completionMeta)
+    trackMetrikaGoal('danetki_room_completed', completionMeta)
     void Promise.all([
       client.invalidateQueries({ queryKey: queryKeys.dashboard }),
       client.invalidateQueries({ queryKey: queryKeys.ledger }),
@@ -219,6 +228,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
     event.preventDefault()
     const text = draft.trim()
     if (text.length < 2 || send.isPending) return
+    firstQuestionSource.current = 'typed'
     const key = sendKey.current ?? crypto.randomUUID()
     sendKey.current = key
     send.mutate({ text, key })
@@ -245,6 +255,15 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         ? 'Ведущий думает…'
         : state.aiStatus === 'error' ? 'Ведущий временно недоступен' : 'Ведущий на связи'
   const hostState = connection === 'connected' ? state.aiStatus : connection
+  const submitStarterQuestion = (question: string) => {
+    const text = question.trim()
+    if (text.length < 2 || send.isPending || state.questionsRemaining <= 0 || !isMyTurn || !hostReady) return
+    firstQuestionSource.current = 'starter'
+    const key = crypto.randomUUID()
+    sendKey.current = key
+    setDraft(text)
+    send.mutate({ text, key })
+  }
   const difficulty = state.puzzle.difficulty === 'easy' ? 'лёгкая' : state.puzzle.difficulty === 'hard' ? 'сложная' : 'средняя'
   const puzzleDate = new Date(`${session.puzzleDate}T12:00:00`)
   const dateLabel = Number.isNaN(puzzleDate.getTime())
@@ -278,6 +297,15 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
           <strong>Дело №{caseNumber}</strong>
         </header>
         <p>{state.puzzle.condition}</p>
+        {session.status === 'playing' && state.questionCount === 0 && state.puzzle.starterQuestions.length > 0 && <div className="danetki-starter-questions" aria-label="Готовые стартовые вопросы">
+          <span>Начать одним нажатием</span>
+          <div>{state.puzzle.starterQuestions.slice(0, 3).map((question) => <ControlButton
+            key={question}
+            type="button"
+            disabled={send.isPending || state.questionsRemaining <= 0 || !isMyTurn || !hostReady}
+            onClick={() => submitStarterQuestion(question)}
+          >{question}</ControlButton>)}</div>
+        </div>}
         <footer>
           <span>Задавайте вопросы, на которые можно ответить «да» или «нет»</span>
           <span className={`danetki-host-status danetki-host-status--${hostState}`}><i aria-hidden="true" />{hostStatus}</span>

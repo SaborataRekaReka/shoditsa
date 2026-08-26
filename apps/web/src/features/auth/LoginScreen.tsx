@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import './LoginScreen.css'
 import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
-import { markAnalyticsOAuthReturnPending, trackMetrikaGoal } from '../../app/metrics'
+import {
+  clearAnalyticsAuthIntent,
+  consumeAnalyticsAuthIntent,
+  markAnalyticsAuthIntent,
+  markAnalyticsOAuthReturnPending,
+  trackAuthOutcome,
+  trackMetrikaGoal,
+  type AnalyticsAuthIntent,
+} from '../../app/metrics'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
 import { ApiClientError, api } from '../../api/client'
@@ -81,9 +89,13 @@ const danetkiAcquisitionMeta = () => {
   return intent ? { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null, entrySource: intent.entrySource ?? null, collection: intent.collection ?? null } : {}
 }
 
-const completeDanetkiRegistrationAttribution = (method: 'email' | 'yandex' | 'session') => {
+const completeDanetkiRegistrationAttribution = (method: 'email' | 'yandex' | 'session', outcome: AnalyticsAuthIntent) => {
   const intent = readDanetkiRegistrationIntent()
   if (!intent) return
+  if (outcome !== 'sign_up') {
+    clearDanetkiRegistrationIntent()
+    return
+  }
   const payload = { source: intent.source, placement: intent.placement, returnUrl: intent.returnUrl, story: intent.story ?? null, entrySource: intent.entrySource ?? null, collection: intent.collection ?? null, method }
   trackClientEvent('danetki_registration_succeeded', payload)
   trackMetrikaGoal('danetki_registration_succeeded', payload)
@@ -141,7 +153,11 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       trackClientEvent('friends_room_guest_registered', { placement: 'friends_room_registration', returnUrl })
       window.sessionStorage.removeItem('shoditsa:friends-room-registration')
     }
-    completeDanetkiRegistrationAttribution('session')
+    const authIntent = consumeAnalyticsAuthIntent()
+    if (authIntent) {
+      trackAuthOutcome(authIntent, { method: 'yandex', ...danetkiAcquisitionMeta() })
+      completeDanetkiRegistrationAttribution('yandex', authIntent)
+    }
     window.location.replace(currentReturnUrl())
   }, [returnUrl, serverRuntime.me])
 
@@ -252,15 +268,17 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
         : await api.signIn(email.trim(), password)
 
       if (register && !authResult.token) {
-        trackMetrikaGoal('auth_success', { action: 'sign_up_pending_verification', ...danetkiAcquisitionMeta() })
+        trackAuthOutcome('sign_up', { method: 'email', status: 'pending_verification', ...danetkiAcquisitionMeta() })
+        completeDanetkiRegistrationAttribution('email', 'sign_up')
         setPassword('')
         setRegister(false)
         setNotice(`Аккаунт создан. Подтвердите ${email.trim()} по ссылке из письма.`)
         return
       }
       if (!authResult.token) throw new Error('Сервер не создал пользовательскую сессию. Попробуйте войти еще раз.')
-      trackMetrikaGoal('auth_success', { action: register ? 'sign_up' : 'sign_in', ...danetkiAcquisitionMeta() })
-      if (register) completeDanetkiRegistrationAttribution('email')
+      const authOutcome = register ? 'sign_up' : 'sign_in'
+      trackAuthOutcome(authOutcome, { method: 'email', ...danetkiAcquisitionMeta() })
+      completeDanetkiRegistrationAttribution('email', authOutcome)
       notifyAuthSessionChanged()
       redirectAfterAuth()
     } catch (value) {
@@ -284,10 +302,12 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       const oauthUrl = typeof payload?.url === 'string' ? payload.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex', ...danetkiAcquisitionMeta() })
+      markAnalyticsAuthIntent(register ? 'sign_up' : 'sign_in')
       markAnalyticsOAuthReturnPending()
       redirected = true
       window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {
+      clearAnalyticsAuthIntent()
       trackMetrikaGoal('auth_error', { action: 'oauth_yandex' })
       setError(value instanceof ApiClientError && value.status === 404
         ? 'Вход через Яндекс пока не настроен на сервере.'

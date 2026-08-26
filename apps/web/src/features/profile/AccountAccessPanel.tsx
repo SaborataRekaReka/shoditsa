@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { LogOut } from 'lucide-react'
 import { api, ApiClientError, queryKeys } from '../../api/client'
-import { markAnalyticsOAuthReturnPending, trackMetrikaGoal } from '../../app/metrics'
+import {
+  clearAnalyticsAuthIntent,
+  consumeAnalyticsAuthIntent,
+  markAnalyticsAuthIntent,
+  markAnalyticsOAuthReturnPending,
+  trackAuthOutcome,
+  trackMetrikaGoal,
+} from '../../app/metrics'
 import { clearQueuedClientEvents } from '../../app/client-events'
 import { ActionButton } from '../../components/app-shell/AppShell'
 import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
@@ -80,6 +87,12 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
     setResetToken(resetPasswordTokenFromLocation())
   }, [])
 
+  useEffect(() => {
+    if (!session || session.isAnonymous) return
+    const authIntent = consumeAnalyticsAuthIntent()
+    if (authIntent) trackAuthOutcome(authIntent, { method: 'yandex', placement: 'profile' })
+  }, [session])
+
   const submitEmail = async () => {
     if (pending) return
 
@@ -106,7 +119,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
         : await api.signIn(nextEmail, nextPassword)
       if (register) {
         if (!authResult.token) {
-          trackMetrikaGoal('auth_success', { action: 'sign_up_pending_verification' })
+          trackAuthOutcome('sign_up', { method: 'email', status: 'pending_verification', placement: 'profile' })
           setPassword('')
           setRegister(false)
           setNotice(`Аккаунт создан. Подтвердите ${nextEmail} по ссылке из письма. До подтверждения вы продолжаете как гость: ${formatTickets(guestDashboard?.wallet.balance ?? 0)} и все сеансы останутся здесь, а после подтверждения автоматически перейдут в аккаунт.`)
@@ -117,7 +130,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
       } else if (!authResult.token) {
         throw new Error('Сервер не создал пользовательскую сессию. Попробуйте войти ещё раз.')
       }
-      trackMetrikaGoal('auth_success', { action: register ? 'sign_up' : 'sign_in' })
+      trackAuthOutcome(register ? 'sign_up' : 'sign_in', { method: 'email', placement: 'profile' })
       setPassword('')
       await refreshSession()
       notifyAuthSessionChanged()
@@ -228,10 +241,12 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
       const oauthUrl = typeof response?.url === 'string' ? response.url : ''
       if (!oauthUrl) throw new Error('Сервис Яндекс не вернул ссылку для входа.')
       trackMetrikaGoal('auth_oauth_start', { provider: 'yandex' })
+      markAnalyticsAuthIntent(register ? 'sign_up' : 'sign_in')
       markAnalyticsOAuthReturnPending()
       redirected = true
       window.location.assign(localizeYandexOAuthUrl(oauthUrl))
     } catch (value) {
+      clearAnalyticsAuthIntent()
       trackMetrikaGoal('auth_error', { action: 'oauth_yandex' })
       if (value instanceof ApiClientError && value.status === 404) {
         setError('Вход через Яндекс пока не настроен на сервере.')

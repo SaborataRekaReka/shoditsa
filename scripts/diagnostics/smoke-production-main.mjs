@@ -76,7 +76,7 @@ const danetkiStoryHtml = await fetchText(`${danetkiStoryPath}?smoke=${Date.now()
 if (!danetkiStoryHtml.includes(`<link rel="canonical" href="${baseUrl}${danetkiStoryPath}"`)) throw new Error(`${danetkiStoryPath} has no matching canonical URL`)
 if (!danetkiStoryHtml.includes('name="robots" content="index,follow')) throw new Error(`${danetkiStoryPath} is not indexable in server HTML`)
 if (!danetkiStoryHtml.includes('CreativeWork') || !danetkiStoryHtml.includes('BreadcrumbList')) throw new Error(`${danetkiStoryPath} has no story structured data`)
-if (!danetkiStoryHtml.includes('<h1') || !danetkiStoryHtml.includes('Показать ответ')) throw new Error(`${danetkiStoryPath} has no server-rendered story and answer disclosure`)
+if (!danetkiStoryHtml.includes('<h1') || !danetkiStoryHtml.includes('Все равно показать')) throw new Error(`${danetkiStoryPath} has no server-rendered story and answer disclosure`)
 if (!danetkiStoryHtml.includes(`<meta name="shoditsa-build-sha" content="${expectedSha}">`)) throw new Error(`${danetkiStoryPath} build marker does not match main`)
 
 for (const pathname of ['/partners', '/specials', '/club']) {

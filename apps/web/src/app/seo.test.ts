@@ -4,6 +4,7 @@ import { normalizeSeoPathname, seoRouteForRuntime, seoRouteFromPathname, structu
 import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from '../features/danetki/danetki-collections'
 import { DANETKI_CATALOG_ITEMS } from '../features/danetki/danetki-catalog'
 import { PUBLIC_GAME_LINKS } from './public-game-links'
+import { DANETKI_DISCOVERY_LINKS } from './danetki-discovery-links'
 import { STATIC_INDEXABLE_PATHS, renderSitemap } from './static-index'
 
 describe('search index contract', () => {
@@ -27,6 +28,20 @@ describe('search index contract', () => {
     expect(locations).toContain('https://shoditsa.ru/games/character')
     expect(locations).toContain('https://shoditsa.ru/danetki')
     expect(sitemap).not.toContain('<lastmod>')
+  })
+
+  it('keeps a server-renderable crawl path to the proven Danetki collections and stories', () => {
+    expect(DANETKI_DISCOVERY_LINKS.map((link) => link.href)).toEqual([
+      '/danetki',
+      '/danetki/dlya-detey',
+      '/danetki/slozhnye',
+      '/danetki/legkie',
+      '/danetki/novye',
+      '/danetki/albatros',
+      '/danetki/stakan-vody',
+      '/danetki/spichka-v-pustyne',
+    ])
+    for (const link of DANETKI_DISCOVERY_LINKS) expect(STATIC_INDEXABLE_PATHS).toContain(link.href)
   })
 
   it('publishes one unique, indexable landing page for every canonical game mode', () => {
@@ -158,9 +173,9 @@ describe('search index contract', () => {
 
   it('locks the established Danetki search cluster against accidental metadata drift', () => {
     const protectedRoutes = [
-      ['/games/danetki', 'Данетки онлайн — играть бесплатно с ИИ-ведущим | Сходится!', 'Играйте в данетки онлайн бесплатно: раскройте необычную историю вопросами с ответами «да» и «нет». ИИ-ведущий, одиночная и совместная игра.'],
-      ['/danetki', 'Данетки с ответами — истории, загадки и игра онлайн | Сходится!', `Данетки с ответами: ${DANETKI_CATALOG_ITEMS.length} отобранных историй на логику. Читайте условие, проверьте разгадку или сыграйте с ИИ-ведущим онлайн.`],
-      ['/danetki/albatros', 'Данетка про альбатроса с ответом — «Мясо альбатроса» | Сходится!', 'Данетка про мясо альбатроса с полным ответом. Разгадайте классическую историю самостоятельно или сыграйте с ИИ-ведущим без спойлеров.'],
+      ['/games/danetki', 'Данетки онлайн — играть бесплатно с ИИ-ведущим | Сходится!', 'Играйте в данетки онлайн бесплатно: раскройте необычную историю вопросами с ответами «да» и «нет». Игра с ведущим одному или вместе.'],
+      ['/danetki', 'Данетки с ответами — истории, загадки и игра онлайн | Сходится!', `Данетки с ответами: ${DANETKI_CATALOG_ITEMS.length} отобранных историй на логику. Читайте условие, проверьте разгадку или играйте с ведущим онлайн.`],
+      ['/danetki/albatros', 'Данетка про альбатроса с ответом — «Мясо альбатроса» | Сходится!', 'Данетка про мясо альбатроса с полным ответом. Разгадайте классическую историю самостоятельно или сыграйте с ведущим без спойлеров.'],
     ] as const
 
     for (const [pathname, title, description] of protectedRoutes) {

@@ -943,7 +943,7 @@ function RoomInvitePreview({ preview, busy, onJoin, onDecline }: {
       <span className="room-kicker">Приглашение · комната {preview.code}</span>
       <h1>{preview.hostName} приглашает в {presentation.label}</h1>
       <p>{preview.gameType === 'danetki'
-        ? 'Вас ждёт общее расследование: одна история, общий протокол и вопросы ИИ-ведущему по очереди.'
+        ? 'Вас ждёт общее расследование: одна история, общий протокол и вопросы ведущему по очереди.'
         : 'Вы увидите те же подсказки, что и друзья, и отправите свой ответ одновременно с остальными.'}</p>
       <div className="room-invite__facts">
         <span><RoomIcon name="users" /><strong>{preview.players} из {preview.capacity}</strong><small>уже в комнате</small></span>
@@ -1019,7 +1019,7 @@ function Lobby({ room, mode, members, copied, busy, messageSending, configSaving
       <span className="room-kicker">Игра с друзьями · общая онлайн-комната</span>
       <h1>Онлайн-комната</h1>
       <p>{isDanetki
-        ? 'Пригласите до трёх друзей. После запуска вы будете вместе раскрывать одну необычную историю и задавать вопросы ИИ-ведущему по очереди.'
+        ? 'Пригласите до трёх друзей. После запуска вы будете вместе раскрывать одну необычную историю и задавать вопросы ведущему по очереди.'
         : `Выберите один или несколько паков и правила. В комнате могут играть до ${room.capacity} человек — все одновременно увидят подсказки и отправят по одному ответу.`}</p>
       <div className={`room-code-card${copied ? ' is-copied' : ''}`}><span>Код игры</span><strong>{room.code}</strong><ControlButton type="button" onClick={onCopy} title="Копировать ссылку-приглашение"><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать'}</ControlButton></div>
       <LobbyCommunity room={room} members={members} message={message} busy={messageSending} onMessage={onMessage} onSend={onSend} />
@@ -1063,7 +1063,7 @@ function DanetkiRoomBrief({ cost, ticketBalance, isHost, ownerName }: { cost: nu
   const shortage = isHost ? Math.max(0, cost - ticketBalance) : 0
   return <div className="room-danetki">
     <section className="room-danetki__brief">
-      <div><span>Совместный режим</span><h2>Общее расследование</h2><p>ИИ-ведущий отвечает «да», «нет» или просит уточнить вопрос. Условие откроется всем одновременно после старта.</p></div>
+      <div><span>Совместный режим</span><h2>Общее расследование</h2><p>Ведущий отвечает «да», «нет» или просит уточнить вопрос. Условие откроется всем одновременно после старта.</p></div>
     </section>
     <div className="room-danetki__rules">
       <article><RoomIcon name="users" /><span><strong>До 4 игроков</strong><small>У всех одна история и общий протокол</small></span></article>

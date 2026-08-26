@@ -50,6 +50,42 @@
   font: 500 clamp(20px, 3.2vw, 26px)/1.36 Oswald, sans-serif;
   letter-spacing: .005em;
 }
+.danetki-starter-questions {
+  margin: 0 0 17px;
+  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--mode-danetki-brand) 34%, var(--color-line));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--mode-danetki-brand) 8%, transparent);
+}
+.danetki-starter-questions > span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.danetki-starter-questions > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+.danetki-starter-questions .ui-button {
+  min-height: 42px;
+  padding: 8px 10px;
+  border-color: color-mix(in srgb, var(--mode-danetki-brand) 50%, var(--color-line));
+  color: var(--color-text);
+  background: var(--color-surface-2);
+  justify-content: flex-start;
+  text-align: left;
+  font-size: 11px;
+  line-height: 1.3;
+}
+.danetki-starter-questions .ui-button:hover:not(:disabled) {
+  border-color: var(--mode-danetki-brand);
+  background: color-mix(in srgb, var(--mode-danetki-brand) 16%, var(--color-surface-2));
+}
 .danetki-case-brief > footer {
   padding-top: 12px;
   border-top: 1px solid var(--color-line);
@@ -388,6 +424,16 @@
   .danetki-page--session .danetki-main { width: calc(100% - 20px); padding: 20px 14px 48px; }
   .danetki-case-brief { padding: 15px 15px 14px; }
   .danetki-case-brief > p { font-size: 20px; }
+  .danetki-starter-questions { margin-bottom: 14px; padding: 11px; }
+  .danetki-starter-questions > div {
+    display: flex;
+    margin-right: -11px;
+    padding-right: 11px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .danetki-starter-questions > div::-webkit-scrollbar { display: none; }
+  .danetki-starter-questions .ui-button { flex: 0 0 min(78vw, 280px); min-height: 46px; font-size: 12px; }
   .danetki-case-brief > footer { align-items: flex-start; flex-direction: column; gap: 8px; }
   .danetki-page--session .danetki-progress-row .hint-trigger { flex-basis: 94px; }
   .danetki-page--session .danetki-room-summary > strong { font-size: 18px; }

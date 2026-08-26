@@ -121,9 +121,9 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
         eager
         details={<GameArtifactSeoDetails mode="danetki" />}
       >
-          <TicketKicker title="Данетка дня" detail="ИИ-ведущий на связи" />
-          <h2 id="ticket-danetki">Игра с ИИ-ведущим</h2>
-          <p>Одна новая данетка в день доступна бесплатно. ИИ-ведущий отвечает «да» или «нет», а обязательная регистрация для одиночной игры не нужна.</p>
+          <TicketKicker title="Данетка дня" detail="Ведущий на связи" />
+          <h2 id="ticket-danetki">Игра с ведущим</h2>
+          <p>Одна новая данетка в день доступна бесплатно. Ведущий отвечает «да» или «нет», а обязательная регистрация для одиночной игры не нужна.</p>
           {selectedStory && <aside className="danetki-selected-story" aria-label="Выбранная данетка">
             <span>Выбрано из каталога</span>
             <strong>{selectedStory.titleRu}</strong>
@@ -147,7 +147,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
               disabled={busy}
               resetKey={roomMode}
             >{(close) => <>
-              <GameOption title="Одному" description="С ИИ-ведущим" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
+              <GameOption title="Одному" description="С ведущим" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
               <GameOption
                 title="Вместе"
                 description={canCreateGroupRoom

@@ -107,6 +107,22 @@ describe('admin acquisition funnel', () => {
     })
   })
 
+  it('uses consented acquisition persisted on the successful sign-up when pre-registration events are unavailable', () => {
+    const result = buildAdminAcquisitionFunnel([], [{
+      eventId: 'signup-auth-attribution',
+      occurredAt: '2026-08-15T09:05:00.000Z',
+      userId: 'user-auth-attribution',
+      acquisitionId: '60cbed3b-cac7-4d3c-a971-019b2b29f94f',
+      entrySource: 'organic_search',
+      searchEngine: 'google',
+      entryPath: '/games/diagnosis',
+    }], 7, NOW)
+
+    expect(result.summary).toMatchObject({ organicLandings: 1, organicUsers: 1, signUps: 1, landingToSignUpRate: 100 })
+    expect(result.byLanding[0]).toMatchObject({ label: '/games/diagnosis', searchEngine: 'google', signUps: 1 })
+    expect(result.coverage).toMatchObject({ successfulSignUps: 1, signUpsAttributedToOrganic: 1, signUpAttributionRate: 100 })
+  })
+
   it('does not attribute a registration outside the bounded seven-day window', () => {
     const events = [clientEvent('old-organic', 'page_view', '2026-08-01T09:00:00.000Z', {
       acquisition_id: 'acq-old', entry_source: 'organic_search', entry_path: '/games/diagnosis', mode: 'diagnosis',
