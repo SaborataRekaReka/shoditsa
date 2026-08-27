@@ -14,6 +14,7 @@ import {
   normalize,
   playablePlotHints,
   validateConnectionsRound,
+  validateTerritoryQuestion,
 } from '@shoditsa/game-core'
 import { ApiError } from '../../lib/errors.js'
 
@@ -61,6 +62,18 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
       error('allowedInGame', 'required', 'Укажите, разрешён ли раунд в игре')
     }
     issues.push(...validateConnectionsRound(payload).map((issue) => ({
+      level: issue.severity,
+      field: issue.path,
+      code: issue.code,
+      message: issue.message,
+    })))
+    return issues
+  }
+  if (mode === 'territory') {
+    if (typeof payload.allowedInGame !== 'boolean') {
+      error('allowedInGame', 'required', 'Укажите, разрешён ли вопрос в игре')
+    }
+    issues.push(...validateTerritoryQuestion(payload).map((issue) => ({
       level: issue.severity,
       field: issue.path,
       code: issue.code,
@@ -346,6 +359,8 @@ const sha256 = (value: unknown) => createHash('sha256').update(JSON.stringify(st
 export const contentVersionAllowedInGame = (mode: ContentMode, payload: Record<string, unknown>) => (
   mode === 'connections'
     ? payload.allowedInGame === true && payload.contentStatus === 'ready'
+    : mode === 'territory'
+      ? payload.allowedInGame === true && payload.contentStatus === 'ready'
     : mode === 'danetki'
       ? payload.allowedInGame === true && ['test', 'ready'].includes(text(payload.contentStatus))
       : mode === 'city'

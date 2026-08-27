@@ -142,6 +142,17 @@ describe('admin content validation', () => {
     })).toBe(false)
   })
 
+  it('keeps ready Territory questions enabled in rebuilt content revisions', () => {
+    expect(contentVersionAllowedInGame('territory', {
+      allowedInGame: true,
+      contentStatus: 'ready',
+    })).toBe(true)
+    expect(contentVersionAllowedInGame('territory', {
+      allowedInGame: true,
+      contentStatus: 'review',
+    })).toBe(false)
+  })
+
   it('blocks duplicate playable identities at the catalog boundary', () => {
     const duplicate = {
       ...base,

@@ -527,18 +527,19 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
                           : field === 'issues' ? sql<string>`(${issuesCount})::text`
                             : sql<string>`coalesce(${effectivePayload}->>(${field}::text), '')`
       const normalizedFieldText = sql<string>`replace(lower(trim(coalesce(${fieldText}, ''))), 'ё', 'е')`
-      const fieldNeedle = fieldValue.toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')
+      const caseInsensitiveFieldText = sql<string>`replace(replace(trim(coalesce(${fieldText}, '')), 'ё', 'е'), 'Ё', 'Е')`
+      const caseInsensitiveNeedle = fieldValue.replaceAll('ё', 'е').replaceAll('Ё', 'Е').replace(/[\\%_]/g, '\\$&')
       const payloadJson = sql`${effectivePayload}->(${field}::text)`
       const isEmpty = isPayloadField
         ? sql`(${payloadJson} is null or ${payloadJson} = 'null'::jsonb or ${payloadJson} = '[]'::jsonb or ${payloadJson} = '{}'::jsonb or (jsonb_typeof(${payloadJson}) = 'string' and trim(coalesce(${fieldText}, '')) = ''))`
         : sql`trim(coalesce(${fieldText}, '')) = ''`
       if (fieldOperator === 'empty') filters.push(isEmpty)
       else if (fieldOperator === 'not_empty') filters.push(sql`not (${isEmpty})`)
-      else if (fieldOperator === 'equals') filters.push(sql`${normalizedFieldText} = ${fieldNeedle}`)
-      else if (fieldOperator === 'not_equals') filters.push(sql`${normalizedFieldText} <> ${fieldNeedle}`)
-      else if (fieldOperator === 'not_contains') filters.push(sql`position(${fieldNeedle} in ${normalizedFieldText}) = 0`)
-      else if (fieldOperator === 'starts_with') filters.push(sql`left(${normalizedFieldText}, length(${fieldNeedle})) = ${fieldNeedle}`)
-      else if (fieldOperator === 'ends_with') filters.push(sql`right(${normalizedFieldText}, length(${fieldNeedle})) = ${fieldNeedle}`)
+      else if (fieldOperator === 'equals') filters.push(sql`${caseInsensitiveFieldText} ilike ${caseInsensitiveNeedle}`)
+      else if (fieldOperator === 'not_equals') filters.push(sql`${caseInsensitiveFieldText} not ilike ${caseInsensitiveNeedle}`)
+      else if (fieldOperator === 'not_contains') filters.push(sql`${caseInsensitiveFieldText} not ilike ${`%${caseInsensitiveNeedle}%`}`)
+      else if (fieldOperator === 'starts_with') filters.push(sql`${caseInsensitiveFieldText} ilike ${`${caseInsensitiveNeedle}%`}`)
+      else if (fieldOperator === 'ends_with') filters.push(sql`${caseInsensitiveFieldText} ilike ${`%${caseInsensitiveNeedle}`}`)
       else if (fieldOperator === 'is_true') filters.push(sql`position(' true ' in concat(' ', ${normalizedFieldText}, ' ')) > 0`)
       else if (fieldOperator === 'is_false') filters.push(sql`position(' false ' in concat(' ', ${normalizedFieldText}, ' ')) > 0`)
       else if (['gt', 'gte', 'lt', 'lte'].includes(fieldOperator)) {
@@ -552,7 +553,7 @@ const registerContentRoutes = (app: FastifyInstance, deps: Deps) => {
         if (fieldOperator === 'gte') filters.push(sql`${comparableField} >= ${numericNeedle}`)
         if (fieldOperator === 'lt') filters.push(sql`${comparableField} < ${numericNeedle}`)
         if (fieldOperator === 'lte') filters.push(sql`${comparableField} <= ${numericNeedle}`)
-      } else filters.push(sql`position(${fieldNeedle} in ${normalizedFieldText}) > 0`)
+      } else filters.push(sql`${caseInsensitiveFieldText} ilike ${`%${caseInsensitiveNeedle}%`}`)
     }
     const usesOffsetPagination = Boolean(query.sort && query.sort !== 'id')
     const sortOffset = usesOffsetPagination && query.cursor?.startsWith(`${query.sort}:`)

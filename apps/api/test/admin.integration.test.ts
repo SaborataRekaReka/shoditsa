@@ -125,22 +125,25 @@ describe('admin API guard, workspace and telemetry', () => {
   })
 
   it('filters the complete content catalog by an exact payload field and substring', async () => {
-    const candidate = (await database.db.select({
-      id: contentItemVersions.itemId,
-      payload: contentItemVersions.payload,
-    }).from(contentItemVersions)
-      .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
-      .where(and(eq(contentRevisions.status, 'active'), sql`length(trim(coalesce(${contentItemVersions.payload}->>'plotHint', ''))) >= 4`))
-      .limit(1))[0] as { id: string; payload: Record<string, unknown> } | undefined
+    const candidates = await app.inject({ method: 'GET', url: '/api/v1/admin/content/items?field=plotHint&fieldOp=not_empty&limit=1' })
+    expect(candidates.statusCode, candidates.body).toBe(200)
+    const candidate = candidates.json().items[0] as { id: string } | undefined
     expect(candidate).toBeDefined()
-    const plotHint = String(candidate!.payload.plotHint)
+    const detail = await app.inject({ method: 'GET', url: `/api/v1/admin/content/items/${candidate!.id}` })
+    expect(detail.statusCode, detail.body).toBe(200)
+    const detailBody = detail.json() as {
+      active: { payload: Record<string, unknown> }
+      draft: { afterPayload: Record<string, unknown> } | null
+    }
+    const plotHint = String((detailBody.draft?.afterPayload ?? detailBody.active.payload).plotHint)
     const needle = plotHint.trim().replace(/\s+/g, ' ').slice(0, 24)
     const filtered = await app.inject({
       method: 'GET',
       url: `/api/v1/admin/content/items?field=plotHint&fieldOp=contains&fieldQ=${encodeURIComponent(needle)}&limit=100`,
     })
     expect(filtered.statusCode, filtered.body).toBe(200)
-    expect(filtered.json().items).toEqual(expect.arrayContaining([expect.objectContaining({ id: candidate!.id })]))
+    expect(filtered.json().items, JSON.stringify({ candidate: candidate!.id, plotHint, needle, response: filtered.json() }))
+      .toEqual(expect.arrayContaining([expect.objectContaining({ id: candidate!.id })]))
     expect(filtered.json().total).toBeGreaterThanOrEqual(1)
 
     const exactCardQuery = encodeURIComponent(`"${candidate!.id}"`)
