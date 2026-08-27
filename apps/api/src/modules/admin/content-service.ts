@@ -356,6 +356,14 @@ const stable = (value: unknown): unknown => Array.isArray(value) ? value.map(sta
   ? Object.fromEntries(Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, stable(item)]))
   : value
 const sha256 = (value: unknown) => createHash('sha256').update(JSON.stringify(stable(value))).digest('hex')
+export const WORKSPACE_REVISION_MATERIALIZATION_VERSION = 2
+export const workspaceRevisionChecksum = (entries: Array<{
+  itemId: string
+  mode: ContentMode
+  payload: Record<string, unknown>
+  allowedInGame: boolean
+  contentStatus: string | null
+}>) => sha256({ kind: 'admin_workspace_materialization', materializationVersion: WORKSPACE_REVISION_MATERIALIZATION_VERSION, entries })
 export const contentVersionAllowedInGame = (mode: ContentMode, payload: Record<string, unknown>) => (
   mode === 'connections'
     ? payload.allowedInGame === true && payload.contentStatus === 'ready'
@@ -443,13 +451,29 @@ export const buildWorkspaceRevision = async (db: Database, actor: Actor, workspa
         if (before > 0 && after < Math.ceil(before * .95)) throw new ApiError(409, 'CONTENT_MODE_COUNT_DROP_GUARD', `Защита от потери данных: в режиме ${mode} количество карточек уменьшилось более чем на 5%`, { mode, before, after })
         if (before > 0 && after === 0) throw new ApiError(409, 'CONTENT_MODE_EMPTY_GUARD', `Режим ${mode} не может стать пустым`, { mode, before, after })
       }
-      const checksum = sha256(merged.map((entry) => entry.payload))
+      // A revision fingerprint covers the materialized gameplay state, not only
+      // the source JSON. This version boundary lets corrected projection rules
+      // rebuild an otherwise identical payload instead of reusing a retired,
+      // incorrectly materialized revision with the legacy payload-only hash.
+      const checksum = workspaceRevisionChecksum(merged.map((entry) => {
+        const mode = (entry.change?.mode ?? entry.base.mode) as ContentMode
+        return {
+          itemId: text(entry.payload.id),
+          mode,
+          payload: entry.payload,
+          allowedInGame: contentVersionAllowedInGame(mode, entry.payload),
+          contentStatus: text(entry.payload.contentStatus) || null,
+        }
+      }))
       const existing = await tx.select({ id: contentRevisions.id }).from(contentRevisions).where(eq(contentRevisions.checksumSha256, checksum)).limit(1)
       if (existing[0]) throw new ApiError(409, 'REVISION_CHECKSUM_EXISTS', 'Ревизия с таким содержимым уже существует')
       const version = `admin-${new Date().toISOString().replace(/[-:.]/g, '')}-${checksum.slice(0, 8)}`
       const revision = (await tx.insert(contentRevisions).values({
         version, checksumSha256: checksum, status: 'importing', createdBy: actor.id,
-        sourceManifest: { source: 'admin_workspace', workspaceId, baseRevisionId: workspace.baseRevisionId, changedItems: changes.length },
+        sourceManifest: {
+          source: 'admin_workspace', workspaceId, baseRevisionId: workspace.baseRevisionId,
+          changedItems: changes.length, materializationVersion: WORKSPACE_REVISION_MATERIALIZATION_VERSION,
+        },
       }).returning())[0]
       const modeCounts = new Map<ContentMode, number>()
       const modeSort = new Map<ContentMode, number>()

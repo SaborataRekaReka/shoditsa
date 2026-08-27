@@ -6,6 +6,7 @@ import {
   contentPayloadsEqual,
   validateCatalogInvariants,
   validateContentPayload,
+  workspaceRevisionChecksum,
   workspaceContainsOnlyRedundantImports,
 } from '../src/modules/admin/content-service.js'
 
@@ -151,6 +152,29 @@ describe('admin content validation', () => {
       allowedInGame: true,
       contentStatus: 'review',
     })).toBe(false)
+  })
+
+  it('includes materialized gameplay fields in workspace revision checksums', () => {
+    const payload = {
+      id: 'territory:checksum-test',
+      mode: 'territory',
+      titleRu: 'Вопрос',
+      titleOriginal: '',
+      alternativeTitles: [],
+      allowedInGame: true,
+      contentStatus: 'ready',
+    }
+    const entry = {
+      itemId: payload.id,
+      mode: 'territory' as const,
+      payload,
+      contentStatus: 'ready',
+    }
+
+    expect(workspaceRevisionChecksum([{ ...entry, allowedInGame: true }]))
+      .not.toBe(workspaceRevisionChecksum([{ ...entry, allowedInGame: false }]))
+    expect(workspaceRevisionChecksum([{ ...entry, allowedInGame: true }]))
+      .toBe(workspaceRevisionChecksum([{ ...entry, payload: { ...payload }, allowedInGame: true }]))
   })
 
   it('blocks duplicate playable identities at the catalog boundary', () => {
