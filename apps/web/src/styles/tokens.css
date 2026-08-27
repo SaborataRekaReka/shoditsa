@@ -27,6 +27,8 @@
   --mode-city-brand: var(--palette-brand-terracotta);
   --mode-music-brand: var(--palette-brand-plum);
   --mode-danetki-brand: var(--palette-brand-green-deep);
+  --mode-territory-brand: var(--palette-brand-green);
+  --mode-territory-brand-deep: var(--palette-brand-green-deep);
   --mode-connections-brand: #c6a15b;
   --mode-animal-brand: #8ba05b;
   --mode-book-brand: #9b6945;
@@ -92,4 +94,8 @@
   --connections-paper-hover: #e7dbc2;
   --connections-ink: #172019;
   --connections-table: #173126;
+  --territory-map-light: #608f68;
+  --territory-map-deep: #2d4937;
+  --territory-map-neutral: #2d312d;
+  --territory-map-ink: #9b927e;
 }

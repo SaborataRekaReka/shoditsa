@@ -49,6 +49,7 @@ describe('typed player routes', () => {
     expect(playerRouteFromLocation('/games/together', '?new=1')).toEqual({ screen: 'friends-room' })
     expect(playerRouteFromLocation('/games/together', '?room=AB234')).toEqual({ screen: 'friends-room' })
     expect(playerRouteFromLocation('/games/together', '?mode=danetki')).toEqual({ screen: 'friends-room' })
+    expect(playerRouteFromLocation('/games/together', '?mode=territory')).toEqual({ screen: 'friends-room' })
     expect(pathnameForPlayerRoute({ screen: 'friends-room' })).toBe('/games/together')
     expect(pathnameForPlayerRoute({ screen: 'friends-intro' })).toBe('/games/together')
     expect(playerRouteFromPathname('/play/danetki')).toEqual({ screen: 'hub' })

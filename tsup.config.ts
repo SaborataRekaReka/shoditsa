@@ -7,6 +7,7 @@ export default defineConfig({
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
     'content-bootstrap-danetki': 'scripts/content/bootstrap-danetki.ts',
     'content-bootstrap-connections': 'scripts/content/bootstrap-connections.ts',
+    'content-bootstrap-territory': 'scripts/content/bootstrap-territory.ts',
     'content-import-dtf-comments': 'scripts/content/import-dtf-comment-pack.ts',
     'content-import-game-hints': 'scripts/content/import-game-plot-hints.ts',
     'content-import-kpop-special': 'scripts/content/import-kpop-special.ts',

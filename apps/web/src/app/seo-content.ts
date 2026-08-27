@@ -1,6 +1,6 @@
-import { DAILY_MODE_IDS, type ContentModeId } from '@shoditsa/contracts'
+import { DAILY_MODE_IDS, type PlayableModeId } from '@shoditsa/contracts'
 
-export type SeoGameMode = ContentModeId
+export type SeoGameMode = PlayableModeId
 
 export const SITE_ORIGIN = 'https://shoditsa.ru'
 export const SITE_NAME = 'Сходится!'
@@ -208,7 +208,7 @@ export const GAME_GUIDE_PRESENTATION = {
   },
 } as const satisfies Record<SeoGameMode, GameGuidePresentation>
 
-export const GAME_RULES: Record<Exclude<ContentModeId, 'danetki'>, GameRulesContent> = {
+export const GAME_RULES: Record<Exclude<PlayableModeId, 'danetki'>, GameRulesContent> = {
   movie: {
     searchInstruction: 'Введите в поиске название фильма и выберите подходящий вариант. На ответ даётся десять попыток.',
     comparisonInstruction: 'После каждой попытки сверяются актёры, жанры, страна, год выхода, рейтинги и другие признаки.',

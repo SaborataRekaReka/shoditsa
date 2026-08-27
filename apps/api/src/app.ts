@@ -55,6 +55,7 @@ import { getDanetkiSession, loadDanetkiFeatureFlags, startDanetkiSession } from 
 import { registerDanetkiRoutes, type DanetkiRealtimeMetrics } from './modules/danetki/routes.js'
 import { registerDanetkiAdminRoutes } from './modules/danetki/admin-routes.js'
 import { registerFriendsRoomRoutes } from './modules/friends-room/routes.js'
+import { registerTerritoryRoutes } from './modules/territory/routes.js'
 import { getConnectionsSession, startConnectionsSession } from './modules/connections/service.js'
 import { registerConnectionsRoutes } from './modules/connections/routes.js'
 import { registerConnectionsAdminRoutes } from './modules/connections/admin-routes.js'
@@ -196,6 +197,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       }),
     ])
     const counts = active[0] ? await db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, active[0].id)) : []
+    const territoryCount = counts.find((entry) => entry.mode === 'territory')?.count ?? 0
     const emailInfrastructureReady = Boolean(config.smtp.host && config.smtp.from)
     return {
       serverTime: new Date().toISOString(),
@@ -203,7 +205,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       apiVersion: 'v1',
       rulesVersion: ECONOMY_RULES_VERSION,
       activeRevision: active[0] ?? null,
-      modes: counts.filter((entry) => entry.mode !== 'danetki' || danetkiFeatures.enabled),
+      modes: counts.filter((entry) => entry.mode !== 'territory' && (entry.mode !== 'danetki' || danetkiFeatures.enabled)),
       minimumFrontendVersion: '0.1.0',
       buildSha: config.gitSha,
       auth: {
@@ -226,6 +228,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         connectionsEnabled: config.connectionsEnabled,
         connectionsHintsEnabled: config.connectionsHintsEnabled,
         connectionsLaunchDate: config.connectionsLaunchDate,
+        territoryEnabled: config.territoryEnabled && territoryCount >= 80,
       },
     }
   })
@@ -542,6 +545,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   registerConnectionsRoutes(app, { db, auth, config })
   registerConnectionsAdminRoutes(app, { db, auth, config })
   registerFriendsRoomRoutes(app, { db, auth, config })
+  registerTerritoryRoutes(app, { db, auth, config })
 
   await registerClientEventRoutes(app, { db, auth, config })
   await registerAdminRoutes(app, { db, auth, config })

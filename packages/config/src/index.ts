@@ -157,6 +157,7 @@ export const loadConfig = () => {
     connectionsEnabled: bool('CONNECTIONS_ENABLED', !production),
     connectionsHintsEnabled: bool('CONNECTIONS_HINTS_ENABLED', true),
     connectionsLaunchDate: process.env.CONNECTIONS_LAUNCH_DATE?.trim() || null,
+    territoryEnabled: bool('TERRITORY_ENABLED', !production),
     friendsRoomPreview: bool('FRIENDS_ROOM_PREVIEW', bool('VITE_FRIENDS_ROOM_PREVIEW', false)),
     appVersion: process.env.APP_VERSION?.trim() || '0.1.0',
     gitSha: process.env.GIT_SHA?.trim() || 'dev',

@@ -72,7 +72,7 @@ export const playerRouteFromLocation = (pathname: string, search = ''): PlayerRo
   const route = playerRouteFromPathname(pathname)
   if (route.screen !== 'friends-intro') return route
   const params = new URLSearchParams(search)
-  return params.has('room') || params.get('new') === '1' || params.get('mode') === 'danetki'
+  return params.has('room') || params.get('new') === '1' || params.get('mode') === 'danetki' || params.get('mode') === 'territory'
     ? { screen: 'friends-room' }
     : route
 }

@@ -15,6 +15,7 @@ import type {
 import {
   FRIENDS_ROOM_CAPACITY,
   FRIENDS_ROOM_DANETKI_CAPACITY,
+  FRIENDS_ROOM_TERRITORY_CAPACITY,
   economyFriendsRoomCost,
   friendsRoomMinimumRounds,
 } from '@shoditsa/contracts'
@@ -47,6 +48,12 @@ import {
 } from '../danetki/service.js'
 import { buildFriendsRoomPackSchedule, defaultFriendsRoomPack, friendsRoomItemMatchesPack, normalizeFriendsRoomPacks } from './packs.js'
 import { scoreFriendsRoomGuess } from './scoring.js'
+import {
+  advanceTerritoryClock,
+  getTerritoryPublicSnapshot,
+  leaveTerritoryMatch,
+  startTerritoryMatch,
+} from '../territory/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type RoomRow = typeof friendsRooms.$inferSelect
@@ -61,7 +68,11 @@ type RequestUser = {
 const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 const COUNTDOWN_MS = 3_000
 const FRIENDS_ROOM_PRESENCE_SECONDS = 35
-const roomCapacity = (gameType: FriendsRoomGameType) => gameType === 'danetki' ? FRIENDS_ROOM_DANETKI_CAPACITY : FRIENDS_ROOM_CAPACITY
+const roomCapacity = (gameType: FriendsRoomGameType) => gameType === 'danetki'
+  ? FRIENDS_ROOM_DANETKI_CAPACITY
+  : gameType === 'territory'
+    ? FRIENDS_ROOM_TERRITORY_CAPACITY
+    : FRIENDS_ROOM_CAPACITY
 const connectedMemberCondition = () => sql`${friendsRoomMembers.lastSeenAt} >= now() - (${FRIENDS_ROOM_PRESENCE_SECONDS} * interval '1 second')`
 
 const modePrompt: Record<PlayableCatalogGuessModeId, string> = {
@@ -195,10 +206,12 @@ const hostRoom = async (tx: Transaction, roomId: string, userId: string) => {
   return room
 }
 
-const roomPacks = (room: RoomRow) => normalizeFriendsRoomPacks(
-  Array.isArray(room.packs) ? room.packs as FriendsRoomPackSelection[] : null,
-  room.mode as PlayableCatalogGuessModeId,
-)
+const roomPacks = (room: RoomRow) => room.gameType === 'territory'
+  ? []
+  : normalizeFriendsRoomPacks(
+      Array.isArray(room.packs) ? room.packs as FriendsRoomPackSelection[] : null,
+      room.mode as PlayableCatalogGuessModeId,
+    )
 
 const lockedWallet = async (tx: Transaction, userId: string) => {
   await tx.insert(walletAccounts).values({ userId }).onConflictDoNothing()
@@ -369,6 +382,7 @@ const createRound = async (tx: Transaction, room: RoomRow, position: number) => 
 const advanceRoomClock = async (db: Database, roomId: string) => db.transaction(async (tx) => {
   const room = (await tx.select().from(friendsRooms).where(eq(friendsRooms.id, roomId)).for('update').limit(1))[0]
   if (!room || room.closedAt) return
+  if (room.gameType === 'territory') return
   const now = new Date()
   if (room.phase === 'countdown' && room.phaseEndsAt && room.phaseEndsAt <= now) {
     const endsAt = new Date(now.getTime() + room.answerTimeSeconds * 1_000)
@@ -406,7 +420,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     eq(friendsRoomMembers.roomId, roomId), eq(friendsRoomMembers.userId, currentUserId),
     sql`${friendsRoomMembers.lastSeenAt} < now() - interval '20 seconds'`,
   ))
-  const round = room.currentRound > 0
+  const round = room.gameType !== 'territory' && room.currentRound > 0
     ? (await db.select().from(friendsRoomRounds).where(and(eq(friendsRoomRounds.roomId, roomId), eq(friendsRoomRounds.position, room.currentRound))).limit(1))[0] ?? null
     : null
   const serverNow = new Date()
@@ -425,6 +439,9 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
   const item = content[0]?.payload as TitleItem | undefined
   const packs = roomPacks(room)
   const continuation = await friendsRoomContinuationQuote(db, room, membership.role === 'owner')
+  const territory = room.gameType === 'territory'
+    ? await getTerritoryPublicSnapshot(db, roomId, currentUserId)
+    : null
   return {
     id: room.id,
     code: room.code,
@@ -432,7 +449,7 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
     danetkiSessionId: room.danetkiSessionId,
     danetkiLaunchCost,
     danetkiLaunch: room.danetkiLaunch,
-    mode: room.mode as PlayableCatalogGuessModeId,
+    mode: room.mode as FriendsRoomSnapshot['mode'],
     packs,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
     roundsTotal: room.roundsTotal,
@@ -492,12 +509,15 @@ const buildSnapshot = async (db: Database, roomId: string, currentUserId: string
       text: entry.text,
       createdAt: entry.createdAt.toISOString(),
     })),
+    territory,
     continuation,
   }
 }
 
 export const getFriendsRoom = async (db: Database, roomId: string, userId: string) => {
-  await advanceRoomClock(db, roomId)
+  const room = (await db.select({ gameType: friendsRooms.gameType }).from(friendsRooms).where(eq(friendsRooms.id, roomId)).limit(1))[0]
+  if (room?.gameType === 'territory') await advanceTerritoryClock(db, roomId)
+  else await advanceRoomClock(db, roomId)
   return buildSnapshot(db, roomId, userId)
 }
 
@@ -526,7 +546,7 @@ export const previewFriendsRoom = async (db: Database, code: string) => {
   const members = await db.select().from(friendsRoomMembers).where(and(
     eq(friendsRoomMembers.roomId, room.id),
     isNull(friendsRoomMembers.leftAt),
-    connectedMemberCondition(),
+    ...(room.gameType === 'territory' ? [] : [connectedMemberCondition()]),
   ))
   const owner = members.find((entry) => entry.role === 'owner')
   return {
@@ -536,7 +556,7 @@ export const previewFriendsRoom = async (db: Database, code: string) => {
     danetkiLaunchCost: room.gameType === 'danetki' && room.danetkiLaunch.kind !== 'daily'
       ? await getNextDanetkiRoomCost(db, room.ownerUserId, 'group')
       : 0,
-    mode: room.mode as PlayableCatalogGuessModeId,
+    mode: room.mode as FriendsRoomSummary['mode'],
     packs: roomPacks(room),
     players: members.length,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
@@ -565,7 +585,7 @@ export const listFriendsRooms = async (db: Database, userId: string): Promise<Fr
     .where(and(
       inArray(friendsRoomMembers.roomId, entries.map((entry) => entry.room.id)),
       isNull(friendsRoomMembers.leftAt),
-      connectedMemberCondition(),
+      ...(entries[0]?.room.gameType === 'territory' ? [] : [connectedMemberCondition()]),
     ))
   const playerCounts = new Map<string, number>()
   for (const entry of counts) playerCounts.set(entry.roomId, (playerCounts.get(entry.roomId) ?? 0) + 1)
@@ -574,7 +594,7 @@ export const listFriendsRooms = async (db: Database, userId: string): Promise<Fr
     id: room.id,
     code: room.code,
     gameType: room.gameType as FriendsRoomGameType,
-    mode: room.mode as PlayableCatalogGuessModeId,
+    mode: room.mode as FriendsRoomSummary['mode'],
     packs: roomPacks(room),
     players: playerCounts.get(room.id) ?? 0,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
@@ -599,12 +619,17 @@ export const createFriendsRoom = async (
   const clubActive = await hasEntitlement(db, user.id, 'club', undefined, new Date())
   assertFriendsRoomClubAccess(clubActive)
   const gameType = input.gameType ?? 'quiz'
-  const packs = normalizeFriendsRoomPacks(input.packs, input.mode ?? 'series')
-  const mode = packs[0].mode
-  const roundsTotal = clubActive
-    ? input.roundsTotal ?? Math.max(6, friendsRoomMinimumRounds(packs.length))
-    : rules.friendsRoom.roundsPerBlock
-  if (roundsTotal < packs.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
+  if (gameType === 'territory' && !config.territoryEnabled) {
+    throw new ApiError(503, 'TERRITORY_DISABLED', '«Захват» пока недоступен')
+  }
+  const packs = gameType === 'territory' ? [] : normalizeFriendsRoomPacks(input.packs, input.mode ?? 'series')
+  const mode = gameType === 'territory' ? 'territory' as const : packs[0].mode
+  const roundsTotal = gameType === 'territory'
+    ? 20
+    : clubActive
+      ? input.roundsTotal ?? Math.max(6, friendsRoomMinimumRounds(packs.length))
+      : rules.friendsRoom.roundsPerBlock
+  if (gameType !== 'territory' && roundsTotal < packs.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
   for (let attempt = 0; attempt < 8; attempt += 1) {
     const code = roomCode()
     const roomId = await db.transaction(async (tx) => {
@@ -622,7 +647,7 @@ export const createFriendsRoom = async (
         packs,
         roundsTotal,
         shufflePacks: input.shufflePacks ?? false,
-        answerTimeSeconds: input.answerTimeSeconds ?? 30,
+        answerTimeSeconds: gameType === 'territory' ? 20 : input.answerTimeSeconds ?? 30,
         rulesVersion: rules.version,
       }).onConflictDoNothing().returning()
       if (!inserted[0]) return null
@@ -658,9 +683,15 @@ export const joinFriendsRoom = async (db: Database, user: RequestUser, code: str
     const members = await tx.select().from(friendsRoomMembers).where(and(
       eq(friendsRoomMembers.roomId, room.id),
       isNull(friendsRoomMembers.leftAt),
-      connectedMemberCondition(),
+      ...(room.gameType === 'territory' ? [] : [connectedMemberCondition()]),
     ))
-    if (!existing[0] && members.length >= roomCapacity(room.gameType as FriendsRoomGameType)) throw new ApiError(409, 'FRIENDS_ROOM_FULL', room.gameType === 'danetki' ? 'В комнате уже четыре игрока' : 'В комнате уже восемь игроков')
+    if ((!existing[0] || existing[0].leftAt) && members.length >= roomCapacity(room.gameType as FriendsRoomGameType)) {
+      throw new ApiError(409, 'FRIENDS_ROOM_FULL', room.gameType === 'danetki'
+        ? 'В комнате уже четыре игрока'
+        : room.gameType === 'territory'
+          ? 'В комнате уже два игрока'
+          : 'В комнате уже восемь игроков')
+    }
     await tx.insert(friendsRoomMembers).values({
       roomId: room.id, userId: user.id, role: user.id === room.ownerUserId ? 'owner' : 'player', displayNameSnapshot: safeName(displayName ?? user.name), colorKey: colorFor(user.id),
     }).onConflictDoUpdate({ target: [friendsRoomMembers.roomId, friendsRoomMembers.userId], set: { displayNameSnapshot: safeName(displayName ?? user.name), leftAt: null, lastSeenAt: new Date() } })
@@ -674,6 +705,9 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
   await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, userId)
     if (room.phase !== 'lobby') throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Настройки нельзя менять после запуска')
+    if (room.gameType === 'territory' || input.gameType === 'territory') {
+      throw new ApiError(409, 'TERRITORY_CONFIG_FIXED', 'Настройки «Захвата» фиксированы для честной игры')
+    }
     const { gameType: requestedGameType, packs: requestedPacks, mode: requestedMode, ...rules } = input
     const gameType = requestedGameType ?? room.gameType as FriendsRoomGameType
     if (gameType === 'danetki') {
@@ -725,7 +759,14 @@ export const startFriendsRoom = async (
     if (roomBeforeStart.gameType === 'danetki' && roomBeforeStart.danetkiSessionId) {
       return buildSnapshot(db, roomId, user.id)
     }
+    if (roomBeforeStart.gameType === 'territory') return buildSnapshot(db, roomId, user.id)
     throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Игра уже запущена')
+  }
+
+  if (roomBeforeStart.gameType === 'territory') {
+    if (!config.territoryEnabled) throw new ApiError(503, 'TERRITORY_DISABLED', '«Захват» пока недоступен')
+    await startTerritoryMatch(db, roomId, user.id)
+    return buildSnapshot(db, roomId, user.id)
   }
 
   if (roomBeforeStart.gameType === 'danetki') {
@@ -980,6 +1021,7 @@ export const restartFriendsRoom = async (
 ) => {
   const previous = await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, user.id)
+    if (room.gameType === 'territory') throw new ApiError(409, 'TERRITORY_REMATCH_VOTE_REQUIRED', 'Для реванша нужно согласие обоих игроков')
     if (room.phase !== 'finished') throw new ApiError(409, 'FRIENDS_ROOM_NOT_FINISHED', 'Текущая игра ещё не завершена')
     const now = new Date()
     await tx.update(friendsRoomMembers).set({ leftAt: now, lastSeenAt: now }).where(and(
@@ -1024,6 +1066,10 @@ export const leaveFriendsRoom = async (db: Database, userId: string, roomId: str
     danetkiSessionId: friendsRooms.danetkiSessionId,
     ownerUserId: friendsRooms.ownerUserId,
   }).from(friendsRooms).where(eq(friendsRooms.id, roomId)).limit(1))[0]
+  if (roomBeforeLeave?.gameType === 'territory') {
+    const handled = await leaveTerritoryMatch(db, roomId, userId)
+    if (handled) return { left: true }
+  }
   if (roomBeforeLeave?.gameType === 'danetki' && roomBeforeLeave.danetkiSessionId && roomBeforeLeave.ownerUserId !== userId) {
     await leaveDanetkiSession(db, userId, roomBeforeLeave.danetkiSessionId)
   }

@@ -931,6 +931,16 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Локаль', ['locale']],
       ['Статус', ['contentStatus']],
     ],
+    territory: [
+      ['Вопрос', ['prompt']],
+      ['Категория', ['category.label', 'category.id']],
+      ['Сложность', ['difficulty']],
+      ['Варианты', ['options']],
+      ['Правильный вариант', ['correctOptionId']],
+      ['Объяснение', ['explanation']],
+      ['Источник', ['provenance.sourceTitle', 'provenance.dataset']],
+      ['Статус', ['contentStatus']],
+    ],
   }
   return [...shared, ...byMode[mode]].map(([label, paths]) => {
     const value = paths.map((path) => previewValue(previewPath(payload, path))).find(Boolean) ?? ''
@@ -2971,6 +2981,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   character: ['characterSourceWork', 'characterSourceAuthor', 'characterFirstAppearanceYear', 'characterEra', 'characterEraOrder', 'characterSourceTypes', 'characterOriginCultures', 'characterNature', 'characterGender', 'characterAgeGroup', 'characterRoles', 'characterArchetypes', 'characterAbilities', 'characterSettings', 'iconicObjects', 'rightsStatus', 'characterSources'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['locale', 'difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'popularityScore'],
+  territory: ['schemaVersion', 'locale', 'questionType', 'prompt', 'options', 'correctOptionId', 'explanation', 'category', 'difficulty', 'provenance', 'contentStatus', 'allowedInGame', 'popularityScore'],
 }
 const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Год окончания', titleRu: 'Русское название',
@@ -2982,6 +2993,8 @@ const NORMALIZATION_FIELD_LABELS: Record<string, string> = {
   capital: 'Столица', popular: 'Популярный город', countryFlagUrl: 'Флаг страны', cityFlagUrl: 'Флаг города', coatOfArmsUrl: 'Герб', ranks: 'Городской профиль',
   condition: 'Условие', solution: 'Разгадка', difficulty: 'Сложность', tags: 'Теги', keyFacts: 'Ключевые факты',
   hints: 'Подсказки', starterQuestions: 'Стартовые вопросы', answerRules: 'Правила ответа', contentWarnings: 'Предупреждения', contentStatus: 'Статус контента',
+  schemaVersion: 'Версия схемы', locale: 'Локаль', questionType: 'Тип вопроса', prompt: 'Вопрос', options: 'Варианты ответа',
+  correctOptionId: 'Правильный вариант', explanation: 'Объяснение', category: 'Категория', provenance: 'Происхождение данных', popularityScore: 'Приоритет',
 }
 const normalizationFallbackFields = (mode: ContentMode) => [...new Set([
   ...NORMALIZATION_COMMON_FIELDS.filter((field) => !(mode === 'music' && field === 'year') && (mode !== 'danetki' || DANETKI_NORMALIZATION_COMMON_FIELDS.has(field))),

@@ -1,5 +1,12 @@
 import { sql } from 'drizzle-orm'
-import { CONTENT_MODE_IDS, type FriendsRoomPackSelection, type FriendsRoomScorePart } from '@shoditsa/contracts'
+import {
+  CONTENT_MODE_IDS,
+  type FriendsRoomPackSelection,
+  type FriendsRoomScorePart,
+  type TerritoryMapSnapshot,
+  type TerritoryOwnership,
+  type TerritoryQuestionProvenance,
+} from '@shoditsa/contracts'
 import {
   type AnyPgColumn,
   bigint, bigserial, boolean, check, date, index, integer, jsonb, pgEnum, pgTable, primaryKey,
@@ -724,7 +731,7 @@ export const friendsRooms = pgTable('friends_rooms', {
   check('friends_room_code_check', sql`char_length(${table.code}) = 5`),
   check('friends_room_rounds_check', sql`${table.roundsTotal} between 3 and 30`),
   check('friends_room_answer_time_check', sql`${table.answerTimeSeconds} in (15, 20, 30, 45)`),
-  check('friends_room_game_type_check', sql`${table.gameType} in ('quiz', 'danetki')`),
+  check('friends_room_game_type_check', sql`${table.gameType} in ('quiz', 'danetki', 'territory')`),
   check('friends_room_current_round_check', sql`${table.currentRound} between 0 and ${table.roundsTotal}`),
 ])
 
@@ -780,6 +787,110 @@ export const friendsRoomAnswers = pgTable('friends_room_answers', {
   index('friends_room_answer_room_round_idx').on(table.roomId, table.roundId, table.submittedAt),
   check('friends_room_answer_text_check', sql`char_length(${table.text}) between 1 and 160`),
   check('friends_room_answer_points_check', sql`${table.points} between 0 and 1000`),
+])
+
+type TerritoryMatchPlayerStats = Record<string, {
+  correctAnswers: number
+  totalCorrectAnswerTimeMs: number
+}>
+
+type TerritoryStoredOption = {
+  id: string
+  text: string
+}
+
+export const territoryMatches = pgTable('territory_matches', {
+  id: uuid().primaryKey().defaultRandom(),
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  matchNumber: smallint('match_number').notNull(),
+  revisionId: uuid('revision_id').notNull().references(() => contentRevisions.id),
+  playerOneUserId: uuid('player_one_user_id').notNull().references(() => user.id),
+  playerTwoUserId: uuid('player_two_user_id').notNull().references(() => user.id),
+  phase: text().notNull().default('countdown'),
+  phaseStartedAt: timestamp('phase_started_at', { withTimezone: true }).notNull().defaultNow(),
+  phaseEndsAt: timestamp('phase_ends_at', { withTimezone: true }),
+  mapSeed: text('map_seed').notNull(),
+  mapVersion: integer('map_version').notNull().default(1),
+  mapSnapshot: jsonb('map_snapshot').$type<TerritoryMapSnapshot>().notNull(),
+  ownership: jsonb().$type<TerritoryOwnership>().notNull(),
+  playerStats: jsonb('player_stats').$type<TerritoryMatchPlayerStats>().notNull().default(sql`'{}'::jsonb`),
+  currentDuel: smallint('current_duel').notNull().default(1),
+  maxDuels: smallint('max_duels').notNull().default(20),
+  winnerUserId: uuid('winner_user_id').references(() => user.id, { onDelete: 'set null' }),
+  finishReason: text('finish_reason'),
+  rulesVersion: integer('rules_version').notNull().default(1),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('territory_match_room_number_unique').on(table.roomId, table.matchNumber),
+  index('territory_match_room_created_idx').on(table.roomId, table.createdAt),
+  check('territory_match_number_check', sql`${table.matchNumber} > 0`),
+  check('territory_match_distinct_players_check', sql`${table.playerOneUserId} <> ${table.playerTwoUserId}`),
+  check('territory_match_phase_check', sql`${table.phase} in ('countdown', 'question', 'reveal', 'capture', 'finished')`),
+  check('territory_match_duel_check', sql`${table.currentDuel} between 0 and ${table.maxDuels}`),
+  check('territory_match_max_duels_check', sql`${table.maxDuels} between 1 and 20`),
+  check('territory_match_map_version_check', sql`${table.mapVersion} = 1`),
+  check('territory_match_rules_version_check', sql`${table.rulesVersion} > 0`),
+])
+
+export const territoryDuels = pgTable('territory_duels', {
+  id: uuid().primaryKey().defaultRandom(),
+  matchId: uuid('match_id').notNull().references(() => territoryMatches.id, { onDelete: 'cascade' }),
+  position: smallint().notNull(),
+  contentItemVersionId: uuid('content_item_version_id').notNull().references(() => contentItemVersions.id),
+  prompt: text().notNull(),
+  categoryId: text('category_id').notNull(),
+  categoryLabel: text('category_label').notNull(),
+  difficulty: text().notNull(),
+  options: jsonb().$type<[TerritoryStoredOption, TerritoryStoredOption, TerritoryStoredOption, TerritoryStoredOption]>().notNull(),
+  correctOptionId: text('correct_option_id').notNull(),
+  explanation: text().notNull(),
+  provenance: jsonb().$type<TerritoryQuestionProvenance>().notNull(),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  endsAt: timestamp('ends_at', { withTimezone: true }),
+  resolvedAt: timestamp('resolved_at', { withTimezone: true }),
+  result: text(),
+  winnerUserId: uuid('winner_user_id').references(() => user.id, { onDelete: 'set null' }),
+  capturedCellId: text('captured_cell_id'),
+  previousOwnerUserId: uuid('previous_owner_user_id').references(() => user.id, { onDelete: 'set null' }),
+  captureIdempotencyKey: text('capture_idempotency_key'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('territory_duel_match_position_unique').on(table.matchId, table.position),
+  unique('territory_duel_capture_idempotency_unique').on(table.matchId, table.captureIdempotencyKey),
+  index('territory_duel_match_started_idx').on(table.matchId, table.startedAt),
+  check('territory_duel_position_check', sql`${table.position} between 1 and 20`),
+  check('territory_duel_difficulty_check', sql`${table.difficulty} in ('easy', 'medium', 'hard')`),
+  check('territory_duel_result_check', sql`${table.result} is null or ${table.result} in ('single_correct', 'faster', 'speed_tie', 'no_correct')`),
+])
+
+export const territoryAnswers = pgTable('territory_answers', {
+  id: uuid().primaryKey().defaultRandom(),
+  roomId: uuid('room_id').notNull().references(() => friendsRooms.id, { onDelete: 'cascade' }),
+  matchId: uuid('match_id').notNull().references(() => territoryMatches.id, { onDelete: 'cascade' }),
+  duelId: uuid('duel_id').notNull().references(() => territoryDuels.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id),
+  optionId: text('option_id').notNull(),
+  isCorrect: boolean('is_correct').notNull(),
+  elapsedMs: integer('elapsed_ms').notNull(),
+  idempotencyKey: text('idempotency_key').notNull(),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  unique('territory_answer_duel_user_unique').on(table.duelId, table.userId),
+  unique('territory_answer_room_user_idempotency_unique').on(table.roomId, table.userId, table.idempotencyKey),
+  index('territory_answer_match_duel_idx').on(table.matchId, table.duelId, table.submittedAt),
+  check('territory_answer_elapsed_check', sql`${table.elapsedMs} between 0 and 60000`),
+  check('territory_answer_option_check', sql`char_length(${table.optionId}) between 1 and 40`),
+])
+
+export const territoryRematchVotes = pgTable('territory_rematch_votes', {
+  matchId: uuid('match_id').notNull().references(() => territoryMatches.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id),
+  idempotencyKey: text('idempotency_key').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  primaryKey({ columns: [table.matchId, table.userId] }),
+  unique('territory_rematch_vote_idempotency_unique').on(table.matchId, table.userId, table.idempotencyKey),
 ])
 
 export const friendsRoomMessages = pgTable('friends_room_messages', {

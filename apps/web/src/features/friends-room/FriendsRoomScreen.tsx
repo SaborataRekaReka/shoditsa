@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AlertTriangle, Check, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, Plus, Popcorn, RefreshCw, Send, Sparkles } from 'lucide-react'
+import { AlertTriangle, Check, Clock3, DoorOpen, HelpCircle, Lightbulb, LoaderCircle, Map, Plus, Popcorn, RefreshCw, Send, Sparkles, Swords } from 'lucide-react'
 import {
   FRIENDS_ROOM_DEFAULT_PACK_VARIANTS,
   FRIENDS_ROOM_PACK_VARIANTS,
@@ -26,6 +26,7 @@ import { currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './frie
 import { friendsRoomTimeLeft } from './friends-room-time'
 import { friendsRoomActionLabel, friendsRoomPhaseLabel, friendsRoomSummaryTitle } from './friends-room-summary'
 import { ControlButton, DialogSurface, InlineAlert, TextArea, TextInput } from '../../components/ui'
+import { TerritoryRoomGame } from '../territory/TerritoryRoomGame'
 import './FriendsRoomScreen.css'
 
 type IconName = 'apps' | 'back' | 'chat' | 'check' | 'copy' | 'exit' | 'play' | 'remove' | 'replay' | 'send' | 'share' | 'shuffle' | 'timer' | 'trophy' | 'users'
@@ -49,6 +50,7 @@ const MODES: Array<{ id: PlayableCatalogGuessModeId; label: string; poster: stri
   { id: 'character', label: 'Персонажи', poster: 'images/title-posters/character-ticket-poster.webp', color: 'var(--mode-character-brand)' },
 ]
 const DANETKI_MODE = { id: 'danetki' as const, label: 'Данетки', poster: 'images/title-posters/danetki-ticket-poster.webp', color: 'var(--mode-danetki-brand)' }
+const TERRITORY_MODE = { id: 'territory' as const, label: 'Захват', poster: 'images/friends-room/friends-ticket-art-v2.webp', color: 'var(--color-accent)' }
 const ROOM_MODES = [...MODES, DANETKI_MODE]
 type RoomMode = (typeof ROOM_MODES)[number]['id']
 type FriendsRoomBootstrap = {
@@ -94,10 +96,11 @@ const withConfigDraft = (snapshot: FriendsRoomSnapshot, draft: FriendsRoomConfig
   }
 }
 
-export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
+export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, territoryEnabled = false }: {
   navigation: AppHeaderProps
   onExit: () => void
   ticketBalance?: number
+  territoryEnabled?: boolean
 }) {
   const [room, setRoom] = useState<FriendsRoomSnapshot | null>(null)
   const [roomDirectory, setRoomDirectory] = useState<FriendsRoomSummary[] | null>(null)
@@ -143,8 +146,9 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     if (!bootstrapRef.current) {
       const search = new URLSearchParams(window.location.search)
       const code = search.get('room')?.trim().toUpperCase()
-      const gameType: FriendsRoomGameType = search.get('mode') === 'danetki' ? 'danetki' : 'quiz'
-      const createExplicitly = search.get('new') === '1' || gameType === 'danetki'
+      const requestedMode = search.get('mode')
+      const gameType: FriendsRoomGameType = requestedMode === 'danetki' || requestedMode === 'territory' ? requestedMode : 'quiz'
+      const createExplicitly = search.get('new') === '1' || gameType !== 'quiz'
       bootstrapRef.current = ensureServerSession()
         .then(async (identity) => {
           setAnonymousUser(identity.user.isAnonymous)
@@ -237,10 +241,11 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
   }, [applyIncomingRoom, room?.id])
 
   useEffect(() => {
+    if (room?.gameType === 'territory') return
     if (room?.phase !== 'active' && room?.phase !== 'countdown') return
     const timer = window.setInterval(() => setNow(Date.now()), 250)
     return () => window.clearInterval(timer)
-  }, [room?.phase])
+  }, [room?.gameType, room?.phase])
 
   useEffect(() => {
     if (room?.phase === 'countdown' || room?.phase === 'active') {
@@ -248,6 +253,10 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
       setAnswerItemId(undefined)
     }
   }, [room?.currentRound, room?.phase])
+
+  useEffect(() => {
+    if (room?.gameType === 'territory') setError('')
+  }, [room?.gameType, room?.territory?.duelNumber, room?.territory?.phase])
 
   useEffect(() => {
     if (!room || room.phase !== 'intermission') return
@@ -285,6 +294,30 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     }
   }, [busy])
 
+  const runTerritoryAction = useCallback(async (action: () => Promise<{ room: FriendsRoomSnapshot }>) => {
+    if (busy) throw new Error('Дождитесь завершения предыдущего действия')
+    const before = roomRef.current?.territory
+    setBusy(true)
+    setError('')
+    try {
+      applyIncomingRoom((await action()).room)
+    } catch (reason) {
+      const current = roomRef.current
+      if (current?.id) {
+        try {
+          const fresh = (await api.friendsRoomSnapshot(current.id)).room
+          applyIncomingRoom(fresh)
+          const after = fresh.territory
+          if (before && after && (before.duelNumber !== after.duelNumber || before.phase !== after.phase)) return
+        } catch { /* Preserve the original mutation error when refresh also fails. */ }
+      }
+      setError(errorText(reason))
+      throw reason
+    } finally {
+      setBusy(false)
+    }
+  }, [applyIncomingRoom, busy])
+
   const copyInvite = async () => {
     if (!room) return
     const url = new URL('/games/together', window.location.origin)
@@ -300,11 +333,13 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     setError('')
     try {
       const identity = await ensureServerSession()
+      const gameType = gameTypeOverride ?? room?.gameType ?? 'quiz'
       if (identity.user.isAnonymous) {
-        window.location.assign(friendsRoomRegistrationHref('/games/together?new=1'))
+        const returnUrl = gameType === 'quiz' ? '/games/together?new=1' : `/games/together?mode=${gameType}`
+        window.location.assign(friendsRoomRegistrationHref(returnUrl))
         return
       }
-      const snapshot = (await api.friendsRoomCreate({ gameType: gameTypeOverride ?? room?.gameType ?? 'quiz' })).room
+      const snapshot = (await api.friendsRoomCreate({ gameType })).room
       trackClientEvent('friends_room_created', { roomId: snapshot.id, gameType: snapshot.gameType, rulesVersion: snapshot.rulesVersion })
       setRoom(snapshot)
       setRoomDirectory(null)
@@ -481,7 +516,11 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     maximum: room?.phase === 'countdown' ? 3 : room?.phase === 'active' ? room.answerTimeSeconds : 0,
   })
 
-  const pageAccent = room?.gameType === 'danetki' ? DANETKI_MODE.color : room?.phase === 'lobby' ? 'var(--mode-series-brand)' : mode.color
+  const pageAccent = room?.gameType === 'danetki'
+    ? DANETKI_MODE.color
+    : room?.gameType === 'territory'
+      ? TERRITORY_MODE.color
+      : room?.phase === 'lobby' ? 'var(--mode-series-brand)' : mode.color
 
   if (room?.gameType === 'danetki' && room.danetkiSessionId) {
     return <TogetherDanetkiGame
@@ -501,7 +540,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
     <GameScreenShell
       variant="session"
       wide
-      className="game-shell friends-room"
+      className={`game-shell friends-room${room?.gameType === 'territory' && room.phase !== 'lobby' ? ' friends-room--territory-game' : ''}`}
       onBack={onExit}
       backLabel="Вернуться к играм"
       status={error && !room && !roomDirectory && !invitePreview
@@ -512,12 +551,17 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
         ? <span className="room-connection room-connection--connected"><RoomIcon name="trophy" />{roomDirectory.length ? 'Текущая комната' : 'Комната не создана'}</span>
         : <span className={`room-connection room-connection--${connection}`}><RoomIcon name="trophy" />{connection === 'connected' ? 'Онлайн-комната · на связи' : connection === 'offline' ? 'Онлайн-комната · нет сети' : 'Онлайн-комната · подключаемся'}</span>}
     >
-      {error && (room || roomDirectory || invitePreview) && <InlineAlert tone="danger" className="room-alert" onDismiss={() => setError('')}>{error}</InlineAlert>}
+      {error && (room || roomDirectory || invitePreview) && (room?.gameType !== 'territory' || room.phase === 'lobby') && <InlineAlert tone="danger" className="room-alert" onDismiss={() => setError('')}>{error}</InlineAlert>}
       {loading && <RoomLoading />}
       {!loading && !room && invitePreview && <RoomInvitePreview preview={invitePreview} busy={busy} onJoin={() => void joinInvitedRoom()} onDecline={onExit} />}
-      {!loading && !room && !invitePreview && roomDirectory && <RoomDirectory rooms={roomDirectory} busy={busy} onOpen={(summary) => void openExistingRoom(summary)} onLeave={(roomId) => void leaveDirectoryRoom(roomId)} onCreate={(gameType) => void createNewRoom(gameType)} />}
+      {!loading && !room && !invitePreview && roomDirectory && <RoomDirectory rooms={roomDirectory} busy={busy} territoryEnabled={territoryEnabled} onOpen={(summary) => void openExistingRoom(summary)} onLeave={(roomId) => void leaveDirectoryRoom(roomId)} onCreate={(gameType) => void createNewRoom(gameType)} />}
       {!loading && !room && !invitePreview && !roomDirectory && <RoomError onRetry={() => window.location.reload()} onExit={onExit} />}
-      {room?.phase === 'lobby' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} messageSending={messageSending} configSaving={configSaving} danetkiGroupCost={room.danetkiLaunchCost} ticketBalance={ticketBalance} message={message} onMessage={setMessage} onSend={sendMessage} onGameType={(gameType, selectedMode) => updateConfig({
+      {room?.phase === 'lobby' && room.gameType === 'territory' && <TerritoryLobby room={room} members={members} copied={copied} busy={busy} messageSending={messageSending} message={message} onMessage={setMessage} onSend={sendMessage} onCopy={copyInvite} onStart={() => void run(async () => {
+        const response = await api.friendsRoomStart(room.id, idempotencyKey())
+        trackClientEvent('friends_room_started', { roomId: room.id, gameType: 'territory', cost: 0, accessSource: 'club', rulesVersion: room.rulesVersion })
+        return response
+      })} />}
+      {room?.phase === 'lobby' && room.gameType !== 'territory' && <Lobby room={room} mode={mode} members={members} copied={copied} busy={busy} messageSending={messageSending} configSaving={configSaving} danetkiGroupCost={room.danetkiLaunchCost} ticketBalance={ticketBalance} message={message} onMessage={setMessage} onSend={sendMessage} onGameType={(gameType, selectedMode) => updateConfig({
         gameType,
         ...(selectedMode ? { packs: [{ mode: selectedMode, variant: FRIENDS_ROOM_DEFAULT_PACK_VARIANTS[selectedMode] }] } : {}),
       })} onPacks={(packs) => updateConfig({ gameType: 'quiz', packs, ...(room.roundsTotal < packs.length ? { roundsTotal: friendsRoomMinimumRounds(packs.length) } : {}) })} onRounds={(value) => updateConfig({ roundsTotal: value })} onTime={(value) => updateConfig({ answerTimeSeconds: value })} onShuffle={() => updateConfig({ shufflePacks: !room.shufflePacks })} onCopy={copyInvite} onStart={() => void run(async () => {
@@ -530,9 +574,19 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
         if ((quote?.cost ?? 0) > 0) trackClientEvent('ticket_spent', { sink: 'friends-room', amount: quote!.cost, roomId: room.id, rulesVersion: room.rulesVersion ?? 4 })
         return response
       })} />}
-      {room?.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} messageSending={messageSending} onMessage={setMessage} onSend={sendMessage} />}
-      {room && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} busy={busy} messageSending={messageSending} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
-      {room?.phase === 'intermission' && <IntermissionScreen room={room} players={ranked} busy={busy} onContinue={() => void run(async () => {
+      {room?.gameType === 'territory' && room.phase !== 'lobby' && room.territory && <TerritoryRoomGame
+        snapshot={room.territory}
+        currentMemberId={room.currentUserId}
+        busy={busy}
+        error={error || undefined}
+        onSubmitAnswer={(duelId, optionId) => runTerritoryAction(() => api.friendsRoomTerritoryAnswer(room.id, duelId, optionId, idempotencyKey()))}
+        onCapture={(cellId) => runTerritoryAction(() => api.friendsRoomTerritoryCapture(room.id, cellId, idempotencyKey()))}
+        onRematch={() => runTerritoryAction(() => api.friendsRoomTerritoryRematch(room.id, idempotencyKey()))}
+      />}
+      {room?.gameType === 'territory' && room.phase !== 'lobby' && !room.territory && <RoomLoading />}
+      {room && room.gameType !== 'territory' && room.phase === 'countdown' && <CountdownLayout room={room} ranked={ranked} value={Math.max(1, timeLeft)} message={message} messageSending={messageSending} onMessage={setMessage} onSend={sendMessage} />}
+      {room && room.gameType !== 'territory' && (room.phase === 'active' || room.phase === 'results') && <GameLayout room={room} mode={mode} ranked={ranked} timeLeft={timeLeft} answer={answer} message={message} busy={busy} messageSending={messageSending} submitted={Boolean(currentMember?.answered)} onAnswer={(value, itemId) => { setAnswer(value); setAnswerItemId(itemId) }} onSubmit={submitAnswer} onMessage={setMessage} onSend={sendMessage} onReveal={() => void run(() => api.friendsRoomReveal(room.id, idempotencyKey()))} onNext={() => void run(() => api.friendsRoomNext(room.id, idempotencyKey()))} />}
+      {room && room.gameType !== 'territory' && room.phase === 'intermission' && <IntermissionScreen room={room} players={ranked} busy={busy} onContinue={() => void run(async () => {
         trackClientEvent('friends_room_continue_clicked', { roomId: room.id, required: room.continuation.cost, balance: room.continuation.balance, shortage: room.continuation.shortage, roundsAdded: room.continuation.roundsAdded, rulesVersion: room.rulesVersion })
         const response = await api.friendsRoomContinue(room.id, idempotencyKey())
         trackClientEvent('friends_room_continued', { roomId: room.id, cost: room.continuation.cost, accessSource: room.continuation.accessSource, nextRoundsTotal: room.continuation.nextRoundsTotal, rulesVersion: room.rulesVersion })
@@ -542,7 +596,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0 }: {
         trackClientEvent('friends_room_ended_at_intermission', { roomId: room.id, roundsCompleted: room.currentRound, rulesVersion: room.rulesVersion })
         void leaveCurrentRoom()
       }} />}
-      {room?.phase === 'finished' && <FinalScreen room={room} players={ranked} busy={busy} anonymousUser={anonymousUser} onAgain={() => void run(() => api.friendsRoomRestart(room.id, idempotencyKey()))} onExit={() => void leaveCurrentRoom()} />}
+      {room && room.gameType !== 'territory' && room.phase === 'finished' && <FinalScreen room={room} players={ranked} busy={busy} anonymousUser={anonymousUser} onAgain={() => void run(() => api.friendsRoomRestart(room.id, idempotencyKey()))} onExit={() => void leaveCurrentRoom()} />}
     </GameScreenShell>
   </div>
 }
@@ -864,9 +918,10 @@ function DanetkiParticipants({ players, capacity, currentUserId, currentTurnUser
   </section>
 }
 
-function RoomDirectory({ rooms, busy, onOpen, onLeave, onCreate }: {
+function RoomDirectory({ rooms, busy, territoryEnabled, onOpen, onLeave, onCreate }: {
   rooms: FriendsRoomSummary[]
   busy: boolean
+  territoryEnabled: boolean
   onOpen: (room: FriendsRoomSummary) => void
   onLeave: (roomId: string) => void
   onCreate: (gameType: FriendsRoomGameType) => void
@@ -874,11 +929,13 @@ function RoomDirectory({ rooms, busy, onOpen, onLeave, onCreate }: {
   const room = rooms[0]
   const presentation = room?.gameType === 'danetki'
     ? DANETKI_MODE
+    : room?.gameType === 'territory'
+      ? TERRITORY_MODE
     : room
       ? MODES.find((entry) => entry.id === (room.packs[0]?.mode ?? room.mode)) ?? MODES[0]
       : null
   const progress = room && (room.phase === 'active' || room.phase === 'results')
-    ? `Раунд ${room.currentRound} из ${room.roundsTotal}`
+    ? room.gameType === 'territory' ? `Дуэль ${room.currentRound} из ${room.roundsTotal}` : `Раунд ${room.currentRound} из ${room.roundsTotal}`
     : room
       ? friendsRoomPhaseLabel(room.phase)
       : ''
@@ -895,8 +952,10 @@ function RoomDirectory({ rooms, busy, onOpen, onLeave, onCreate }: {
     {room && presentation && <div className="room-directory__list">
       <article className={`room-directory-card is-${room.gameType}`}>
           <div className="room-directory-card__poster">
-            <img src={publicAssetUrl(presentation.poster)} alt="" />
-            <span>{room.gameType === 'danetki' ? 'Расследование' : 'Комната'}</span>
+            {room.gameType === 'territory'
+              ? <i className="room-directory-card__map-art" aria-hidden="true"><Map /></i>
+              : <img src={publicAssetUrl(presentation.poster)} alt="" />}
+            <span>{room.gameType === 'danetki' ? 'Расследование' : room.gameType === 'territory' ? 'Дуэль' : 'Комната'}</span>
           </div>
           <div className="room-directory-card__body">
             <span>{room.isHost ? 'Вы ведущий' : 'Вы игрок'} · {room.code}</span>
@@ -914,6 +973,7 @@ function RoomDirectory({ rooms, busy, onOpen, onLeave, onCreate }: {
       <div><span>Новая встреча</span><strong>Что будет на проекторе?</strong></div>
       <ControlButton type="button" onClick={() => onCreate('quiz')} disabled={busy}><Plus />Создать игровую комнату</ControlButton>
       <ControlButton type="button" onClick={() => onCreate('danetki')} disabled={busy}><HelpCircle />Создать Данетку</ControlButton>
+      {territoryEnabled && <ControlButton type="button" onClick={() => onCreate('territory')} disabled={busy}><Swords />Создать дуэль</ControlButton>}
     </footer>}
   </section>
 }
@@ -934,26 +994,81 @@ function RoomInvitePreview({ preview, busy, onJoin, onDecline }: {
 }) {
   const presentation = preview.gameType === 'danetki'
     ? DANETKI_MODE
-    : MODES.find((entry) => entry.id === (preview.packs[0]?.mode ?? preview.mode)) ?? MODES[0]
+    : preview.gameType === 'territory'
+      ? TERRITORY_MODE
+      : MODES.find((entry) => entry.id === (preview.packs[0]?.mode ?? preview.mode)) ?? MODES[0]
   return <section className={`room-invite is-${preview.gameType}`}>
     <div className="room-invite__mark" aria-hidden="true">
-      <img src={publicAssetUrl('images/friends-room/friends-ticket-art-v2.webp')} alt="" />
+      {preview.gameType === 'territory'
+        ? <Map />
+        : <img src={publicAssetUrl('images/friends-room/friends-ticket-art-v2.webp')} alt="" />}
     </div>
     <div className="room-invite__body">
       <span className="room-kicker">Приглашение · комната {preview.code}</span>
       <h1>{preview.hostName} приглашает в {presentation.label}</h1>
       <p>{preview.gameType === 'danetki'
         ? 'Вас ждёт общее расследование: одна история, общий протокол и вопросы ведущему по очереди.'
-        : 'Вы увидите те же подсказки, что и друзья, и отправите свой ответ одновременно с остальными.'}</p>
+        : preview.gameType === 'territory'
+          ? 'Дуэль на общей карте: отвечайте быстрее соперника и выбирайте, какую соседнюю территорию захватить.'
+          : 'Вы увидите те же подсказки, что и друзья, и отправите свой ответ одновременно с остальными.'}</p>
       <div className="room-invite__facts">
         <span><RoomIcon name="users" /><strong>{preview.players} из {preview.capacity}</strong><small>уже в комнате</small></span>
         <span><RoomIcon name="timer" /><strong>{friendsRoomPhaseLabel(preview.phase)}</strong><small>состояние комнаты</small></span>
         {preview.gameType === 'danetki' && <span><RoomIcon name="play" /><strong>{preview.danetkiLaunchCost} билетов</strong><small>оплатит создатель</small></span>}
+        {preview.gameType === 'territory' && <span><RoomIcon name="trophy" /><strong>До 20 дуэлей</strong><small>захват общей карты</small></span>}
       </div>
       <div className="room-invite__actions">
         <ActionButton type="button" onClick={onJoin} disabled={busy}>{busy ? 'Входим…' : 'Войти в комнату'}</ActionButton>
         <ActionButton type="button" variant="secondary" onClick={onDecline} disabled={busy}>Не сейчас</ActionButton>
       </div>
+    </div>
+  </section>
+}
+
+function TerritoryLobby({ room, members, copied, busy, messageSending, message, onMessage, onSend, onCopy, onStart }: {
+  room: FriendsRoomSnapshot
+  members: FriendsRoomSnapshot['members']
+  copied: boolean
+  busy: boolean
+  messageSending: boolean
+  message: string
+  onMessage: (value: string) => void
+  onSend: (event: FormEvent) => void
+  onCopy: () => void
+  onStart: () => void
+}) {
+  const participants = room.members.filter((member) => !member.leftAt)
+  const ready = participants.length === room.capacity && participants.every((member) => member.connected)
+  const seats = Array.from({ length: room.capacity }, (_, index) => participants[index] ?? null)
+  return <section className="room-lobby is-territory">
+    <div className="room-lobby__intro">
+      <span className="room-kicker">Игра с друзьями · дуэль на двоих</span>
+      <h1>Захват</h1>
+      <p>Пригласите одного соперника. Вы будете одновременно отвечать на вопросы, а победитель каждой дуэли выберет следующую территорию для захвата.</p>
+      <div className={`room-code-card${copied ? ' is-copied' : ''}`}><span>Код игры</span><strong>{room.code}</strong><ControlButton type="button" onClick={onCopy} title="Копировать ссылку-приглашение"><RoomIcon name={copied ? 'check' : 'copy'} />{copied ? 'Скопировано' : 'Копировать'}</ControlButton></div>
+      <LobbyCommunity room={room} members={members} message={message} busy={messageSending} onMessage={onMessage} onSend={onSend} />
+    </div>
+    <div className="room-lobby__settings room-territory-lobby">
+      <header className="room-settings-heading"><span>Состав матча</span><strong>{members.length} из {room.capacity}</strong></header>
+      <section className="room-territory-lobby__brief">
+        <Map aria-hidden="true" />
+        <div><span>Фиксированные правила</span><h2>Одна карта. Две столицы.</h2><p>Настроек сложности нет: вопросы и карта одинаковы для обоих игроков, поэтому исход решают знания и скорость.</p></div>
+      </section>
+      <div className="room-territory-lobby__seats" role="list" aria-label="Игроки матча">
+        {seats.map((member, index) => <article className={member?.connected ? 'is-ready' : member ? 'is-offline' : 'is-empty'} key={member?.userId ?? `empty-${index}`} role="listitem">
+          <i className={index === 0 ? 'is-light' : 'is-deep'} aria-hidden="true">{index === 0 ? 'А' : 'Б'}</i>
+          <span><small>{index === 0 ? 'Светлые земли' : 'Глубокие земли'}</small><strong>{member?.displayName ?? 'Ждём соперника'}</strong></span>
+          <em>{member ? member.userId === room.currentUserId ? 'Вы' : member.connected ? 'Готов' : 'Не в сети' : 'Свободно'}</em>
+        </article>)}
+      </div>
+      <div className="room-territory-lobby__rules" aria-label="Правила матча">
+        <article><Swords aria-hidden="true" /><span><strong>До 20 дуэлей</strong><small>Матч закончится раньше, как только один игрок захватит большинство карты.</small></span></article>
+        <article><Clock3 aria-hidden="true" /><span><strong>20 секунд</strong><small>Оба отвечают одновременно; при двух верных побеждает более быстрый.</small></span></article>
+        <article><Map aria-hidden="true" /><span><strong>Захват соседей</strong><small>После победы выбирайте доступную землю с учётом её ценности.</small></span></article>
+      </div>
+      {room.isHost
+        ? <ControlButton className="room-start" type="button" onClick={onStart} disabled={busy || !ready}><RoomIcon name="play" />{busy ? 'Запускаем…' : ready ? 'Начать матч' : 'Нужен второй игрок'}<span>{ready ? 'Оба игрока на связи' : 'Отправьте сопернику код комнаты'}</span></ControlButton>
+        : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>{ready ? 'Ждём запуска' : 'Ждём второго игрока'}</strong><small>{ready ? 'Матч запускает создатель комнаты' : 'Начнём, когда оба игрока будут на связи'}</small></span></div>}
     </div>
   </section>
 }

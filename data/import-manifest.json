@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-16T08:56:01.001Z",
+  "generatedAt": "2026-08-27T15:37:05.881Z",
   "sourceRoot": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries",
-  "totalItems": 7884,
+  "totalItems": 8084,
   "modes": {
     "movie": {
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\movies\\items.json",
@@ -40,7 +40,7 @@
     },
     "danetki": {
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\danetki\\items.json",
-      "checksumSha256": "2a2119670f561852b89e70c5a08ec3362702cb33755a479e5c4f3ea27a89ae33",
+      "checksumSha256": "3c4f75051ae2f2f6cc243deed0c4bf010cb1dbceef718c98f5ff37a689b6a0d5",
       "count": 30
     },
     "connections": {
@@ -62,9 +62,14 @@
       "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\characters\\items.json",
       "checksumSha256": "0cebac556958435e58cd409218a0d17602194ecdd21aaadac873235e7e4a8151",
       "count": 400
+    },
+    "territory": {
+      "file": "C:\\projects\\dev\\seans_starter_pack\\public\\data\\libraries\\territory\\items.json",
+      "checksumSha256": "2d8bd1611408be162d437cb07b764f564622b860eead4c67cd23454f97fa9379",
+      "count": 200
     }
   },
   "warnings": [],
-  "checksumSha256": "4c2543711f17be78d4cf3ed9965e8e107d7bf75cccca7783f3420ade79254321",
+  "checksumSha256": "7ba8c2d74bdbfe4caca02565949bd4bd66fc8ba8d8b7e1392c5ed3273eb208e3",
   "mode": "dry-run"
 }

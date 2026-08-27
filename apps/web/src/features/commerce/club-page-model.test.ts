@@ -49,6 +49,7 @@ const meta: MetaResponse = {
     connectionsEnabled: true,
     connectionsHintsEnabled: true,
     connectionsLaunchDate: '2026-07-27',
+    territoryEnabled: true,
   },
 }
 

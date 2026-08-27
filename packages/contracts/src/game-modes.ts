@@ -1,19 +1,19 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book', 'character'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book', 'character', 'territory'] as const
 // Every listed runtime is available in the player application. Full-house
 // participation remains a separate capability below.
 export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'animal', 'book', 'character', 'connections', 'danetki'] as const
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
 export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]
-export type GameEngine = 'catalog_guess' | 'danetki_chat' | 'connections_grid'
+export type GameEngine = 'catalog_guess' | 'danetki_chat' | 'connections_grid' | 'territory_duel'
 
 export type GameModeCapabilities = {
   engine: GameEngine
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'characters' | 'danetki' | 'connections'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'characters' | 'danetki' | 'connections' | 'territory'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
@@ -87,6 +87,10 @@ export const GAME_MODE_MANIFEST = {
   },
   connections: {
     engine: 'connections_grid', label: 'Связи', dailyLabel: 'Связи', shareIcon: '🧩', dataDir: 'connections', dailyOrder: 11,
+    countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
+  },
+  territory: {
+    engine: 'territory_duel', label: 'Захват', dailyLabel: 'Захват', shareIcon: '⬡', dataDir: 'territory', dailyOrder: 0,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>

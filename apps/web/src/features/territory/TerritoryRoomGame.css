@@ -1,0 +1,560 @@
+.territory-room-game {
+  --territory-player-light: var(--territory-map-light);
+  --territory-player-deep: var(--territory-map-deep);
+  --territory-banner-light: var(--mode-territory-brand);
+  --territory-banner-deep: var(--mode-territory-brand-deep);
+  --territory-neutral: var(--territory-map-neutral);
+  --territory-target: var(--color-accent);
+  --territory-self: var(--territory-player-light);
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+  height: calc(100dvh - 96px);
+  min-height: 680px;
+  max-height: 900px;
+  overflow: hidden;
+  color: #eee8dc;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(62, 107, 72, .08), transparent 39%),
+    linear-gradient(rgba(239, 232, 216, .025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 232, 216, .025) 1px, transparent 1px),
+    #101310;
+  background-size: auto, 24px 24px, 24px 24px, auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.territory-room-game::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: .16;
+  pointer-events: none;
+  background: repeating-linear-gradient(112deg, transparent 0 3px, rgba(255,255,255,.018) 3px 4px);
+  content: '';
+}
+
+.territory-room-game--you-deep { --territory-self: var(--territory-player-deep); }
+
+/* Three independent blocks, matching the approved wide HUD. */
+.territory-hud {
+  min-width: 0;
+  min-height: 100px;
+  padding: 8px 0 10px;
+  display: grid;
+  grid-template-columns: minmax(210px, 22vw) minmax(235px, 25.5vw) minmax(210px, 22vw);
+  gap: 7vw;
+  justify-content: center;
+  align-items: center;
+}
+
+.territory-player {
+  position: relative;
+  min-width: 0;
+  min-height: 80px;
+  padding: 9px 18px 9px 10px;
+  color: var(--color-text);
+  background-color: var(--territory-banner-light);
+  background-image:
+    repeating-linear-gradient(135deg, transparent 0 6px, rgba(18, 42, 25, .17) 6px 8px),
+    linear-gradient(90deg, rgba(255,255,255,.07), transparent 55%);
+  box-shadow: 0 12px 28px rgba(0,0,0,.2), inset 0 0 0 1px rgba(255,255,255,.08);
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  gap: 15px;
+  align-items: center;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, calc(100% - 8px) 5px, 100% 8px, calc(100% - 8px) 12px, calc(100% - 8px) calc(100% - 12px), 100% calc(100% - 8px), calc(100% - 8px) calc(100% - 5px), calc(100% - 8px) 100%, 8px 100%, 8px calc(100% - 5px), 0 calc(100% - 8px), 8px calc(100% - 12px), 8px 12px, 0 8px, 8px 5px);
+}
+
+.territory-player--deep,
+.territory-player--right {
+  background-color: var(--territory-banner-deep);
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1.25px),
+    linear-gradient(270deg, rgba(255,255,255,.06), transparent 55%);
+  background-size: 9px 9px, auto;
+}
+
+.territory-player--right {
+  padding: 9px 10px 9px 18px;
+  grid-template-columns: auto minmax(0, 1fr) 62px;
+  text-align: right;
+}
+
+.territory-player.is-current { box-shadow: 0 0 0 1px rgba(214,165,70,.62), 0 12px 30px rgba(0,0,0,.25); }
+
+.territory-player__crest {
+  width: 62px;
+  height: 62px;
+  overflow: hidden;
+  border: 2px solid rgba(238,232,220,.7);
+  border-radius: 9px;
+  color: #17251b;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 6px, rgba(16,39,23,.2) 6px 8px),
+    #83c28f;
+  box-shadow: 0 4px 11px rgba(0,0,0,.25), inset 0 0 0 2px rgba(16,39,23,.18);
+  display: grid;
+  place-items: center;
+  font: 600 26px/1 Oswald, sans-serif;
+}
+
+.territory-player--right .territory-player__crest {
+  color: #eef1e8;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.22) 0 1.4px, transparent 1.7px) 0 0 / 9px 9px,
+    #294c38;
+}
+
+.territory-player__copy { min-width: 0; display: grid; gap: 3px; }
+.territory-player__copy > small { display: none; }
+.territory-player__copy > strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text);
+  font: 500 clamp(20px, 2vw, 29px)/1 Oswald, sans-serif;
+  letter-spacing: .015em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 2px 2px rgba(0,0,0,.22);
+}
+.territory-player__copy > strong b { font: inherit; }
+.territory-player__score { display: none; }
+
+.territory-turn {
+  min-width: 0;
+  min-height: 72px;
+  padding: 0 22px;
+  border: 1px solid rgba(228,219,201,.22);
+  border-radius: 14px;
+  background: rgba(14,17,14,.68);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.018), 0 10px 30px rgba(0,0,0,.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: Oswald, sans-serif;
+  white-space: nowrap;
+}
+.territory-turn > span {
+  color: #b9b3a5;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: .12em;
+}
+.territory-turn > strong,
+.territory-turn > time,
+.territory-turn > b { color: #ede6d9; font: 500 23px/1 Oswald, sans-serif; }
+.territory-turn > strong small,
+.territory-turn > time small { color: #b9b3a5; font: inherit; font-size: .72em; }
+.territory-turn > i { width: 1px; height: 25px; margin: 0 13px; background: linear-gradient(transparent, rgba(229,220,202,.25), transparent); }
+.territory-turn > svg { width: 20px; color: var(--territory-target); }
+.territory-turn > time.is-urgent { color: #efb95a; animation: territory-time-pulse 1s ease-in-out infinite; }
+
+/* The island is intentionally unframed and visually dominant. */
+.territory-map-shell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 clamp(34px, 7vw, 108px);
+  display: grid;
+  place-items: start center;
+}
+.territory-map-shell::before {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: 6%;
+  height: 15%;
+  border-radius: 50%;
+  opacity: .75;
+  filter: blur(18px);
+  pointer-events: none;
+  background: rgba(0,0,0,.55);
+  content: '';
+}
+.territory-map {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1180px);
+  height: 100%;
+  max-height: 470px;
+  overflow: visible;
+  display: block;
+  filter: drop-shadow(0 10px 5px rgba(0,0,0,.36)) drop-shadow(0 19px 16px rgba(0,0,0,.22));
+}
+.territory-map__region { outline: none; }
+.territory-map__shape {
+  fill: var(--territory-neutral);
+  stroke: var(--territory-map-ink);
+  stroke-width: 2.1;
+  stroke-opacity: .82;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill .22s ease, stroke .18s ease, filter .18s ease, opacity .18s ease;
+}
+.territory-map__rim-shadow,
+.territory-map__rim-line {
+  fill: none;
+  pointer-events: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.territory-map__rim-shadow {
+  stroke: #131713;
+  stroke-width: 11;
+  opacity: .92;
+  filter: drop-shadow(0 5px 4px rgba(0,0,0,.48));
+}
+.territory-map__rim-line {
+  stroke: #aaa18d;
+  stroke-width: 2.2;
+  opacity: .9;
+}
+.territory-map__region:not(.is-light):not(.is-deep) .territory-map__shape {
+  fill: #2e312e;
+  opacity: .97;
+}
+.territory-map__hit { fill: transparent; stroke: transparent; stroke-width: 16; cursor: default; vector-effect: non-scaling-stroke; }
+.territory-map__region.is-actionable .territory-map__hit { cursor: pointer; }
+.territory-map__region.is-legal .territory-map__shape { stroke: color-mix(in srgb, var(--territory-target) 55%, var(--territory-map-ink)); }
+.territory-map__region.is-selected .territory-map__shape,
+.territory-map__region.is-actionable:hover .territory-map__shape {
+  stroke: #e2aa48;
+  stroke-width: 5;
+  filter: brightness(1.07) drop-shadow(0 0 5px rgba(214,165,70,.4));
+}
+.territory-map__region:focus-visible .territory-map__shape {
+  stroke: #f0c267;
+  stroke-width: 6;
+  filter: drop-shadow(0 0 7px rgba(240,194,103,.55));
+}
+.territory-map__region.is-last-capture .territory-map__shape { animation: territory-capture-pulse 720ms ease both; }
+.territory-map__value {
+  fill: #ddd5c7;
+  paint-order: stroke;
+  stroke: rgba(23,25,23,.34);
+  stroke-width: 1.5px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font: 500 31px/1 Oswald, sans-serif;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+}
+.territory-map__capital { pointer-events: none; }
+.territory-map__capital circle { vector-effect: non-scaling-stroke; }
+.territory-map__capital-outer {
+  fill: rgba(238,232,220,.76);
+  stroke: rgba(20,24,20,.72);
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.35));
+}
+.territory-map__capital-inner { fill: transparent; stroke: #2d6c46; stroke-width: 4; }
+.territory-map__capital.is-deep .territory-map__capital-inner { stroke: #1d4a33; }
+.territory-map__empty { margin: auto; color: var(--color-muted); font-size: 13px; text-align: center; }
+
+.territory-status-feed {
+  width: 86%;
+  margin-inline: auto;
+  min-height: 42px;
+  padding: 5px clamp(24px, 3vw, 45px) 7px;
+  color: #ddd6c9;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 14px;
+}
+.territory-status-feed > svg { width: 23px; height: 23px; color: var(--territory-player-light); stroke-width: 1.8; }
+.territory-status-feed strong { color: var(--territory-player-light); font-weight: 700; }
+
+.territory-question-panel {
+  position: relative;
+  min-width: 0;
+  min-height: 188px;
+  width: 86%;
+  margin: 0 auto clamp(10px, 1.5vw, 22px);
+  box-sizing: border-box;
+  padding: 20px clamp(20px, 2.6vw, 38px);
+  border: 1px solid rgba(218,210,193,.25);
+  color: #eee8dc;
+  background:
+    linear-gradient(100deg, rgba(255,255,255,.025), transparent 28%, rgba(255,255,255,.012)),
+    var(--color-surface);
+  box-shadow: 0 18px 42px rgba(0,0,0,.24), inset 0 0 0 1px rgba(255,255,255,.015);
+  display: grid;
+  grid-template-columns: minmax(260px, .8fr) minmax(440px, 1.28fr) minmax(170px, .46fr);
+  gap: clamp(20px, 2.5vw, 38px);
+  align-items: center;
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+.territory-question-panel::before,
+.territory-question-panel::after {
+  position: absolute;
+  top: 19px;
+  bottom: 19px;
+  width: 1px;
+  opacity: .75;
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(222,214,197,.28) 14%, rgba(222,214,197,.28) 86%, transparent);
+  content: '';
+}
+.territory-question-panel::before { left: calc(30% + 8px); }
+.territory-question-panel::after { right: calc(19% + 5px); }
+.territory-question-panel__copy { min-width: 0; }
+.territory-question-panel__kicker {
+  color: #a39c8e;
+  display: block;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.territory-question-panel h2 {
+  max-width: 520px;
+  margin: 10px 0 7px;
+  color: #f0eadf;
+  font: 500 clamp(23px, 2.1vw, 32px)/1.13 Oswald, sans-serif;
+  letter-spacing: -.01em;
+}
+.territory-question-panel p { margin: 0; color: #aaa396; font-size: 10px; line-height: 1.45; }
+.territory-question-panel__source { margin-top: 7px; color: #8f897e; display: block; font-size: 8px; line-height: 1.35; }
+.territory-question-panel__source a { color: #9bc3a2; text-decoration: underline; text-underline-offset: 2px; }
+.territory-question-panel__actions {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 12px;
+}
+.territory-option.ui-control,
+.territory-question-panel__actions > div.territory-option {
+  min-width: 0;
+  min-height: 55px;
+  padding: 10px 15px;
+  border: 1px solid rgba(222,214,197,.16);
+  border-radius: 9px;
+  color: #e3ddd2;
+  background: rgba(255,255,255,.025);
+  box-shadow: 0 4px 0 rgba(0,0,0,.13);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+  font: 500 15px/1.25 Manrope, sans-serif;
+  text-align: left;
+  transition: border-color .15s ease, background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.territory-option > i {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border: 2px solid #575a53;
+  border-radius: 50%;
+  display: block;
+}
+.territory-option > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.territory-option.ui-control:hover:not(:disabled) { border-color: rgba(94,169,111,.55); background: rgba(94,169,111,.07); transform: translateY(-1px); }
+.territory-option.is-own { border-color: rgba(94,169,111,.72); background: rgba(94,169,111,.08); box-shadow: inset 3px 0 0 var(--territory-self), 0 4px 0 rgba(0,0,0,.12); }
+.territory-option.is-own > i { border-color: var(--territory-player-light); box-shadow: inset 0 0 0 5px var(--color-surface); background: var(--territory-player-light); }
+.territory-option.is-correct { border-color: rgba(94,169,111,.8); background: rgba(94,169,111,.13); }
+.territory-option.is-wrong { border-color: rgba(184,92,86,.72); background: rgba(184,92,86,.1); }
+.territory-option.ui-control:disabled:not(.is-own) { opacity: .58; }
+.territory-question-panel__confirm { min-width: 0; display: grid; place-items: center; }
+.territory-question-panel__action.ui-button {
+  width: 100%;
+  min-width: 155px;
+  min-height: 72px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 9px;
+  color: #edf0e8;
+  background: linear-gradient(145deg, #66b678, #54a467);
+  box-shadow: 0 6px 0 #0b0e0b, 0 14px 28px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.18);
+  font: 500 clamp(18px, 1.8vw, 25px)/1 Oswald, sans-serif;
+  letter-spacing: .02em;
+}
+.territory-question-panel__action.ui-button:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
+.territory-question-panel__action.ui-button:active:not(:disabled) { box-shadow: 0 3px 0 #0b0e0b, 0 9px 18px rgba(0,0,0,.22); transform: translateY(3px); }
+.territory-question-panel__action svg { width: 18px; animation: none; }
+.territory-question-panel__action .lucide-loader-circle { animation: territory-spin .9s linear infinite; }
+.territory-question-panel__status {
+  min-width: 0;
+  min-height: 72px;
+  color: #bbb4a7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  text-align: center;
+}
+.territory-question-panel__status > svg { width: 22px; color: var(--territory-player-light); }
+.territory-question-panel__status .lucide-loader-circle { animation: territory-spin .9s linear infinite; }
+.territory-question-panel__status--wide { grid-column: 2 / -1; }
+.territory-question-panel__error { grid-column: 1 / -1; min-height: 36px; margin-top: -5px; }
+.territory-countdown { grid-column: 1 / -1; text-align: center; }
+.territory-countdown > span { color: #a39c8e; font-size: 10px; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
+.territory-countdown > strong { margin: 2px 0; color: var(--territory-target); display: block; font: 500 52px/1 Oswald, sans-serif; }
+.territory-countdown > p { margin: 0; }
+.territory-finished { grid-column: 1 / -1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, auto); gap: 30px; align-items: center; }
+.territory-finished .territory-question-panel__action { width: min(100%, 210px); justify-self: end; }
+.territory-room-game button:disabled { cursor: not-allowed; opacity: .62; }
+
+.territory-room-game__sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@keyframes territory-spin { to { transform: rotate(360deg); } }
+@keyframes territory-time-pulse { 50% { opacity: .62; } }
+@keyframes territory-capture-pulse {
+  0% { filter: brightness(1); }
+  45% { filter: brightness(1.22) drop-shadow(0 0 10px rgba(94,169,111,.52)); }
+  100% { filter: brightness(1); }
+}
+
+/* Short laptops: preserve the full question and CTA above the fold. */
+@media (min-width: 1024px) and (max-height: 850px) {
+  .territory-room-game { height: calc(100dvh - 104px); min-height: 650px; }
+  .territory-hud { min-height: 84px; padding-top: 5px; padding-bottom: 7px; }
+  .territory-player { min-height: 70px; }
+  .territory-player__crest { width: 54px; height: 54px; }
+  .territory-player,
+  .territory-player--right { grid-template-columns: 54px minmax(0,1fr) auto; }
+  .territory-player--right { grid-template-columns: auto minmax(0,1fr) 54px; }
+  .territory-turn { min-height: 64px; }
+  .territory-map { max-height: 400px; }
+  .territory-status-feed { min-height: 35px; padding-top: 2px; padding-bottom: 3px; }
+  .territory-question-panel { min-height: 176px; margin-bottom: 8px; padding-top: 15px; padding-bottom: 15px; }
+  .territory-option.ui-control,
+  .territory-question-panel__actions > div.territory-option { min-height: 50px; }
+  .territory-question-panel__action.ui-button { min-height: 66px; }
+}
+
+@media (min-width: 1024px) and (max-height: 720px) {
+  .territory-room-game { height: auto; min-height: 0; max-height: none; overflow: visible; }
+  .territory-map-shell { height: clamp(290px, 51vh, 350px); min-height: 290px; }
+  .territory-map { height: 100%; max-height: 100%; }
+}
+
+/* Tablet composition: prompt above, choices and confirmation below. */
+@media (max-width: 1023px) {
+  .territory-room-game { height: auto; min-height: calc(100dvh - 82px); max-height: none; overflow: visible; }
+  .territory-hud {
+    min-height: 82px;
+    padding: 7px 10px;
+    grid-template-columns: minmax(0,1fr) minmax(170px,.72fr) minmax(0,1fr);
+    gap: 10px;
+  }
+  .territory-player { min-height: 68px; padding: 7px 10px; grid-template-columns: 48px minmax(0,1fr); gap: 9px; }
+  .territory-player--right { grid-template-columns: minmax(0,1fr) 48px; }
+  .territory-player__crest { width: 48px; height: 48px; font-size: 20px; }
+  .territory-player__copy > strong { font-size: 18px; }
+  .territory-player__score { display: none; }
+  .territory-turn { min-height: 60px; padding: 0 12px; gap: 6px; }
+  .territory-turn > span { font-size: 12px; }
+  .territory-turn > strong,
+  .territory-turn > time,
+  .territory-turn > b { font-size: 18px; }
+  .territory-turn > i { height: 20px; margin: 0 4px; }
+  .territory-turn > svg { width: 16px; }
+  .territory-map-shell { height: clamp(300px, 42vw, 410px); padding-inline: 28px; }
+  .territory-map { width: 100%; max-height: 100%; }
+  .territory-status-feed { min-height: 38px; padding-inline: 22px; }
+  .territory-question-panel {
+    min-height: 232px;
+    padding: 16px 20px;
+    grid-template-columns: minmax(0,1fr) 175px;
+    gap: 12px 16px;
+  }
+  .territory-question-panel::before,
+  .territory-question-panel::after { display: none; }
+  .territory-question-panel__copy { grid-column: 1 / -1; }
+  .territory-question-panel h2 { max-width: none; margin-block: 6px 3px; font-size: clamp(22px, 3.2vw, 28px); }
+  .territory-question-panel__copy > p { display: none; }
+  .territory-question-panel__actions { grid-column: 1; }
+  .territory-question-panel__confirm,
+  .territory-question-panel__status { grid-column: 2; grid-row: 2; }
+  .territory-question-panel__status--wide { grid-column: 1 / -1; }
+  .territory-finished { grid-column: 1 / -1; }
+}
+
+@media (min-width: 720px) and (max-width: 1023px) and (max-height: 750px) {
+  .territory-map-shell { height: 260px; }
+  .territory-question-panel { min-height: 218px; padding-block: 13px; }
+  .territory-option.ui-control,
+  .territory-question-panel__actions > div.territory-option { min-height: 48px; }
+  .territory-question-panel__action.ui-button { min-height: 62px; }
+}
+
+@media (max-width: 719px) {
+  .territory-room-game { min-height: calc(100dvh - 66px); background-size: auto, 18px 18px, 18px 18px, auto; }
+  .territory-hud {
+    padding: 8px;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    grid-template-rows: auto auto;
+    gap: 7px;
+  }
+  .territory-turn { grid-column: 1 / -1; grid-row: 1; min-height: 50px; }
+  .territory-player { grid-row: 2; min-height: 56px; padding: 6px 8px; grid-template-columns: 38px minmax(0,1fr); clip-path: none; border-radius: 8px; }
+  .territory-player--right { grid-template-columns: minmax(0,1fr) 38px; }
+  .territory-player__crest { width: 38px; height: 38px; border-width: 1px; border-radius: 7px; font-size: 16px; }
+  .territory-player__copy > small { display: none; }
+  .territory-player__copy > strong { font-size: 15px; }
+  .territory-map-shell { height: clamp(210px, 57vw, 300px); padding-inline: 9px; }
+  .territory-status-feed { min-height: 36px; padding: 3px 12px 5px; gap: 8px; font-size: 11px; }
+  .territory-status-feed > svg { width: 18px; }
+  .territory-question-panel {
+    min-height: 0;
+    margin: 0 7px 10px;
+    padding: 14px;
+    grid-template-columns: minmax(0,1fr);
+    gap: 12px;
+    clip-path: none;
+    border-radius: 10px;
+  }
+  .territory-question-panel__copy,
+  .territory-question-panel__actions,
+  .territory-question-panel__confirm,
+  .territory-question-panel__status { grid-column: 1; grid-row: auto; }
+  .territory-question-panel__copy { order: 1; }
+  .territory-question-panel__confirm { order: 2; }
+  .territory-question-panel__actions,
+  .territory-question-panel__status { order: 3; }
+  .territory-question-panel h2 { font-size: clamp(21px, 6.2vw, 27px); }
+  .territory-question-panel__actions { gap: 7px; }
+  .territory-option.ui-control,
+  .territory-question-panel__actions > div.territory-option { min-height: 50px; padding: 8px 10px; font-size: 13px; }
+  .territory-option > i { width: 19px; height: 19px; flex-basis: 19px; }
+  .territory-question-panel__confirm {
+    position: sticky;
+    z-index: 4;
+    top: calc(68px + env(safe-area-inset-top, 0px));
+  }
+  .territory-question-panel__action.ui-button { min-height: 58px; }
+  .territory-finished { grid-template-columns: 1fr; gap: 14px; }
+  .territory-finished .territory-question-panel__action { width: 100%; justify-self: stretch; }
+}
+
+@media (max-width: 389px) {
+  .territory-turn > i { margin-inline: 1px; }
+  .territory-turn > span { letter-spacing: .06em; }
+  .territory-map-shell { height: 205px; }
+  .territory-question-panel__actions { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .territory-room-game *,
+  .territory-room-game *::before,
+  .territory-room-game *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

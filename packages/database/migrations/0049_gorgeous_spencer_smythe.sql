@@ -1,0 +1,2 @@
+ALTER TABLE "friends_rooms" DROP CONSTRAINT "friends_room_game_type_check";--> statement-breakpoint
+ALTER TABLE "friends_rooms" ADD CONSTRAINT "friends_room_game_type_check" CHECK ("friends_rooms"."game_type" in ('quiz', 'danetki', 'territory'));

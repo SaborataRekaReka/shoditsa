@@ -19,6 +19,12 @@ describe('search index contract', () => {
     }))
   })
 
+  it('keeps the room-only territory mode out of public SEO', () => {
+    expect(Object.hasOwn(GAME_SEO, 'territory')).toBe(false)
+    expect(INDEXABLE_GAME_SEO.map((game) => game.mode)).not.toContain('territory')
+    expect(STATIC_INDEXABLE_PATHS).not.toContain('/games/territory')
+  })
+
   it('generates a complete sitemap without synthetic deployment dates', () => {
     const sitemap = renderSitemap()
     const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])

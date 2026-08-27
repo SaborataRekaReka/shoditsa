@@ -272,11 +272,19 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: '4 группы', present: (payload) => Array.isArray(payload.groups) && payload.groups.length === 4 },
     { label: 'Подсказки', present: (payload) => Array.isArray(payload.groups) && payload.groups.every((group) => hasTextValue(asRecord(group).hint)) },
   ],
+  territory: [
+    { label: 'Вопрос', present: (payload) => hasTextValue(payload.prompt) },
+    { label: '4 варианта', present: (payload) => Array.isArray(payload.options) && payload.options.length === 4 },
+    { label: 'Правильный вариант', present: (payload) => hasTextValue(payload.correctOptionId) },
+    { label: 'Объяснение', present: (payload) => hasTextValue(payload.explanation) },
+    { label: 'Категория', present: (payload) => hasContentValue(payload.category) },
+    { label: 'Источник', present: (payload) => hasContentValue(payload.provenance) },
+  ],
 }
 
 const completionMeta = (payload: unknown, mode: ContentMode) => {
   const record = asRecord(payload)
-  const fields = mode === 'danetki' || mode === 'connections'
+  const fields = mode === 'danetki' || mode === 'connections' || mode === 'territory'
     ? COMPLETION_MODE_FIELDS[mode]
     : [...COMPLETION_COMMON_FIELDS, ...COMPLETION_MODE_FIELDS[mode]]
   const missingFields = fields.filter((field) => !field.present(record)).map((field) => field.label)

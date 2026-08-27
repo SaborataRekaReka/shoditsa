@@ -3,9 +3,11 @@ import { PlayableCatalogGuessModeSchema } from './schemas.js'
 import { PLAYABLE_CATALOG_GUESS_MODE_IDS } from './game-modes.js'
 import type { PublicContentItem } from './api.js'
 import type { EconomyQuote } from './economy.js'
+import type { TerritoryPublicSnapshot } from './territory.js'
 
 export type FriendsRoomPhase = 'lobby' | 'countdown' | 'active' | 'results' | 'intermission' | 'finished'
-export type FriendsRoomGameType = 'quiz' | 'danetki'
+export type FriendsRoomGameType = 'quiz' | 'danetki' | 'territory'
+export type FriendsRoomMode = Static<typeof PlayableCatalogGuessModeSchema> | 'territory'
 export type FriendsRoomDanetkiLaunch = {
   kind: 'daily' | 'archive' | 'free_play'
   puzzleDate?: string
@@ -13,6 +15,7 @@ export type FriendsRoomDanetkiLaunch = {
 
 export const FRIENDS_ROOM_CAPACITY = 8
 export const FRIENDS_ROOM_DANETKI_CAPACITY = 4
+export const FRIENDS_ROOM_TERRITORY_CAPACITY = 2
 
 export type FriendsRoomPackVariant = {
   id: string
@@ -103,7 +106,7 @@ export const FriendsRoomRoundsTotalSchema = Type.Integer({ minimum: 3, maximum: 
 export const friendsRoomMinimumRounds = (packCount: number) => Math.max(3, Math.ceil(packCount / 3) * 3)
 
 export const FriendsRoomCreateBodySchema = Type.Object({
-  gameType: Type.Optional(Type.Union([Type.Literal('quiz'), Type.Literal('danetki')])),
+  gameType: Type.Optional(Type.Union([Type.Literal('quiz'), Type.Literal('danetki'), Type.Literal('territory')])),
   mode: Type.Optional(PlayableCatalogGuessModeSchema),
   packs: Type.Optional(Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: PLAYABLE_CATALOG_GUESS_MODE_IDS.length })),
   roundsTotal: Type.Optional(FriendsRoomRoundsTotalSchema),
@@ -120,7 +123,7 @@ export const FriendsRoomJoinBodySchema = Type.Object({
 }, { additionalProperties: false })
 
 export const FriendsRoomConfigBodySchema = Type.Partial(Type.Object({
-  gameType: Type.Union([Type.Literal('quiz'), Type.Literal('danetki')]),
+  gameType: Type.Union([Type.Literal('quiz'), Type.Literal('danetki'), Type.Literal('territory')]),
   mode: PlayableCatalogGuessModeSchema,
   packs: Type.Array(FriendsRoomPackSelectionSchema, { minItems: 1, maxItems: PLAYABLE_CATALOG_GUESS_MODE_IDS.length }),
   roundsTotal: FriendsRoomRoundsTotalSchema,
@@ -214,7 +217,7 @@ export type FriendsRoomSnapshot = {
   danetkiSessionId: string | null
   danetkiLaunchCost: number
   danetkiLaunch: FriendsRoomDanetkiLaunch
-  mode: Static<typeof PlayableCatalogGuessModeSchema>
+  mode: FriendsRoomMode
   packs: FriendsRoomPackSelection[]
   capacity: number
   roundsTotal: number
@@ -231,6 +234,7 @@ export type FriendsRoomSnapshot = {
   round: FriendsRoomRound | null
   answers: FriendsRoomAnswer[]
   messages: FriendsRoomMessage[]
+  territory: TerritoryPublicSnapshot | null
   continuation: {
     canContinue: boolean
     roundsAdded: 6
@@ -248,7 +252,7 @@ export type FriendsRoomSummary = {
   id: string
   code: string
   gameType: FriendsRoomGameType
-  mode: Static<typeof PlayableCatalogGuessModeSchema>
+  mode: FriendsRoomMode
   packs: FriendsRoomPackSelection[]
   players: number
   capacity: number
@@ -265,7 +269,7 @@ export type FriendsRoomPreview = {
   hostName: string
   gameType: FriendsRoomGameType
   danetkiLaunchCost: number
-  mode: Static<typeof PlayableCatalogGuessModeSchema>
+  mode: FriendsRoomMode
   packs: FriendsRoomPackSelection[]
   players: number
   capacity: number

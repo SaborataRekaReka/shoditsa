@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Gamepad2, Infinity, Play, Users } from 'lucide-react'
+import { Gamepad2, Infinity, Play, Swords, Users } from 'lucide-react'
 import { AppHeader, ActionButton } from '../../components/app-shell/AppShell'
 import { ClubAccessPanel } from '../../components/club-access-panel/ClubAccessPanel'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
@@ -10,21 +10,25 @@ import './FriendsRoomIntroScreen.css'
 
 export function FriendsRoomIntroScreen({
   canCreate,
+  territoryEnabled,
   onHome,
   onArchive,
   onStats,
   onRules,
   onReview,
   onStart,
+  onTerritory,
   onClub,
 }: {
   canCreate: boolean
+  territoryEnabled: boolean
   onHome: () => void
   onArchive: () => void
   onStats: () => void
   onRules: () => void
   onReview: () => void
   onStart: () => void
+  onTerritory: () => void
   onClub: () => void
 }) {
   useEffect(() => {
@@ -53,7 +57,7 @@ export function FriendsRoomIntroScreen({
           <h1>Игра с друзьями</h1>
         </div>
         <time>Одна комната — вся компания</time>
-        <p>Создайте приватную комнату, отправьте друзьям код и проходите любимые категории одновременно или расследуйте Данетки вместе.</p>
+        <p>Создайте приватную комнату, отправьте друзьям код и проходите любимые категории одновременно, расследуйте Данетки{territoryEnabled ? ' или сражайтесь за территории вдвоём' : ''}.</p>
         <AdmissionTitleTicket
           id="ticket-friends-room"
           mode="series"
@@ -69,11 +73,14 @@ export function FriendsRoomIntroScreen({
           <p>Хозяин выбирает категории и темп. Все отвечают со своих устройств, а результаты сходятся в общем зачёте.</p>
           <div className="friends-intro-benefits" aria-label="Возможности комнаты">
             <span><Users /><strong>До 8</strong><small>участников</small></span>
-            <span><Gamepad2 /><strong>7 + Данетки</strong><small>режимов</small></span>
+            <span><Gamepad2 /><strong>{territoryEnabled ? '12 игр' : '11 игр'}</strong><small>режимов</small></span>
             <span><Infinity /><strong>До 30</strong><small>раундов</small></span>
           </div>
           {canCreate
-            ? <ActionButton className="friends-intro-start" onClick={onStart}><Play />Создать комнату<span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>
+            ? <div className="friends-intro-actions">
+                <ActionButton className="friends-intro-start" onClick={onStart}><Play />Создать комнату<span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>
+                {territoryEnabled && <ActionButton className="friends-intro-territory" surface="paper" variant="hint" onClick={onTerritory}><Swords />Сыграть в «Захват»</ActionButton>}
+              </div>
             : <ClubAccessPanel
               title="Комнаты доступны участникам Клуба"
               description="Клубный билет открывает комнаты и совместные Данетки без списания билетиков, а также архив, свободную игру и спецпоказы."

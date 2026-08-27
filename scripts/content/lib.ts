@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type ContentMode, type TitleItem } from '@shoditsa/contracts'
-import { normalize, validateConnectionsRound } from '@shoditsa/game-core'
+import { normalize, validateConnectionsRound, validateTerritoryQuestion } from '@shoditsa/game-core'
 
 export const LIBRARIES: Array<{ dir: string; mode: ContentMode }> = CONTENT_MODE_IDS.map((mode) => ({
   dir: GAME_MODE_MANIFEST[mode].dataDir,
@@ -40,6 +40,10 @@ const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file
   if (mode === 'connections') {
     const errors = validateConnectionsRound(item).filter((issue) => issue.severity === 'error')
     if (errors.length) throw new Error(`${item.id}: invalid connections payload (${errors.map((issue) => issue.code).join(', ')})`)
+  }
+  if (mode === 'territory') {
+    const errors = validateTerritoryQuestion(item).filter((issue) => issue.severity === 'error')
+    if (errors.length) throw new Error(`${item.id}: invalid territory payload (${errors.map((issue) => issue.code).join(', ')})`)
   }
   seen.add(item.id)
   return item

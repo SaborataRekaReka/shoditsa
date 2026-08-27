@@ -15,8 +15,10 @@ const modeLabels: Record<PlayableCatalogGuessModeId, string> = {
 
 export const friendsRoomSummaryTitle = (room: FriendsRoomSummary) => {
   if (room.gameType === 'danetki') return 'Данетки'
+  if (room.gameType === 'territory') return 'Захват'
   if (room.packs.length > 1) return `${room.packs.length} пака: ${room.packs.map((pack) => modeLabels[pack.mode]).join(', ')}`
-  return modeLabels[room.packs[0]?.mode ?? room.mode]
+  const mode = room.packs[0]?.mode ?? room.mode
+  return modeLabels[mode]
 }
 
 export const friendsRoomPhaseLabel = (phase: FriendsRoomPhase) => ({
