@@ -442,7 +442,7 @@ function AcquisitionFunnelPanel({
   onDaysChange: (days: 7 | 14 | 31) => void
   retry: () => void
 }) {
-  const coverage = data?.coverage.lifecycleConsentedAcquisitionRate ?? data?.coverage.lifecycleEventRate ?? null
+  const coverage = data?.coverage.lifecycleConsentedAcquisitionRate ?? null
   const coverageTone = coverage == null ? 'unknown' : coverage >= 80 ? 'good' : coverage >= 50 ? 'warning' : 'danger'
   const sourceStrategy = data?.dataSources.strategy ?? 'raw'
   const sourceLabel = data && !data.dataSources.eventTotalsExact
