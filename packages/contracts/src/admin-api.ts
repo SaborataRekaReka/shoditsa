@@ -119,9 +119,19 @@ export type AdminAcquisitionFunnelResponse = {
     lifecycleEvents: number
     lifecycleEventsWithAcquisition: number
     lifecycleEventRate: number | null
+    consentKnownLifecycleEvents: number
+    consentedLifecycleEvents: number
+    rejectedLifecycleEvents: number
+    lifecycleEventsConsentedWithAcquisition: number
+    lifecycleConsentedAcquisitionRate: number | null
     pageViews: number
     pageViewsWithSource: number
     pageViewsWithAcquisition: number
+    consentKnownPageViews: number
+    consentedPageViews: number
+    rejectedPageViews: number
+    pageViewsConsentedWithAcquisition: number
+    pageViewConsentedAcquisitionRate: number | null
     successfulSignUps: number
     signUpsAttributedToOrganic: number
     signUpAttributionRate: number | null
@@ -129,6 +139,19 @@ export type AdminAcquisitionFunnelResponse = {
     clientEventRetentionDays: 38
     retentionTruncationPossible: boolean
     limitations: string[]
+  }
+  territory: {
+    landingViews: number
+    roomsCreated: number
+    roomStarts: number
+    duelsCompleted: number
+    matchesCompleted: number
+    rematchClicks: number
+    rematchStarts: number
+    landingToRoomRate: number | null
+    roomToStartRate: number | null
+    startToCompleteRate: number | null
+    completeToRematchRate: number | null
   }
   dataSources: {
     strategy: 'raw' | 'raw_with_daily_archive'

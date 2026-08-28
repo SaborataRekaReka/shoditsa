@@ -442,7 +442,7 @@ function AcquisitionFunnelPanel({
   onDaysChange: (days: 7 | 14 | 31) => void
   retry: () => void
 }) {
-  const coverage = data?.coverage.lifecycleEventRate ?? null
+  const coverage = data?.coverage.lifecycleConsentedAcquisitionRate ?? data?.coverage.lifecycleEventRate ?? null
   const coverageTone = coverage == null ? 'unknown' : coverage >= 80 ? 'good' : coverage >= 50 ? 'warning' : 'danger'
   const sourceStrategy = data?.dataSources.strategy ?? 'raw'
   const sourceLabel = data && !data.dataSources.eventTotalsExact
@@ -465,8 +465,19 @@ function AcquisitionFunnelPanel({
         <article><span><BadgeCheck /></span><small>Завершили</small><strong>{data.summary.completions.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.startToCompleteRate)} от стартов · {data.summary.activity.sessionCompletions} сессий</em></article>
         <article><span><ChevronRight /></span><small>Начали следующую</small><strong>{data.summary.nextStarts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.completeToNextStartRate)} от завершений · {data.summary.activity.nextStarts} переходов</em></article>
         <article><span><UserRound /></span><small>Регистрации</small><strong>{data.summary.signUps.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToSignUpRate)} от входов</em></article>
-        <article className={`is-${coverageTone}`}><span><Database /></span><small>Покрытие raw</small><strong>{acquisitionRate(coverage)}</strong><em>{data.coverage.lifecycleEventsWithAcquisition} из {data.coverage.lifecycleEvents}</em></article>
+        <article className={`is-${coverageTone}`}><span><Database /></span><small>Покрытие consented</small><strong>{acquisitionRate(coverage)}</strong><em>{data.coverage.lifecycleEventsConsentedWithAcquisition} из {data.coverage.consentedLifecycleEvents}</em></article>
       </div>
+      <section className="admin-acquisition__activity">
+        <header><div><span>Отдельная воронка</span><h3>Захват</h3></div><small>Уникальные комнаты и матчи, без повторов от двух игроков</small></header>
+        <div>
+          <span><small>Посадочная</small><strong>{data.territory.landingViews}</strong><em>просмотров</em></span>
+          <span><small>Созданы</small><strong>{data.territory.roomsCreated}</strong><em>{acquisitionRate(data.territory.landingToRoomRate)} от входов</em></span>
+          <span><small>Начаты</small><strong>{data.territory.roomStarts}</strong><em>{acquisitionRate(data.territory.roomToStartRate)} от комнат</em></span>
+          <span><small>Завершены</small><strong>{data.territory.matchesCompleted}</strong><em>{acquisitionRate(data.territory.startToCompleteRate)} от стартов</em></span>
+          <span><small>Дуэли</small><strong>{data.territory.duelsCompleted}</strong><em>завершено</em></span>
+          <span><small>Реванши</small><strong>{data.territory.rematchStarts}</strong><em>{acquisitionRate(data.territory.completeToRematchRate)} от матчей</em></span>
+        </div>
+      </section>
       {data.summary.organicLandings === 0 && <div className="admin-acquisition__empty"><Search /><span><strong>Атрибутированных поисковых входов пока нет</strong><small>Это не означает нулевой органический трафик: без согласия технические события не получают поисковые параметры и остаются вне SEO-воронки.</small></span></div>}
       <div className="admin-acquisition__breakdowns">
         <section>
@@ -507,6 +518,7 @@ function AcquisitionFunnelPanel({
         {!data.dataSources.raw.exactWindowReady && <span className="is-warning">31-дневное raw-окно ещё накапливается{data.dataSources.raw.retentionReadyAt ? ` до ${compactDate(data.dataSources.raw.retentionReadyAt)}` : ''}; значения частичные, пропуски не считаются нулями.</span>}
         {!data.dataSources.eventTotalsExact && data.dataSources.raw.exactWindowReady && <span className="is-warning">Raw-срез неполон: сработал защитный лимит строк.</span>}
         {data.coverage.unkeyedOrganicEvents > 0 && <span className="is-warning">Без acquisition_id: {data.coverage.unkeyedOrganicEvents} органических событий — они не включены в конверсии.</span>}
+        <span>Consent известен для {data.coverage.consentKnownLifecycleEvents} из {data.coverage.lifecycleEvents} lifecycle-событий; старые события без статуса не включаются в consented-покрытие.</span>
       </footer>
     </>}
   </section>

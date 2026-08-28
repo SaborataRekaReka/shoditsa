@@ -386,6 +386,8 @@ export const ClientEventSchema = Type.Object({
     'final_choice_reveal_cancelled', 'final_choice_revealed', 'final_choice_timed_out', 'final_choice_unavailable',
     'connections_started', 'connections_guess_submitted', 'connections_one_away', 'connections_group_solved',
     'connections_hint_used', 'connections_completed', 'connections_shared', 'connections_report_submitted',
+    'territory_landing_view', 'territory_room_created', 'territory_room_started', 'territory_duel_completed',
+    'territory_match_completed', 'territory_rematch_clicked', 'territory_rematch_started',
   ].map((value) => Type.Literal(value))),
   occurredAt: DateTimeSchema,
   gameSessionId: Type.Optional(Type.Union([UuidSchema, Type.Null()])),

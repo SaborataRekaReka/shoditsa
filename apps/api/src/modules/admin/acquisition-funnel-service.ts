@@ -84,6 +84,7 @@ type StageEvent = {
 const lifecycleNames = new Set([
   'game_session_start', 'game_session_complete', 'game_next_clicked', 'game_next_start',
   'danetki_room_started', 'danetki_room_completed', 'danetki_cross_game_clicked',
+  'territory_room_started', 'territory_match_completed',
 ])
 
 const record = (value: unknown): PrimitiveRecord => value && typeof value === 'object' && !Array.isArray(value) ? value as PrimitiveRecord : {}
@@ -110,7 +111,7 @@ const routeMode = (route: string | null) => {
 const pathLabel = (path: string) => path === '/' ? 'Главная' : path
 const modeLabel: Record<string, string> = {
   movie: 'Кино', series: 'Сериалы', anime: 'Аниме', game: 'Игры', music: 'Музыка', diagnosis: 'Диагнозы',
-  city: 'Города', animal: 'Животные', book: 'Книги', character: 'Персонажи', danetki: 'Данетки', connections: 'Связи',
+  city: 'Города', animal: 'Животные', book: 'Книги', character: 'Персонажи', danetki: 'Данетки', connections: 'Связи', territory: 'Захват',
 }
 const publicGameModes = new Set(Object.keys(modeLabel))
 const namedDanetkiPaths = new Set(['/danetki', '/danetki/dlya-detey', '/danetki/slozhnye', '/danetki/legkie', '/danetki/novye', '/danetki/albatros'])
@@ -118,6 +119,7 @@ const namedDanetkiPaths = new Set(['/danetki', '/danetki/dlya-detey', '/danetki/
 export const canonicalAnalyticsEntryPath = (value: string | null) => {
   if (!value) return '/other'
   if (value === '/') return '/'
+  if (value === '/games/together') return value
   if (namedDanetkiPaths.has(value)) return value
   if (value.startsWith('/danetki/')) return '/danetki/story'
   const gameMode = value.match(/^\/games\/([^/?#]+)/)?.[1]
@@ -149,8 +151,8 @@ const acquisitionModeOf = (row: AcquisitionClientEventRow, properties: Primitive
 const acquisitionMapKey = (userId: string, acquisitionId: string) => `${userId}\u0000${acquisitionId}`
 
 const stageOf = (eventName: string): Stage | null => {
-  if (eventName === 'game_session_start' || eventName === 'danetki_room_started') return 'starts'
-  if (eventName === 'game_session_complete' || eventName === 'danetki_room_completed') return 'completions'
+  if (eventName === 'game_session_start' || eventName === 'danetki_room_started' || eventName === 'territory_room_started') return 'starts'
+  if (eventName === 'game_session_complete' || eventName === 'danetki_room_completed' || eventName === 'territory_match_completed') return 'completions'
   if (eventName === 'game_next_clicked' || eventName === 'danetki_cross_game_clicked') return 'nextClicks'
   if (eventName === 'game_next_start') return 'nextStarts'
   return null
@@ -319,10 +321,32 @@ export const buildAdminAcquisitionFunnel = (
   const inWindow = validEvents.filter(({ at }) => at >= from && at <= to)
   const lifecycle = inWindow.filter(({ row }) => lifecycleNames.has(row.eventName))
   const lifecycleWithAcquisition = lifecycle.filter(({ properties }) => Boolean(acquisitionIdOf(properties)))
+  const consentOf = (properties: PrimitiveRecord) => property(properties, 'analytics_consent')
+  const consentedLifecycle = lifecycle.filter(({ properties }) => consentOf(properties) === 'accepted')
+  const rejectedLifecycle = lifecycle.filter(({ properties }) => consentOf(properties) === 'rejected')
+  const consentedLifecycleWithAcquisition = consentedLifecycle.filter(({ properties }) => Boolean(acquisitionIdOf(properties)))
   const pageViews = inWindow.filter(({ row }) => row.eventName === 'page_view')
   const pageViewsWithSource = pageViews.filter(({ properties }) => Boolean(sourceOf(properties)))
   const pageViewsWithAcquisition = pageViews.filter(({ properties }) => Boolean(acquisitionIdOf(properties)))
+  const consentedPageViews = pageViews.filter(({ properties }) => consentOf(properties) === 'accepted')
+  const rejectedPageViews = pageViews.filter(({ properties }) => consentOf(properties) === 'rejected')
+  const consentedPageViewsWithAcquisition = consentedPageViews.filter(({ properties }) => Boolean(acquisitionIdOf(properties)))
   const unkeyedOrganicEvents = inWindow.filter(({ properties }) => organicSource(sourceOf(properties)) && !acquisitionIdOf(properties)).length
+  const territoryRows = inWindow.filter(({ row }) => row.eventName.startsWith('territory_'))
+  const territoryCount = (eventName: string, identity: (row: AcquisitionClientEventRow, properties: PrimitiveRecord) => string) => new Set(
+    territoryRows
+      .filter(({ row }) => row.eventName === eventName)
+      .map(({ row, properties }) => identity(row, properties)),
+  ).size
+  const territory = {
+    landingViews: territoryCount('territory_landing_view', (row) => row.eventId),
+    roomsCreated: territoryCount('territory_room_created', (row, properties) => property(properties, 'roomId') ?? row.eventId),
+    roomStarts: territoryCount('territory_room_started', (row, properties) => property(properties, 'matchId') ?? row.eventId),
+    duelsCompleted: territoryCount('territory_duel_completed', (row, properties) => `${property(properties, 'matchId') ?? row.eventId}:${property(properties, 'duelId') ?? property(properties, 'duelNumber') ?? ''}`),
+    matchesCompleted: territoryCount('territory_match_completed', (row, properties) => property(properties, 'matchId') ?? row.eventId),
+    rematchClicks: territoryCount('territory_rematch_clicked', (row, properties) => `${property(properties, 'matchId') ?? row.eventId}:${row.userId}`),
+    rematchStarts: territoryCount('territory_rematch_started', (row, properties) => property(properties, 'matchId') ?? row.eventId),
+  }
   const summaryCounts = Object.fromEntries([...strictStageKeys].map(([stage, keys]) => [stage, keys.size])) as Record<Stage, number>
   const activityCounts = Object.fromEntries([...activityKeys].map(([stage, keys]) => [stage, keys.size])) as Record<Stage, number>
   const activityByMode = new Map<string, AdminAcquisitionActivityBreakdown>()
@@ -346,6 +370,7 @@ export const buildAdminAcquisitionFunnel = (
   const organicUsers = new Set(cohort.map((entry) => entry.userId)).size
   const limitations = [
     'Технические first-party события собираются всегда; без согласия к ним не добавляются acquisition, referrer и search-параметры, поэтому они не входят в SEO-воронку.',
+    'Покрытие among consented считается только для событий с явным analytics_consent; исторические события без статуса остаются в общем знаменателе, но не в consented-знаменателе.',
     'Этапы SEO-воронки считаются только при наличии acquisition_id и entry_source=organic_search.',
     `Регистрация относится к последнему поисковому входу пользователя не более чем за ${ATTRIBUTION_WINDOW_DAYS} дней до sign_up.`,
   ]
@@ -375,9 +400,19 @@ export const buildAdminAcquisitionFunnel = (
       lifecycleEvents: lifecycle.length,
       lifecycleEventsWithAcquisition: lifecycleWithAcquisition.length,
       lifecycleEventRate: ratio(lifecycleWithAcquisition.length, lifecycle.length),
+      consentKnownLifecycleEvents: consentedLifecycle.length + rejectedLifecycle.length,
+      consentedLifecycleEvents: consentedLifecycle.length,
+      rejectedLifecycleEvents: rejectedLifecycle.length,
+      lifecycleEventsConsentedWithAcquisition: consentedLifecycleWithAcquisition.length,
+      lifecycleConsentedAcquisitionRate: ratio(consentedLifecycleWithAcquisition.length, consentedLifecycle.length),
       pageViews: pageViews.length,
       pageViewsWithSource: pageViewsWithSource.length,
       pageViewsWithAcquisition: pageViewsWithAcquisition.length,
+      consentKnownPageViews: consentedPageViews.length + rejectedPageViews.length,
+      consentedPageViews: consentedPageViews.length,
+      rejectedPageViews: rejectedPageViews.length,
+      pageViewsConsentedWithAcquisition: consentedPageViewsWithAcquisition.length,
+      pageViewConsentedAcquisitionRate: ratio(consentedPageViewsWithAcquisition.length, consentedPageViews.length),
       successfulSignUps: attributedSignUps.length,
       signUpsAttributedToOrganic: attributedSignUps.filter((entry) => entry.acquisition).length,
       signUpAttributionRate: ratio(attributedSignUps.filter((entry) => entry.acquisition).length, attributedSignUps.length),
@@ -385,6 +420,13 @@ export const buildAdminAcquisitionFunnel = (
       clientEventRetentionDays: CLIENT_EVENT_RETENTION_DAYS,
       retentionTruncationPossible: false,
       limitations,
+    },
+    territory: {
+      ...territory,
+      landingToRoomRate: ratio(territory.roomsCreated, territory.landingViews),
+      roomToStartRate: ratio(territory.roomStarts, territory.roomsCreated),
+      startToCompleteRate: ratio(territory.matchesCompleted, territory.roomStarts),
+      completeToRematchRate: ratio(territory.rematchStarts, territory.matchesCompleted),
     },
     dataSources: {
       strategy: 'raw',

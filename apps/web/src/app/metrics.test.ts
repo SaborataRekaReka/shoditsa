@@ -4,6 +4,7 @@ import {
   analyticsEntryParams,
   captureAnalyticsEntry,
   consentedAnalyticsEntryParams,
+  initMetrika,
   markAnalyticsOAuthReturnPending,
   trackMetrikaGoal,
   trackMetrikaScreen,
@@ -113,5 +114,30 @@ describe('analytics acquisition context', () => {
     trackMetrikaScreen('game')
 
     expect(ym).toHaveBeenCalledWith(110517987, 'hit', '/danetki/join#game', expect.any(Object))
+  })
+
+  it('creates an explicit first SPA hit from the preserved landing after consent', () => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
+    captureAnalyticsEntry()
+    const ym = vi.fn()
+    window.ym = ym
+    vi.stubGlobal('document', {
+      referrer: 'https://www.google.com/search?q=guess+character',
+      title: 'Игра «Угадай персонажа»',
+      getElementById: () => ({ id: 'yandex-metrika-script' }),
+    })
+
+    initMetrika()
+
+    expect(ym).toHaveBeenNthCalledWith(1, 110517987, 'init', expect.objectContaining({ defer: true, ssr: true }))
+    expect(ym).toHaveBeenNthCalledWith(2, 110517987, 'hit', 'https://shoditsa.ru/games/character', expect.objectContaining({
+      referer: 'https://www.google.com',
+      params: expect.objectContaining({
+        analytics_consent: 'accepted',
+        landing_hit: true,
+        entry_path: '/games/character',
+        entry_source: 'organic_search',
+      }),
+    }))
   })
 })

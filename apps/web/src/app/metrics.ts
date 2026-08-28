@@ -209,13 +209,22 @@ export const initMetrika = () => {
 
   stub(METRIKA_COUNTER_ID, 'init', {
     ssr: true,
+    defer: true,
     webvisor: false,
     clickmap: true,
     ecommerce: 'dataLayer',
-    referrer: entry?.referrer ?? document.referrer,
-    url: entry?.url ?? window.location.href,
     accurateTrackBounce: true,
     trackLinks: true,
+  })
+  const landingParams = normalizeMetrikaParams({
+    analytics_consent: 'accepted',
+    landing_hit: true,
+    ...consentedAnalyticsEntryParams(),
+  })
+  stub(METRIKA_COUNTER_ID, 'hit', entry?.url ?? safeNavigationUrl(window.location.href), {
+    title: document.title,
+    referer: entry?.referrer ?? safeReferrerUrl(document.referrer),
+    ...(landingParams ? { params: landingParams } : {}),
   })
 }
 
@@ -297,7 +306,7 @@ export const trackAuthOutcome = (outcome: AnalyticsAuthIntent, meta?: Record<str
 
 export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {
   if (!canUseMetrika()) return
-  const params = normalizeMetrikaParams({ screen, ...(meta ?? {}) })
+  const params = normalizeMetrikaParams({ screen, ...(meta ?? {}), ...consentedAnalyticsEntryParams() })
   const virtualUrl = `${canonicalAnalyticsPath(window.location.pathname)}#${screen}`
   try {
     window.ym?.(METRIKA_COUNTER_ID, 'hit', virtualUrl, {

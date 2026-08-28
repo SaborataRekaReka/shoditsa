@@ -107,6 +107,50 @@ describe('admin acquisition funnel', () => {
     })
   })
 
+  it('separates consent-eligible coverage and deduplicates the Territory funnel by room, match and duel', () => {
+    const accepted = { analytics_consent: 'accepted', acquisition_id: 'acq-territory', entry_source: 'direct', mode: 'territory' }
+    const rejected = { analytics_consent: 'rejected', mode: 'territory' }
+    const events = [
+      clientEvent('landing-1', 'territory_landing_view', '2026-08-15T09:00:00.000Z', accepted),
+      clientEvent('created-1', 'territory_room_created', '2026-08-15T09:01:00.000Z', { ...accepted, roomId: 'room-1' }),
+      clientEvent('start-player-1', 'territory_room_started', '2026-08-15T09:02:00.000Z', { ...accepted, matchId: 'match-1' }),
+      clientEvent('start-player-2', 'territory_room_started', '2026-08-15T09:02:01.000Z', { ...rejected, matchId: 'match-1' }, { userId: 'user-2' }),
+      clientEvent('duel-player-1', 'territory_duel_completed', '2026-08-15T09:03:00.000Z', { ...accepted, matchId: 'match-1', duelId: 'duel-1' }),
+      clientEvent('duel-player-2', 'territory_duel_completed', '2026-08-15T09:03:01.000Z', { ...rejected, matchId: 'match-1', duelId: 'duel-1' }, { userId: 'user-2' }),
+      clientEvent('complete-player-1', 'territory_match_completed', '2026-08-15T09:08:00.000Z', { ...accepted, matchId: 'match-1' }),
+      clientEvent('complete-player-2', 'territory_match_completed', '2026-08-15T09:08:01.000Z', { ...rejected, matchId: 'match-1' }, { userId: 'user-2' }),
+      clientEvent('rematch-click', 'territory_rematch_clicked', '2026-08-15T09:09:00.000Z', { ...accepted, matchId: 'match-1' }),
+      clientEvent('rematch-start-1', 'territory_rematch_started', '2026-08-15T09:10:00.000Z', { ...accepted, matchId: 'match-2' }),
+      clientEvent('page-rejected', 'page_view', '2026-08-15T09:11:00.000Z', rejected, { userId: 'user-2' }),
+    ]
+
+    const result = buildAdminAcquisitionFunnel(events, [], 7, NOW)
+
+    expect(result.territory).toEqual({
+      landingViews: 1,
+      roomsCreated: 1,
+      roomStarts: 1,
+      duelsCompleted: 1,
+      matchesCompleted: 1,
+      rematchClicks: 1,
+      rematchStarts: 1,
+      landingToRoomRate: 100,
+      roomToStartRate: 100,
+      startToCompleteRate: 100,
+      completeToRematchRate: 100,
+    })
+    expect(result.coverage).toMatchObject({
+      consentKnownLifecycleEvents: 4,
+      consentedLifecycleEvents: 2,
+      rejectedLifecycleEvents: 2,
+      lifecycleEventsConsentedWithAcquisition: 2,
+      lifecycleConsentedAcquisitionRate: 100,
+      consentKnownPageViews: 1,
+      consentedPageViews: 0,
+      rejectedPageViews: 1,
+    })
+  })
+
   it('uses consented acquisition persisted on the successful sign-up when pre-registration events are unavailable', () => {
     const result = buildAdminAcquisitionFunnel([], [{
       eventId: 'signup-auth-attribution',

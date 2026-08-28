@@ -1,8 +1,10 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { TerritoryPublicSnapshot } from '@shoditsa/contracts'
 import { Check, Clock3, Crosshair, LoaderCircle, Map, RotateCcw } from 'lucide-react'
 import { ActionButton, ControlButton, InlineAlert } from '../../components/ui'
+import { deterministicClientEventId } from '../../app/client-events'
 import { TerritoryBoard } from './TerritoryBoard'
+import { trackTerritoryEvent } from './territory-analytics'
 import './TerritoryRoomGame.css'
 
 export type TerritoryRoomGameProps = {
@@ -314,6 +316,7 @@ export function TerritoryRoomGame({
   const [pendingOptionId, setPendingOptionId] = useState<string | null>(null)
   const [pendingCellId, setPendingCellId] = useState<string | null>(null)
   const [rematchPending, setRematchPending] = useState(false)
+  const trackedLifecycleRef = useRef(new Set<string>())
   const actionBusy = busy || Boolean(pendingOptionId || pendingCellId || rematchPending)
   const currentPlayerSeat = snapshot.players.findIndex((player) => player.userId === currentMemberId)
   const capture = snapshot.phase === 'capture' ? snapshot.capture : null
@@ -337,6 +340,49 @@ export function TerritoryRoomGame({
   useEffect(() => {
     if (snapshot.phase !== 'finished' || snapshot.rematchReadyUserIds.includes(currentMemberId)) setRematchPending(false)
   }, [currentMemberId, snapshot])
+
+  useEffect(() => {
+    const eventName = snapshot.matchNumber === 1 ? 'territory_room_started' : 'territory_rematch_started'
+    const key = `${eventName}:${snapshot.matchId}`
+    if (trackedLifecycleRef.current.has(key)) return
+    trackedLifecycleRef.current.add(key)
+    trackTerritoryEvent(eventName, {
+      matchId: snapshot.matchId,
+      matchNumber: snapshot.matchNumber,
+      rulesVersion: snapshot.rulesVersion,
+    }, { eventId: deterministicClientEventId(`${snapshot.matchId}:${currentMemberId}`, eventName) })
+  }, [currentMemberId, snapshot.matchId, snapshot.matchNumber, snapshot.rulesVersion])
+
+  useEffect(() => {
+    if (!snapshot.reveal) return
+    const key = `duel:${snapshot.matchId}:${snapshot.reveal.duelId}`
+    if (trackedLifecycleRef.current.has(key)) return
+    trackedLifecycleRef.current.add(key)
+    trackTerritoryEvent('territory_duel_completed', {
+      matchId: snapshot.matchId,
+      duelId: snapshot.reveal.duelId,
+      matchNumber: snapshot.matchNumber,
+      duelNumber: snapshot.duelNumber,
+      result: snapshot.reveal.result,
+      won: snapshot.reveal.winnerUserId === currentMemberId,
+      rulesVersion: snapshot.rulesVersion,
+    }, { eventId: deterministicClientEventId(`${snapshot.matchId}:${snapshot.reveal.duelId}:${currentMemberId}`, 'territory_duel_completed') })
+  }, [currentMemberId, snapshot.duelNumber, snapshot.matchId, snapshot.matchNumber, snapshot.reveal, snapshot.rulesVersion])
+
+  useEffect(() => {
+    if (snapshot.phase !== 'finished') return
+    const key = `match:${snapshot.matchId}`
+    if (trackedLifecycleRef.current.has(key)) return
+    trackedLifecycleRef.current.add(key)
+    trackTerritoryEvent('territory_match_completed', {
+      matchId: snapshot.matchId,
+      matchNumber: snapshot.matchNumber,
+      duelNumber: snapshot.duelNumber,
+      finishReason: snapshot.finishReason ?? 'draw',
+      won: snapshot.winnerUserId === currentMemberId,
+      rulesVersion: snapshot.rulesVersion,
+    }, { eventId: deterministicClientEventId(`${snapshot.matchId}:${currentMemberId}`, 'territory_match_completed') })
+  }, [currentMemberId, snapshot.duelNumber, snapshot.matchId, snapshot.matchNumber, snapshot.phase, snapshot.rulesVersion, snapshot.finishReason, snapshot.winnerUserId])
 
   const submitSelectedOption = async () => {
     if (actionBusy || secondsLeft === 0 || snapshot.phase !== 'question' || snapshot.question.ownOptionId || !selectedOptionId) return
@@ -362,6 +408,15 @@ export function TerritoryRoomGame({
   const requestRematch = async () => {
     if (actionBusy || snapshot.phase !== 'finished' || snapshot.rematchReadyUserIds.includes(currentMemberId)) return
     setRematchPending(true)
+    const key = `rematch-click:${snapshot.matchId}`
+    if (!trackedLifecycleRef.current.has(key)) {
+      trackedLifecycleRef.current.add(key)
+      trackTerritoryEvent('territory_rematch_clicked', {
+        matchId: snapshot.matchId,
+        matchNumber: snapshot.matchNumber,
+        rulesVersion: snapshot.rulesVersion,
+      }, { eventId: deterministicClientEventId(`${snapshot.matchId}:${currentMemberId}`, 'territory_rematch_clicked') })
+    }
     try {
       await onRematch()
     } catch {

@@ -64,6 +64,7 @@ describe('first-party client event identities', () => {
     const queue = JSON.parse(values.get('shoditsa:client-events:v1') ?? '[]') as Array<{ properties: Record<string, unknown> }>
     expect(queue[0]?.properties).toMatchObject({
       mode: 'character',
+      analytics_consent: 'accepted',
       acquisition_id: '8c4f102e-317b-4a07-b8d6-80bdc99624ef',
       entry_path: '/games/character',
       entry_source: 'organic_search',
@@ -88,7 +89,7 @@ describe('first-party client event identities', () => {
     purgeQueuedClientEventAttribution()
 
     const queue = JSON.parse(values.get('shoditsa:client-events:v1') ?? '[]') as Array<{ properties: Record<string, unknown> }>
-    expect(queue[0]?.properties).toEqual({ mode: 'character' })
+    expect(queue[0]?.properties).toEqual({ mode: 'character', analytics_consent: 'rejected' })
   })
 
   it('drops caller-supplied attribution when consent is absent', () => {
@@ -99,7 +100,7 @@ describe('first-party client event identities', () => {
     })
 
     const queue = JSON.parse(values.get('shoditsa:client-events:v1') ?? '[]') as Array<{ properties: Record<string, unknown> }>
-    expect(queue[0]?.properties).toEqual({ mode: 'character' })
+    expect(queue[0]?.properties).toEqual({ mode: 'character', analytics_consent: 'pending' })
   })
 
   it('keeps pre-consent lifecycle events local and attributes them after acceptance', async () => {
@@ -128,6 +129,7 @@ describe('first-party client event identities', () => {
     const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as { events: Array<{ properties: Record<string, unknown> }> }
     expect(sent.events[0]?.properties).toMatchObject({
       mode: 'character',
+      analytics_consent: 'accepted',
       acquisition_id: '8c4f102e-317b-4a07-b8d6-80bdc99624ef',
       entry_source: 'organic_search',
       entry_search_engine: 'yandex',
@@ -148,7 +150,7 @@ describe('first-party client event identities', () => {
     await flushClientEvents()
 
     const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as { events: Array<{ properties: Record<string, unknown> }> }
-    expect(sent.events[0]?.properties).toEqual({ mode: 'character' })
+    expect(sent.events[0]?.properties).toEqual({ mode: 'character', analytics_consent: 'rejected' })
   })
 
   it('fails open when browser storage is unavailable', () => {

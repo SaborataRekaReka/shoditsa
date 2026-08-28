@@ -351,6 +351,13 @@
       "when": 1787844153927,
       "tag": "0049_gorgeous_spencer_smythe",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1787900502000,
+      "tag": "0050_territory_funnel_events",
+      "breakpoints": true
     }
   ]
 }

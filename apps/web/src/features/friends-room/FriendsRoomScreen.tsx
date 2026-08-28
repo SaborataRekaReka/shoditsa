@@ -20,13 +20,14 @@ import { ActionButton, AppHeader, type AppHeaderProps } from '../../components/a
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { api, danetkiEventsUrl, friendsRoomEventsUrl, queryKeys } from '../../api/client'
 import { publicAssetUrl } from '../../app/public-asset'
-import { trackClientEvent } from '../../app/client-events'
+import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
 import { ensureServerSession } from '../../hooks/use-server-runtime'
 import { currentFriendsRoomReturnUrl, friendsRoomRegistrationHref } from './friends-room-access'
 import { friendsRoomTimeLeft } from './friends-room-time'
 import { friendsRoomActionLabel, friendsRoomPhaseLabel, friendsRoomSummaryTitle } from './friends-room-summary'
 import { ControlButton, DialogSurface, InlineAlert, TextArea, TextInput } from '../../components/ui'
 import { TerritoryRoomGame } from '../territory/TerritoryRoomGame'
+import { trackTerritoryEvent } from '../territory/territory-analytics'
 import './FriendsRoomScreen.css'
 
 type IconName = 'apps' | 'back' | 'chat' | 'check' | 'copy' | 'exit' | 'play' | 'remove' | 'replay' | 'send' | 'share' | 'shuffle' | 'timer' | 'trophy' | 'users'
@@ -123,7 +124,25 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, terri
   const configMutationRef = useRef(0)
   const configDraftRef = useRef<FriendsRoomConfigBody>({})
   const intermissionEventRef = useRef('')
+  const territoryLandingTrackedRef = useRef(false)
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (!territoryEnabled || territoryLandingTrackedRef.current) return
+    const requestedMode = new URLSearchParams(window.location.search).get('mode')
+    const sourceSurface = requestedMode === 'territory'
+      ? 'direct'
+      : room?.gameType === 'territory'
+        ? 'room'
+        : invitePreview?.gameType === 'territory'
+          ? 'invite'
+          : !loading && roomDirectory !== null
+            ? 'directory'
+            : null
+    if (!sourceSurface) return
+    territoryLandingTrackedRef.current = true
+    trackTerritoryEvent('territory_landing_view', { sourceSurface })
+  }, [invitePreview?.gameType, loading, room?.gameType, roomDirectory, territoryEnabled])
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -177,6 +196,16 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, terri
       queryClient.setQueryData(queryKeys.friendsRooms, { rooms })
       setLoading(false)
       if (!snapshot) return
+      const search = new URLSearchParams(window.location.search)
+      const createdExplicitTerritory = search.get('mode') === 'territory' && !search.get('room') && snapshot.gameType === 'territory'
+      if (createdExplicitTerritory) {
+        trackClientEvent('friends_room_created', { roomId: snapshot.id, gameType: snapshot.gameType, rulesVersion: snapshot.rulesVersion }, {
+          eventId: deterministicClientEventId(snapshot.id, 'friends_room_created'),
+        })
+        trackTerritoryEvent('territory_room_created', { roomId: snapshot.id, rulesVersion: snapshot.rulesVersion, sourceSurface: 'direct' }, {
+          eventId: deterministicClientEventId(snapshot.id, 'territory_room_created'),
+        })
+      }
       roomRef.current = snapshot
       setRoom(snapshot)
       const url = new URL(window.location.href)
@@ -340,7 +369,14 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, terri
         return
       }
       const snapshot = (await api.friendsRoomCreate({ gameType })).room
-      trackClientEvent('friends_room_created', { roomId: snapshot.id, gameType: snapshot.gameType, rulesVersion: snapshot.rulesVersion })
+      trackClientEvent('friends_room_created', { roomId: snapshot.id, gameType: snapshot.gameType, rulesVersion: snapshot.rulesVersion }, {
+        eventId: deterministicClientEventId(snapshot.id, 'friends_room_created'),
+      })
+      if (snapshot.gameType === 'territory') trackTerritoryEvent('territory_room_created', {
+        roomId: snapshot.id,
+        rulesVersion: snapshot.rulesVersion,
+        sourceSurface: 'directory',
+      }, { eventId: deterministicClientEventId(snapshot.id, 'territory_room_created') })
       setRoom(snapshot)
       setRoomDirectory(null)
       setInvitePreview(null)

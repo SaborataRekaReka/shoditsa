@@ -38,6 +38,8 @@ export type EventName =
   | 'final_choice_shown' | 'final_choice_candidate_selected' | 'final_choice_submitted'
   | 'final_choice_reveal_opened' | 'final_choice_reveal_cancelled' | 'final_choice_revealed' | 'final_choice_timed_out'
   | 'final_choice_unavailable'
+  | 'territory_landing_view' | 'territory_room_created' | 'territory_room_started'
+  | 'territory_duel_completed' | 'territory_match_completed' | 'territory_rematch_clicked' | 'territory_rematch_started'
 type QueuedEvent = {
   eventId: string
   eventName: EventName
@@ -67,7 +69,10 @@ const write = (events: QueuedEvent[]) => {
 export const clearQueuedClientEvents = () => write([])
 export const purgeQueuedClientEventAttribution = () => write(read().map((event) => ({
   ...event,
-  properties: Object.fromEntries(Object.entries(event.properties ?? {}).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key))),
+  properties: {
+    ...Object.fromEntries(Object.entries(event.properties ?? {}).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key))),
+    analytics_consent: 'rejected',
+  },
 })))
 
 /**
@@ -83,7 +88,7 @@ export const backfillQueuedClientEventAttribution = () => {
     if (!Number.isFinite(occurredAt) || occurredAt < CLIENT_EVENT_SESSION_STARTED_AT) return event
     return {
       ...event,
-      properties: { ...(event.properties ?? {}), ...attribution },
+      properties: { ...(event.properties ?? {}), analytics_consent: 'accepted', ...attribution },
     }
   }))
 }
@@ -129,7 +134,12 @@ export const deterministicClientEventId = (namespace: string, eventName: EventNa
 
 export const trackClientEvent = (eventName: EventName, properties: Record<string, unknown> = {}, context: Partial<Pick<QueuedEvent, 'eventId' | 'requestId' | 'errorCode' | 'gameSessionId' | 'stackFingerprint'>> = {}) => {
   const callerProperties = Object.fromEntries(Object.entries(properties).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key)))
-  const attributedProperties = { ...callerProperties, ...consentedAnalyticsEntryParams() }
+  const consent = storedAnalyticsConsent()
+  const attributedProperties = {
+    ...callerProperties,
+    analytics_consent: consent ?? 'pending',
+    ...consentedAnalyticsEntryParams(),
+  }
   const safeProperties = Object.fromEntries(Object.entries(attributedProperties).flatMap(([key, value]) => {
     const safeValue = safeProperty(key, value)
     return safeValue === undefined ? [] : [[key, safeValue]]
