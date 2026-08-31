@@ -1993,7 +1993,7 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
       .leftJoin(playerProfiles, eq(playerProfiles.userId, user.id)).leftJoin(walletAccounts, eq(walletAccounts.userId, user.id)).where(eq(user.id, id)).limit(1)
     if (!profile[0]) throw new ApiError(404, 'USER_NOT_FOUND', 'Пользователь не найден')
     const today = getMoscowDate()
-    const [sessions, reports, stats, attendance, ledger, entitlements, gameEntitlements, redemptions, imports, notes, auth, audit, ruleAssignment, freePlay, friendsRoom, danetki] = await Promise.all([
+    const [sessions, reports, stats, attendance, ledger, entitlements, gameEntitlements, clubEntitlements, redemptions, imports, notes, auth, audit, ruleAssignment, freePlay, friendsRoom, danetki] = await Promise.all([
       deps.db.select().from(gameSessions).where(eq(gameSessions.userId, id)).orderBy(desc(gameSessions.startedAt)).limit(30),
       deps.db.select().from(contentReports).where(eq(contentReports.userId, id)).orderBy(desc(contentReports.createdAt)).limit(30),
       deps.db.select().from(userModeStats).where(eq(userModeStats.userId, id)),
@@ -2003,6 +2003,10 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
       deps.db.select().from(userEntitlements).where(and(
         eq(userEntitlements.userId, id),
         eq(userEntitlements.entitlementKey, 'pack'),
+      )).orderBy(desc(userEntitlements.createdAt)),
+      deps.db.select().from(userEntitlements).where(and(
+        eq(userEntitlements.userId, id),
+        eq(userEntitlements.entitlementKey, 'club'),
       )).orderBy(desc(userEntitlements.createdAt)),
       deps.db.select().from(promoRedemptions).where(eq(promoRedemptions.userId, id)).orderBy(desc(promoRedemptions.createdAt)),
       deps.db.select().from(legacyImports).where(eq(legacyImports.userId, id)).orderBy(desc(legacyImports.createdAt)),
@@ -2023,6 +2027,7 @@ const registerUserRoutes = (app: FastifyInstance, deps: Deps) => {
       ledger,
       entitlements,
       gameEntitlements,
+      clubEntitlements,
       redemptions,
       imports,
       notes,

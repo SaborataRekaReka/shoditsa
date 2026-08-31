@@ -1377,6 +1377,13 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-user-game-access__grant label > span { color: var(--a-muted); font-size: 11px; font-weight: 700; }
 .admin-user-game-access__grant select { width: 100%; min-height: 36px; padding: 0 9px; border: 1px solid var(--a-line-strong); border-radius: 7px; color: var(--a-ink); background: var(--a-paper); }
 .admin-user-game-access__grant .admin-btn { min-height: 36px; }
+.admin-user-club-access__summary { padding: 11px 12px; border-bottom: 1px solid var(--a-line); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.admin-user-club-access__summary > div { min-width: 0; display: flex; align-items: center; gap: 10px; }
+.admin-user-club-access__summary > div > span:last-child { min-width: 0; display: grid; gap: 3px; }
+.admin-user-club-access__summary strong { font-size: 13px; }
+.admin-user-club-access__summary small { color: var(--a-muted); font-size: 11px; }
+.admin-user-club-access__note { border-top: 1px solid var(--a-line); background: var(--a-orange-soft); display: flex; align-items: flex-start; gap: 7px; }
+.admin-user-club-access__note svg { width: 15px; flex: 0 0 auto; color: var(--a-orange); }
 .admin-user-game-access__list { display: grid; }
 .admin-user-game-access__list article { min-width: 0; padding: 9px 12px; border-bottom: 1px solid var(--a-line); display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; }
 .admin-user-game-access__list article:last-child { border-bottom: 0; }
@@ -1559,6 +1566,11 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-toolbar--users .admin-search { min-width: 100%; flex-basis: 100%; }
   .admin-account-type-filter { width: 100%; overflow-x: auto; }
   .admin-account-type-filter button { flex: 1 0 auto; justify-content: center; }
+  .admin-user-club-access__summary, .admin-user-game-access__grant { grid-template-columns: 1fr; align-items: stretch; }
+  .admin-user-club-access__summary > div { align-items: flex-start; flex-direction: column; }
+  .admin-user-club-access__summary .admin-btn, .admin-user-game-access__grant .admin-btn { width: 100%; }
+  .admin-user-game-access__list article { grid-template-columns: minmax(0, 1fr) auto; }
+  .admin-user-game-access__list article > button { grid-column: 1 / -1; }
   .admin-sidebar { display: none; }
   .admin-dashboard-grid { grid-template-columns: 1fr; }
   .admin-acquisition > header { align-items: flex-start; flex-direction: column; }

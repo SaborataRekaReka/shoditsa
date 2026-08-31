@@ -12,6 +12,7 @@ import { CATALOG_HINT_COPY, CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type AdminAcqu
 import { publicAssetUrl } from '../app/public-asset'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
 import { adminCommentUnlockLabel, adminContentComments } from './content-comments'
+import { canRevokeEntitlement, effectiveEntitlementStatus } from './entitlement-status'
 import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manual-input'
 import { GameBuilderPage } from './GameBuilderPage'
 import { ConnectionsAdminPage } from './connections/ConnectionsAdminPage'
@@ -246,7 +247,14 @@ const STATUS_LABEL: Record<string, string> = {
   pass: 'Подтверждено', contradiction: 'Противоречие', uncertain: 'Недостаточно данных', stale: 'Устарело', not_applicable: 'Неприменимо', source_conflict: 'Источники расходятся',
   partially_failed: 'Частично с ошибками', approved: 'Одобрено', staged: 'В рабочей версии', published: 'Опубликовано', partially_published: 'Частично опубликовано', cancelled: 'Отменено',
   create: 'Добавить', update: 'Изменить', unchanged: 'Без изменений', conflict: 'Конфликт', invalid: 'Ошибка',
-  update_available: 'Доступно обновление', building: 'Собирается', active: 'Активно', ready: 'Готово', retired: 'Архив',
+  update_available: 'Доступно обновление', building: 'Собирается', active: 'Активно', scheduled: 'Запланировано', expired: 'Истекло', revoked: 'Отозвано', ready: 'Готово', retired: 'Архив',
+}
+
+const ENTITLEMENT_SOURCE_LABEL: Record<string, string> = {
+  order: 'Оплата', admin: 'Ручная выдача', promo: 'Промокод', migration: 'Перенос', yandex: 'Яндекс Игры',
+}
+const ENTITLEMENT_STATUS_LABEL: Record<string, string> = {
+  active: 'Активен', scheduled: 'Запланирован', expired: 'Истёк', revoked: 'Отозван',
 }
 
 const formatDate = (value: unknown) => value ? new Intl.DateTimeFormat('ru-RU', {
@@ -256,6 +264,7 @@ const compactDate = (value: unknown) => value ? new Intl.DateTimeFormat('ru-RU',
 const record = (value: unknown): Record<string, any> => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, any> : {}
 const array = (value: unknown) => Array.isArray(value) ? value : []
 const title = (value: unknown) => String(value ?? '').trim() || 'Без названия'
+const entitlementSourceLabel = (value: unknown) => ENTITLEMENT_SOURCE_LABEL[String(value)] ?? title(value)
 const pipelineWarnings = (value: unknown) => {
   const labels: string[] = []; const providers = new Set<string>()
   for (const raw of array(value).map(String)) {
@@ -304,8 +313,8 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
   }, [delayMs, value])
   return debounced
 }
-const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid'].includes(String(status)) ? 'danger'
-  : ['running', 'in_progress', 'warning', 'partially_failed', 'building', 'update_available', 'unresolved'].includes(String(status)) ? 'warning'
+const statusTone = (status: unknown) => ['failed', 'critical', 'blocked', 'dismissed', 'conflict', 'invalid', 'revoked'].includes(String(status)) ? 'danger'
+  : ['running', 'in_progress', 'warning', 'partially_failed', 'building', 'update_available', 'unresolved', 'scheduled'].includes(String(status)) ? 'warning'
     : ['completed', 'published', 'resolved', 'active', 'ready', 'verified'].includes(String(status)) ? 'success' : 'neutral'
 const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => typeof value === 'string' && value in MODE_LABEL ? value as ContentMode : fallback
 
@@ -5433,6 +5442,33 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
   const detail = useQuery({ queryKey: ['admin', 'user', selectedId], queryFn: () => adminApi.user(selectedId!), enabled: Boolean(selectedId) })
   const contentPacks = useQuery({ queryKey: ['admin', 'content-packs'], queryFn: adminApi.contentPacks })
   const action = useMutation({ mutationFn: ({ type, id }: { type: string; id: string }) => { if (type === 'block') { const reason = prompt('Обязательная причина блокировки'); if (!reason) throw new Error('Действие отменено'); return adminApi.blockUser(id, { reason, revokeSessions: true, blockedUntil: null }) } if (type === 'unblock') { const reason = prompt('Причина разблокировки'); if (!reason) throw new Error('Действие отменено'); return adminApi.unblockUser(id, reason) } if (type === 'note') { const note = prompt('Внутренняя заметка'); if (!note) throw new Error('Действие отменено'); return adminApi.addUserNote(id, note) } if (type === 'wallet') { const amount = Number(prompt('Корректировка билетов (может быть отрицательной)', '10')); const reason = prompt('Причина корректировки'); if (!Number.isFinite(amount) || !reason) throw new Error('Действие отменено'); return adminApi.adjustWallet(id, amount, reason) } return adminApi.revokeSessions(id) }, onSuccess: () => { notify('success', 'Действие выполнено'); void client.invalidateQueries({ queryKey: ['admin', 'users'] }); void client.invalidateQueries({ queryKey: ['admin', 'user', selectedId] }) }, onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) } })
+  const grantClubAccess = useMutation({
+    mutationFn: async (userId: string) => {
+      const durationDays = Number(prompt('Срок клубного доступа в днях', '30'))
+      const reason = prompt('Причина ручной выдачи или продления', 'Ручное управление клубом в карточке пользователя')?.trim()
+      if (!Number.isInteger(durationDays) || durationDays < 1 || !reason) throw new Error('Действие отменено')
+      return adminApi.grantCommerceEntitlement({ userId, entitlementKey: 'club', durationDays, reason })
+    },
+    onSuccess: () => {
+      notify('success', 'Клубный доступ выдан')
+      void client.invalidateQueries({ queryKey: ['admin', 'user', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'entitlements'] })
+    },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
+  const revokeClubAccess = useMutation({
+    mutationFn: async (id: string) => {
+      const reason = prompt('Причина отзыва клубного доступа')?.trim()
+      if (!reason || !confirm('Отозвать этот клубный доступ? Автопродление у платёжного провайдера останется включено.')) throw new Error('Действие отменено')
+      return adminApi.revokeCommerceEntitlement(id, reason)
+    },
+    onSuccess: () => {
+      notify('success', 'Клубный доступ отозван')
+      void client.invalidateQueries({ queryKey: ['admin', 'user', selectedId] })
+      void client.invalidateQueries({ queryKey: ['admin', 'commerce', 'entitlements'] })
+    },
+    onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
+  })
   const grantPackAccess = useMutation({
     mutationFn: async ({ userId, packId }: { userId: string; packId: string }) => {
       const reason = prompt('Причина выдачи доступа', 'Персональный доступ к спецпоказу')
@@ -5466,9 +5502,46 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
     return [String(pack.id), title(pack.title)] as const
   }))
   const data = detail.data; const account = record(data?.user); const profile = record(data?.profile); const wallet = record(data?.wallet)
+  const clubEntitlements = array(data?.clubEntitlements).map(record)
+  const clubNow = Date.now()
+  const currentClubEntitlement = clubEntitlements.find((entitlement) => effectiveEntitlementStatus(entitlement, clubNow) === 'active')
+  const scheduledClubEntitlement = clubEntitlements.find((entitlement) => effectiveEntitlementStatus(entitlement, clubNow) === 'scheduled')
+  const clubSummaryEntitlement = currentClubEntitlement ?? scheduledClubEntitlement ?? clubEntitlements[0]
+  const clubSummaryStatus = clubSummaryEntitlement ? effectiveEntitlementStatus(clubSummaryEntitlement, clubNow) : 'expired'
   return <><PageHead eyebrow="Аккаунты" title="Пользователи" description="Активность, игровые сессии, билеты, репорты и безопасные административные действия." />
     <div className="admin-toolbar admin-toolbar--users"><label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Email, ID или имя" /></label><div className="admin-periods admin-account-type-filter" role="group" aria-label="Тип аккаунта"><button type="button" className={accountType === '' ? 'is-active' : ''} aria-pressed={accountType === ''} onClick={() => setAccountType('')}>Все</button><button type="button" className={accountType === 'permanent' ? 'is-active' : ''} aria-pressed={accountType === 'permanent'} onClick={() => setAccountType('permanent')}><BadgeCheck />Зарегистрированные</button><button type="button" className={accountType === 'anonymous' ? 'is-active' : ''} aria-pressed={accountType === 'anonymous'} onClick={() => setAccountType('anonymous')}><UserRound />Гостевые</button></div><label><ShieldCheck /><select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Все состояния</option><option value="active">Активны</option><option value="blocked">Заблокированы</option></select></label></div>
-    <div className="admin-split"><section className="admin-list-panel">{users.isLoading ? <Loading /> : users.data?.items.map((userItem) => <button key={userItem.id} className={selectedId === userItem.id ? 'is-active' : ''} onClick={() => navigate('users', userItem.id)}><span className={`admin-user-avatar ${userItem.isAnonymous ? 'is-guest' : 'is-registered'}`}>{userItem.isAnonymous ? '?' : title(userItem.displayName || userItem.name).slice(0, 1)}</span><span><header><strong>{userItem.isAnonymous ? 'Гость' : title(userItem.displayName || userItem.name)}</strong><time>{compactDate(userItem.lastActivityAt)}</time></header><p>{userItem.isAnonymous ? userItem.id : userItem.email}</p><small>{userItem.sessionsCount} сессий · {userItem.balance} билетов</small></span><span className="admin-user-state"><span className={`admin-account-type admin-account-type--${userItem.isAnonymous ? 'guest' : 'registered'}`}>{userItem.isAnonymous ? 'Гостевой' : 'Регистрация'}</span><Status value={userItem.accountStatus} /></span></button>)}</section><section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите пользователя" text="Откроются профиль, активность и операции." icon={<UserRound />} /> : detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} /> : <><header className="admin-user-head"><span className={`admin-user-avatar admin-user-avatar--large ${account.isAnonymous ? 'is-guest' : 'is-registered'}`}>{account.isAnonymous ? '?' : title(profile.displayName || account.name).slice(0, 1)}</span><div><div className="admin-user-head__statuses"><span className={`admin-account-type admin-account-type--${account.isAnonymous ? 'guest' : 'registered'}`}>{account.isAnonymous ? 'Гостевой аккаунт' : 'Зарегистрированный аккаунт'}</span><Status value={profile.accountStatus} /></div><h2>{account.isAnonymous ? 'Гость' : title(profile.displayName || account.name)}</h2><p>{account.isAnonymous ? 'Без регистрации' : title(account.email)} · <code>{selectedId}</code></p></div></header><div className="admin-user-actions"><button onClick={() => action.mutate({ type: profile.accountStatus === 'blocked' ? 'unblock' : 'block', id: selectedId })}><LockKeyhole />{profile.accountStatus === 'blocked' ? 'Разблокировать' : 'Заблокировать'}</button><button onClick={() => action.mutate({ type: 'revoke', id: selectedId })}><RefreshCw />Завершить сессии</button><button onClick={() => action.mutate({ type: 'note', id: selectedId })}><SquarePen />Заметка</button><button onClick={() => action.mutate({ type: 'wallet', id: selectedId })}><Ticket />Билеты</button><button onClick={() => void navigator.clipboard.writeText(selectedId)}><Copy />Копировать ID</button></div><div className="admin-user-kpis"><div><span>Баланс</span><strong>{String(wallet.balance ?? 0)}</strong><small>заработано {String(wallet.lifetimeEarned ?? 0)} · долг {String(wallet.purchaseDebt ?? 0)}</small></div><div><span>Сессии</span><strong>{array(data?.sessions).length}</strong><small>последние 30</small></div><div><span>Репорты</span><strong>{array(data?.reports).length}</strong><small>последние 30</small></div><div><span>Серия</span><strong>{String(record(data?.attendance).currentDailyStreak ?? 0)}</strong><small>дней</small></div></div>
+    <div className="admin-split"><section className="admin-list-panel">{users.isLoading ? <Loading /> : users.data?.items.map((userItem) => <button key={userItem.id} className={selectedId === userItem.id ? 'is-active' : ''} onClick={() => navigate('users', userItem.id)}><span className={`admin-user-avatar ${userItem.isAnonymous ? 'is-guest' : 'is-registered'}`}>{userItem.isAnonymous ? '?' : title(userItem.displayName || userItem.name).slice(0, 1)}</span><span><header><strong>{userItem.isAnonymous ? 'Гость' : title(userItem.displayName || userItem.name)}</strong><time>{compactDate(userItem.lastActivityAt)}</time></header><p>{userItem.isAnonymous ? userItem.id : userItem.email}</p><small>{userItem.sessionsCount} сессий · {userItem.balance} билетов</small></span><span className="admin-user-state"><span className={`admin-account-type admin-account-type--${userItem.isAnonymous ? 'guest' : 'registered'}`}>{userItem.isAnonymous ? 'Гостевой' : 'Регистрация'}</span><Status value={userItem.accountStatus} /></span></button>)}</section><section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите пользователя" text="Откроются профиль, активность и операции." icon={<UserRound />} /> : detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} /> : <><header className="admin-user-head"><span className={`admin-user-avatar admin-user-avatar--large ${account.isAnonymous ? 'is-guest' : 'is-registered'}`}>{account.isAnonymous ? '?' : title(profile.displayName || account.name).slice(0, 1)}</span><div><div className="admin-user-head__statuses"><span className={`admin-account-type admin-account-type--${account.isAnonymous ? 'guest' : 'registered'}`}>{account.isAnonymous ? 'Гостевой аккаунт' : 'Зарегистрированный аккаунт'}</span><Status value={profile.accountStatus} /><Status value={clubSummaryStatus}>{clubSummaryStatus === 'active' ? 'В клубе' : clubSummaryStatus === 'scheduled' ? 'Клуб запланирован' : 'Не в клубе'}</Status></div><h2>{account.isAnonymous ? 'Гость' : title(profile.displayName || account.name)}</h2><p>{account.isAnonymous ? 'Без регистрации' : title(account.email)} · <code>{selectedId}</code></p></div></header><div className="admin-user-actions"><button onClick={() => action.mutate({ type: profile.accountStatus === 'blocked' ? 'unblock' : 'block', id: selectedId })}><LockKeyhole />{profile.accountStatus === 'blocked' ? 'Разблокировать' : 'Заблокировать'}</button><button onClick={() => action.mutate({ type: 'revoke', id: selectedId })}><RefreshCw />Завершить сессии</button><button onClick={() => action.mutate({ type: 'note', id: selectedId })}><SquarePen />Заметка</button><button onClick={() => action.mutate({ type: 'wallet', id: selectedId })}><Ticket />Билеты</button><button onClick={() => void navigator.clipboard.writeText(selectedId)}><Copy />Копировать ID</button></div><div className="admin-user-kpis"><div><span>Баланс</span><strong>{String(wallet.balance ?? 0)}</strong><small>заработано {String(wallet.lifetimeEarned ?? 0)} · долг {String(wallet.purchaseDebt ?? 0)}</small></div><div><span>Сессии</span><strong>{array(data?.sessions).length}</strong><small>последние 30</small></div><div><span>Репорты</span><strong>{array(data?.reports).length}</strong><small>последние 30</small></div><div><span>Серия</span><strong>{String(record(data?.attendance).currentDailyStreak ?? 0)}</strong><small>дней</small></div></div>
+      <section className="admin-user-game-access admin-user-club-access">
+        <header><div><BadgeCheck /><span><strong>Клубный доступ</strong><small>Фактический статус учитывает даты начала и окончания, а не только значение в базе.</small></span></div></header>
+        <div className="admin-user-club-access__summary">
+          <div>
+            <Status value={clubSummaryStatus}>{clubSummaryStatus === 'active' ? 'В клубе' : clubSummaryStatus === 'scheduled' ? 'Запланирован' : 'Не в клубе'}</Status>
+            <span>
+              <strong>{clubSummaryStatus === 'active' && clubSummaryEntitlement?.endsAt
+                ? `Активен до ${formatDate(clubSummaryEntitlement.endsAt)}`
+                : clubSummaryStatus === 'scheduled' && clubSummaryEntitlement?.startsAt
+                  ? `Начнётся ${formatDate(clubSummaryEntitlement.startsAt)}`
+                  : clubSummaryEntitlement?.endsAt
+                    ? `Последний доступ закончился ${formatDate(clubSummaryEntitlement.endsAt)}`
+                    : 'Клубный доступ не выдавался'}</strong>
+              <small>{clubSummaryEntitlement ? `${entitlementSourceLabel(clubSummaryEntitlement.sourceType)} · ${ENTITLEMENT_STATUS_LABEL[clubSummaryStatus]}` : 'Можно выдать доступ вручную'}</small>
+            </span>
+          </div>
+          <button className="admin-btn admin-btn--primary" disabled={grantClubAccess.isPending} onClick={() => grantClubAccess.mutate(selectedId)}><Plus />{grantClubAccess.isPending ? 'Выдаём…' : currentClubEntitlement || scheduledClubEntitlement ? 'Продлить клуб' : 'Выдать клуб'}</button>
+        </div>
+        {clubEntitlements.length
+          ? <div className="admin-user-game-access__list">{clubEntitlements.map((entitlement) => {
+              const state = effectiveEntitlementStatus(entitlement, clubNow)
+              const active = state === 'active'
+              return <article className={active ? 'is-enabled' : ''} key={String(entitlement.id)}>
+                <span><strong>{entitlementSourceLabel(entitlement.sourceType)}</strong><small>{formatDate(entitlement.startsAt)} → {entitlement.endsAt ? formatDate(entitlement.endsAt) : 'без срока'} · <code>{String(entitlement.sourceId)}</code></small></span>
+                <span className={`admin-user-game-access__state ${active ? 'is-enabled' : state === 'scheduled' ? 'is-draft' : ''}`}>{ENTITLEMENT_STATUS_LABEL[state]}</span>
+                {canRevokeEntitlement(entitlement, clubNow) && <button disabled={revokeClubAccess.isPending} onClick={() => revokeClubAccess.mutate(String(entitlement.id))}>Отозвать</button>}
+              </article>
+            })}</div>
+          : <p>Клубных доступов пока нет.</p>}
+        <p className="admin-user-club-access__note"><AlertTriangle />Ручной отзыв закрывает доступ на сайте, но не отменяет автопродление у платёжного провайдера.</p>
+      </section>
       <section className="admin-user-game-access">
         <header><div><KeyRound /><span><strong>Персональный доступ к спецпоказам</strong><small>Работает без Клуба. Доступ действует до ручного отзыва и записывается в аудит.</small></span></div></header>
         <div className="admin-user-game-access__grant">
@@ -5490,15 +5563,12 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
         {array(data?.gameEntitlements).length
           ? <div className="admin-user-game-access__list">{array(data?.gameEntitlements).map((raw) => {
               const entitlement = record(raw)
-              const now = Date.now()
-              const startsAt = new Date(String(entitlement.startsAt)).getTime()
-              const endsAt = entitlement.endsAt ? new Date(String(entitlement.endsAt)).getTime() : null
-              const active = entitlement.status === 'active' && startsAt <= now && (endsAt === null || endsAt > now)
-              const state = active ? 'Доступ открыт' : entitlement.status === 'revoked' ? 'Отозван' : startsAt > now ? 'Запланирован' : 'Истёк'
+              const state = effectiveEntitlementStatus(entitlement)
+              const active = state === 'active'
               return <article className={active ? 'is-enabled' : ''} key={String(entitlement.id)}>
-                <span><strong>{packTitles.get(String(entitlement.scope)) ?? title(entitlement.scope)}</strong><small>{title(entitlement.sourceType)} · выдан {compactDate(entitlement.createdAt)}{entitlement.endsAt ? ` · до ${compactDate(entitlement.endsAt)}` : ' · бессрочно'}</small></span>
-                <span className={`admin-user-game-access__state ${active ? 'is-enabled' : ''}`}>{state}</span>
-                {entitlement.status === 'active' && <button disabled={revokePackAccess.isPending} onClick={() => revokePackAccess.mutate(String(entitlement.id))}>Отозвать</button>}
+                <span><strong>{packTitles.get(String(entitlement.scope)) ?? title(entitlement.scope)}</strong><small>{entitlementSourceLabel(entitlement.sourceType)} · выдан {compactDate(entitlement.createdAt)}{entitlement.endsAt ? ` · до ${compactDate(entitlement.endsAt)}` : ' · бессрочно'}</small></span>
+                <span className={`admin-user-game-access__state ${active ? 'is-enabled' : state === 'scheduled' ? 'is-draft' : ''}`}>{ENTITLEMENT_STATUS_LABEL[state]}</span>
+                {canRevokeEntitlement(entitlement) && <button disabled={revokePackAccess.isPending} onClick={() => revokePackAccess.mutate(String(entitlement.id))}>Отозвать</button>}
               </article>
             })}</div>
           : <p>Персональных доступов пока нет.</p>}
@@ -5614,7 +5684,7 @@ function CommercePage({ notify }: { notify: (tone: Notice['tone'], text: string)
     <div className="admin-toolbar"><div className="admin-periods">{(['products', 'orders', 'entitlements'] as const).map((value) => <button key={value} className={tab === value ? 'is-active' : ''} onClick={() => setTab(value)}>{value === 'products' ? 'Продукты' : value === 'orders' ? 'Заказы' : 'Доступы'}</button>)}</div></div>
     {tab === 'products' && (products.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>ID</th><th>Продукт</th><th>Тип</th><th>Цена</th><th>Срок</th><th>Статус</th><th /></tr></thead><tbody>{products.data?.items.map((raw) => { const item = record(raw); return <tr key={String(item.id)}><td><code>{String(item.id)}</code></td><td><strong>{title(item.title)}</strong><small>{title(item.description)}</small></td><td>{title(item.kind)}</td><td>{rubles(item.priceMinor, String(item.currency))}</td><td>{item.durationDays ? `${String(item.durationDays)} дней` : 'Навсегда'}</td><td><Status value={item.enabled ? 'active' : 'blocked'} /></td><td><button className="admin-link" onClick={() => { const value = prompt('Цена в рублях', String(Number(item.priceMinor) / 100)); if (value && Number.isFinite(Number(value))) patchProduct.mutate({ id: String(item.id), changes: { priceMinor: Math.round(Number(value) * 100) } }) }}>Цена</button><button className="admin-link" onClick={() => patchProduct.mutate({ id: String(item.id), changes: { enabled: !item.enabled } })}>{item.enabled ? 'Отключить' : 'Включить'}</button></td></tr> })}</tbody></table></div>)}
     {tab === 'orders' && (orders.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Дата</th><th>Пользователь</th><th>Продукт</th><th>Сумма</th><th>Provider</th><th>Статус</th></tr></thead><tbody>{orders.data?.items.map((raw) => { const row = record(raw); const item = record(row.order); return <tr key={String(item.id)}><td>{formatDate(item.createdAt)}</td><td>{title(row.userEmail)}<small><code>{String(item.userId)}</code></small></td><td>{title(row.productTitle)}<small><code>{String(item.productId)}</code></small></td><td>{rubles(item.amountMinor, String(item.currency))}</td><td>{title(item.provider)}<small>{title(item.providerPaymentId)}</small></td><td><Status value={item.status} /></td></tr> })}</tbody></table></div>)}
-    {tab === 'entitlements' && (entitlements.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Пользователь</th><th>Доступ</th><th>Начало</th><th>Окончание</th><th>Источник</th><th>Статус</th><th /></tr></thead><tbody>{entitlements.data?.items.map((raw) => { const row = record(raw); const item = record(row.entitlement); return <tr key={String(item.id)}><td>{title(row.userEmail)}<small><code>{String(item.userId)}</code></small></td><td><strong>{title(item.entitlementKey)}</strong><small>{title(item.scope)}</small></td><td>{formatDate(item.startsAt)}</td><td>{item.endsAt ? formatDate(item.endsAt) : 'Навсегда'}</td><td>{title(item.sourceType)}<small><code>{String(item.sourceId)}</code></small></td><td><Status value={item.status} /></td><td>{item.status === 'active' && <button className="admin-link" onClick={() => revoke.mutate(String(item.id))}>Отозвать</button>}</td></tr> })}</tbody></table></div>)}
+    {tab === 'entitlements' && (entitlements.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Пользователь</th><th>Доступ</th><th>Начало</th><th>Окончание</th><th>Источник</th><th>Статус</th><th /></tr></thead><tbody>{entitlements.data?.items.map((raw) => { const row = record(raw); const item = record(row.entitlement); const effectiveStatus = effectiveEntitlementStatus(item); return <tr key={String(item.id)}><td>{title(row.userEmail)}<small><code>{String(item.userId)}</code></small></td><td><strong>{title(item.entitlementKey)}</strong><small>{title(item.scope)}</small></td><td>{formatDate(item.startsAt)}</td><td>{item.endsAt ? formatDate(item.endsAt) : 'Навсегда'}</td><td>{entitlementSourceLabel(item.sourceType)}<small><code>{String(item.sourceId)}</code></small></td><td><Status value={effectiveStatus}>{ENTITLEMENT_STATUS_LABEL[effectiveStatus]}</Status></td><td>{canRevokeEntitlement(item) && <button className="admin-link" onClick={() => revoke.mutate(String(item.id))}>Отозвать</button>}</td></tr> })}</tbody></table></div>)}
   </>
 }
 

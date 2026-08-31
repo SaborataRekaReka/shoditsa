@@ -122,6 +122,7 @@ describe('admin API guard, workspace and telemetry', () => {
     const userResponse = await app.inject({ method: 'GET', url: `/api/v1/admin/users/${adminId}` })
     expect(userResponse.statusCode, userResponse.body).toBe(200)
     expect(userResponse.json().gameEntitlements).toBeInstanceOf(Array)
+    expect(userResponse.json().clubEntitlements).toBeInstanceOf(Array)
   })
 
   it('filters the complete content catalog by an exact payload field and substring', async () => {
