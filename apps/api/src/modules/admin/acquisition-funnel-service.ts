@@ -723,7 +723,7 @@ export const loadAdminAcquisitionFunnel = async (
         (
           select count(*)::int
           from "user" u
-          where u.created_at >= ${reportFrom}::timestamptz and u.created_at < ${reportTo}::timestamptz
+          where u."createdAt" >= ${reportFrom}::timestamptz and u."createdAt" < ${reportTo}::timestamptz
             and u.is_anonymous = false
             and not exists (select 1 from player_profiles p where p.user_id = u.id and p.role = 'admin')
         ) "accountsCreated",
