@@ -151,6 +151,28 @@ describe('admin acquisition funnel', () => {
     })
   })
 
+  it('keeps Danetki content and hosted-game funnels separate for all and organic traffic', () => {
+    const organic = { entry_source: 'organic_search', acquisition_id: 'acq-danetki', mode: 'danetki' }
+    const events = [
+      clientEvent('catalog', 'danetki_catalog_view', '2026-08-15T09:00:00.000Z', organic),
+      clientEvent('story', 'danetki_story_view', '2026-08-15T09:01:00.000Z', organic),
+      clientEvent('answer', 'danetki_story_answer_opened', '2026-08-15T09:02:00.000Z', organic),
+      clientEvent('play', 'danetki_catalog_play_clicked', '2026-08-15T09:03:00.000Z', organic),
+      clientEvent('landing', 'danetki_landing_view', '2026-08-15T09:04:00.000Z', organic),
+      clientEvent('click', 'danetki_start_clicked', '2026-08-15T09:05:00.000Z', organic),
+      clientEvent('room', 'danetki_room_started', '2026-08-15T09:06:00.000Z', organic, { gameSessionId: 'room-1' }),
+      clientEvent('question', 'danetki_first_question', '2026-08-15T09:07:00.000Z', organic, { gameSessionId: 'room-1' }),
+      clientEvent('complete', 'danetki_room_completed', '2026-08-15T09:08:00.000Z', organic, { gameSessionId: 'room-1' }),
+      clientEvent('direct-landing', 'danetki_landing_view', '2026-08-15T10:00:00.000Z', { entry_source: 'direct', mode: 'danetki' }, { userId: 'user-2' }),
+    ]
+
+    const result = buildAdminAcquisitionFunnel(events, [], 7, NOW)
+
+    expect(result.danetki.all.content).toMatchObject({ catalogViews: 1, storyViews: 1, answerOpens: 1, playClicks: 1, storyToAnswerRate: 100, contentToPlayRate: 50 })
+    expect(result.danetki.all.game).toMatchObject({ landingViews: 2, startClicks: 1, roomStarts: 1, firstQuestions: 1, roomCompletions: 1, landingToStartRate: 50, roomToCompletionRate: 100 })
+    expect(result.danetki.organic.game).toMatchObject({ landingViews: 1, startClicks: 1, roomStarts: 1, roomCompletions: 1, landingToStartRate: 100 })
+  })
+
   it('uses consented acquisition persisted on the successful sign-up when pre-registration events are unavailable', () => {
     const result = buildAdminAcquisitionFunnel([], [{
       eventId: 'signup-auth-attribution',
@@ -272,19 +294,36 @@ describe('admin acquisition funnel', () => {
     expect(window.archiveTo.toISOString()).toBe('2026-07-20T00:00:00.000Z')
   })
 
-  it('loads the two read-only sources and normalizes the response', async () => {
+  it('loads read-only events and privacy-safe registration aggregates', async () => {
     const execute = vi.fn()
       .mockResolvedValueOnce([clientEvent('page-1', 'page_view', '2026-08-18T09:00:00.000Z', {
         acquisition_id: 'acq-db', entry_source: 'organic_search', entry_path: '/', entry_search_engine: 'Google',
       }, { route: '/' })])
       .mockResolvedValueOnce([signUp('signup-db', '2026-08-18T10:00:00.000Z')])
+      .mockResolvedValueOnce([{
+        accountsCreated: 2,
+        signUpSuccesses: 2,
+        signInSuccesses: 5,
+        signUpsWithAcquisition: 1,
+        signUpsAttributedToOrganic: 1,
+      }])
     const db = { execute } as unknown as Database
 
     const result = await loadAdminAcquisitionFunnel(db, 14, NOW)
 
-    expect(execute).toHaveBeenCalledTimes(2)
+    expect(execute).toHaveBeenCalledTimes(3)
     expect(result.periodDays).toBe(14)
     expect(result.summary).toMatchObject({ organicLandings: 1, signUps: 1 })
+    expect(result.registrations).toEqual({
+      accountsCreated: 2,
+      signUpSuccesses: 2,
+      signInSuccesses: 5,
+      signUpsWithAcquisition: 1,
+      signUpsAttributedToOrganic: 1,
+      signUpAccountCoverageRate: 100,
+      acquisitionCoverageRate: 50,
+      organicAttributionRate: 50,
+    })
     expect(result.byLanding[0]?.label).toBe('Главная')
   })
 })

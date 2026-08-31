@@ -174,6 +174,24 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-acquisition__activity small { overflow: hidden; color: var(--a-muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .admin-acquisition__activity strong { font: 500 18px/1 Oswald, sans-serif; }
 .admin-acquisition__activity em { color: var(--a-muted); font-size: 9px; font-style: normal; }
+.admin-acquisition__danetki { padding: 12px 14px; border-top: 1px solid var(--a-line); background: color-mix(in srgb, var(--a-paper-2) 58%, transparent); }
+.admin-acquisition__danetki > header { margin-bottom: 9px; display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+.admin-acquisition__danetki > header span { color: var(--a-muted); font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.admin-acquisition__danetki > header h3 { margin: 2px 0 0; font: 500 15px/1 Oswald, sans-serif; text-transform: uppercase; }
+.admin-acquisition__danetki > header small { color: var(--a-muted); font-size: 10px; }
+.admin-acquisition__danetki-columns { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.admin-acquisition__danetki-columns > article { min-width: 0; overflow: hidden; border: 1px solid var(--a-line); border-radius: 10px; background: var(--a-paper); }
+.admin-acquisition__danetki-columns > article > header { min-height: 47px; padding: 9px 11px; border-bottom: 1px solid var(--a-line); display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.admin-acquisition__danetki-columns > article > header strong { font-size: 12px; }
+.admin-acquisition__danetki-columns > article > header small { color: var(--a-muted); font-size: 9px; text-align: right; }
+.admin-acquisition__danetki-group { padding: 10px 11px; }
+.admin-acquisition__danetki-group + .admin-acquisition__danetki-group { border-top: 1px dashed var(--a-line); }
+.admin-acquisition__danetki-group h4 { margin: 0 0 7px; color: var(--a-muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.admin-acquisition__danetki-group dl { margin: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+.admin-acquisition__danetki-group dl > div { min-width: 0; padding: 7px 8px; border-radius: 7px; background: var(--a-paper-2); display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: baseline; gap: 6px; }
+.admin-acquisition__danetki-group dt { overflow: hidden; color: var(--a-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.admin-acquisition__danetki-group dd { margin: 0; font: 500 16px/1 Oswald, sans-serif; text-align: right; }
+.admin-acquisition__danetki-group dd small { margin-top: 3px; color: var(--a-muted); display: block; font: 500 8px/1.25 Inter, sans-serif; white-space: nowrap; }
 .admin-acquisition__archive { padding: 12px 14px; border-top: 1px solid var(--a-line); background: color-mix(in srgb, var(--a-green-soft) 35%, transparent); }
 .admin-acquisition__archive > header { margin-bottom: 9px; display: flex; align-items: end; justify-content: space-between; gap: 12px; }
 .admin-acquisition__archive > header span { color: var(--a-green); font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
@@ -1535,6 +1553,7 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-drawer { left: 76px; width: auto; }
   .admin-acquisition__breakdowns { grid-template-columns: 1fr; }
   .admin-acquisition__breakdowns > section + section { border-left: 0; border-top: 1px solid var(--a-line); }
+  .admin-acquisition__danetki-columns { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .admin-toolbar--users .admin-search { min-width: 100%; flex-basis: 100%; }
@@ -1548,6 +1567,8 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
   .admin-acquisition__metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .admin-acquisition__archive > div { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .admin-acquisition__activity > div { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .admin-acquisition__danetki > header { align-items: flex-start; flex-direction: column; }
+  .admin-acquisition__danetki-group dl { grid-template-columns: 1fr; }
   .admin-revision-summary { grid-template-columns: 1fr; }
   .admin-revision-summary__action { grid-column: auto; align-items: stretch; flex-direction: column; }
   .admin-release-preview { grid-template-columns: repeat(2,1fr); }

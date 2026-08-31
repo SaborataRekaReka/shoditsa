@@ -468,6 +468,43 @@ function AcquisitionFunnelPanel({
         <article className={`is-${coverageTone}`}><span><Database /></span><small>Покрытие consented</small><strong>{acquisitionRate(coverage)}</strong><em>{data.coverage.lifecycleEventsConsentedWithAcquisition} из {data.coverage.consentedLifecycleEvents}</em></article>
       </div>
       <section className="admin-acquisition__activity">
+        <header><div><span>Серверные агрегаты · без PII</span><h3>Аккаунты и авторизация</h3></div><small>Создание аккаунта отделено от последующих входов</small></header>
+        <div>
+          <span><small>Новые аккаунты</small><strong>{data.registrations.accountsCreated?.toLocaleString('ru-RU') ?? '—'}</strong><em>users.createdAt</em></span>
+          <span><small>sign_up success</small><strong>{data.registrations.signUpSuccesses.toLocaleString('ru-RU')}</strong><em>уникальные аккаунты</em></span>
+          <span><small>sign_in success</small><strong>{data.registrations.signInSuccesses?.toLocaleString('ru-RU') ?? '—'}</strong><em>успешные входы</em></span>
+          <span><small>sign_up / аккаунты</small><strong>{acquisitionRate(data.registrations.signUpAccountCoverageRate)}</strong><em>контроль полноты</em></span>
+          <span><small>С acquisition</small><strong>{data.registrations.signUpsWithAcquisition.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.registrations.acquisitionCoverageRate)} от sign_up</em></span>
+          <span><small>Из органики</small><strong>{data.registrations.signUpsAttributedToOrganic.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.registrations.organicAttributionRate)} от sign_up</em></span>
+        </div>
+      </section>
+      <section className="admin-acquisition__danetki">
+        <header><div><span>Отдельное измерение</span><h3>Данетки: контент и игра с ведущим</h3></div><small>Решение по комнате — после 20 стартов</small></header>
+        <div className="admin-acquisition__danetki-columns">
+          {([['all', 'Весь трафик'], ['organic', 'Органика']] as const).map(([scope, label]) => {
+            const funnel = data.danetki[scope]
+            const enoughStarts = funnel.game.roomStarts >= 20
+            return <article key={scope}>
+              <header><strong>{label}</strong><small>{enoughStarts ? 'Выборка достаточна для решения' : `${funnel.game.roomStarts}/20 стартов комнаты`}</small></header>
+              <div className="admin-acquisition__danetki-group"><h4>Контентная воронка</h4><dl>
+                <div><dt>Каталог</dt><dd>{funnel.content.catalogViews}</dd></div>
+                <div><dt>Истории</dt><dd>{funnel.content.storyViews}</dd></div>
+                <div><dt>Открыли ответ</dt><dd>{funnel.content.answerOpens}<small>{acquisitionRate(funnel.content.storyToAnswerRate)}</small></dd></div>
+                <div><dt>В игру</dt><dd>{funnel.content.playClicks}<small>{acquisitionRate(funnel.content.contentToPlayRate)}</small></dd></div>
+              </dl></div>
+              <div className="admin-acquisition__danetki-group"><h4>Играть с ведущим</h4><dl>
+                <div><dt>Входы</dt><dd>{funnel.game.landingViews}</dd></div>
+                <div><dt>Нажали старт</dt><dd>{funnel.game.startClicks}<small>{acquisitionRate(funnel.game.landingToStartRate)} · цель ≥40%</small></dd></div>
+                <div><dt>Комнаты</dt><dd>{funnel.game.roomStarts}<small>{acquisitionRate(funnel.game.startToRoomRate)} от кликов</small></dd></div>
+                <div><dt>Первый вопрос</dt><dd>{funnel.game.firstQuestions}<small>{acquisitionRate(funnel.game.roomToFirstQuestionRate)}</small></dd></div>
+                <div><dt>Завершили</dt><dd>{funnel.game.roomCompletions}<small>{acquisitionRate(funnel.game.roomToCompletionRate)} · цель ≥30%</small></dd></div>
+                <div><dt>Следующая игра</dt><dd>{funnel.game.nextClicks}<small>{acquisitionRate(funnel.game.completionToNextRate)}</small></dd></div>
+              </dl></div>
+            </article>
+          })}
+        </div>
+      </section>
+      <section className="admin-acquisition__activity">
         <header><div><span>Отдельная воронка</span><h3>Захват</h3></div><small>Уникальные комнаты и матчи, без повторов от двух игроков</small></header>
         <div>
           <span><small>Посадочная</small><strong>{data.territory.landingViews}</strong><em>просмотров</em></span>
@@ -509,7 +546,7 @@ function AcquisitionFunnelPanel({
         </div>
       </section>}
       <footer className="admin-acquisition__foot">
-        <span><Database /> client_events + auth_events · {compactDate(data.generatedAt)}</span>
+        <span><Database /> client_events + auth_events + users.createdAt · {compactDate(data.generatedAt)}</span>
         <span>Только завершённые UTC-дни.</span>
         <span>Без согласия first-party события остаются без acquisition/referrer/search; такие пропуски не считаются прямым трафиком.</span>
         {data.dataSources.daily

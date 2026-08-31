@@ -52,7 +52,7 @@ import { useAuthSession } from './features/auth/use-auth-session'
 import { resetPasswordTokenFromLocation } from './features/auth/auth-helpers'
 import { ChallengeInvite } from './features/challenge/ChallengeInvite'
 import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
-import { nextDailyMode } from './features/daily-route/daily-route'
+import { nextResultMode, resultRecommendedModes } from './features/daily-route/daily-route'
 import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion } from './features/economy/completion'
 import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, nextStreakMilestoneReward } from './features/economy/economy-rules'
 import { ECONOMY_CHANGE_EVENT } from './features/economy/economy-event'
@@ -3273,7 +3273,8 @@ function Game({
 
   const attendance = loadDailyAttendance(date)
   const completedToday = new Set(attendance.completedModes).size
-  const nextMode = nextDailyMode(mode, attendance.completedModes)
+  const nextMode = nextResultMode(mode, attendance.completedModes)
+  const recommendedModes = resultRecommendedModes(mode, nextMode)
   const routeCompleted = !nextMode
   const nextLabel = nextMode ? `Играть дальше: ${modeMeta(nextMode).title}` : 'На главную'
   const configureLabel = routeCompleted ? 'Выбрать другой режим' : resultConfigureLabel(mode)
@@ -3374,6 +3375,7 @@ function Game({
         nextLabel={nextLabel}
         nextActionLabel={routeCompleted ? 'Перейти' : 'Играть'}
         nextMode={nextMode ?? undefined}
+        recommendedModes={recommendedModes}
         award={lastAward}
         streak={lastAward?.newDailyStreak ?? loadAttendanceStats().currentDailyStreak}
         copied={copied}
@@ -3384,6 +3386,10 @@ function Game({
           if (nextMode) trackNextGameClick(mode, nextMode, { outcome: status })
           if (routeCompleted) onHome()
           else onPlayNext(nextMode)
+        }}
+        onRecommendedMode={(recommendedMode) => {
+          trackNextGameClick(mode, recommendedMode, { outcome: status, placement: 'diagnosis-result-recommendations' })
+          onPlayNext(recommendedMode)
         }}
         configureLabel={configureLabel}
         onConfigure={onConfigureMode}
@@ -4030,7 +4036,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   if (session.kind === 'daily' && ['won', 'lost', 'expired'].includes(session.status)) completedModeSet.add(session.mode)
   const completedModes = [...completedModeSet]
   const completedToday = completedModeSet.size
-  const nextMode = nextDailyMode(session.mode, completedModes)
+  const nextMode = nextResultMode(session.mode, completedModes)
+  const recommendedModes = resultRecommendedModes(session.mode, nextMode)
   const routeCompleted = !nextMode
   const isPackSession = session.kind === 'pack'
   const isFreePlaySession = session.kind === 'free_play'
@@ -4149,7 +4156,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         lost: packDetail.data.pack.lostItems ?? 0,
         total: packDetail.data.pack.totalItems,
         roundScore: 100 + (session.status === 'won' ? 50 + Math.max(0, maxAttempts - attempts.length) * 10 : 0),
-      } : undefined} nextLabel={nextLabel} nextActionLabel={isKpopSession || (isPackSession && !nextPackPosition) || (!isPackSession && routeCompleted) ? 'Перейти' : 'Играть'} nextMode={!isSpecialSession ? nextMode ?? undefined : undefined} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
+      } : undefined} nextLabel={nextLabel} nextActionLabel={isKpopSession || (isPackSession && !nextPackPosition) || (!isPackSession && routeCompleted) ? 'Перейти' : 'Играть'} nextMode={!isSpecialSession ? nextMode ?? undefined : undefined} recommendedModes={!isSpecialSession ? recommendedModes : undefined} configureLabel={configureLabel} award={award} streak={dashboard.data?.attendance?.currentDailyStreak ?? 0} copied={copied} telegramUrl={telegramUrl} onNext={isKpopSession
         ? onBack
         : isPackSession
         ? () => {
@@ -4163,6 +4170,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             if (nextMode) trackNextGameClick(session.mode, nextMode, { outcome: session.status })
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
+          }} onRecommendedMode={(recommendedMode) => {
+            trackNextGameClick(session.mode, recommendedMode, { outcome: session.status, placement: 'diagnosis-result-recommendations' })
+            onPlayNext(recommendedMode)
           }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'lost' && session.mode === 'character' && answer && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">
         <div className="section-title"><span>Правильный ответ</span><strong>10/10</strong></div>

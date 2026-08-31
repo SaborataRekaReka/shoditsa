@@ -22,6 +22,7 @@ import { useAuthSession } from '../auth/use-auth-session'
 import { formatDays } from '../../game'
 import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
+import { ControlButton } from '../../components/ui'
 import './GameResult.css'
 
 const TipCheckoutTrigger = lazy(() => import('../commerce/TipCheckout').then((module) => ({ default: module.TipCheckoutTrigger })))
@@ -59,6 +60,7 @@ type Props = {
   nextLabel: string
   nextActionLabel: 'Играть' | 'Перейти'
   nextMode?: TitleMode
+  recommendedModes?: TitleMode[]
   award: ResultAward | null
   streak?: number
   copied: boolean
@@ -66,6 +68,7 @@ type Props = {
   challengeOutcome?: ChallengeOutcome
   opponentAttempts?: ChallengeResult
   onNext: () => void
+  onRecommendedMode?: (mode: TitleMode) => void
   configureLabel: string
   onConfigure: () => void
   onChallenge?: () => void
@@ -320,6 +323,23 @@ export function GameResult(props: Props) {
       persistence={persistence}
       showReplayGate={Boolean(props.onReplay) || props.completedToday !== undefined}
     />
+
+    {!!props.recommendedModes?.length && props.onRecommendedMode && <section className="result-recommendations result-card__wide" aria-label="Другие игры после результата">
+      <header><div><span>Продолжить</span><strong>Выберите следующую игру</strong></div><small>Животные, персонажи или книги</small></header>
+      <div>{props.recommendedModes.map((mode) => {
+        const presentation = MODE_PRESENTATION[mode]
+        const Icon = presentation.icon
+        return <ControlButton
+          type="button"
+          key={mode}
+          style={{ '--result-recommendation-color': presentation.color } as CSSProperties}
+          onClick={() => props.onRecommendedMode?.(mode)}
+        >
+          <span className="result-recommendations__art" aria-hidden="true"><img src={presentation.watermarkUrl} alt="" loading="lazy" /></span>
+          <span className="result-recommendations__copy"><i><Icon /> Ещё одна игра</i><strong>{MODE_CONFIG[mode].title}</strong><small>{presentation.description}</small></span>
+        </ControlButton>
+      })}</div>
+    </section>}
 
     {props.award && !props.award.alreadyClaimed && <details className="reward-breakdown result-card__wide" open={rewardOpen} onToggle={(event) => setRewardOpen(event.currentTarget.open)}>
       <summary role="button" aria-expanded={rewardOpen} aria-controls={rewardDetailsId}><span>{rewardIcon} Как начислены билеты</span><ChevronDown /></summary>

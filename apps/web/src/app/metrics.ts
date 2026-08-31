@@ -207,23 +207,20 @@ export const initMetrika = () => {
     document.head.appendChild(script)
   }
 
-  stub(METRIKA_COUNTER_ID, 'init', {
-    ssr: true,
-    defer: true,
-    webvisor: false,
-    clickmap: true,
-    ecommerce: 'dataLayer',
-    accurateTrackBounce: true,
-    trackLinks: true,
-  })
   const landingParams = normalizeMetrikaParams({
     analytics_consent: 'accepted',
     landing_hit: true,
     ...consentedAnalyticsEntryParams(),
   })
-  stub(METRIKA_COUNTER_ID, 'hit', entry?.url ?? safeNavigationUrl(window.location.href), {
-    title: document.title,
-    referer: entry?.referrer ?? safeReferrerUrl(document.referrer),
+  stub(METRIKA_COUNTER_ID, 'init', {
+    ssr: true,
+    webvisor: false,
+    clickmap: true,
+    ecommerce: 'dataLayer',
+    accurateTrackBounce: true,
+    trackLinks: true,
+    url: entry?.url ?? safeNavigationUrl(window.location.href),
+    referrer: entry?.referrer ?? safeReferrerUrl(document.referrer),
     ...(landingParams ? { params: landingParams } : {}),
   })
 }

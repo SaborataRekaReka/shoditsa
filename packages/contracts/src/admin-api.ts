@@ -91,6 +91,45 @@ export type AdminAcquisitionActivityBreakdown = {
   nextStarts: number
 }
 
+export type AdminRegistrationSummary = {
+  accountsCreated: number | null
+  signUpSuccesses: number
+  signInSuccesses: number | null
+  signUpsWithAcquisition: number
+  signUpsAttributedToOrganic: number
+  signUpAccountCoverageRate: number | null
+  acquisitionCoverageRate: number | null
+  organicAttributionRate: number | null
+}
+
+export type AdminDanetkiFunnel = {
+  content: {
+    catalogViews: number
+    storyViews: number
+    answerOpens: number
+    playClicks: number
+    storyToAnswerRate: number | null
+    contentToPlayRate: number | null
+  }
+  game: {
+    landingViews: number
+    startClicks: number
+    roomStarts: number
+    firstQuestions: number
+    roomCompletions: number
+    resultViews: number
+    registrationOffers: number
+    registrationClicks: number
+    registrations: number
+    nextClicks: number
+    landingToStartRate: number | null
+    startToRoomRate: number | null
+    roomToFirstQuestionRate: number | null
+    roomToCompletionRate: number | null
+    completionToNextRate: number | null
+  }
+}
+
 export type AdminAcquisitionFunnelResponse = {
   periodDays: AdminAcquisitionFunnelPeriod
   generatedAt: string
@@ -139,6 +178,11 @@ export type AdminAcquisitionFunnelResponse = {
     clientEventRetentionDays: 38
     retentionTruncationPossible: boolean
     limitations: string[]
+  }
+  registrations: AdminRegistrationSummary
+  danetki: {
+    all: AdminDanetkiFunnel
+    organic: AdminDanetkiFunnel
   }
   territory: {
     landingViews: number

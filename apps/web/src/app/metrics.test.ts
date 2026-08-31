@@ -116,7 +116,7 @@ describe('analytics acquisition context', () => {
     expect(ym).toHaveBeenCalledWith(110517987, 'hit', '/danetki/join#game', expect.any(Object))
   })
 
-  it('creates an explicit first SPA hit from the preserved landing after consent', () => {
+  it('initializes the first visit from the preserved landing after consent', () => {
     window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
     captureAnalyticsEntry()
     const ym = vi.fn()
@@ -129,9 +129,11 @@ describe('analytics acquisition context', () => {
 
     initMetrika()
 
-    expect(ym).toHaveBeenNthCalledWith(1, 110517987, 'init', expect.objectContaining({ defer: true, ssr: true }))
-    expect(ym).toHaveBeenNthCalledWith(2, 110517987, 'hit', 'https://shoditsa.ru/games/character', expect.objectContaining({
-      referer: 'https://www.google.com',
+    expect(ym).toHaveBeenCalledTimes(1)
+    expect(ym).toHaveBeenCalledWith(110517987, 'init', expect.objectContaining({
+      ssr: true,
+      url: 'https://shoditsa.ru/games/character',
+      referrer: 'https://www.google.com',
       params: expect.objectContaining({
         analytics_consent: 'accepted',
         landing_hit: true,

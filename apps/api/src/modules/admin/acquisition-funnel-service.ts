@@ -1,9 +1,11 @@
 import { sql } from 'drizzle-orm'
 import type {
   AdminAcquisitionActivityBreakdown,
+  AdminDanetkiFunnel,
   AdminAcquisitionFunnelBreakdown,
   AdminAcquisitionFunnelPeriod,
   AdminAcquisitionFunnelResponse,
+  AdminRegistrationSummary,
 } from '@shoditsa/contracts'
 import type { Database } from '@shoditsa/database'
 import {
@@ -47,6 +49,14 @@ export type AcquisitionDailyRow = {
   eventsCount: number | string
   usersCount: number | string
   acquisitionsCount: number | string
+}
+
+export type AcquisitionRegistrationAggregateRow = {
+  accountsCreated: number | string
+  signUpSuccesses: number | string
+  signInSuccesses: number | string
+  signUpsWithAcquisition: number | string
+  signUpsAttributedToOrganic: number | string
 }
 
 export type AcquisitionReportWindow = {
@@ -116,6 +126,13 @@ const modeLabel: Record<string, string> = {
 const publicGameModes = new Set(Object.keys(modeLabel))
 const namedDanetkiPaths = new Set(['/danetki', '/danetki/dlya-detey', '/danetki/slozhnye', '/danetki/legkie', '/danetki/novye', '/danetki/albatros'])
 
+const danetkiEventNames = [
+  'danetki_landing_view', 'danetki_start_clicked', 'danetki_room_started', 'danetki_first_question',
+  'danetki_room_completed', 'danetki_result_view', 'danetki_catalog_view', 'danetki_story_view',
+  'danetki_story_answer_opened', 'danetki_catalog_play_clicked', 'danetki_registration_offer_view',
+  'danetki_registration_offer_clicked', 'danetki_registration_succeeded', 'danetki_cross_game_clicked',
+] as const
+
 export const canonicalAnalyticsEntryPath = (value: string | null) => {
   if (!value) return '/other'
   if (value === '/') return '/'
@@ -178,12 +195,94 @@ const finalizeBreakdown = (entry: AdminAcquisitionFunnelBreakdown) => ({
   landingToSignUpRate: ratio(entry.signUps, entry.organicLandings),
 })
 
+type NormalizedClientEvent = {
+  row: AcquisitionClientEventRow
+  at: Date
+  properties: PrimitiveRecord
+}
+
+const buildDanetkiFunnel = (events: NormalizedClientEvent[]): AdminDanetkiFunnel => {
+  const danetkiRows = events.filter(({ row }) => danetkiEventNames.includes(row.eventName as typeof danetkiEventNames[number]))
+  const count = (eventName: typeof danetkiEventNames[number], identity: (event: NormalizedClientEvent) => string = ({ row }) => row.eventId) => new Set(
+    danetkiRows.filter(({ row }) => row.eventName === eventName).map(identity),
+  ).size
+  const sessionIdentity = ({ row }: NormalizedClientEvent) => row.gameSessionId ?? row.eventId
+  const transitionIdentity = ({ row, properties }: NormalizedClientEvent) => property(properties, 'transition_id', 'transitionId') ?? row.gameSessionId ?? row.eventId
+  const catalogViews = count('danetki_catalog_view')
+  const storyViews = count('danetki_story_view')
+  const answerOpens = count('danetki_story_answer_opened')
+  const playClicks = count('danetki_catalog_play_clicked')
+  const landingViews = count('danetki_landing_view')
+  const startClicks = count('danetki_start_clicked')
+  const roomStarts = count('danetki_room_started', sessionIdentity)
+  const firstQuestions = count('danetki_first_question', sessionIdentity)
+  const roomCompletions = count('danetki_room_completed', sessionIdentity)
+  const resultViews = count('danetki_result_view', sessionIdentity)
+  const registrationOffers = count('danetki_registration_offer_view')
+  const registrationClicks = count('danetki_registration_offer_clicked')
+  const registrations = count('danetki_registration_succeeded')
+  const nextClicks = count('danetki_cross_game_clicked', transitionIdentity)
+  return {
+    content: {
+      catalogViews,
+      storyViews,
+      answerOpens,
+      playClicks,
+      storyToAnswerRate: ratio(answerOpens, storyViews),
+      contentToPlayRate: ratio(playClicks, catalogViews + storyViews),
+    },
+    game: {
+      landingViews,
+      startClicks,
+      roomStarts,
+      firstQuestions,
+      roomCompletions,
+      resultViews,
+      registrationOffers,
+      registrationClicks,
+      registrations,
+      nextClicks,
+      landingToStartRate: ratio(startClicks, landingViews),
+      startToRoomRate: ratio(roomStarts, startClicks),
+      roomToFirstQuestionRate: ratio(firstQuestions, roomStarts),
+      roomToCompletionRate: ratio(roomCompletions, roomStarts),
+      completionToNextRate: ratio(nextClicks, roomCompletions),
+    },
+  }
+}
+
+const registrationSummary = (
+  rowsInWindow: AcquisitionSignUpRow[],
+  aggregate?: AcquisitionRegistrationAggregateRow,
+): AdminRegistrationSummary => {
+  const signUpSuccesses = aggregate ? dailyCount(aggregate.signUpSuccesses) : rowsInWindow.length
+  const signInSuccesses = aggregate ? dailyCount(aggregate.signInSuccesses) : null
+  const accountsCreated = aggregate ? dailyCount(aggregate.accountsCreated) : null
+  const signUpsWithAcquisition = aggregate
+    ? dailyCount(aggregate.signUpsWithAcquisition)
+    : rowsInWindow.filter((entry) => Boolean(text(entry.acquisitionId))).length
+  const signUpsAttributedToOrganic = aggregate
+    ? dailyCount(aggregate.signUpsAttributedToOrganic)
+    : rowsInWindow.filter((entry) => organicSource(text(entry.entrySource))).length
+  return {
+    accountsCreated,
+    signUpSuccesses,
+    signInSuccesses,
+    signUpsWithAcquisition,
+    signUpsAttributedToOrganic,
+    signUpAccountCoverageRate: accountsCreated == null ? null : ratio(signUpSuccesses, accountsCreated),
+    acquisitionCoverageRate: ratio(signUpsWithAcquisition, signUpSuccesses),
+    organicAttributionRate: ratio(signUpsAttributedToOrganic, signUpSuccesses),
+  }
+}
+
 export const buildAdminAcquisitionFunnel = (
   clientEvents: AcquisitionClientEventRow[],
   signUpEvents: AcquisitionSignUpRow[],
   periodDays: AdminAcquisitionFunnelPeriod,
   now = new Date(),
   window?: { from: Date; to: Date },
+  registrationAggregate?: AcquisitionRegistrationAggregateRow,
 ): AdminAcquisitionFunnelResponse => {
   const to = window ? new Date(window.to) : new Date(now)
   const from = window ? new Date(window.from) : new Date(to.getTime() - periodDays * DAY_MS)
@@ -332,6 +431,17 @@ export const buildAdminAcquisitionFunnel = (
   const rejectedPageViews = pageViews.filter(({ properties }) => consentOf(properties) === 'rejected')
   const consentedPageViewsWithAcquisition = consentedPageViews.filter(({ properties }) => Boolean(acquisitionIdOf(properties)))
   const unkeyedOrganicEvents = inWindow.filter(({ properties }) => organicSource(sourceOf(properties)) && !acquisitionIdOf(properties)).length
+  const danetki = {
+    all: buildDanetkiFunnel(inWindow),
+    organic: buildDanetkiFunnel(inWindow.filter(({ properties }) => organicSource(sourceOf(properties)))),
+  }
+  const registrations = registrationSummary(
+    signUpEvents.filter((entry) => {
+      const occurredAt = isoDate(entry.occurredAt)
+      return Number.isFinite(occurredAt.getTime()) && occurredAt >= from && occurredAt <= to
+    }),
+    registrationAggregate,
+  )
   const territoryRows = inWindow.filter(({ row }) => row.eventName.startsWith('territory_'))
   const territoryCount = (eventName: string, identity: (row: AcquisitionClientEventRow, properties: PrimitiveRecord) => string) => new Set(
     territoryRows
@@ -421,6 +531,8 @@ export const buildAdminAcquisitionFunnel = (
       retentionTruncationPossible: false,
       limitations,
     },
+    registrations,
+    danetki,
     territory: {
       ...territory,
       landingToRoomRate: ratio(territory.roomsCreated, territory.landingViews),
@@ -579,7 +691,7 @@ export const loadAdminAcquisitionFunnel = async (
   const reportFrom = window.reportFrom.toISOString()
   const reportTo = window.reportTo.toISOString()
   const archiveTo = window.archiveTo.toISOString()
-  const [clientResult, signUpResult, dailyResult] = await Promise.all([
+  const [clientResult, signUpResult, registrationAggregateResult, dailyResult] = await Promise.all([
     db.execute(sql`
       select event_id "eventId", event_name "eventName", occurred_at "occurredAt", user_id "userId",
         game_session_id "gameSessionId", route, properties
@@ -590,6 +702,7 @@ export const loadAdminAcquisitionFunnel = async (
             'page_view','game_session_start','game_session_complete','game_next_clicked','game_next_start',
             'danetki_room_started','danetki_room_completed','danetki_cross_game_clicked'
           )
+          or left(event_name, 8) = 'danetki_'
           or (
             lower(coalesce(nullif(properties->>'entry_source', ''), '')) in ('organic_search', 'organic')
           )
@@ -605,6 +718,28 @@ export const loadAdminAcquisitionFunnel = async (
         and event_name = 'sign_up' and result = 'success'
       order by occurred_at asc
       limit ${SIGN_UP_ROW_LIMIT + 1}`),
+    db.execute(sql`
+      select
+        (
+          select count(*)::int
+          from "user" u
+          where u.created_at >= ${reportFrom}::timestamptz and u.created_at < ${reportTo}::timestamptz
+            and u.is_anonymous = false
+            and not exists (select 1 from player_profiles p where p.user_id = u.id and p.role = 'admin')
+        ) "accountsCreated",
+        count(distinct ae.user_id) filter (where ae.event_name = 'sign_up' and ae.result = 'success')::int "signUpSuccesses",
+        count(*) filter (where ae.event_name = 'sign_in' and ae.result = 'success')::int "signInSuccesses",
+        count(distinct ae.user_id) filter (
+          where ae.event_name = 'sign_up' and ae.result = 'success' and ae.acquisition_id is not null
+        )::int "signUpsWithAcquisition",
+        count(distinct ae.user_id) filter (
+          where ae.event_name = 'sign_up' and ae.result = 'success'
+            and lower(coalesce(nullif(ae.entry_source, ''), '')) in ('organic_search', 'organic')
+        )::int "signUpsAttributedToOrganic"
+      from auth_events ae
+      where ae.occurred_at >= ${reportFrom}::timestamptz and ae.occurred_at < ${reportTo}::timestamptz
+        and ae.event_name in ('sign_up', 'sign_in')
+        and not exists (select 1 from player_profiles p where p.user_id = ae.user_id and p.role = 'admin')`),
     periodDays === 31
       ? db.execute(sql`
           select activity_date "activityDate", event_name "eventName", entry_source "entrySource",
@@ -621,6 +756,7 @@ export const loadAdminAcquisitionFunnel = async (
   ])
   const clientRows = rows<AcquisitionClientEventRow>(clientResult)
   const signUpRows = rows<AcquisitionSignUpRow>(signUpResult)
+  const [registrationAggregate] = rows<AcquisitionRegistrationAggregateRow>(registrationAggregateResult)
   const dailyRows = rows<AcquisitionDailyRow>(dailyResult)
   const rawRowsTruncated = clientRows.length > RAW_EVENT_ROW_LIMIT
   const signUpsTruncated = signUpRows.length > SIGN_UP_ROW_LIMIT
@@ -631,6 +767,7 @@ export const loadAdminAcquisitionFunnel = async (
     periodDays,
     now,
     { from: window.rawFrom, to: window.reportTo },
+    registrationAggregate,
   )
   if (rawRowsTruncated || signUpsTruncated) {
     raw.coverage.limitations.push('Защитный лимит строк сработал; raw-срез неполон и не помечается как точный.')
