@@ -163,7 +163,7 @@ export const registerFriendsRoomRoutes = (app: FastifyInstance, deps: Deps) => {
 
   app.patch('/api/v1/friends/rooms/:roomId', { schema: { params: roomParams, body: FriendsRoomConfigBodySchema } }, async (request) => {
     const user = await authorizedUser(request, deps)
-    return { room: await configureFriendsRoom(deps.db, user.id, (request.params as { roomId: string }).roomId, request.body as FriendsRoomConfigBody) }
+    return { room: await configureFriendsRoom(deps.db, user.id, (request.params as { roomId: string }).roomId, request.body as FriendsRoomConfigBody, deps.config) }
   })
 
   app.post('/api/v1/friends/rooms/:roomId/start', { schema: { params: roomParams, body: FriendsRoomMutationBodySchema } }, async (request) => {

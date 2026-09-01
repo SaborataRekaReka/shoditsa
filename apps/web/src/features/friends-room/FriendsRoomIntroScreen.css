@@ -48,17 +48,13 @@
 .friends-intro-actions {
   width: 100%;
   margin-top: 16px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
+  display: block;
 }
 
-.friends-intro-start.ui-button,
-.friends-intro-territory.ui-button {
+.friends-intro-start.ui-button {
   width: 100%;
 }
 
 @media (max-width: 560px) {
   .friends-intro-benefits { grid-template-columns: 1fr; }
-  .friends-intro-actions { grid-template-columns: minmax(0, 1fr); }
 }

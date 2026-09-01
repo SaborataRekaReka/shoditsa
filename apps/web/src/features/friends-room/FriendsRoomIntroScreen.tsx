@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Gamepad2, Infinity, Play, Swords, Users } from 'lucide-react'
+import { Gamepad2, Infinity, Play, Users } from 'lucide-react'
 import { AppHeader, ActionButton } from '../../components/app-shell/AppShell'
 import { ClubAccessPanel } from '../../components/club-access-panel/ClubAccessPanel'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
@@ -17,7 +17,6 @@ export function FriendsRoomIntroScreen({
   onRules,
   onReview,
   onStart,
-  onTerritory,
   onClub,
 }: {
   canCreate: boolean
@@ -28,7 +27,6 @@ export function FriendsRoomIntroScreen({
   onRules: () => void
   onReview: () => void
   onStart: () => void
-  onTerritory: () => void
   onClub: () => void
 }) {
   useEffect(() => {
@@ -79,7 +77,6 @@ export function FriendsRoomIntroScreen({
           {canCreate
             ? <div className="friends-intro-actions">
                 <ActionButton className="friends-intro-start" onClick={onStart}><Play />Создать комнату<span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span></ActionButton>
-                {territoryEnabled && <ActionButton className="friends-intro-territory" surface="paper" variant="hint" onClick={onTerritory}><Swords />Сыграть в «Захват»</ActionButton>}
               </div>
             : <ClubAccessPanel
               title="Комнаты доступны участникам Клуба"

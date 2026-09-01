@@ -12,7 +12,7 @@
     var(--friends-night);
 }
 
-.friends-room.game-screen-shell.game-shell { width: min(100%, 1280px); }
+.friends-room.game-screen-shell.game-shell { width: min(100%, 1440px); margin: 0 auto; }
 .friends-room--territory-game.game-screen-shell.game-shell {
   width: min(100%, 1440px);
   padding-top: clamp(28px, 4vh, 42px);
@@ -124,7 +124,7 @@
 .room-directory-card__actions button:last-child { color: #aaa296; }
 .room-directory-card__actions button:last-child svg { width: 14px; }
 .room-directory-card__actions button:disabled { opacity: .5; cursor: wait; }
-.room-directory__create { min-height: 92px; margin: 0 24px 24px; padding: 15px 16px; border: 1px dashed rgba(239,231,215,.2); border-radius: 13px; display: grid; grid-template-columns: minmax(190px,1fr) repeat(3, auto); align-items: center; gap: 9px; }
+.room-directory__create { min-height: 92px; margin: 0 24px 24px; padding: 15px 16px; border: 1px dashed rgba(239,231,215,.2); border-radius: 13px; display: grid; grid-template-columns: minmax(190px,1fr) repeat(2, auto); align-items: center; gap: 9px; }
 .room-directory__create > div { display: grid; gap: 3px; }
 .room-directory__create > div span { color: var(--room-accent); font-size: 9px; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; }
 .room-directory__create > div strong { color: #e8e0d2; font-size: 12px; }

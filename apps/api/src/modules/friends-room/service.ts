@@ -701,15 +701,35 @@ export const joinFriendsRoom = async (db: Database, user: RequestUser, code: str
   return buildSnapshot(db, roomId, user.id)
 }
 
-export const configureFriendsRoom = async (db: Database, userId: string, roomId: string, input: FriendsRoomConfigBody) => {
+export const configureFriendsRoom = async (db: Database, userId: string, roomId: string, input: FriendsRoomConfigBody, config: AppConfig) => {
   await db.transaction(async (tx) => {
     const room = await hostRoom(tx, roomId, userId)
     if (room.phase !== 'lobby') throw new ApiError(409, 'FRIENDS_ROOM_ALREADY_STARTED', 'Настройки нельзя менять после запуска')
-    if (room.gameType === 'territory' || input.gameType === 'territory') {
+    if (room.gameType === 'territory' && input.gameType == null) {
       throw new ApiError(409, 'TERRITORY_CONFIG_FIXED', 'Настройки «Захвата» фиксированы для честной игры')
     }
     const { gameType: requestedGameType, packs: requestedPacks, mode: requestedMode, ...rules } = input
     const gameType = requestedGameType ?? room.gameType as FriendsRoomGameType
+    if (gameType === 'territory') {
+      if (!config.territoryEnabled) throw new ApiError(503, 'TERRITORY_DISABLED', '«Захват» пока недоступен')
+      const members = await tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
+        eq(friendsRoomMembers.roomId, roomId),
+        isNull(friendsRoomMembers.leftAt),
+      ))
+      if (members.length > 2) throw new ApiError(409, 'TERRITORY_TOO_MANY_PLAYERS', 'Для «Захвата» в комнате должно быть не больше двух игроков')
+      await tx.update(friendsRooms).set({
+        gameType: 'territory',
+        mode: 'territory',
+        packs: [],
+        roundsTotal: 20,
+        answerTimeSeconds: 20,
+        shufflePacks: false,
+        danetkiSessionId: null,
+        version: sql`${friendsRooms.version} + 1`,
+        updatedAt: new Date(),
+      }).where(eq(friendsRooms.id, roomId))
+      return
+    }
     if (gameType === 'danetki') {
       const members = await tx.select({ userId: friendsRoomMembers.userId }).from(friendsRoomMembers).where(and(
         eq(friendsRoomMembers.roomId, roomId),
@@ -720,18 +740,19 @@ export const configureFriendsRoom = async (db: Database, userId: string, roomId:
         throw new ApiError(409, 'FRIENDS_ROOM_DANETKI_TOO_MANY_PLAYERS', 'Для Данетки в комнате должно быть не больше четырёх игроков')
       }
     }
+    const fallbackMode = room.gameType === 'territory' ? 'series' : room.mode as PlayableCatalogGuessModeId
     const packs = requestedPacks
-      ? normalizeFriendsRoomPacks(requestedPacks, room.mode as PlayableCatalogGuessModeId)
+      ? normalizeFriendsRoomPacks(requestedPacks, fallbackMode)
       : requestedMode
         ? [defaultFriendsRoomPack(requestedMode)]
         : null
-    const nextPacks = packs ?? roomPacks(room)
+    const nextPacks = packs ?? (room.gameType === 'territory' ? [defaultFriendsRoomPack(fallbackMode)] : roomPacks(room))
     const nextRoundsTotal = rules.roundsTotal ?? room.roundsTotal
     if (nextRoundsTotal < nextPacks.length) throw new ApiError(422, 'FRIENDS_ROOM_ROUNDS_TOO_FEW', 'На каждый выбранный пак нужен хотя бы один раунд')
     await tx.update(friendsRooms).set({
       ...rules,
       ...(requestedGameType ? { gameType: requestedGameType, danetkiSessionId: null } : {}),
-      ...(packs ? { packs, mode: packs[0].mode } : {}),
+      ...(packs || room.gameType === 'territory' ? { packs: nextPacks, mode: nextPacks[0].mode } : {}),
       version: sql`${friendsRooms.version} + 1`,
       updatedAt: new Date(),
     }).where(eq(friendsRooms.id, roomId))
