@@ -1,12 +1,16 @@
 import { createHash, randomBytes } from 'node:crypto'
-import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm'
+import { and, asc, count, desc, eq, isNotNull, isNull, sql } from 'drizzle-orm'
 import {
+  TERRITORY_CAPITAL_TOWERS,
   TERRITORY_CAPTURE_TIME_MS,
   TERRITORY_DEFAULT_CELL_COUNT,
   TERRITORY_MAX_DUELS,
+  TERRITORY_MAX_QUESTION_COUNT,
   TERRITORY_QUESTION_TIME_MS,
   TERRITORY_RULES_VERSION,
+  type TerritoryAnswerRule,
   type TerritoryDifficulty,
+  type TerritoryDuelKind,
   type TerritoryDuelResultReason,
   type TerritoryFinishReason,
   type TerritoryMapSnapshot,
@@ -14,6 +18,7 @@ import {
   type TerritoryPublicSnapshot,
   type TerritoryQuestionItem,
   type TerritoryQuestionProvenance,
+  type TerritorySiegeState,
 } from '@shoditsa/contracts'
 import {
   applyTerritoryCapture,
@@ -22,6 +27,9 @@ import {
   legalTerritoryCaptures,
   resolveTerritoryDuel,
   resolveTerritoryMatch,
+  resolveTerritorySiegeDuel,
+  territoryAnswerDistance,
+  territoryComparableOptionValues,
   territoryCountForPlayer,
   territoryValueForPlayer,
   validateTerritoryQuestion,
@@ -48,11 +56,33 @@ const COUNTDOWN_MS = 3_000
 const REVEAL_MS = 2_800
 const PRESENCE_MS = 35_000
 const MIN_QUESTION_POOL = 80
-const MAX_CLOCK_TRANSITIONS = TERRITORY_MAX_DUELS * 3 + 4
+const MAX_CLOCK_TRANSITIONS = TERRITORY_MAX_QUESTION_COUNT * 3 + 4
 
 const iso = (value: Date | null) => value?.toISOString() ?? null
 const hash = (value: string) => createHash('sha256').update(value).digest('hex')
 const opaqueOptionId = (seed: string, optionId: string) => `o_${hash(`${seed}:${optionId}`).slice(0, 18)}`
+
+const initialSiegeState = (map: TerritoryMapSnapshot): TerritorySiegeState => ({
+  active: null,
+  towersRemaining: Object.fromEntries(map.baseCellIds.map((cellId) => [cellId, TERRITORY_CAPITAL_TOWERS])),
+})
+
+const safeSiegeState = (match: MatchRow): TerritorySiegeState => {
+  const stored = match.siegeState && typeof match.siegeState === 'object' ? match.siegeState : initialSiegeState(match.mapSnapshot)
+  const baseCellIds = new Set(match.mapSnapshot.baseCellIds)
+  const active = stored.active
+    && baseCellIds.has(stored.active.targetCellId)
+    && [match.playerOneUserId, match.playerTwoUserId].includes(stored.active.attackerUserId)
+    ? stored.active
+    : null
+  return {
+    active,
+    towersRemaining: Object.fromEntries(match.mapSnapshot.baseCellIds.map((cellId) => {
+      const remaining = stored.towersRemaining?.[cellId]
+      return [cellId, Number.isInteger(remaining) ? Math.max(0, Math.min(TERRITORY_CAPITAL_TOWERS, remaining)) : TERRITORY_CAPITAL_TOWERS]
+    })),
+  }
+}
 
 const safeStats = (match: MatchRow): MatchStats => {
   const stored = match.playerStats && typeof match.playerStats === 'object' ? match.playerStats as MatchStats : {}
@@ -113,7 +143,8 @@ const shuffledPublicOptions = (question: TerritoryQuestionItem, seed: string) =>
   return { options, correctOptionId }
 }
 
-const createDuel = async (tx: Transaction, match: MatchRow, position: number) => {
+const createDuel = async (tx: Transaction, match: MatchRow, position: number, kind: TerritoryDuelKind = 'regular') => {
+  if (position > TERRITORY_MAX_QUESTION_COUNT) throw new ApiError(500, 'TERRITORY_QUESTION_LIMIT', 'Превышен лимит вопросов матча')
   const candidates = await tx.select({
     id: contentItemVersions.id,
     itemId: contentItemVersions.itemId,
@@ -142,6 +173,7 @@ const createDuel = async (tx: Transaction, match: MatchRow, position: number) =>
   const inserted = (await tx.insert(territoryDuels).values({
     matchId: match.id,
     position,
+    kind,
     contentItemVersionId: candidate.id,
     prompt: question.prompt,
     categoryId: question.category.id,
@@ -183,6 +215,7 @@ const createMatch = async (
     mapVersion: map.version,
     mapSnapshot: map,
     ownership,
+    siegeState: initialSiegeState(map),
     playerStats,
     currentDuel: 1,
     maxDuels: TERRITORY_MAX_DUELS,
@@ -241,18 +274,45 @@ const resolveDuel = async (tx: Transaction, match: MatchRow, duel: DuelRow, reso
   const answers = await tx.select().from(territoryAnswers).where(eq(territoryAnswers.duelId, duel.id))
   const resolution = resolveTerritoryDuel({
     playerIds: [match.playerOneUserId, match.playerTwoUserId],
-    answers: answers.map((answer) => ({ userId: answer.userId, correct: answer.isCorrect, elapsedMs: answer.elapsedMs })),
+    answers: answers.map((answer) => ({
+      userId: answer.userId,
+      correct: answer.isCorrect,
+      distance: territoryAnswerDistance(duel.options, duel.correctOptionId, answer.optionId),
+      elapsedMs: answer.elapsedMs,
+    })),
   })
+  let ownership = match.ownership
+  let siegeState = safeSiegeState(match)
+  let capturedCellId: string | null = null
+  let previousOwnerUserId: string | null = null
+  if (duel.kind === 'siege') {
+    if (!siegeState.active) throw new ApiError(500, 'TERRITORY_SIEGE_INVALID', 'Состояние осады повреждено')
+    const targetCellId = siegeState.active.targetCellId
+    const siegeResolution = resolveTerritorySiegeDuel({
+      map: match.mapSnapshot,
+      ownership,
+      siegeState,
+      playerIds: [match.playerOneUserId, match.playerTwoUserId],
+      winnerUserId: resolution.winnerUserId,
+    })
+    ownership = siegeResolution.ownership
+    siegeState = siegeResolution.siegeState
+    previousOwnerUserId = siegeResolution.previousOwnerUserId
+    if (siegeResolution.capitalCaptured) capturedCellId = targetCellId
+  }
   await tx.update(territoryDuels).set({
     resolvedAt,
     result: resolution.result,
     winnerUserId: resolution.winnerUserId,
+    ...(capturedCellId ? { capturedCellId, previousOwnerUserId } : {}),
   }).where(eq(territoryDuels.id, duel.id))
   const revealEndsAt = new Date(resolvedAt.getTime() + REVEAL_MS)
   await tx.update(territoryMatches).set({
     phase: 'reveal',
     phaseStartedAt: resolvedAt,
     phaseEndsAt: revealEndsAt,
+    ownership,
+    siegeState,
     updatedAt: new Date(),
   }).where(eq(territoryMatches.id, match.id))
   await updateRoomClock(tx, match.roomId, 'active', resolvedAt, revealEndsAt, match.currentDuel)
@@ -276,27 +336,20 @@ const finishMatch = async (
   await updateRoomClock(tx, match.roomId, 'finished', finishedAt, null, match.currentDuel)
 }
 
-const continueOrFinish = async (tx: Transaction, match: MatchRow, ownership: TerritoryOwnership, transitionAt: Date) => {
-  const stats = safeStats(match)
-  const resolution = resolveTerritoryMatch({
-    map: match.mapSnapshot,
-    ownership,
-    players: [
-      { userId: match.playerOneUserId, ...stats[match.playerOneUserId] },
-      { userId: match.playerTwoUserId, ...stats[match.playerTwoUserId] },
-    ],
-    duelCount: match.currentDuel,
-  })
-  if (resolution.status === 'finished') {
-    await finishMatch(tx, match, transitionAt, resolution.winnerUserId, resolution.finishReason!)
-    return
-  }
+const startNextDuel = async (
+  tx: Transaction,
+  match: MatchRow,
+  ownership: TerritoryOwnership,
+  transitionAt: Date,
+  kind: TerritoryDuelKind,
+) => {
   const position = match.currentDuel + 1
   const nextMatch = { ...match, ownership, currentDuel: position }
-  await createDuel(tx, nextMatch, position)
+  await createDuel(tx, nextMatch, position, kind)
   const countdownEndsAt = new Date(transitionAt.getTime() + COUNTDOWN_MS)
   await tx.update(territoryMatches).set({
     ownership,
+    siegeState: safeSiegeState(nextMatch),
     currentDuel: position,
     phase: 'countdown',
     phaseStartedAt: transitionAt,
@@ -304,6 +357,34 @@ const continueOrFinish = async (tx: Transaction, match: MatchRow, ownership: Ter
     updatedAt: new Date(),
   }).where(eq(territoryMatches.id, match.id))
   await updateRoomClock(tx, match.roomId, 'countdown', transitionAt, countdownEndsAt, position)
+}
+
+const completedRegularDuelCount = async (tx: Transaction, matchId: string) => {
+  const row = (await tx.select({ value: count() }).from(territoryDuels).where(and(
+    eq(territoryDuels.matchId, matchId),
+    eq(territoryDuels.kind, 'regular'),
+    isNotNull(territoryDuels.resolvedAt),
+  )))[0]
+  return Number(row?.value ?? 0)
+}
+
+const continueOrFinish = async (tx: Transaction, match: MatchRow, ownership: TerritoryOwnership, transitionAt: Date) => {
+  const stats = safeStats(match)
+  const regularDuelCount = await completedRegularDuelCount(tx, match.id)
+  const resolution = resolveTerritoryMatch({
+    map: match.mapSnapshot,
+    ownership,
+    players: [
+      { userId: match.playerOneUserId, ...stats[match.playerOneUserId] },
+      { userId: match.playerTwoUserId, ...stats[match.playerTwoUserId] },
+    ],
+    duelCount: regularDuelCount,
+  })
+  if (resolution.status === 'finished') {
+    await finishMatch(tx, match, transitionAt, resolution.winnerUserId, resolution.finishReason!)
+    return
+  }
+  await startNextDuel(tx, match, ownership, transitionAt, 'regular')
 }
 
 const capture = async (
@@ -319,6 +400,23 @@ const capture = async (
   const legal = legalTerritoryCaptures(match.mapSnapshot, match.ownership, actorUserId)
   if (!legal.includes(cellId)) throw new ApiError(409, 'TERRITORY_CAPTURE_ILLEGAL', 'Эту территорию сейчас нельзя захватить')
   const previousOwnerUserId = match.ownership[cellId] ?? null
+  const capitalIndex = match.mapSnapshot.baseCellIds.indexOf(cellId)
+  if (capitalIndex >= 0) {
+    const defenderUserId = capitalIndex === 0 ? match.playerOneUserId : match.playerTwoUserId
+    if (defenderUserId === actorUserId || previousOwnerUserId !== defenderUserId) {
+      throw new ApiError(409, 'TERRITORY_CAPITAL_INVALID', 'Эту столицу нельзя атаковать')
+    }
+    const siegeState: TerritorySiegeState = {
+      ...safeSiegeState(match),
+      active: { attackerUserId: actorUserId, targetCellId: cellId },
+    }
+    await tx.update(territoryDuels).set({
+      previousOwnerUserId,
+      ...(idempotencyKey ? { captureIdempotencyKey: idempotencyKey } : {}),
+    }).where(eq(territoryDuels.id, duel.id))
+    await startNextDuel(tx, { ...match, siegeState }, match.ownership, capturedAt, 'siege')
+    return
+  }
   const ownership = applyTerritoryCapture(match.mapSnapshot, match.ownership, actorUserId, cellId)
   await tx.update(territoryDuels).set({
     capturedCellId: cellId,
@@ -351,6 +449,15 @@ const advanceOneClockTransition = async (db: Database, roomId: string) => db.tra
     return true
   }
   if (match.phase === 'reveal') {
+    if (duel.kind === 'siege') {
+      const siegeState = safeSiegeState(match)
+      if (siegeState.active && duel.winnerUserId === siegeState.active.attackerUserId) {
+        await startNextDuel(tx, match, match.ownership, transitionAt, 'siege')
+      } else {
+        await continueOrFinish(tx, match, match.ownership, transitionAt)
+      }
+      return true
+    }
     if (duel.winnerUserId) {
       const legal = legalTerritoryCaptures(match.mapSnapshot, match.ownership, duel.winnerUserId)
       if (legal.length) {
@@ -539,18 +646,21 @@ export const getTerritoryPublicSnapshot = async (
   const common = {
     matchId: match.id,
     matchNumber: match.matchNumber,
-    rulesVersion: TERRITORY_RULES_VERSION,
+    rulesVersion: match.rulesVersion,
     serverTime: now.toISOString(),
     phaseStartedAt: match.phaseStartedAt.toISOString(),
     duelNumber: match.currentDuel,
     maxDuels: TERRITORY_MAX_DUELS,
     map: match.mapSnapshot,
     ownership: match.ownership,
+    siege: safeSiegeState(match),
     players,
   }
   const questionFields = duel && duel.startedAt ? {
     duelId: duel.id,
     position: duel.position,
+    duelKind: duel.kind as TerritoryDuelKind,
+    answerRule: (territoryComparableOptionValues(duel.options) ? 'numeric_closest' : 'exact') as TerritoryAnswerRule,
     prompt: duel.prompt,
     category: { id: duel.categoryId, label: duel.categoryLabel },
     difficulty: duel.difficulty as TerritoryDifficulty,
@@ -563,11 +673,12 @@ export const getTerritoryPublicSnapshot = async (
       userId,
       optionId: answer?.optionId ?? null,
       correct: answer?.isCorrect ?? false,
+      distance: answer ? territoryAnswerDistance(duel?.options ?? [], duel?.correctOptionId ?? '', answer.optionId) : null,
       elapsedMs: answer?.elapsedMs ?? null,
     }
   }) as [
-    { userId: string; optionId: string | null; correct: boolean; elapsedMs: number | null },
-    { userId: string; optionId: string | null; correct: boolean; elapsedMs: number | null },
+    { userId: string; optionId: string | null; correct: boolean; distance: number | null; elapsedMs: number | null },
+    { userId: string; optionId: string | null; correct: boolean; distance: number | null; elapsedMs: number | null },
   ]
   const reveal = duel?.resolvedAt && duel.result && questionFields ? {
     ...questionFields,

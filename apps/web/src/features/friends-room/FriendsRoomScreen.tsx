@@ -1046,7 +1046,7 @@ function RoomInvitePreview({ preview, busy, onJoin, onDecline }: {
       <p>{preview.gameType === 'danetki'
         ? 'Вас ждёт общее расследование: одна история, общий протокол и вопросы ведущему по очереди.'
         : preview.gameType === 'territory'
-          ? 'Дуэль на общей карте: отвечайте быстрее соперника и выбирайте, какую соседнюю территорию захватить.'
+          ? 'Дуэль на общей карте: в числах важна близость, в равных ответах — скорость, а столицу защищают три башни.'
           : 'Вы увидите те же подсказки, что и друзья, и отправите свой ответ одновременно с остальными.'}</p>
       <div className="room-invite__facts">
         <span><RoomIcon name="users" /><strong>{preview.players} из {preview.capacity}</strong><small>уже в комнате</small></span>
@@ -1071,7 +1071,7 @@ function TerritoryRoomBrief({ room, members }: {
   return <div className="room-territory-lobby">
       <section className="room-territory-lobby__brief">
         <Map aria-hidden="true" />
-        <div><span>Фиксированные правила</span><h2>Одна карта. Две столицы.</h2><p>Настроек сложности нет: вопросы и карта одинаковы для обоих игроков, поэтому исход решают знания и скорость.</p></div>
+        <div><span>Фиксированные правила</span><h2>Одна карта. Две столицы.</h2><p>В числах и датах побеждает точный или ближайший вариант; при равенстве решает скорость.</p></div>
       </section>
       <div className="room-territory-lobby__seats" role="list" aria-label="Игроки матча">
         {seats.map((member, index) => <article className={member?.connected ? 'is-ready' : member ? 'is-offline' : 'is-empty'} key={member?.userId ?? `empty-${index}`} role="listitem">
@@ -1082,8 +1082,8 @@ function TerritoryRoomBrief({ room, members }: {
       </div>
       <div className="room-territory-lobby__rules" aria-label="Правила матча">
         <article><Swords aria-hidden="true" /><span><strong>До 20 дуэлей</strong><small>Матч закончится раньше, как только один игрок захватит большинство карты.</small></span></article>
-        <article><Clock3 aria-hidden="true" /><span><strong>20 секунд</strong><small>Оба отвечают одновременно; при двух верных побеждает более быстрый.</small></span></article>
-        <article><Map aria-hidden="true" /><span><strong>Захват соседей</strong><small>После победы выбирайте доступную землю с учётом её ценности.</small></span></article>
+        <article><Clock3 aria-hidden="true" /><span><strong>20 секунд</strong><small>Точный ответ сильнее; в числах учитывается близость, при равенстве — скорость.</small></span></article>
+        <article><Map aria-hidden="true" /><span><strong>Три башни столицы</strong><small>Атака столицы запускает осаду. Разрушьте все три башни — и вся карта ваша.</small></span></article>
       </div>
     </div>
 }

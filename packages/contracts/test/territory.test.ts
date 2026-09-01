@@ -5,6 +5,7 @@ import {
   FriendsRoomCreateBodySchema,
   PLAYABLE_MODE_IDS,
   TERRITORY_MAX_DUELS,
+  TERRITORY_RULES_VERSION,
   TerritoryPublicSnapshotSchema,
   TerritoryQuestionItemSchema,
   type TerritoryMapSnapshot,
@@ -43,7 +44,7 @@ const mapFixture = (): TerritoryMapSnapshot => {
 const questionSnapshot = (): TerritoryQuestionSnapshot => ({
   matchId: 'match-1',
   matchNumber: 1,
-  rulesVersion: 1,
+  rulesVersion: TERRITORY_RULES_VERSION,
   serverTime: '2026-08-27T12:00:00.000Z',
   phaseStartedAt: '2026-08-27T12:00:00.000Z',
   phaseEndsAt: '2026-08-27T12:00:20.000Z',
@@ -51,6 +52,7 @@ const questionSnapshot = (): TerritoryQuestionSnapshot => ({
   maxDuels: TERRITORY_MAX_DUELS,
   map: mapFixture(),
   ownership: Object.fromEntries(mapFixture().cells.map((cell) => [cell.id, null])),
+  siege: { active: null, towersRemaining: { t01: 3, t06: 3 } },
   players: [
     { userId: 'player-1', displayName: 'Игрок 1', baseCellId: 't01', territoryCount: 1, territoryValueTotal: 100, correctAnswers: 0, totalCorrectAnswerTimeMs: 0 },
     { userId: 'player-2', displayName: 'Игрок 2', baseCellId: 't06', territoryCount: 1, territoryValueTotal: 100, correctAnswers: 0, totalCorrectAnswerTimeMs: 0 },
@@ -62,6 +64,8 @@ const questionSnapshot = (): TerritoryQuestionSnapshot => ({
   question: {
     duelId: 'duel-1',
     position: 1,
+    duelKind: 'regular',
+    answerRule: 'exact',
     prompt: 'Какой вариант является правильным?',
     category: { id: 'general', label: 'Общее' },
     difficulty: 'easy',

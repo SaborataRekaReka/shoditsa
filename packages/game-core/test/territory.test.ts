@@ -7,6 +7,8 @@ import {
   legalTerritoryCaptures,
   resolveTerritoryDuel,
   resolveTerritoryMatch,
+  resolveTerritorySiegeDuel,
+  territoryAnswerDistance,
   territoryGraphDistance,
   territoryMajority,
   validateTerritoryMap,
@@ -194,15 +196,15 @@ describe('territory duel and match rules', () => {
     expect(resolveTerritoryDuel({
       playerIds,
       answers: [
-        { userId: playerIds[0], correct: true, elapsedMs: 5_000 },
-        { userId: playerIds[1], correct: true, elapsedMs: 5_149 },
+        { userId: playerIds[0], correct: true, distance: null, elapsedMs: 5_000 },
+        { userId: playerIds[1], correct: true, distance: null, elapsedMs: 5_149 },
       ],
     })).toEqual({ winnerUserId: null, result: 'speed_tie' })
     expect(resolveTerritoryDuel({
       playerIds,
       answers: [
-        { userId: playerIds[0], correct: true, elapsedMs: 5_000 },
-        { userId: playerIds[1], correct: true, elapsedMs: 5_150 },
+        { userId: playerIds[0], correct: true, distance: null, elapsedMs: 5_000 },
+        { userId: playerIds[1], correct: true, distance: null, elapsedMs: 5_150 },
       ],
     })).toEqual({ winnerUserId: playerIds[0], result: 'faster' })
   })
@@ -210,12 +212,37 @@ describe('territory duel and match rules', () => {
   it('resolves single-correct and no-correct duels', () => {
     expect(resolveTerritoryDuel({
       playerIds,
-      answers: [{ userId: playerIds[1], correct: true, elapsedMs: 7_000 }],
+      answers: [{ userId: playerIds[1], correct: true, distance: null, elapsedMs: 7_000 }],
     })).toEqual({ winnerUserId: playerIds[1], result: 'single_correct' })
     expect(resolveTerritoryDuel({
       playerIds,
-      answers: [{ userId: playerIds[0], correct: false, elapsedMs: 4_000 }],
+      answers: [{ userId: playerIds[0], correct: false, distance: null, elapsedMs: 4_000 }],
     })).toEqual({ winnerUserId: null, result: 'no_correct' })
+  })
+
+  it('uses numeric/date distance only when every option is comparable', () => {
+    const numericOptions = [
+      { id: 'a', text: '1776' },
+      { id: 'b', text: '1789' },
+      { id: 'c', text: '1799' },
+      { id: 'd', text: '1812' },
+    ]
+    expect(territoryAnswerDistance(numericOptions, 'b', 'a')).toBe(13)
+    expect(territoryAnswerDistance([{ id: 'a', text: 'Париж' }, { id: 'b', text: 'Лион' }], 'a', 'b')).toBeNull()
+    expect(resolveTerritoryDuel({
+      playerIds,
+      answers: [
+        { userId: playerIds[0], correct: false, distance: 13, elapsedMs: 5_000 },
+        { userId: playerIds[1], correct: false, distance: 10, elapsedMs: 9_000 },
+      ],
+    })).toEqual({ winnerUserId: playerIds[1], result: 'closer' })
+    expect(resolveTerritoryDuel({
+      playerIds,
+      answers: [
+        { userId: playerIds[0], correct: false, distance: 10, elapsedMs: 5_000 },
+        { userId: playerIds[1], correct: false, distance: 10, elapsedMs: 5_150 },
+      ],
+    })).toEqual({ winnerUserId: playerIds[0], result: 'faster' })
   })
 
   it('uses majority for 11-13 territories', () => {
@@ -224,7 +251,8 @@ describe('territory duel and match rules', () => {
 
   it('finishes on a majority before the duel limit', () => {
     const map = createTerritoryFallbackMap('majority', 12)
-    const ownership = Object.fromEntries(map.cells.map((cell, index) => [cell.id, index < 7 ? playerIds[0] : playerIds[1]]))
+    const playerOneCells = new Set(map.cells.filter((cell) => cell.id !== map.baseCellIds[1]).slice(0, 7).map((cell) => cell.id))
+    const ownership = Object.fromEntries(map.cells.map((cell) => [cell.id, playerOneCells.has(cell.id) ? playerIds[0] : playerIds[1]]))
     expect(resolveTerritoryMatch({
       map,
       ownership,
@@ -236,6 +264,43 @@ describe('territory duel and match rules', () => {
     })).toMatchObject({ status: 'finished', winnerUserId: playerIds[0], finishReason: 'majority' })
   })
 
+  it('finishes immediately when an original capital changes owner', () => {
+    const map = createTerritoryFallbackMap('capital-finish', 12)
+    const ownership = createInitialTerritoryOwnership(map, playerIds)
+    ownership[map.baseCellIds[1]] = playerIds[0]
+    expect(resolveTerritoryMatch({
+      map,
+      ownership,
+      players: [
+        { userId: playerIds[0], correctAnswers: 1, totalCorrectAnswerTimeMs: 1_000 },
+        { userId: playerIds[1], correctAnswers: 1, totalCorrectAnswerTimeMs: 1_000 },
+      ],
+      duelCount: 1,
+    })).toMatchObject({ status: 'finished', winnerUserId: playerIds[0], finishReason: 'capital' })
+  })
+
+  it('keeps fallen capital towers and transfers every defender territory after the third win', () => {
+    const map = createTerritoryFallbackMap('capital-siege', 12)
+    const targetCellId = map.baseCellIds[1]
+    const ownership = createInitialTerritoryOwnership(map, playerIds)
+    const adjacentCellId = map.cells.find((cell) => cell.id === targetCellId)!.adjacentCellIds[0]
+    ownership[adjacentCellId] = playerIds[0]
+    const siegeState = {
+      active: { attackerUserId: playerIds[0], targetCellId },
+      towersRemaining: { [map.baseCellIds[0]]: 3, [targetCellId]: 3 },
+    }
+    const first = resolveTerritorySiegeDuel({ map, ownership, siegeState, playerIds, winnerUserId: playerIds[0] })
+    expect(first.siegeState).toMatchObject({ active: { attackerUserId: playerIds[0], targetCellId }, towersRemaining: { [targetCellId]: 2 } })
+    const stopped = resolveTerritorySiegeDuel({ map, ownership, siegeState: first.siegeState, playerIds, winnerUserId: playerIds[1] })
+    expect(stopped.siegeState).toMatchObject({ active: null, towersRemaining: { [targetCellId]: 2 } })
+    const resumed = { ...stopped.siegeState, active: { attackerUserId: playerIds[0], targetCellId } }
+    const second = resolveTerritorySiegeDuel({ map, ownership, siegeState: resumed, playerIds, winnerUserId: playerIds[0] })
+    const third = resolveTerritorySiegeDuel({ map, ownership, siegeState: second.siegeState, playerIds, winnerUserId: playerIds[0] })
+    expect(third.capitalCaptured).toBe(true)
+    expect(third.siegeState.towersRemaining[targetCellId]).toBe(0)
+    expect(map.cells.every((cell) => third.ownership[cell.id] !== playerIds[1])).toBe(true)
+  })
+
   it('applies max-duel tie-breaks in the agreed order', () => {
     const map = createTerritoryFallbackMap('tie-breaks', 12)
     const neutral = Object.fromEntries(map.cells.map((cell) => [cell.id, null]))
@@ -243,6 +308,8 @@ describe('territory duel and match rules', () => {
       cell.id,
       index < 6 ? playerIds[0] : index < 11 ? playerIds[1] : null,
     ]))
+    territoryOwnership[map.baseCellIds[0]] = playerIds[0]
+    territoryOwnership[map.baseCellIds[1]] = playerIds[1]
     const highValueCell = map.cells.find((cell) => cell.value === 200)!
     const lowValueCell = map.cells.find((cell) => cell.value === 100 && !map.baseCellIds.includes(cell.id))!
     const valueOwnership = { ...neutral, [highValueCell.id]: playerIds[0], [lowValueCell.id]: playerIds[1] }

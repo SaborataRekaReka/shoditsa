@@ -6,6 +6,7 @@ import {
   type TerritoryMapSnapshot,
   type TerritoryOwnership,
   type TerritoryQuestionProvenance,
+  type TerritorySiegeState,
 } from '@shoditsa/contracts'
 import {
   type AnyPgColumn,
@@ -813,12 +814,13 @@ export const territoryMatches = pgTable('territory_matches', {
   mapVersion: integer('map_version').notNull().default(1),
   mapSnapshot: jsonb('map_snapshot').$type<TerritoryMapSnapshot>().notNull(),
   ownership: jsonb().$type<TerritoryOwnership>().notNull(),
+  siegeState: jsonb('siege_state').$type<TerritorySiegeState>().notNull().default(sql`'{"active":null,"towersRemaining":{}}'::jsonb`),
   playerStats: jsonb('player_stats').$type<TerritoryMatchPlayerStats>().notNull().default(sql`'{}'::jsonb`),
   currentDuel: smallint('current_duel').notNull().default(1),
   maxDuels: smallint('max_duels').notNull().default(20),
   winnerUserId: uuid('winner_user_id').references(() => user.id, { onDelete: 'set null' }),
   finishReason: text('finish_reason'),
-  rulesVersion: integer('rules_version').notNull().default(1),
+  rulesVersion: integer('rules_version').notNull().default(2),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
@@ -827,7 +829,7 @@ export const territoryMatches = pgTable('territory_matches', {
   check('territory_match_number_check', sql`${table.matchNumber} > 0`),
   check('territory_match_distinct_players_check', sql`${table.playerOneUserId} <> ${table.playerTwoUserId}`),
   check('territory_match_phase_check', sql`${table.phase} in ('countdown', 'question', 'reveal', 'capture', 'finished')`),
-  check('territory_match_duel_check', sql`${table.currentDuel} between 0 and ${table.maxDuels}`),
+  check('territory_match_duel_check', sql`${table.currentDuel} between 0 and 80`),
   check('territory_match_max_duels_check', sql`${table.maxDuels} between 1 and 20`),
   check('territory_match_map_version_check', sql`${table.mapVersion} = 1`),
   check('territory_match_rules_version_check', sql`${table.rulesVersion} > 0`),
@@ -838,6 +840,7 @@ export const territoryDuels = pgTable('territory_duels', {
   matchId: uuid('match_id').notNull().references(() => territoryMatches.id, { onDelete: 'cascade' }),
   position: smallint().notNull(),
   contentItemVersionId: uuid('content_item_version_id').notNull().references(() => contentItemVersions.id),
+  kind: text().notNull().default('regular'),
   prompt: text().notNull(),
   categoryId: text('category_id').notNull(),
   categoryLabel: text('category_label').notNull(),
@@ -859,9 +862,10 @@ export const territoryDuels = pgTable('territory_duels', {
   unique('territory_duel_match_position_unique').on(table.matchId, table.position),
   unique('territory_duel_capture_idempotency_unique').on(table.matchId, table.captureIdempotencyKey),
   index('territory_duel_match_started_idx').on(table.matchId, table.startedAt),
-  check('territory_duel_position_check', sql`${table.position} between 1 and 20`),
+  check('territory_duel_position_check', sql`${table.position} between 1 and 80`),
+  check('territory_duel_kind_check', sql`${table.kind} in ('regular', 'siege')`),
   check('territory_duel_difficulty_check', sql`${table.difficulty} in ('easy', 'medium', 'hard')`),
-  check('territory_duel_result_check', sql`${table.result} is null or ${table.result} in ('single_correct', 'faster', 'speed_tie', 'no_correct')`),
+  check('territory_duel_result_check', sql`${table.result} is null or ${table.result} in ('single_correct', 'closer', 'faster', 'speed_tie', 'no_correct')`),
 ])
 
 export const territoryAnswers = pgTable('territory_answers', {

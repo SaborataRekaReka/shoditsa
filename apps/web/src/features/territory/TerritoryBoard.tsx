@@ -21,6 +21,8 @@ export function TerritoryBoard({
   legalCellIds,
   selectedCellId,
   capturedCellId,
+  capitalTowers,
+  siegeTargetCellId,
   disabled = false,
   onCapture,
 }: {
@@ -31,6 +33,8 @@ export function TerritoryBoard({
   legalCellIds: readonly string[]
   selectedCellId: string | null
   capturedCellId: string | null
+  capitalTowers: Readonly<Record<string, number>>
+  siegeTargetCellId: string | null
   disabled?: boolean
   onCapture: (cellId: string) => void
 }) {
@@ -159,8 +163,10 @@ export function TerritoryBoard({
             const selected = selectedCellId === cell.id
             const relation = territoryStateLabel(ownerUserId, currentMemberId)
             const capital = baseIndex === undefined ? '' : ` Столица игрока ${baseIndex === 0 ? 'А' : 'Б'} — ${players[baseIndex].displayName}.`
-            const availability = legal ? ' Доступна для захвата.' : ' Сейчас недоступна для захвата.'
-            const label = `Территория ${index + 1}, ценность ${cell.value} очков: ${relation}.${capital}${availability}`
+            const towers = baseIndex === undefined ? '' : ` Башен стоит: ${capitalTowers[cell.id] ?? 3} из 3.`
+            const siege = siegeTargetCellId === cell.id ? ' Идёт осада.' : ''
+            const availability = legal ? baseIndex === undefined ? ' Доступна для захвата.' : ' Доступна для осады.' : ' Сейчас недоступна для захвата.'
+            const label = `Территория ${index + 1}, ценность ${cell.value} очков: ${relation}.${capital}${towers}${siege}${availability}`
             const fill = ownerIndex === 0
               ? `url(#${lightPatternId})`
               : ownerIndex === 1
@@ -178,6 +184,7 @@ export function TerritoryBoard({
                 legal && 'is-legal',
                 selected && 'is-selected',
                 capturedCellId === cell.id && 'is-last-capture',
+                siegeTargetCellId === cell.id && 'is-under-siege',
               )}
               role="button"
               tabIndex={0}
@@ -199,12 +206,23 @@ export function TerritoryBoard({
                 {cell.value}
               </text>
               {baseIndex !== undefined && <g
-                className={classNames('territory-map__capital', baseIndex === 0 ? 'is-light' : 'is-deep')}
+                className={classNames('territory-map__capital', baseIndex === 0 ? 'is-light' : 'is-deep', siegeTargetCellId === cell.id && 'is-under-siege')}
                 transform={`translate(${centerX} ${cell.center[1]})`}
                 aria-hidden="true"
               >
                 <circle className="territory-map__capital-outer" r={markerRadius} />
                 <circle className="territory-map__capital-inner" r={markerRadius * .58} />
+                {[0, 1, 2].map((towerIndex) => {
+                  const remaining = capitalTowers[cell.id] ?? 3
+                  const x = (towerIndex - 1) * markerRadius * .52
+                  return <g
+                    key={towerIndex}
+                    className={classNames('territory-map__tower', towerIndex >= remaining && 'is-down')}
+                    transform={`translate(${x} ${-markerRadius * .17})`}
+                  >
+                    <path d={`M${-markerRadius * .15} ${-markerRadius * .36}v${markerRadius * .72}h${markerRadius * .3}v${-markerRadius * .72}l${-markerRadius * .075} ${markerRadius * .09}l${-markerRadius * .075} ${-markerRadius * .09}l${-markerRadius * .075} ${markerRadius * .09}Z`} />
+                  </g>
+                })}
               </g>}
             </g>
           })}

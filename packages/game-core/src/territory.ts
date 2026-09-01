@@ -1,4 +1,5 @@
 import {
+  TERRITORY_CAPITAL_TOWERS,
   TERRITORY_DIFFICULTIES,
   TERRITORY_MAP_VERSION,
   TERRITORY_MAX_CELL_COUNT,
@@ -13,6 +14,7 @@ import {
   type TerritoryMapSnapshot,
   type TerritoryOwnership,
   type TerritoryQuestionItem,
+  type TerritorySiegeState,
 } from '@shoditsa/contracts'
 
 export type TerritoryValidationIssue = {
@@ -25,6 +27,7 @@ export type TerritoryValidationIssue = {
 export type TerritoryDuelAnswer = {
   userId: string
   correct: boolean
+  distance: number | null
   elapsedMs: number | null
 }
 
@@ -941,6 +944,90 @@ export const applyTerritoryCapture = (
   return { ...ownership, [cellId]: playerId }
 }
 
+export const applyTerritoryCapitalCapture = (
+  map: TerritoryMapSnapshot,
+  ownership: TerritoryOwnership,
+  attackerUserId: string,
+  defenderUserId: string,
+  capitalCellId: string,
+): TerritoryOwnership => {
+  if (!map.baseCellIds.includes(capitalCellId)) throw new RangeError('Territory capital cell is invalid')
+  if ((ownership[capitalCellId] ?? null) !== defenderUserId) throw new RangeError('Territory capital is not owned by the defender')
+  if (!legalTerritoryCaptures(map, ownership, attackerUserId).includes(capitalCellId)) throw new RangeError('Territory capital capture is not legal')
+  return Object.fromEntries(map.cells.map((cell) => [
+    cell.id,
+    (ownership[cell.id] ?? null) === defenderUserId ? attackerUserId : ownership[cell.id] ?? null,
+  ]))
+}
+
+export const resolveTerritorySiegeDuel = (input: {
+  map: TerritoryMapSnapshot
+  ownership: TerritoryOwnership
+  siegeState: TerritorySiegeState
+  playerIds: readonly [string, string]
+  winnerUserId: string | null
+}) => {
+  const active = input.siegeState.active
+  if (!active) throw new TypeError('Territory siege requires an active attack')
+  const targetIndex = input.map.baseCellIds.indexOf(active.targetCellId)
+  if (targetIndex < 0) throw new RangeError('Territory siege target must be a capital')
+  const defenderUserId = input.playerIds[targetIndex]
+  if (!defenderUserId || defenderUserId === active.attackerUserId) throw new RangeError('Territory siege defender is invalid')
+  if (input.winnerUserId !== active.attackerUserId) {
+    return {
+      ownership: input.ownership,
+      siegeState: { ...input.siegeState, active: null } satisfies TerritorySiegeState,
+      capitalCaptured: false,
+      previousOwnerUserId: null,
+    }
+  }
+  const remaining = Math.max(0, (input.siegeState.towersRemaining[active.targetCellId] ?? TERRITORY_CAPITAL_TOWERS) - 1)
+  const siegeState: TerritorySiegeState = {
+    active: remaining > 0 ? active : null,
+    towersRemaining: { ...input.siegeState.towersRemaining, [active.targetCellId]: remaining },
+  }
+  if (remaining > 0) {
+    return { ownership: input.ownership, siegeState, capitalCaptured: false, previousOwnerUserId: null }
+  }
+  const previousOwnerUserId = input.ownership[active.targetCellId] ?? null
+  return {
+    ownership: applyTerritoryCapitalCapture(input.map, input.ownership, active.attackerUserId, defenderUserId, active.targetCellId),
+    siegeState,
+    capitalCaptured: true,
+    previousOwnerUserId,
+  }
+}
+
+export const territoryComparableOptionValues = (
+  options: readonly { id: string; text: string }[],
+): ReadonlyMap<string, number> | null => {
+  const values = new Map<string, number>()
+  let sharedUnit: string | null = null
+  for (const option of options) {
+    const normalized = option.text.normalize('NFKC').trim().replace(/[\u00a0\u202f]/gu, ' ')
+    const match = normalized.match(/^([+-]?\d[\d\s]*(?:[.,]\d+)?)\s*([^\d]*)$/u)
+    if (!match) return null
+    const value = Number(match[1].replace(/\s/gu, '').replace(',', '.'))
+    if (!Number.isFinite(value)) return null
+    const unit = match[2].toLocaleLowerCase('ru-RU').replace(/[\s.]/gu, '')
+    if (sharedUnit == null) sharedUnit = unit
+    else if (sharedUnit !== unit) return null
+    values.set(option.id, value)
+  }
+  return values.size === options.length ? values : null
+}
+
+export const territoryAnswerDistance = (
+  options: readonly { id: string; text: string }[],
+  correctOptionId: string,
+  selectedOptionId: string,
+): number | null => {
+  const values = territoryComparableOptionValues(options)
+  const correct = values?.get(correctOptionId)
+  const selected = values?.get(selectedOptionId)
+  return correct == null || selected == null ? null : Math.abs(selected - correct)
+}
+
 export const territoryCountForPlayer = (map: TerritoryMapSnapshot, ownership: TerritoryOwnership, playerId: string) => (
   map.cells.reduce((total, cell) => total + ((ownership[cell.id] ?? null) === playerId ? 1 : 0), 0)
 )
@@ -966,6 +1053,7 @@ export const resolveTerritoryDuel = (input: {
     if (!allowedPlayers.has(answer.userId)) throw new TypeError('Territory answer belongs to an unknown player')
     if (answersByPlayer.has(answer.userId)) throw new TypeError('Territory player may answer only once')
     if (answer.elapsedMs != null && (!Number.isFinite(answer.elapsedMs) || answer.elapsedMs < 0)) throw new RangeError('Territory answer time must be non-negative')
+    if (answer.distance != null && (!Number.isFinite(answer.distance) || answer.distance < 0)) throw new RangeError('Territory answer distance must be non-negative')
     if (answer.correct && answer.elapsedMs == null) throw new TypeError('Correct territory answer requires elapsed time')
     answersByPlayer.set(answer.userId, answer)
   }
@@ -973,11 +1061,22 @@ export const resolveTerritoryDuel = (input: {
   const right = answersByPlayer.get(rightPlayer)
   const leftCorrect = left?.correct === true
   const rightCorrect = right?.correct === true
-  if (!leftCorrect && !rightCorrect) return { winnerUserId: null, result: 'no_correct' }
   if (leftCorrect !== rightCorrect) return { winnerUserId: leftCorrect ? leftPlayer : rightPlayer, result: 'single_correct' }
-  const difference = Math.abs(left!.elapsedMs! - right!.elapsedMs!)
+  if (!leftCorrect && !rightCorrect) {
+    if (!left || !right || left.distance == null || right.distance == null) return { winnerUserId: null, result: 'no_correct' }
+    if (left.distance !== right.distance) {
+      return { winnerUserId: left.distance < right.distance ? leftPlayer : rightPlayer, result: 'closer' }
+    }
+  }
+  if (left?.elapsedMs == null || right?.elapsedMs == null) {
+    if (left?.elapsedMs != null || right?.elapsedMs != null) {
+      return { winnerUserId: left?.elapsedMs != null ? leftPlayer : rightPlayer, result: 'faster' }
+    }
+    return { winnerUserId: null, result: 'no_correct' }
+  }
+  const difference = Math.abs(left.elapsedMs - right.elapsedMs)
   if (difference < TERRITORY_SPEED_TIE_WINDOW_MS) return { winnerUserId: null, result: 'speed_tie' }
-  return { winnerUserId: left!.elapsedMs! < right!.elapsedMs! ? leftPlayer : rightPlayer, result: 'faster' }
+  return { winnerUserId: left.elapsedMs < right.elapsedMs ? leftPlayer : rightPlayer, result: 'faster' }
 }
 
 export const resolveTerritoryMatch = (input: {
@@ -1003,6 +1102,14 @@ export const resolveTerritoryMatch = (input: {
     territoryCount: territoryCountForPlayer(input.map, input.ownership, player.userId),
     territoryValueTotal: territoryValueForPlayer(input.map, input.ownership, player.userId),
   })) as [TerritoryMatchPlayerScore, TerritoryMatchPlayerScore]
+  const capturedCapitalIndex = input.map.baseCellIds.findIndex((cellId, index) => {
+    const ownerUserId = input.ownership[cellId] ?? null
+    return ownerUserId != null && ownerUserId !== input.players[index].userId
+  })
+  if (capturedCapitalIndex >= 0) {
+    const winnerUserId = input.ownership[input.map.baseCellIds[capturedCapitalIndex]] ?? null
+    if (winnerUserId) return { status: 'finished', winnerUserId, finishReason: 'capital', scores }
+  }
   const majority = territoryMajority(input.map.cellCount)
   const majorityWinner = scores.find((score) => score.territoryCount >= majority)
   if (majorityWinner) return { status: 'finished', winnerUserId: majorityWinner.userId, finishReason: 'majority', scores }

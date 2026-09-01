@@ -59,9 +59,15 @@ const duelResultCopy = (snapshot: TerritoryPublicSnapshot, currentMemberId: stri
   if (reveal.result === 'no_correct') return { title: 'Никто не ответил верно', description: reveal.explanation }
   if (reveal.result === 'speed_tie') return { title: 'Ответили одновременно', description: reveal.explanation }
   if (reveal.winnerUserId === currentMemberId) {
-    return { title: reveal.result === 'faster' ? 'Вы ответили быстрее' : 'Ваш ответ верный', description: reveal.explanation }
+    return {
+      title: reveal.result === 'closer' ? 'Ваш вариант ближе' : reveal.result === 'faster' ? 'Вы ответили быстрее' : 'Ваш ответ верный',
+      description: reveal.explanation,
+    }
   }
-  return { title: reveal.result === 'faster' ? 'Соперник оказался быстрее' : 'Территорию разыграет соперник', description: reveal.explanation }
+  return {
+    title: reveal.result === 'closer' ? 'Вариант соперника ближе' : reveal.result === 'faster' ? 'Соперник оказался быстрее' : 'Территорию разыграет соперник',
+    description: reveal.explanation,
+  }
 }
 
 const finishCopy = (snapshot: Extract<TerritoryPublicSnapshot, { phase: 'finished' }>, currentMemberId: string) => {
@@ -69,7 +75,9 @@ const finishCopy = (snapshot: Extract<TerritoryPublicSnapshot, { phase: 'finishe
     return { kicker: 'Матч завершён', title: 'Карта поделена поровну', description: 'Ничья. Можно сразу сыграть ещё раз на новой карте.' }
   }
   const won = snapshot.winnerUserId === currentMemberId
-  const reason = snapshot.finishReason === 'forfeit'
+  const reason = snapshot.finishReason === 'capital'
+    ? won ? 'Вы разрушили три башни столицы и забрали всю карту.' : 'Соперник разрушил три башни вашей столицы.'
+    : snapshot.finishReason === 'forfeit'
     ? won ? 'Соперник покинул матч.' : 'Матч завершён досрочно.'
     : snapshot.finishReason === 'territory_value'
       ? 'При равном числе земель исход решила их суммарная ценность.'
@@ -87,16 +95,30 @@ const finishCopy = (snapshot: Extract<TerritoryPublicSnapshot, { phase: 'finishe
 
 const statusFeedCopy = (snapshot: TerritoryPublicSnapshot, currentMemberId: string, answerPending: boolean) => {
   const nameFor = (userId: string | null) => snapshot.players.find((player) => player.userId === userId)?.displayName || 'Соперник'
+  if (snapshot.phase === 'countdown' && snapshot.siege.active) return {
+    lead: 'Осада столицы',
+    text: ` — осталось башен: ${snapshot.siege.towersRemaining[snapshot.siege.active.targetCellId] ?? 3}`,
+  }
   if (snapshot.phase === 'countdown') return snapshot.duelNumber === 1
     ? { lead: 'Карта готова', text: ' — первая дуэль начнётся автоматически' }
     : { lead: `Дуэль ${snapshot.duelNumber}`, text: ' — следующий вопрос уже готов' }
   if (snapshot.phase === 'question') {
     const answered = Boolean(snapshot.question.ownOptionId || answerPending)
+    const duelLabel = snapshot.question.duelKind === 'siege' ? 'Осада столицы' : `Дуэль ${snapshot.duelNumber}`
     return answered
       ? { lead: 'Ответ принят', text: snapshot.question.opponentAnswered ? ' — оба игрока ответили' : ' — соперник ещё думает' }
-      : { lead: `Дуэль ${snapshot.duelNumber}`, text: ' — выберите вариант и подтвердите ответ' }
+      : { lead: duelLabel, text: ' — выберите вариант и подтвердите ответ' }
   }
   if (snapshot.phase === 'reveal') {
+    if (snapshot.reveal.duelKind === 'siege') {
+      const targetCellId = snapshot.siege.active?.targetCellId
+      const towers = targetCellId ? snapshot.siege.towersRemaining[targetCellId] : null
+      return snapshot.siege.active
+        ? { lead: 'Башня разрушена', text: ` — осталось ${towers ?? 0}` }
+        : snapshot.reveal.capturedCellId
+          ? { lead: 'Столица пала', text: ' — карта захвачена' }
+          : { lead: 'Осада остановлена', text: ' — ход завершён' }
+    }
     if (!snapshot.reveal.winnerUserId) return { lead: 'Без захвата', text: ' — победитель в этой дуэли не определён' }
     const isYou = snapshot.reveal.winnerUserId === currentMemberId
     return { lead: isYou ? 'Вы выиграли дуэль' : nameFor(snapshot.reveal.winnerUserId), text: ' — получает право на атаку' }
@@ -183,7 +205,10 @@ function QuestionPanel({
   const answered = Boolean(question.ownOptionId || pendingOptionId)
   return <>
     <div className="territory-question-panel__copy">
-      <span className="territory-question-panel__kicker">{question.category.label} · {difficultyLabel[question.difficulty]}</span>
+      <span className="territory-question-panel__kicker">
+        {question.duelKind === 'siege' ? 'Осада столицы · ' : ''}{question.category.label} · {difficultyLabel[question.difficulty]}
+        {question.answerRule === 'numeric_closest' ? ' · учитывается ближайшее значение' : ''}
+      </span>
       <h2 id={titleId}>{question.prompt}</h2>
       <p aria-live="polite">{answered
         ? question.opponentAnswered ? 'Оба ответа приняты. Открываем результат.' : 'Ответ принят. Ждём соперника.'
@@ -224,6 +249,7 @@ function RevealPanel({ snapshot, currentMemberId }: {
 }) {
   const reveal = snapshot.reveal
   const ownAnswer = reveal.answers.find((answer) => answer.userId === currentMemberId)
+  const ownAnswerWonByCloseness = reveal.result === 'closer' && reveal.winnerUserId === currentMemberId
   const copy = duelResultCopy(snapshot, currentMemberId)
   const provenanceLabel = reveal.provenance.attribution || reveal.provenance.dataset
   const sourceUrl = safeHttpUrl(reveal.provenance.sourceUrl)
@@ -241,7 +267,7 @@ function RevealPanel({ snapshot, currentMemberId }: {
     <div className="territory-question-panel__actions" aria-label="Ответы завершённого вопроса">
       {reveal.options.map((option, index) => <div
         key={option.id}
-        className={`territory-option ui-control${option.id === reveal.correctOptionId ? ' is-correct' : ''}${ownAnswer?.optionId === option.id ? ' is-own' : ''}${ownAnswer?.optionId === option.id && !ownAnswer.correct ? ' is-wrong' : ''}`}
+        className={`territory-option ui-control${option.id === reveal.correctOptionId ? ' is-correct' : ''}${ownAnswer?.optionId === option.id ? ' is-own' : ''}${ownAnswer?.optionId === option.id && ownAnswerWonByCloseness ? ' is-closest' : ''}${ownAnswer?.optionId === option.id && !ownAnswer.correct && !ownAnswerWonByCloseness ? ' is-wrong' : ''}`}
       >
         <i aria-hidden="true" />
         <span className="territory-room-game__sr-only">Вариант {optionLetters[index]}. </span>
@@ -249,8 +275,8 @@ function RevealPanel({ snapshot, currentMemberId }: {
       </div>)}
     </div>
     <div className="territory-question-panel__status" role="status">
-      {ownAnswer?.correct ? <Check aria-hidden="true" /> : <Clock3 aria-hidden="true" />}
-      <span>{ownAnswer?.correct ? 'Ваш ответ верный' : 'Следующая дуэль скоро'}</span>
+      {ownAnswer?.correct || ownAnswerWonByCloseness ? <Check aria-hidden="true" /> : <Clock3 aria-hidden="true" />}
+      <span>{ownAnswer?.correct ? 'Ваш ответ верный' : ownAnswerWonByCloseness ? 'Ваш вариант оказался ближе' : 'Следующая дуэль скоро'}</span>
     </div>
   </>
 }
@@ -267,7 +293,7 @@ function CapturePanel({ snapshot, currentMemberId, pendingCellId, busy }: {
       <span className="territory-question-panel__kicker">Право на захват</span>
       <h2>{isActor ? 'Выберите территорию на карте' : 'Соперник выбирает территорию'}</h2>
       <p>{isActor
-        ? 'Янтарным контуром отмечены доступные земли, число показывает ценность. Нажмите на территорию — выбор сразу отправится на сервер.'
+        ? 'Янтарным контуром отмечены доступные земли. Обычная территория перейдёт сразу, а атака столицы запустит осаду трёх башен.'
         : 'Карта обновится одновременно у обоих игроков после выбора.'}</p>
     </div>
     <div className="territory-question-panel__status territory-question-panel__status--wide" role="status">
@@ -425,14 +451,17 @@ export function TerritoryRoomGame({
   }
 
   const centerLabel = snapshot.phase === 'countdown'
-    ? snapshot.duelNumber === 1 ? 'До начала' : 'Между дуэлями'
+    ? snapshot.siege.active ? 'Осада столицы' : snapshot.duelNumber === 1 ? 'До начала' : 'Между дуэлями'
     : snapshot.phase === 'question'
-      ? `Дуэль ${snapshot.duelNumber} из ${snapshot.maxDuels}`
+      ? snapshot.question.duelKind === 'siege' ? 'Осада столицы' : `Дуэль ${snapshot.duelNumber} из ${snapshot.maxDuels}`
       : snapshot.phase === 'reveal'
         ? 'Итог дуэли'
         : snapshot.phase === 'capture'
           ? snapshot.capture.actorUserId === currentMemberId ? 'Ваш захват' : 'Ход соперника'
           : 'Матч завершён'
+  const siegePhase = Boolean(snapshot.siege.active || snapshot.reveal?.duelKind === 'siege')
+  const siegeTargetCellId = snapshot.siege.active?.targetCellId ?? snapshot.reveal?.capturedCellId ?? null
+  const siegeTowersRemaining = siegeTargetCellId ? snapshot.siege.towersRemaining[siegeTargetCellId] ?? 0 : null
   const feed = statusFeedCopy(snapshot, currentMemberId, Boolean(pendingOptionId))
 
   useEffect(() => {
@@ -443,9 +472,9 @@ export function TerritoryRoomGame({
   return <section className={`territory-room-game territory-room-game--${snapshot.phase} territory-room-game--you-${currentPlayerSeat === 1 ? 'deep' : 'light'}`} aria-label="Матч «Захват»">
     <header className="territory-hud">
       <TerritoryPlayerHud player={snapshot.players[0]} seat={0} currentMemberId={currentMemberId} currentActorUserId={currentActorUserId} />
-      <div className="territory-turn" aria-label={`${centerLabel}. Ход ${snapshot.duelNumber} из ${snapshot.maxDuels}. Матч номер ${snapshot.matchNumber}.`}>
-        <span aria-hidden="true">ХОД</span>
-        <strong aria-hidden="true">{snapshot.duelNumber}<small> из {snapshot.maxDuels}</small></strong>
+      <div className="territory-turn" aria-label={`${centerLabel}. ${siegePhase ? `Осталось башен: ${siegeTowersRemaining ?? 'неизвестно'}.` : `Ход ${snapshot.duelNumber} из ${snapshot.maxDuels}.`} Матч номер ${snapshot.matchNumber}.`}>
+        <span aria-hidden="true">{siegePhase ? 'БАШНИ' : 'ХОД'}</span>
+        <strong aria-hidden="true">{siegePhase ? siegeTowersRemaining ?? '—' : snapshot.duelNumber}<small>{siegePhase ? ' осталось' : ` из ${snapshot.maxDuels}`}</small></strong>
         <i aria-hidden="true" />
         {secondsLeft !== null
           ? <><Clock3 aria-hidden="true" /><time className={secondsLeft <= 5 ? 'is-urgent' : undefined} dateTime={`PT${secondsLeft}S`} aria-label={`Осталось ${secondsLeft} секунд`}>{secondsLeft}<small aria-hidden="true"> сек</small></time></>
@@ -462,6 +491,8 @@ export function TerritoryRoomGame({
       legalCellIds={legalCellIds}
       selectedCellId={pendingCellId}
       capturedCellId={capturedCellId}
+      capitalTowers={snapshot.siege.towersRemaining}
+      siegeTargetCellId={snapshot.siege.active?.targetCellId ?? null}
       disabled={actionBusy}
       onCapture={(cellId) => void captureCell(cellId)}
     />
@@ -473,9 +504,11 @@ export function TerritoryRoomGame({
 
     <section className="territory-question-panel" aria-label="Состояние текущей дуэли">
       {snapshot.phase === 'countdown' && <div className="territory-countdown">
-        <span>{snapshot.duelNumber === 1 ? 'Карта готова' : `Дуэль ${snapshot.duelNumber}`}</span>
+        <span>{snapshot.siege.active ? 'Осада столицы' : snapshot.duelNumber === 1 ? 'Карта готова' : `Дуэль ${snapshot.duelNumber}`}</span>
         <strong>{secondsLeft ?? 0}</strong>
-        <p>{snapshot.duelNumber === 1 ? 'Первая дуэль начнётся автоматически' : 'Следующий вопрос появится автоматически'}</p>
+        <p>{snapshot.siege.active
+          ? `До падения столицы осталось башен: ${snapshot.siege.towersRemaining[snapshot.siege.active.targetCellId] ?? 3}`
+          : snapshot.duelNumber === 1 ? 'Первая дуэль начнётся автоматически' : 'Следующий вопрос появится автоматически'}</p>
       </div>}
       {snapshot.phase === 'question' && <QuestionPanel
         snapshot={snapshot}

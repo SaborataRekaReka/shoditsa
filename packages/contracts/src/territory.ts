@@ -5,19 +5,25 @@ export const TERRITORY_MIN_CELL_COUNT = 11 as const
 export const TERRITORY_DEFAULT_CELL_COUNT = 12 as const
 export const TERRITORY_MAX_CELL_COUNT = 13 as const
 export const TERRITORY_MAX_DUELS = 20 as const
+export const TERRITORY_MAX_QUESTION_COUNT = 80 as const
 export const TERRITORY_QUESTION_TIME_MS = 20_000 as const
 export const TERRITORY_CAPTURE_TIME_MS = 10_000 as const
 export const TERRITORY_SPEED_TIE_WINDOW_MS = 150 as const
-export const TERRITORY_RULES_VERSION = 1 as const
+export const TERRITORY_CAPITAL_TOWERS = 3 as const
+export const TERRITORY_RULES_VERSION = 2 as const
 export const TERRITORY_MAP_VERSION = 1 as const
 
 export const TERRITORY_PHASES = ['countdown', 'question', 'reveal', 'capture', 'finished'] as const
 export const TERRITORY_DIFFICULTIES = ['easy', 'medium', 'hard'] as const
-export const TERRITORY_DUEL_RESULTS = ['single_correct', 'faster', 'speed_tie', 'no_correct'] as const
-export const TERRITORY_FINISH_REASONS = ['majority', 'territories', 'territory_value', 'correct_answers', 'correct_time', 'draw', 'forfeit'] as const
+export const TERRITORY_DUEL_KINDS = ['regular', 'siege'] as const
+export const TERRITORY_ANSWER_RULES = ['exact', 'numeric_closest'] as const
+export const TERRITORY_DUEL_RESULTS = ['single_correct', 'closer', 'faster', 'speed_tie', 'no_correct'] as const
+export const TERRITORY_FINISH_REASONS = ['capital', 'majority', 'territories', 'territory_value', 'correct_answers', 'correct_time', 'draw', 'forfeit'] as const
 
 export type TerritoryPhase = typeof TERRITORY_PHASES[number]
 export type TerritoryDifficulty = typeof TERRITORY_DIFFICULTIES[number]
+export type TerritoryDuelKind = typeof TERRITORY_DUEL_KINDS[number]
+export type TerritoryAnswerRule = typeof TERRITORY_ANSWER_RULES[number]
 export type TerritoryDuelResultReason = typeof TERRITORY_DUEL_RESULTS[number]
 export type TerritoryFinishReason = typeof TERRITORY_FINISH_REASONS[number]
 
@@ -123,6 +129,22 @@ export type TerritoryMapCell = Static<typeof TerritoryMapCellSchema>
 export type TerritoryMapSnapshot = Static<typeof TerritoryMapSnapshotSchema>
 export type TerritoryOwnership = Record<string, string | null>
 
+export const TerritorySiegeStateSchema = Type.Object({
+  active: Type.Union([
+    Type.Object({
+      attackerUserId: Type.String({ minLength: 1, maxLength: 160 }),
+      targetCellId: Type.String({ minLength: 1, maxLength: 24, pattern: '^[a-z0-9_-]+$' }),
+    }, { additionalProperties: false }),
+    Type.Null(),
+  ]),
+  towersRemaining: Type.Record(
+    Type.String({ minLength: 1, maxLength: 24, pattern: '^[a-z0-9_-]+$' }),
+    Type.Integer({ minimum: 0, maximum: TERRITORY_CAPITAL_TOWERS }),
+  ),
+}, { additionalProperties: false })
+
+export type TerritorySiegeState = Static<typeof TerritorySiegeStateSchema>
+
 export const TerritoryPlayerSnapshotSchema = Type.Object({
   userId: Type.String({ minLength: 1, maxLength: 160 }),
   displayName: Type.String({ minLength: 1, maxLength: 40 }),
@@ -135,7 +157,9 @@ export const TerritoryPlayerSnapshotSchema = Type.Object({
 
 const TerritoryQuestionPublicFields = {
   duelId: Type.String({ minLength: 1, maxLength: 160 }),
-  position: Type.Integer({ minimum: 1, maximum: TERRITORY_MAX_DUELS }),
+  position: Type.Integer({ minimum: 1, maximum: TERRITORY_MAX_QUESTION_COUNT }),
+  duelKind: Type.Union(TERRITORY_DUEL_KINDS.map((value) => Type.Literal(value))),
+  answerRule: Type.Union(TERRITORY_ANSWER_RULES.map((value) => Type.Literal(value))),
   prompt: Type.String({ minLength: 1, maxLength: 500 }),
   category: TerritoryQuestionCategorySchema,
   difficulty: Type.Union(TERRITORY_DIFFICULTIES.map((value) => Type.Literal(value))),
@@ -163,6 +187,7 @@ export const TerritoryRevealedAnswerSchema = Type.Object({
   userId: Type.String({ minLength: 1, maxLength: 160 }),
   optionId: Type.Union([Type.String({ minLength: 1, maxLength: 40 }), Type.Null()]),
   correct: Type.Boolean(),
+  distance: Type.Union([Type.Number({ minimum: 0 }), Type.Null()]),
   elapsedMs: Type.Union([Type.Integer({ minimum: 0 }), Type.Null()]),
 }, { additionalProperties: false })
 
@@ -194,16 +219,17 @@ export type TerritoryCaptureTurn = Static<typeof TerritoryCaptureTurnSchema>
 const TerritorySnapshotCommonFields = {
   matchId: Type.String({ minLength: 1, maxLength: 160 }),
   matchNumber: Type.Integer({ minimum: 1 }),
-  rulesVersion: Type.Literal(TERRITORY_RULES_VERSION),
+  rulesVersion: Type.Integer({ minimum: 1, maximum: TERRITORY_RULES_VERSION }),
   serverTime: Type.String({ minLength: 1, maxLength: 64 }),
   phaseStartedAt: Type.String({ minLength: 1, maxLength: 64 }),
-  duelNumber: Type.Integer({ minimum: 0, maximum: TERRITORY_MAX_DUELS }),
+  duelNumber: Type.Integer({ minimum: 0, maximum: TERRITORY_MAX_QUESTION_COUNT }),
   maxDuels: Type.Literal(TERRITORY_MAX_DUELS),
   map: TerritoryMapSnapshotSchema,
   ownership: Type.Record(Type.String({ minLength: 1, maxLength: 24 }), Type.Union([
     Type.String({ minLength: 1, maxLength: 160 }),
     Type.Null(),
   ])),
+  siege: TerritorySiegeStateSchema,
   players: Type.Tuple([TerritoryPlayerSnapshotSchema, TerritoryPlayerSnapshotSchema]),
 } as const
 

@@ -145,14 +145,11 @@ describe('territory multiplayer API', () => {
     expect(match.mapSnapshot.seed).toBe(match.mapSeed)
 
     const expired = new Date(Date.now() - 1_000)
-    await database.db.update(territoryDuels).set({ position: 20 }).where(eq(territoryDuels.id, duel.id))
     await database.db.update(territoryMatches).set({
-      currentDuel: 20,
       phase: 'countdown',
       phaseEndsAt: expired,
     }).where(eq(territoryMatches.id, match.id))
     await database.db.update(friendsRooms).set({
-      currentRound: 20,
       phase: 'countdown',
       phaseEndsAt: expired,
     }).where(eq(friendsRooms.id, roomId))
@@ -167,7 +164,13 @@ describe('territory multiplayer API', () => {
     expect(JSON.stringify(playerQuestion.territory.question)).not.toContain('correctOptionId')
 
     const correctOptionId = duel.correctOptionId
-    const wrongOptionId = ownerQuestion.territory.question.options.find((option) => option.id !== correctOptionId)!.id
+    const wrongOptionIds = ownerQuestion.territory.question.options.filter((option) => option.id !== correctOptionId).map((option) => option.id)
+    const [closerOptionId, fartherOptionId] = wrongOptionIds
+    const numericOptions = duel.options.map((option) => ({
+      ...option,
+      text: option.id === correctOptionId ? '100' : option.id === closerOptionId ? '95' : option.id === fartherOptionId ? '160' : '0',
+    })) as typeof duel.options
+    await database.db.update(territoryDuels).set({ options: numericOptions }).where(eq(territoryDuels.id, duel.id))
     const duelId = ownerQuestion.territory.question.duelId
     const staleAnswer = await app.inject({
       method: 'POST',
@@ -181,17 +184,17 @@ describe('territory multiplayer API', () => {
       method: 'POST',
       url: `/api/v1/friends/rooms/${roomId}/territory/answers`,
       headers: { cookie: ownerCookie, 'idempotency-key': ownerAnswerKey },
-      payload: { duelId, optionId: correctOptionId },
+      payload: { duelId, optionId: closerOptionId },
     })
     expect(ownerAnswer.statusCode).toBe(200)
-    expect(ownerAnswer.json().room.territory.question.ownOptionId).toBe(correctOptionId)
+    expect(ownerAnswer.json().room.territory.question.ownOptionId).toBe(closerOptionId)
     expect(JSON.stringify(ownerAnswer.json().room.territory.question)).not.toContain('correctOptionId')
 
     const replayedAnswer = await app.inject({
       method: 'POST',
       url: `/api/v1/friends/rooms/${roomId}/territory/answers`,
       headers: { cookie: ownerCookie, 'idempotency-key': ownerAnswerKey },
-      payload: { duelId, optionId: wrongOptionId },
+      payload: { duelId, optionId: fartherOptionId },
     })
     expect(replayedAnswer.statusCode).toBe(200)
 
@@ -199,12 +202,12 @@ describe('territory multiplayer API', () => {
       method: 'POST',
       url: `/api/v1/friends/rooms/${roomId}/territory/answers`,
       headers: { cookie: playerCookie, 'idempotency-key': crypto.randomUUID() },
-      payload: { duelId, optionId: wrongOptionId },
+      payload: { duelId, optionId: fartherOptionId },
     })
     expect(playerAnswer.statusCode).toBe(200)
     expect(playerAnswer.json().room.territory).toMatchObject({
       phase: 'reveal',
-      reveal: { correctOptionId, winnerUserId: ownerUserId, result: 'single_correct' },
+      reveal: { correctOptionId, winnerUserId: ownerUserId, result: 'closer' },
     })
     const storedAnswers = await database.db.select().from(territoryAnswers).where(and(
       eq(territoryAnswers.matchId, match.id),
@@ -237,20 +240,18 @@ describe('territory multiplayer API', () => {
     })
     expect(captured.statusCode).toBe(200)
     expect(captured.json().room.territory).toMatchObject({
-      phase: 'finished',
-      winnerUserId: ownerUserId,
-      finishReason: 'territories',
+      phase: 'countdown',
       ownership: { [targetCellId]: ownerUserId },
     })
 
-    const replayedCapture = await app.inject({
-      method: 'POST',
-      url: `/api/v1/friends/rooms/${roomId}/territory/captures`,
-      headers: { cookie: ownerCookie, 'idempotency-key': captureKey },
-      payload: { cellId: targetCellId },
-    })
-    expect(replayedCapture.statusCode).toBe(200)
-    expect(replayedCapture.json().room.territory.phase).toBe('finished')
+    await database.db.update(territoryMatches).set({
+      phase: 'finished',
+      phaseStartedAt: new Date(),
+      phaseEndsAt: null,
+      winnerUserId: ownerUserId,
+      finishReason: 'territories',
+    }).where(eq(territoryMatches.id, match.id))
+    await database.db.update(friendsRooms).set({ phase: 'finished', phaseEndsAt: null }).where(eq(friendsRooms.id, roomId))
 
     const ownerVote = await app.inject({
       method: 'POST',
