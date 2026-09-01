@@ -62,6 +62,10 @@ const iso = (value: Date | null) => value?.toISOString() ?? null
 const hash = (value: string) => createHash('sha256').update(value).digest('hex')
 const opaqueOptionId = (seed: string, optionId: string) => `o_${hash(`${seed}:${optionId}`).slice(0, 18)}`
 
+export const territoryRoomRound = (questionPosition: number) => (
+  Math.min(TERRITORY_MAX_DUELS, Math.max(0, questionPosition))
+)
+
 const initialSiegeState = (map: TerritoryMapSnapshot): TerritorySiegeState => ({
   active: null,
   towersRemaining: Object.fromEntries(map.baseCellIds.map((cellId) => [cellId, TERRITORY_CAPITAL_TOWERS])),
@@ -263,7 +267,11 @@ const updateRoomClock = async (tx: Transaction, roomId: string, phase: 'countdow
     phase,
     phaseStartedAt: startedAt,
     phaseEndsAt: endsAt,
-    currentRound,
+    // The generic room row tracks the 20 regular rounds, while a territory
+    // match may continue with extra capital-siege questions (up to 80 total).
+    // Keep this compatibility counter inside its DB constraint; the actual
+    // duel/siege position lives in territory_matches.current_duel.
+    currentRound: territoryRoomRound(currentRound),
     version: sql`${friendsRooms.version} + 1`,
     updatedAt: new Date(),
   }).where(eq(friendsRooms.id, roomId))
