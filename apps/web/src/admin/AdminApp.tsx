@@ -173,6 +173,10 @@ const CONTENT_FIELD_GROUPS: ContentFieldGroup[] = [
       { value: 'musicIsActive', label: 'musicIsActive — активность исполнителя' },
       { value: 'musicOrigin', label: 'musicOrigin — происхождение' },
       { value: 'musicType', label: 'musicType — тип исполнителя' },
+      { value: 'musicDebutYear', label: 'musicDebutYear — год дебютного релиза' },
+      { value: 'musicDebutRelease', label: 'musicDebutRelease — дебютный релиз' },
+      { value: 'musicLanguages', label: 'musicLanguages — языки исполнения' },
+      { value: 'musicGender', label: 'musicGender — пол / состав' },
       { value: 'topTracks', label: 'topTracks — популярные треки' },
       { value: 'topAlbums', label: 'topAlbums — популярные альбомы' },
       { value: 'similarArtists', label: 'similarArtists — похожие исполнители' },
@@ -682,6 +686,11 @@ const ADMIN_FIELD_LABELS: Record<string, string> = {
   musicIsActive: 'Активный исполнитель',
   musicOrigin: 'Происхождение',
   musicType: 'Тип исполнителя',
+  musicDebutYear: 'Год дебюта',
+  musicDebutRelease: 'Дебютный релиз',
+  musicLanguages: 'Языки исполнения',
+  musicGender: 'Пол / состав',
+  musicCatalog: 'Источник музыкального каталога',
   topTracks: 'Популярные треки',
   topAlbums: 'Популярные альбомы',
   similarArtists: 'Похожие исполнители',
@@ -727,7 +736,7 @@ const ADMIN_FIELD_LABELS: Record<string, string> = {
 }
 
 const ADMIN_NUMERIC_FIELDS = new Set([
-  'year', 'activityStartYear', 'endYear', 'runtimeMinutes', 'episodes', 'seasonsCount', 'animeEpisodesAired',
+  'year', 'activityStartYear', 'musicDebutYear', 'endYear', 'runtimeMinutes', 'episodes', 'seasonsCount', 'animeEpisodesAired',
   'population', 'popularityScore', 'topRank', 'kinopoiskId', 'votes', 'shikimoriId', 'shikimoriScore',
   'steamAppId', 'price', 'metacritic',
 ])
@@ -736,7 +745,7 @@ const ADMIN_ARRAY_FIELDS = new Set([
   'alternativeTitles', 'countries', 'languages', 'genres', 'facts', 'screenshots', 'directors', 'showrunners',
   'writers', 'cast', 'supportingCast', 'studios', 'awards', 'developers', 'publishers', 'platforms',
   'steamCategories', 'steamTags', 'supportedLanguages', 'aliases', 'topTracks', 'topAlbums', 'similarArtists',
-  'members', 'associatedActs', 'musicLinks', 'icd10', 'bodySystems', 'diseaseTypes', 'typicalAgeGroups',
+  'members', 'associatedActs', 'musicLinks', 'musicLanguages', 'icd10', 'bodySystems', 'diseaseTypes', 'typicalAgeGroups',
   'keySymptoms', 'diagnostics', 'riskFactors', 'sourceRefs', 'comparisonHints', 'ranks', 'tags', 'contentWarnings',
   'keyFacts', 'hints', 'starterQuestions', 'answerRules',
 ])
@@ -920,7 +929,11 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Возраст', ['ageRating', 'requiredAge']],
     ],
     music: [
+      ['Дебют', ['musicDebutYear']],
+      ['Дебютный релиз', ['musicDebutRelease']],
       ['Тип', ['musicType', 'artistType', 'type']],
+      ['Пол / состав', ['musicGender']],
+      ['Языки исполнения', ['musicLanguages']],
       ['Активен', ['musicIsActive', 'isActive']],
       ['Популярный трек', ['topTracks.0.title', 'topTracks.0.name']],
       ['Популярный альбом', ['topAlbums.0.title', 'topAlbums.0.name']],
@@ -3031,7 +3044,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   series: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId'],
   anime: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'studios', 'countries', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'],
   game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
-  music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
+  music: ['musicDebutYear', 'musicDebutRelease', 'musicLanguages', 'musicGender', 'activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'bodyCoverings', 'habitats', 'animalContinents', 'diets', 'locomotion', 'reproduction', 'legCount', 'bodyMassKg', 'soundUrl', 'silhouetteUrl', 'rangeMapUrl', 'mediaAttribution'],

@@ -194,13 +194,28 @@ export const musicActivityStartYear = (item: Pick<TitleItem, 'activityStartYear'
   return Number.isFinite(value) ? Number(value) : null
 }
 
+export const musicComparisonYear = (item: Pick<TitleItem, 'musicDebutYear' | 'activityStartYear' | 'year'>) => (
+  Number.isFinite(item.musicDebutYear) ? Number(item.musicDebutYear) : musicActivityStartYear(item)
+)
+
+export const musicYearMeta = (item: Pick<TitleItem, 'musicDebutYear' | 'activityStartYear' | 'year'>) => {
+  const year = musicComparisonYear(item)
+  return year == null ? null : item.musicDebutYear != null ? `дебют ${year}` : `с ${year}`
+}
+
+export const musicGenderLabel = (value: TitleItem['musicGender']) => value
+  ? `${value[0].toLocaleUpperCase('ru-RU')}${value.slice(1)}`
+  : 'Нет данных'
+
 export const musicEligibilityIssues = (item: TitleItem) => [
-  musicActivityStartYear(item) == null ? 'activityStartYear' : null,
+  musicComparisonYear(item) == null ? item.musicCatalog ? 'musicDebutYear' : 'activityStartYear' : null,
   !(item.countries ?? []).length ? 'countries' : null,
   !(item.genres ?? []).length ? 'genres' : null,
   !item.musicType || normalize(item.musicType) === 'unknown' ? 'musicType' : null,
   item.musicIsActive == null ? 'musicIsActive' : null,
-  !item.musicOrigin ? 'musicOrigin' : null,
+  !item.musicCatalog && !item.musicOrigin && !(item.musicLanguages ?? []).length ? 'musicOrigin' : null,
+  item.musicCatalog && !item.musicGender ? 'musicGender' : null,
+  item.musicCatalog && !(item.musicLanguages ?? []).length ? 'musicLanguages' : null,
 ].filter((value): value is string => Boolean(value))
 
 const isDailyMusicReady = (item: TitleItem) =>
@@ -318,7 +333,7 @@ const isPublishableContentStatus = (status: TitleItem['contentStatus']) =>
   !['blocked', 'review', 'duplicate', 'promo_pack'].includes(String(status ?? ''))
 
 export const isAllowedInRegularGame = (
-  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame' | 'seasonsCount' | 'activityStartYear' | 'year' | 'countries' | 'genres' | 'musicType' | 'musicIsActive' | 'musicOrigin' | 'plotHint' | 'plotHintVariants' | 'titleRu' | 'titleOriginal'>,
+  item: Pick<TitleItem, 'id' | 'mode' | 'contentStatus' | 'allowedInGame' | 'seasonsCount' | 'activityStartYear' | 'year' | 'musicDebutYear' | 'musicLanguages' | 'musicGender' | 'countries' | 'genres' | 'musicType' | 'musicIsActive' | 'musicOrigin' | 'plotHint' | 'plotHintVariants' | 'titleRu' | 'titleOriginal'>,
 ) => {
   if (item.allowedInGame === false || isPromoGameItem(item) || !isPublishableContentStatus(item.contentStatus)) return false
   if (playablePlotHints(item).length === 0) return false
@@ -345,7 +360,8 @@ export const poolFor = (titles: TitleItem[], mode: TitleMode, period: PeriodKey,
   const base = titles.filter((item) => {
     if (!isAllowedInMode(item, mode)) return false
     if (from === null) return true
-    return typeof item.year === 'number' && item.year >= from
+    const year = mode === 'music' ? musicComparisonYear(item) : item.year
+    return typeof year === 'number' && year >= from
   })
   return GAME_MODE_RULES[mode].pool(base, variantKey)
 }
@@ -1390,8 +1406,11 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const guessActive = guess.musicIsActive
   const answerActive = answer.musicIsActive
 
-  const guessActivityStartYear = musicActivityStartYear(guess)
-  const answerActivityStartYear = musicActivityStartYear(answer)
+  const guessActivityStartYear = musicComparisonYear(guess)
+  const answerActivityStartYear = musicComparisonYear(answer)
+  const isDebut = answer.musicDebutYear != null
+  const guessLanguages = knownComparisonValues(guess.musicLanguages)
+  const answerLanguages = knownComparisonValues(answer.musicLanguages)
   const guessDecade = decadeFromYear(guessActivityStartYear)
   const answerDecade = decadeFromYear(answerActivityStartYear)
   const decadeHint = numeric(guessDecade, answerDecade, 0, 0)
@@ -1407,10 +1426,10 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
   )
 
   const hints: Hint[] = [
-    ...(hasActivityStart ? [{ key: 'activity_start_year', label: 'Начало деятельности', value: guessActivityStartYear != null ? String(guessActivityStartYear) : '—', ...activityStartYear } satisfies Hint] : []),
+    ...(hasActivityStart ? [{ key: isDebut ? 'music_debut_year' : 'activity_start_year', label: isDebut ? 'Год дебюта' : 'Начало деятельности', value: guessActivityStartYear != null ? String(guessActivityStartYear) : '—', ...activityStartYear } satisfies Hint] : []),
     ...(hasActivityStart ? [{
       key: 'decade',
-      label: 'Десятилетие',
+      label: isDebut ? 'Эпоха дебюта' : 'Десятилетие',
       value: guessDecade != null ? `${guessDecade}-е` : '—',
       ...decadeHint,
     } satisfies Hint] : []),
@@ -1444,7 +1463,22 @@ const compareMusic = (guess: TitleItem, answer: TitleItem): Hint[] => {
       status: activeStatus,
       direction: null,
     } satisfies Hint] : []),
-    ...(answerOrigin ? [{
+    ...(answer.musicGender ? [{
+      key: 'music_gender',
+      label: 'Пол / состав',
+      value: musicGenderLabel(guess.musicGender),
+      status: scalar(guess.musicGender, answer.musicGender),
+      direction: null,
+    } satisfies Hint] : []),
+    ...(answerLanguages.length ? [{
+      key: 'music_languages',
+      label: 'Язык исполнения',
+      value: list(guessLanguages),
+      status: setStatus(guessLanguages, answerLanguages),
+      direction: null,
+      matchedValues: overlaps(guessLanguages, answerLanguages),
+    } satisfies Hint] : []),
+    ...(!answerLanguages.length && answerOrigin ? [{
       key: 'music_origin',
       label: 'Сцена',
       value: guessScene,

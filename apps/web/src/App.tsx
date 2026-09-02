@@ -86,7 +86,7 @@ import {
   localizeMusicCountry,
   MUSIC_ID_REDIRECTS,
   musicCareerStatusLabel,
-  musicActivityStartYear,
+  musicComparisonYear,
   musicDifficultyPool,
   musicOriginLabel,
   musicTierLabel,
@@ -766,8 +766,10 @@ const buildInfoHintCandidates = (item: TitleItem) => {
   if (item.mode === 'music') {
     return [
       compactAssistList('Страна', (item.countries ?? []).map(localizeMusicCountry), 2),
-      item.activityStartYear ? `Начало деятельности: ${item.activityStartYear}` : '',
+      musicComparisonYear(item) ? `${item.musicDebutYear != null ? 'Год дебюта' : 'Начало деятельности'}: ${musicComparisonYear(item)}` : '',
       `Тип: ${musicTypeLabel(item.musicType)}`,
+      compactAssistList('Язык исполнения', item.musicLanguages ?? [], 3),
+      item.musicGender ? `Пол / состав: ${item.musicGender}` : '',
       compactAssistList('Жанры', item.genres ?? [], 3),
       compactAssistList('Топ-треки', (item.topTracks ?? []).map((track) => track.title), 2),
     ].filter(Boolean)
@@ -2395,9 +2397,10 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
   const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
   const listenersValue = item.votes?.gamesPlayed ?? null
-  const activityStartYear = musicActivityStartYear(item)
-  const activityStartHint = byKey.get('activity_start_year')
-  const requestedHints = ['country', 'activity_start_year', 'decade', 'music_type', 'music_active', 'music_origin']
+  const hasDistinctOriginalName = Boolean(item.titleOriginal && normalizeTextMatch(item.titleOriginal) !== normalizeTextMatch(item.titleRu))
+  const activityStartYear = musicComparisonYear(item)
+  const activityStartHint = byKey.get('music_debut_year') ?? byKey.get('activity_start_year')
+  const requestedHints = ['country', 'music_debut_year', 'activity_start_year', 'decade', 'music_type', 'music_gender', 'music_active', 'music_origin']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
   const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(isKnownComparisonText)
@@ -2410,9 +2413,9 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
         <span className="attempt-label">Попытка {index + 1}</span>
         <h2>{item.titleRu}</h2>
         <p className="gm-head__sub">
-          <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
+          {hasDistinctOriginalName && <span className="gm-head__orig">{item.titleOriginal}</span>}
           {activityStartHint && activityStartYear != null && <>
-            <i className="gm-head__dot" aria-hidden="true">·</i>
+            {hasDistinctOriginalName && <i className="gm-head__dot" aria-hidden="true">·</i>}
             <span className={`gm-year ${activityStartHint.status}`}>
               {activityStartYear}
               {activityStartHint.direction === 'up' ? <ArrowUp /> : activityStartHint.direction === 'down' ? <ArrowDown /> : activityStartHint.status === 'match' ? <Check /> : null}
@@ -2436,6 +2439,7 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
     </div>}
 
     <div className="dx-clouds">
+      {byKey.has('music_languages') && <DxChipCloud label="Язык исполнения" hint={byKey.get('music_languages')} items={item.musicLanguages ?? []} limit={6} wrap />}
       <DxChipCloud label="Похожие артисты" hint={byKey.get('similar_artists')} items={similarArtistNames} limit={6} wrap />
     </div>
   </article>

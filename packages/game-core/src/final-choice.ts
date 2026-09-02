@@ -6,7 +6,7 @@ import type {
   TitleItem,
   TitleMode,
 } from '@shoditsa/contracts'
-import { compareTitles, isKnownComparisonText } from './index.js'
+import { compareTitles, isKnownComparisonText, musicComparisonYear, musicGenderLabel, musicTypeLabel, musicYearMeta } from './index.js'
 
 export const FINAL_CHOICE_ALGORITHM_VERSION = 2
 
@@ -114,18 +114,19 @@ export const FINAL_CHOICE_MODE_CONFIG: Record<TitleMode, ModeConfig> = {
     weights: { genres: 1.25, platforms: 1.05, developer: 0.9, steam_metacritic: 1, players: 0.75 },
   },
   music: {
-    primaryMeta: (item) => item.activityStartYear ?? item.year
-      ? String(item.activityStartYear ?? item.year)
+    primaryMeta: (item) => musicComparisonYear(item) != null
+      ? musicYearMeta(item)!
       : 'Период не указан',
     facts: [
       fact('countries', ['country'], 'categorical', 'Страна', (item) => compact(item.countries ?? []) || null),
       fact('genres', ['genres'], 'categorical', 'Жанры', (item) => compact(item.genres ?? []) || null),
-      fact('type_scene', ['music_type', 'music_origin'], 'categorical', 'Тип и сцена', (item) => compact([
-        item.musicType,
-        item.musicOrigin === 'ru' ? 'русскоязычная сцена' : item.musicOrigin === 'intl' ? 'международная сцена' : null,
-      ]) || null),
-      fact('activity', ['activity_start_year', 'decade', 'music_active'], 'numeric', 'Активность', (item) => compact([
-        item.activityStartYear != null ? `с ${item.activityStartYear}` : null,
+      fact('type_scene', ['music_type', 'music_gender', 'music_languages', 'music_origin'], 'categorical', 'Тип и исполнение', (item) => compact([
+        item.musicType ? musicTypeLabel(item.musicType) : null,
+        item.musicLanguages?.length ? compact(item.musicLanguages) : item.musicOrigin === 'ru' ? 'русскоязычная сцена' : item.musicOrigin === 'intl' ? 'международная сцена' : null,
+        item.musicGender ? musicGenderLabel(item.musicGender) : null,
+      ], 3) || null),
+      fact('activity', ['music_debut_year', 'activity_start_year', 'decade', 'music_active'], 'numeric', 'Дебют и карьера', (item) => compact([
+        musicYearMeta(item),
         item.musicIsActive === true ? 'активен' : item.musicIsActive === false ? 'карьера завершена' : null,
       ]) || null),
     ],

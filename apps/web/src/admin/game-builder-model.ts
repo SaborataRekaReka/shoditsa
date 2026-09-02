@@ -158,7 +158,10 @@ const modeTargets: Partial<Record<ContentMode, TargetDefinition[]>> = {
     { key: 'publishers', payloadKey: 'publishers', label: 'Издатель', hint: 'Издатель игры', group: 'attempt', valueType: 'array', visual: true, aliases: ['publishers', 'publisher', 'издатели', 'издатель'] },
   ],
   music: [
-    { key: 'activityStartYear', payloadKey: 'activityStartYear', label: 'Начало карьеры', hint: 'Год начала деятельности', group: 'attempt', valueType: 'number', visual: true, aliases: ['activitystartyear', 'formedyear', 'debutyear', 'careerstart', 'началокарьеры'] },
+    { key: 'activityStartYear', payloadKey: 'activityStartYear', label: 'Начало карьеры', hint: 'Год начала деятельности, не первый релиз', group: 'attempt', valueType: 'number', visual: true, aliases: ['activitystartyear', 'formedyear', 'careerstart', 'началокарьеры'] },
+    { key: 'musicDebutYear', payloadKey: 'musicDebutYear', label: 'Год дебюта', hint: 'Год первого релиза', group: 'attempt', valueType: 'number', visual: true, aliases: ['musicdebutyear', 'debutyear', 'годдебюта'] },
+    { key: 'musicLanguages', payloadKey: 'musicLanguages', label: 'Языки исполнения', hint: 'Основные языки песен', group: 'attempt', valueType: 'array', visual: true, aliases: ['musiclanguages', 'languages', 'языкиисполнения'] },
+    { key: 'musicGender', payloadKey: 'musicGender', label: 'Пол / состав', hint: 'Пол сольного исполнителя или состав группы', group: 'attempt', valueType: 'string', visual: true, aliases: ['musicgender', 'gender', 'пол'] },
     { key: 'topTracks', payloadKey: 'topTracks', label: 'Популярные треки', hint: 'Список известных треков', group: 'attempt', valueType: 'array', visual: true, aliases: ['toptracks', 'tracks', 'songs', 'песни', 'треки'] },
     { key: 'members', payloadKey: 'members', label: 'Участники', hint: 'Состав исполнителя или группы', group: 'attempt', valueType: 'array', visual: true, aliases: ['members', 'bandmembers', 'участники', 'состав'] },
   ],

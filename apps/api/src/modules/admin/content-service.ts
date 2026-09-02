@@ -50,6 +50,10 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   if (payload.year != null && (year == null || !Number.isInteger(year) || year < 1800 || year > 2200)) error('year', 'invalid_range', 'Год должен быть от 1800 до 2200')
   const activityStartYear = number(payload.activityStartYear)
   if (payload.activityStartYear != null && (activityStartYear == null || !Number.isInteger(activityStartYear) || activityStartYear < 1800 || activityStartYear > new Date().getUTCFullYear() + 1)) error('activityStartYear', 'invalid_range', 'Начало деятельности должно быть годом от 1800 до текущего')
+  const musicDebutYear = number(payload.musicDebutYear)
+  if (payload.musicDebutYear != null && (musicDebutYear == null || !Number.isInteger(musicDebutYear) || musicDebutYear < 1800 || musicDebutYear > new Date().getUTCFullYear() + 1)) error('musicDebutYear', 'invalid_range', 'Дебют должен быть годом от 1800 до текущего')
+  if (mode === 'music' && payload.musicLanguages != null && (!Array.isArray(payload.musicLanguages) || !payload.musicLanguages.length || payload.musicLanguages.some((value) => !text(value)))) error('musicLanguages', 'invalid_languages', 'Укажите хотя бы один язык исполнения')
+  if (mode === 'music' && payload.musicGender != null && !['мужской', 'женский', 'смешанный', 'небинарный'].includes(text(payload.musicGender))) error('musicGender', 'invalid_gender', 'Неизвестное значение пола или состава')
   const media = [payload.posterUrl, payload.headerUrl, payload.backdropUrl, ...(Array.isArray(payload.screenshots) ? payload.screenshots : [])]
   for (const value of media) {
     if (value != null && value !== '' && (typeof value !== 'string' || !/^(https?:\/\/|(?:\.\/)?\/?(?:data|media|images)\/)/.test(value))) {

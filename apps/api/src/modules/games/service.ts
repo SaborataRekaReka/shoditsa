@@ -12,7 +12,9 @@ import {
   isPlayableGamePlotHint,
   localizeMusicCountry,
   musicActivityStartYear,
+  musicComparisonYear,
   musicDifficultyPool,
+  musicGenderLabel,
   musicOriginLabel,
   musicTypeLabel,
   pickDailyVignette,
@@ -197,9 +199,10 @@ const infoHintCandidates = (answer: TitleItem): InfoHintCandidate[] => {
     }
     return presentInfoCandidates([
       infoListCandidate('country', 'Страна', (answer.countries ?? []).map(localizeMusicCountry), 2),
-      infoScalarCandidate('activity_start_year', 'Начало деятельности', answer.activityStartYear),
+      infoScalarCandidate(answer.musicDebutYear != null ? 'music_debut_year' : 'activity_start_year', answer.musicDebutYear != null ? 'Год дебюта' : 'Начало деятельности', musicComparisonYear(answer)),
       infoScalarCandidate('music_type', 'Тип', musicTypeLabel(answer.musicType)),
-      answer.musicOrigin ? infoScalarCandidate('music_origin', 'Сцена', musicOriginLabel(answer.musicOrigin)) : null,
+      answer.musicLanguages?.length ? infoListCandidate('music_languages', 'Язык исполнения', answer.musicLanguages, 3) : answer.musicOrigin ? infoScalarCandidate('music_origin', 'Сцена', musicOriginLabel(answer.musicOrigin)) : null,
+      answer.musicGender ? infoScalarCandidate('music_gender', 'Пол / состав', musicGenderLabel(answer.musicGender)) : null,
       infoListCandidate('genres', 'Жанры', answer.genres ?? [], 3),
       infoListCandidate(null, 'Топ-треки', (answer.topTracks ?? []).map((track) => track.title), 2),
     ])
@@ -430,6 +433,7 @@ export const publicCard = (item: TitleItem) => ({
     bookMainCharacters: _privateBookMainCharacters,
     bookAdaptationYears: _privateBookAdaptationYears,
     bookAwards: _privateBookAwards,
+    musicCatalog: _privateMusicCatalog,
     ...publicItem
   }) => publicItem)(item),
   titleOriginal: item.titleOriginal ?? '',

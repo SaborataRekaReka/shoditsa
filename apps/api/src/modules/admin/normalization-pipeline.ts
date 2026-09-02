@@ -11,7 +11,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   series: ['episodes', 'seasonsCount', 'seriesStatus', 'showrunners', 'writers', 'cast', 'countries', 'kinopoiskId', 'imdbId'],
   anime: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'studios', 'countries', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl'],
   game: ['developers', 'publishers', 'platforms', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'countries'],
-  music: ['activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
+  music: ['musicDebutYear', 'musicDebutRelease', 'musicLanguages', 'musicGender', 'activityStartYear', 'endYear', 'countries', 'aliases', 'gameTier', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'symptoms', 'diagnostics', 'risks', 'severity', 'urgency', 'caseVignettes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'bodyCoverings', 'habitats', 'animalContinents', 'diets', 'locomotion', 'reproduction', 'legCount', 'bodyMassKg', 'soundUrl', 'silhouetteUrl', 'rangeMapUrl', 'mediaAttribution'],
@@ -27,7 +27,7 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   series: ['year', 'endYear', 'countries', 'showrunners', 'kinopoiskId', 'imdbId'],
   anime: ['year', 'countries', 'studios', 'shikimoriId', 'shikimoriUrl'],
   game: ['year', 'countries', 'developers', 'publishers', 'steamAppId', 'steamUrl'],
-  music: ['year', 'activityStartYear', 'endYear', 'countries', 'musicType', 'musicOrigin', 'members', 'associatedActs', 'musicLinks'],
+  music: ['musicDebutYear', 'musicDebutRelease', 'musicLanguages', 'musicGender', 'year', 'activityStartYear', 'endYear', 'countries', 'musicType', 'musicOrigin', 'members', 'associatedActs', 'musicLinks'],
   diagnosis: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes'],
   city: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'ranks'],
   animal: ['scientificName', 'taxonomicClass', 'animalOrder', 'animalFamily', 'habitats', 'animalContinents', 'diets', 'bodyMassKg'],
@@ -65,6 +65,7 @@ const templateValueText = (value: unknown) => {
 }
 
 const LABELS: Record<string, string> = {
+  musicDebutYear: 'Год дебюта', musicDebutRelease: 'Дебютный релиз', musicLanguages: 'Язык исполнения', musicGender: 'Пол / состав',
   activityStartYear: 'Начало деятельности', year: 'Год', endYear: 'Окончание деятельности', titleRu: 'Русское название',
   titleOriginal: 'Оригинальное название', plotHint: 'Подсказка', facts: 'Факты', genres: 'Жанры', countries: 'Страны',
   country: 'Страна', continent: 'Континент', languages: 'Языки', population: 'Население', timezone: 'Часовой пояс',
@@ -228,10 +229,10 @@ const parseJson = (value: string) => {
 }
 
 export const normalizeProposedValue = (field: string, value: unknown, currentValue: unknown) => {
-  if (field === 'activityStartYear') {
+  if (field === 'activityStartYear' || field === 'musicDebutYear') {
     if (value == null || value === '') return null
     const year = Number(value)
-    if (!Number.isInteger(year) || year < 1800 || year > new Date().getUTCFullYear() + 1) throw new Error('Начало деятельности должно быть годом от 1800 до текущего')
+    if (!Number.isInteger(year) || year < 1800 || year > new Date().getUTCFullYear() + 1) throw new Error(`${field === 'musicDebutYear' ? 'Год дебюта' : 'Начало деятельности'} должно быть годом от 1800 до текущего`)
     return year
   }
   if (value == null) return null
@@ -263,6 +264,8 @@ export const requestNormalization = async (options: {
   const rendered = renderNormalizationPrompt(options)
   const specialRule = options.field === 'activityStartYear'
     ? 'Для сольного артиста это первый подтвержденный год профессиональной публичной музыкальной деятельности или дебюта; для группы — год основания/начала деятельности. Никогда не используй год рождения. Если надежного подтверждения нет, верни clear и null.'
+    : options.field === 'musicDebutYear' || options.field === 'musicDebutRelease'
+      ? 'Это год и название первого официального релиза именно этого артиста/группы. Не подменяй дебют годом рождения, основания группы, сольного старта в чужой группе или начала карьеры. При неоднозначности верни review; не выдумывай релиз.'
     : ''
   const input = [
     'Ты проверяешь одну карточку контента. Изменяй только указанное поле и не выдумывай данные.',

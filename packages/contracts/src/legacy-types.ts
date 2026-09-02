@@ -236,6 +236,20 @@ export type TitleItem = {
   musicType?: string | null
   musicIsActive?: boolean | null
   musicOrigin?: MusicOrigin | null
+  /** Earliest release year in the editorial music source; not career start. */
+  musicDebutYear?: number | null
+  musicDebutRelease?: string | null
+  musicLanguages?: string[]
+  musicGender?: 'мужской' | 'женский' | 'смешанный' | 'небинарный' | null
+  /** Source identity for reproducible catalog replacement, never independent verification. */
+  musicCatalog?: {
+    dataset: string
+    version: string
+    sourceId: string
+    sourceChecksum: string
+    sourceDeclaredVerifiedAt: string
+    originalImageUrl: string
+  }
   topTracks?: MusicTopTrack[]
   topAlbums?: MusicTopAlbum[]
   similarArtists?: MusicSimilarArtist[]

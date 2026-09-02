@@ -1,0 +1,2 @@
+# Keep the user's editorial input byte-for-byte: its SHA-256 is provenance.
+data/music-editorial/music-artists-enriched.v0.2.0.json -text

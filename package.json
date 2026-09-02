@@ -64,6 +64,8 @@
     "content:music-tier-backfill": "tsx scripts/content/backfill-music-tiers.ts",
     "content:media:migrate": "tsx scripts/content/migrate-media.ts",
     "content:repair:catalog": "tsx scripts/content/repair-active-catalog.ts",
+    "content:replace:music": "tsx scripts/content/replace-music-catalog.ts",
+    "data:build:music:editorial": "tsx scripts/music/build-editorial-catalog.ts",
     "maintenance:production": "tsx scripts/maintenance/run-production-maintenance.ts",
     "clean:workspace": "powershell -ExecutionPolicy Bypass -File scripts/maintenance/clean-workspace.ps1",
     "deploy:quick": "powershell -ExecutionPolicy Bypass -File scripts/deploy/timeweb.ps1",

@@ -1,0 +1,4732 @@
+{
+  "music-001": {
+    "id": "music:251_the-beatles",
+    "sourceName": "The Beatles",
+    "gameTier": "core",
+    "aliases": [
+      "The Beatles",
+      "Beatles",
+      "Beetles",
+      "Bítlarnir",
+      "Die Beatles",
+      "I Beatles",
+      "Les Beatles",
+      "Los Beatles",
+      "The Silver Beatles",
+      "fab four",
+      "Битлси",
+      "Бітлз"
+    ],
+    "matchedLegacyId": "music:251_the-beatles"
+  },
+  "music-002": {
+    "id": "music:253_elvis-presley",
+    "sourceName": "Elvis Presley",
+    "gameTier": "core",
+    "aliases": [
+      "Элвис Пресли",
+      "Elvis Presley",
+      "Elvis",
+      "Elvis A. Presley",
+      "Elvis Aaron Presley",
+      "Presley Elvis",
+      "Priesley",
+      "The King",
+      "The King of Rock and Roll",
+      "Елвіс Преслі"
+    ],
+    "matchedLegacyId": "music:253_elvis-presley"
+  },
+  "music-003": {
+    "id": "music:001_michael-jackson",
+    "sourceName": "Michael Jackson",
+    "gameTier": "core",
+    "aliases": [
+      "Майкл Джексон",
+      "Michael Jackson",
+      "JACKSON MICHAEL JOE",
+      "MJ",
+      "Michael Joe Jackson",
+      "Michael Joseph Jackson",
+      "Micheal",
+      "Michel Jackson"
+    ],
+    "matchedLegacyId": "music:001_michael-jackson"
+  },
+  "music-004": {
+    "id": "music:284_madonna",
+    "sourceName": "Madonna",
+    "gameTier": "core",
+    "aliases": [
+      "Мадонна",
+      "Madonna",
+      "M. Ciccone",
+      "Madonna Ciccone-Ritchie",
+      "Madonna Louise Ciccone",
+      "Madonna Louise Veronica Ciccone"
+    ],
+    "matchedLegacyId": "music:284_madonna"
+  },
+  "music-005": {
+    "id": "music:001_queen",
+    "sourceName": "Queen",
+    "gameTier": "core",
+    "aliases": [
+      "Queen",
+      "Queen + Paul Rodgers",
+      "Куин",
+      "Квин"
+    ],
+    "matchedLegacyId": "music:001_queen"
+  },
+  "music-006": {
+    "id": "music:001_the-rolling-stones",
+    "sourceName": "The Rolling Stones",
+    "gameTier": "core",
+    "aliases": [
+      "The Rolling Stones",
+      "Rolling Stones",
+      "Stones",
+      "The Stones",
+      "ローリング・ストーンズ"
+    ],
+    "matchedLegacyId": "music:001_the-rolling-stones"
+  },
+  "music-007": {
+    "id": "music:001_abba",
+    "sourceName": "ABBA",
+    "gameTier": "core",
+    "aliases": [
+      "АББА",
+      "Abba",
+      "Björn + Benny + Anna + Frieda",
+      "Björn Benny & Agnetha Frida",
+      "Björn Benny Agnetha & Anni-Frid",
+      "ᗅᗺᗷᗅ",
+      "アバ"
+    ],
+    "matchedLegacyId": "music:001_abba"
+  },
+  "music-008": {
+    "id": "music:287_david-bowie",
+    "sourceName": "David Bowie",
+    "gameTier": "core",
+    "aliases": [
+      "Дэвид Боуи",
+      "David Bowie",
+      "Bowie",
+      "David Jones",
+      "David Robert Jones",
+      "Davie Bowie",
+      "Davis Bowie",
+      "Davy Jones",
+      "Harry the Butcher",
+      "The Thin White Duke",
+      "Ziggy Stardust"
+    ],
+    "matchedLegacyId": "music:287_david-bowie"
+  },
+  "music-009": {
+    "id": "music:276_prince",
+    "sourceName": "Prince",
+    "gameTier": "core",
+    "aliases": [
+      "Принс",
+      "Prince",
+      "(us 1) PRINCE",
+      "Alexander Nevermind",
+      "Camille",
+      "Evolsidog",
+      "Formerly Prince",
+      "Gemini",
+      "Jamie Starr",
+      "Joey Coco",
+      "O(+>",
+      "Paisley Park",
+      "Prince Rogers Nelson",
+      "Purple Yoda",
+      "Symbol",
+      "T.A.F.K.A.P.",
+      "The Artist (Formerly Known as Prince)",
+      "The Love Symbol",
+      "The Symbol"
+    ],
+    "matchedLegacyId": "music:276_prince"
+  },
+  "music-010": {
+    "id": "music:252_bob-dylan",
+    "sourceName": "Bob Dylan",
+    "gameTier": "core",
+    "aliases": [
+      "Боб Дилан",
+      "Bob Dylan",
+      "Blind Boy Grunt",
+      "Bob D",
+      "Bob Landy",
+      "Bobby Zimmerman",
+      "Boo Wilbury",
+      "Boy Dylan",
+      "DYLYN Bob",
+      "Dylan",
+      "Jack Frost",
+      "Lucky Wilbury",
+      "Robert Allen Zimmerman",
+      "Robert Dylan",
+      "Robert Zimmerman"
+    ],
+    "matchedLegacyId": "music:252_bob-dylan"
+  },
+  "music-011": {
+    "id": "music:147_elton-john",
+    "sourceName": "Elton John",
+    "gameTier": "core",
+    "aliases": [
+      "Элтон Джон",
+      "Elton John",
+      "Ann Orson",
+      "E. John",
+      "Elthon John",
+      "Elton Hercules John",
+      "Elton Jphn",
+      "Eltonas Džonas",
+      "John Elton",
+      "Reg Dwight",
+      "Reginald Dwight",
+      "Reginald Kenneth Dwight",
+      "Seras Eltonas Džonas",
+      "Sir Elton Hercules John",
+      "Sir Elton John"
+    ],
+    "matchedLegacyId": "music:147_elton-john"
+  },
+  "music-012": {
+    "id": "music:264_stevie-wonder",
+    "sourceName": "Stevie Wonder",
+    "gameTier": "popular",
+    "aliases": [
+      "Стиви Уандер",
+      "Stevie Wonder",
+      "Little Stevie Wonder",
+      "Steevie Wonder",
+      "Steve Wonder",
+      "Steveland Hardaway Judkins",
+      "Stevland Hardaway Judkins",
+      "Stevland Hardaway Morris",
+      "Strvie Wonder",
+      "Wonder"
+    ],
+    "matchedLegacyId": "music:264_stevie-wonder"
+  },
+  "music-013": {
+    "id": "music:001_whitney-houston",
+    "sourceName": "Whitney Houston",
+    "gameTier": "core",
+    "aliases": [
+      "Уитни Хьюстон",
+      "Whitney Houston",
+      "Whitney Elizabeth Houston"
+    ],
+    "matchedLegacyId": "music:001_whitney-houston"
+  },
+  "music-014": {
+    "id": "music:351_frank-sinatra",
+    "sourceName": "Frank Sinatra",
+    "gameTier": "core",
+    "aliases": [
+      "Фрэнк Синатра",
+      "Frank Sinatra",
+      "Francis Albert Sinatra",
+      "Frank Sinartra",
+      "Frankie Satin",
+      "Sinatra",
+      "Sinatra Frank"
+    ],
+    "matchedLegacyId": "music:351_frank-sinatra"
+  },
+  "music-015": {
+    "id": "music:259_aretha-franklin",
+    "sourceName": "Aretha Franklin",
+    "gameTier": "core",
+    "aliases": [
+      "Арета Франклин",
+      "Aretha Franklin",
+      "Aretha Fanklin",
+      "Aretha Franklyn",
+      "Aretha Louise Franklin",
+      "Aretja Franklin",
+      "Arthaa Franklin",
+      "Franklin, Aretha"
+    ],
+    "matchedLegacyId": "music:259_aretha-franklin"
+  },
+  "music-016": {
+    "id": "music:310_tina-turner",
+    "sourceName": "Tina Turner",
+    "gameTier": "core",
+    "aliases": [
+      "Тина Тёрнер",
+      "Tina Turner",
+      "Anna Mae Bullock",
+      "Little Ann",
+      "T.Turner",
+      "Tina Tor",
+      "Tina Tuner",
+      "TinaTurner",
+      "Tine Turner",
+      "Turner, Tina"
+    ],
+    "matchedLegacyId": "music:310_tina-turner"
+  },
+  "music-017": {
+    "id": "music:editorial:music-017",
+    "sourceName": "Cher",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-018": {
+    "id": "music:editorial:music-018",
+    "sourceName": "Diana Ross",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-019": {
+    "id": "music:267_marvin-gaye",
+    "sourceName": "Marvin Gaye",
+    "gameTier": "core",
+    "aliases": [
+      "Марвин Гэй",
+      "Marvin Gaye",
+      "Marvin Gay",
+      "Marvin P. Gaye",
+      "Marvin Pentz Gay, Jr.",
+      "Marvine Gaye",
+      "Marving Gaye"
+    ],
+    "matchedLegacyId": "music:267_marvin-gaye"
+  },
+  "music-020": {
+    "id": "music:editorial:music-020",
+    "sourceName": "Bob Marley & The Wailers",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-021": {
+    "id": "music:editorial:music-021",
+    "sourceName": "Bee Gees",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-022": {
+    "id": "music:editorial:music-022",
+    "sourceName": "Donna Summer",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-023": {
+    "id": "music:001_celine-dion",
+    "sourceName": "Celine Dion",
+    "gameTier": "core",
+    "aliases": [
+      "Селин Дион",
+      "Celine Dion",
+      "Celline Dion",
+      "Céline Marie Claudette Dion",
+      "Dion, Celine",
+      "Dion, Celin",
+      "セリーヌ・ディオン"
+    ],
+    "matchedLegacyId": "music:001_celine-dion"
+  },
+  "music-024": {
+    "id": "music:editorial:music-024",
+    "sourceName": "Barbra Streisand",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-025": {
+    "id": "music:editorial:music-025",
+    "sourceName": "Paul McCartney",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-026": {
+    "id": "music:286_john-lennon",
+    "sourceName": "John Lennon",
+    "gameTier": "core",
+    "aliases": [
+      "Джон Леннон",
+      "John Lennon",
+      "Booker Table and The Maitre D's",
+      "Dad",
+      "Dr. Dream",
+      "Dr. Winston O'Boogie",
+      "Dwarf McDougal",
+      "Dž.Lenons",
+      "Hon. John St. John Johnson",
+      "J. Lennon",
+      "Joel Nohnn",
+      "John O'Cean",
+      "John Winston Lennon",
+      "John Winston Ono Lennon",
+      "Kaptain Kundalini",
+      "Lennon",
+      "Lhennj Ono",
+      "Mel Torment",
+      "Musketeer Gripweed & The Third Troop",
+      "Rev. Fred Ghurkin",
+      "Winston Leg-Thigh"
+    ],
+    "matchedLegacyId": "music:286_john-lennon"
+  },
+  "music-027": {
+    "id": "music:302_eric-clapton",
+    "sourceName": "Eric Clapton",
+    "gameTier": "core",
+    "aliases": [
+      "Эрик Клэптон",
+      "Eric Clapton",
+      "Eric Claption",
+      "Eric Patrick Clapton",
+      "Slowhand"
+    ],
+    "matchedLegacyId": "music:302_eric-clapton"
+  },
+  "music-028": {
+    "id": "music:272_bruce-springsteen",
+    "sourceName": "Bruce Springsteen",
+    "gameTier": "core",
+    "aliases": [
+      "Брюс Спрингстин",
+      "Bruce Springsteen",
+      "Bruce Frederick Joseph Springsteen",
+      "Bruce Springteen",
+      "The Boss"
+    ],
+    "matchedLegacyId": "music:272_bruce-springsteen"
+  },
+  "music-029": {
+    "id": "music:editorial:music-029",
+    "sourceName": "Billy Joel",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-030": {
+    "id": "music:editorial:music-030",
+    "sourceName": "Phil Collins",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-031": {
+    "id": "music:001_george-michael",
+    "sourceName": "George Michael",
+    "gameTier": "popular",
+    "aliases": [
+      "Джордж Майкл",
+      "George Michael",
+      "G.K. Panayiotou",
+      "Georg Michael",
+      "George Micheal",
+      "Georgios Kyriacos Panayiotou",
+      "Michael, George"
+    ],
+    "matchedLegacyId": "music:001_george-michael"
+  },
+  "music-032": {
+    "id": "music:editorial:music-032",
+    "sourceName": "Sting",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-033": {
+    "id": "music:editorial:music-033",
+    "sourceName": "Rod Stewart",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-034": {
+    "id": "music:editorial:music-034",
+    "sourceName": "Lionel Richie",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-035": {
+    "id": "music:360_dolly-parton",
+    "sourceName": "Dolly Parton",
+    "gameTier": "core",
+    "aliases": [
+      "Долли Партон",
+      "Dolly Parton",
+      "Dolly Parton and Friends",
+      "Dolly Rebecca Parton",
+      "Parton, Dolly"
+    ],
+    "matchedLegacyId": "music:360_dolly-parton"
+  },
+  "music-036": {
+    "id": "music:280_johnny-cash",
+    "sourceName": "Johnny Cash",
+    "gameTier": "core",
+    "aliases": [
+      "Джонни Кэш",
+      "Johnny Cash",
+      "J. R. Cash",
+      "Johhny Cash",
+      "John R. Cash",
+      "Jonny Cash"
+    ],
+    "matchedLegacyId": "music:280_johnny-cash"
+  },
+  "music-037": {
+    "id": "music:410_fleetwood-mac",
+    "sourceName": "Fleetwood Mac",
+    "gameTier": "core",
+    "aliases": [
+      "Fleetwood Mac",
+      "Fleedwood Mac",
+      "Fleetwood Mack",
+      "Flettwood Mac",
+      "Mac Fleetwood",
+      "Peter Green’s Fleetwood Mac"
+    ],
+    "matchedLegacyId": "music:410_fleetwood-mac"
+  },
+  "music-038": {
+    "id": "music:322_eagles",
+    "sourceName": "Eagles",
+    "gameTier": "core",
+    "aliases": [
+      "Eagles",
+      "Eagels",
+      "Eagles, The",
+      "The Eagles"
+    ],
+    "matchedLegacyId": "music:322_eagles"
+  },
+  "music-039": {
+    "id": "music:editorial:music-039",
+    "sourceName": "The Beach Boys",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-040": {
+    "id": "music:editorial:music-040",
+    "sourceName": "The Doors",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-041": {
+    "id": "music:editorial:music-041",
+    "sourceName": "The Who",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-042": {
+    "id": "music:001_led-zeppelin",
+    "sourceName": "Led Zeppelin",
+    "gameTier": "core",
+    "aliases": [
+      "Led Zeppelin",
+      "Bootleg Zeppelin",
+      "LZ",
+      "Led Zep",
+      "Led Zepellin",
+      "Led Zepplelin",
+      "Led Zepplin",
+      "ledzep",
+      "ゼップ",
+      "レッド・ツェッペリン",
+      "レッドゼップ",
+      "レッドツェッペリン",
+      "レッド・ゼップ"
+    ],
+    "matchedLegacyId": "music:001_led-zeppelin"
+  },
+  "music-043": {
+    "id": "music:001_pink-floyd",
+    "sourceName": "Pink Floyd",
+    "gameTier": "core",
+    "aliases": [
+      "Pink Floyd",
+      "Floyd",
+      "Pink Floid",
+      "The Pink Floyd",
+      "ピンク・フロイド",
+      "핑크 플로이드"
+    ],
+    "matchedLegacyId": "music:001_pink-floyd"
+  },
+  "music-044": {
+    "id": "music:331_black-sabbath",
+    "sourceName": "Black Sabbath",
+    "gameTier": "core",
+    "aliases": [
+      "Black Sabbath",
+      "Blac Sabat",
+      "Black Sabath",
+      "Black Sabbat",
+      "Blak Sabbath",
+      "Blakc Sabbath",
+      "Earth",
+      "Polka Tulk",
+      "Polka Tulk Blues",
+      "Sabbat",
+      "Sabbath",
+      "Sabbs",
+      "Sabs",
+      "Блэк Саббат"
+    ],
+    "matchedLegacyId": "music:331_black-sabbath"
+  },
+  "music-045": {
+    "id": "music:319_ac-dc",
+    "sourceName": "AC/DC",
+    "gameTier": "core",
+    "aliases": [
+      "AC/DC",
+      "ACDC",
+      "Acca Dacca",
+      "Akka Dakka"
+    ],
+    "matchedLegacyId": "music:319_ac-dc"
+  },
+  "music-046": {
+    "id": "music:306_aerosmith",
+    "sourceName": "Aerosmith",
+    "gameTier": "core",
+    "aliases": [
+      "Aerosmith",
+      "Aero Smith",
+      "Aerosmidt",
+      "Aerosmit",
+      "Aersomith",
+      "Areosmith",
+      "Aroesmith",
+      "Arosmith"
+    ],
+    "matchedLegacyId": "music:306_aerosmith"
+  },
+  "music-047": {
+    "id": "music:338_guns-n-roses",
+    "sourceName": "Guns N’ Roses",
+    "gameTier": "core",
+    "aliases": [
+      "Guns N’ Roses",
+      "GNR",
+      "Gn'R",
+      "Guns & Roses",
+      "Guns and Roses"
+    ],
+    "matchedLegacyId": "music:338_guns-n-roses"
+  },
+  "music-048": {
+    "id": "music:editorial:music-048",
+    "sourceName": "Bon Jovi",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-049": {
+    "id": "music:editorial:music-049",
+    "sourceName": "U2",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-050": {
+    "id": "music:409_dire-straits",
+    "sourceName": "Dire Straits",
+    "gameTier": "core",
+    "aliases": [
+      "Dire Straits"
+    ],
+    "matchedLegacyId": "music:409_dire-straits"
+  },
+  "music-051": {
+    "id": "music:317_the-police",
+    "sourceName": "The Police",
+    "gameTier": "core",
+    "aliases": [
+      "The Police"
+    ],
+    "matchedLegacyId": "music:317_the-police"
+  },
+  "music-052": {
+    "id": "music:001_nirvana",
+    "sourceName": "Nirvana",
+    "gameTier": "core",
+    "aliases": [
+      "Nirvana",
+      "Nirvana US",
+      "ニルヴァーナ"
+    ],
+    "matchedLegacyId": "music:001_nirvana"
+  },
+  "music-053": {
+    "id": "music:308_metallica",
+    "sourceName": "Metallica",
+    "gameTier": "core",
+    "aliases": [
+      "Metallica"
+    ],
+    "matchedLegacyId": "music:308_metallica"
+  },
+  "music-054": {
+    "id": "music:482_red-hot-chili-peppers",
+    "sourceName": "Red Hot Chili Peppers",
+    "gameTier": "core",
+    "aliases": [
+      "Red Hot Chili Peppers",
+      "RHCP"
+    ],
+    "matchedLegacyId": "music:482_red-hot-chili-peppers"
+  },
+  "music-055": {
+    "id": "music:343_r-e-m",
+    "sourceName": "R.E.M.",
+    "gameTier": "core",
+    "aliases": [
+      "R.E.M.",
+      "REM"
+    ],
+    "matchedLegacyId": "music:343_r-e-m"
+  },
+  "music-056": {
+    "id": "music:438_the-cure",
+    "sourceName": "The Cure",
+    "gameTier": "core",
+    "aliases": [
+      "The Cure"
+    ],
+    "matchedLegacyId": "music:438_the-cure"
+  },
+  "music-057": {
+    "id": "music:074_depeche-mode",
+    "sourceName": "Depeche Mode",
+    "gameTier": "core",
+    "aliases": [
+      "Depeche Mode",
+      "DM"
+    ],
+    "matchedLegacyId": "music:074_depeche-mode"
+  },
+  "music-058": {
+    "id": "music:320_radiohead",
+    "sourceName": "Radiohead",
+    "gameTier": "core",
+    "aliases": [
+      "Radiohead"
+    ],
+    "matchedLegacyId": "music:320_radiohead"
+  },
+  "music-059": {
+    "id": "music:editorial:music-059",
+    "sourceName": "Oasis",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-060": {
+    "id": "music:editorial:music-060",
+    "sourceName": "Blur",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-061": {
+    "id": "music:475_pearl-jam",
+    "sourceName": "Pearl Jam",
+    "gameTier": "core",
+    "aliases": [
+      "Pearl Jam"
+    ],
+    "matchedLegacyId": "music:475_pearl-jam"
+  },
+  "music-062": {
+    "id": "music:461_green-day",
+    "sourceName": "Green Day",
+    "gameTier": "core",
+    "aliases": [
+      "Green Day",
+      "Greenday"
+    ],
+    "matchedLegacyId": "music:461_green-day"
+  },
+  "music-063": {
+    "id": "music:474_foo-fighters",
+    "sourceName": "Foo Fighters",
+    "gameTier": "core",
+    "aliases": [
+      "Foo Fighters",
+      "FooFighters"
+    ],
+    "matchedLegacyId": "music:474_foo-fighters"
+  },
+  "music-064": {
+    "id": "music:editorial:music-064",
+    "sourceName": "Linkin Park",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-065": {
+    "id": "music:editorial:music-065",
+    "sourceName": "Muse",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-066": {
+    "id": "music:487_system-of-a-down",
+    "sourceName": "System of a Down",
+    "gameTier": "core",
+    "aliases": [
+      "System of a Down",
+      "SOAD"
+    ],
+    "matchedLegacyId": "music:487_system-of-a-down"
+  },
+  "music-067": {
+    "id": "music:001_rammstein",
+    "sourceName": "Rammstein",
+    "gameTier": "core",
+    "aliases": [
+      "Rammstein",
+      "Ramms+ein",
+      "Rammstien",
+      "Ramstein",
+      "Tempelprayers",
+      "ラムシュタイン"
+    ],
+    "matchedLegacyId": "music:001_rammstein"
+  },
+  "music-068": {
+    "id": "music:editorial:music-068",
+    "sourceName": "The Cranberries",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-069": {
+    "id": "music:462_the-offspring",
+    "sourceName": "The Offspring",
+    "gameTier": "popular",
+    "aliases": [
+      "The Offspring"
+    ],
+    "matchedLegacyId": "music:462_the-offspring"
+  },
+  "music-070": {
+    "id": "music:488_korn",
+    "sourceName": "Korn",
+    "gameTier": "core",
+    "aliases": [
+      "Korn"
+    ],
+    "matchedLegacyId": "music:488_korn"
+  },
+  "music-071": {
+    "id": "music:490_slipknot",
+    "sourceName": "Slipknot",
+    "gameTier": "core",
+    "aliases": [
+      "Slipknot"
+    ],
+    "matchedLegacyId": "music:490_slipknot"
+  },
+  "music-072": {
+    "id": "music:492_evanescence",
+    "sourceName": "Evanescence",
+    "gameTier": "core",
+    "aliases": [
+      "Evanescence",
+      "Evanescene",
+      "Evanescense",
+      "Evanesence",
+      "Evanscence"
+    ],
+    "matchedLegacyId": "music:492_evanescence"
+  },
+  "music-073": {
+    "id": "music:editorial:music-073",
+    "sourceName": "The White Stripes",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-074": {
+    "id": "music:editorial:music-074",
+    "sourceName": "The Strokes",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-075": {
+    "id": "music:editorial:music-075",
+    "sourceName": "Arctic Monkeys",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-076": {
+    "id": "music:editorial:music-076",
+    "sourceName": "The Killers",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-077": {
+    "id": "music:466_my-chemical-romance",
+    "sourceName": "My Chemical Romance",
+    "gameTier": "core",
+    "aliases": [
+      "My Chemical Romance",
+      "MCR"
+    ],
+    "matchedLegacyId": "music:466_my-chemical-romance"
+  },
+  "music-078": {
+    "id": "music:467_fall-out-boy",
+    "sourceName": "Fall Out Boy",
+    "gameTier": "core",
+    "aliases": [
+      "Fall Out Boy",
+      "Fallout Boy",
+      "Frosty & The Nightmare Making Machine",
+      "Short Story; Unhappy Ending"
+    ],
+    "matchedLegacyId": "music:467_fall-out-boy"
+  },
+  "music-079": {
+    "id": "music:465_paramore",
+    "sourceName": "Paramore",
+    "gameTier": "core",
+    "aliases": [
+      "Paramore"
+    ],
+    "matchedLegacyId": "music:465_paramore"
+  },
+  "music-080": {
+    "id": "music:editorial:music-080",
+    "sourceName": "Imagine Dragons",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-081": {
+    "id": "music:editorial:music-081",
+    "sourceName": "twenty one pilots",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-082": {
+    "id": "music:468_panic-at-the-disco",
+    "sourceName": "Panic! at the Disco",
+    "gameTier": "popular",
+    "aliases": [
+      "Panic at the Disco"
+    ],
+    "matchedLegacyId": "music:468_panic-at-the-disco"
+  },
+  "music-083": {
+    "id": "music:222_bring-me-the-horizon",
+    "sourceName": "Bring Me the Horizon",
+    "gameTier": "popular",
+    "aliases": [
+      "Bring Me the Horizon",
+      "BMTH",
+      "BMTHOfficialVEVO",
+      "BMTHchannel"
+    ],
+    "matchedLegacyId": "music:222_bring-me-the-horizon"
+  },
+  "music-084": {
+    "id": "music:493_nickelback",
+    "sourceName": "Nickelback",
+    "gameTier": "core",
+    "aliases": [
+      "Nickelback"
+    ],
+    "matchedLegacyId": "music:493_nickelback"
+  },
+  "music-085": {
+    "id": "music:500_three-days-grace",
+    "sourceName": "Three Days Grace",
+    "gameTier": "core",
+    "aliases": [
+      "Three Days Grace",
+      "3DG"
+    ],
+    "matchedLegacyId": "music:500_three-days-grace"
+  },
+  "music-086": {
+    "id": "music:489_limp-bizkit",
+    "sourceName": "Limp Bizkit",
+    "gameTier": "core",
+    "aliases": [
+      "Limp Bizkit"
+    ],
+    "matchedLegacyId": "music:489_limp-bizkit"
+  },
+  "music-087": {
+    "id": "music:464_sum-41",
+    "sourceName": "Sum 41",
+    "gameTier": "popular",
+    "aliases": [
+      "Sum 41"
+    ],
+    "matchedLegacyId": "music:464_sum-41"
+  },
+  "music-088": {
+    "id": "music:463_blink-182",
+    "sourceName": "Blink-182",
+    "gameTier": "core",
+    "aliases": [
+      "Blink-182",
+      "blink182"
+    ],
+    "matchedLegacyId": "music:463_blink-182"
+  },
+  "music-089": {
+    "id": "music:001_scorpions",
+    "sourceName": "Scorpions",
+    "gameTier": "core",
+    "aliases": [
+      "Scorpions",
+      "The Hunters",
+      "The Rasselbande",
+      "The Scorpions",
+      "サソリ"
+    ],
+    "matchedLegacyId": "music:001_scorpions"
+  },
+  "music-090": {
+    "id": "music:385_deep-purple",
+    "sourceName": "Deep Purple",
+    "gameTier": "core",
+    "aliases": [
+      "Deep Purple",
+      "DP",
+      "Dee Purple",
+      "Deep Purpel",
+      "Deep Purple and The Royal Philharmonic Orchestra",
+      "Dep Purpel",
+      "Dep Purple",
+      "Depp Purple",
+      "Dick Pimple",
+      "Paice, Blackmore, Gillan, Glover, Lord",
+      "Purple"
+    ],
+    "matchedLegacyId": "music:385_deep-purple"
+  },
+  "music-091": {
+    "id": "music:001_kiss",
+    "sourceName": "KISS",
+    "gameTier": "core",
+    "aliases": [
+      "KISS",
+      "Kiss - WorldWide Kiss Convention 1995",
+      "Kizz",
+      "キッス"
+    ],
+    "matchedLegacyId": "music:001_kiss"
+  },
+  "music-092": {
+    "id": "music:001_iron-maiden",
+    "sourceName": "Iron Maiden",
+    "gameTier": "core",
+    "aliases": [
+      "Iron Maiden",
+      "Ironmaiden",
+      "Maiden",
+      "鉄の処女"
+    ],
+    "matchedLegacyId": "music:001_iron-maiden"
+  },
+  "music-093": {
+    "id": "music:001_judas-priest",
+    "sourceName": "Judas Priest",
+    "gameTier": "popular",
+    "aliases": [
+      "Judas Priest",
+      "Iudas Sacerdos",
+      "Judus Prist",
+      "Џудас прист",
+      "Джудас Прийст",
+      "ג'ודס פריסט",
+      "דזשודאס פריסט",
+      "جوداس بريست",
+      "जुडास प्रीस्ट",
+      "জুডাস প্রিস্ট",
+      "જુડાસ પ્રિસ્ટ",
+      "జుడాస్ ప్రీస్",
+      "ಜುದಾಸ್ ಪ್ರೀಸ್ಟ್‌",
+      "จูดาสพรีสต์",
+      "ジューダス・プリースト",
+      "猶太祭司",
+      "주다스 프리스트"
+    ],
+    "matchedLegacyId": "music:001_judas-priest"
+  },
+  "music-094": {
+    "id": "music:001_megadeth",
+    "sourceName": "Megadeth",
+    "gameTier": "popular",
+    "aliases": [
+      "Megadeth",
+      "Megadeath",
+      "The World Needs a Hero",
+      "メガデス"
+    ],
+    "matchedLegacyId": "music:001_megadeth"
+  },
+  "music-095": {
+    "id": "music:editorial:music-095",
+    "sourceName": "Mötley Crüe",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-096": {
+    "id": "music:editorial:music-096",
+    "sourceName": "Def Leppard",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-097": {
+    "id": "music:editorial:music-097",
+    "sourceName": "Europe",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-098": {
+    "id": "music:390_journey",
+    "sourceName": "Journey",
+    "gameTier": "core",
+    "aliases": [
+      "Journey"
+    ],
+    "matchedLegacyId": "music:390_journey"
+  },
+  "music-099": {
+    "id": "music:editorial:music-099",
+    "sourceName": "The Clash",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-100": {
+    "id": "music:editorial:music-100",
+    "sourceName": "Ramones",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-101": {
+    "id": "music:001_britney-spears",
+    "sourceName": "Britney Spears",
+    "gameTier": "core",
+    "aliases": [
+      "Бритни Спирс",
+      "Britney Spears",
+      "B. Spears",
+      "Bretney Spears",
+      "Briteny Spears",
+      "Britney Jean Spears",
+      "Brittany Spears",
+      "Brittney Spears",
+      "ブリトニー・スピアーズ",
+      "브리트니 스피어스"
+    ],
+    "matchedLegacyId": "music:001_britney-spears"
+  },
+  "music-102": {
+    "id": "music:001_christina-aguilera",
+    "sourceName": "Christina Aguilera",
+    "gameTier": "core",
+    "aliases": [
+      "Christina Aguilera",
+      "Chistina Aguilera",
+      "Christiana Aguilera",
+      "Christina Aguillera",
+      "Christina Aguliera",
+      "Christina Aquilera",
+      "Christina Augilera",
+      "Christina Auguilera",
+      "Christina María Aguilera",
+      "Christine Aguilera",
+      "Chrsitna Aguilera",
+      "Cristina Aguilera",
+      "X-Tina",
+      "Xtina",
+      "クリスティーナ・アギレラ"
+    ],
+    "matchedLegacyId": "music:001_christina-aguilera"
+  },
+  "music-103": {
+    "id": "music:001_mariah-carey",
+    "sourceName": "Mariah Carey",
+    "gameTier": "core",
+    "aliases": [
+      "Мэрайя Кэри",
+      "Mariah-Carey",
+      "Carey, Mariah",
+      "M. Carey",
+      "Mariah",
+      "Mariah Carrey",
+      "マライア・キャリー"
+    ],
+    "matchedLegacyId": "music:001_mariah-carey"
+  },
+  "music-104": {
+    "id": "music:editorial:music-104",
+    "sourceName": "Janet Jackson",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-105": {
+    "id": "music:001_jennifer-lopez",
+    "sourceName": "Jennifer Lopez",
+    "gameTier": "core",
+    "aliases": [
+      "Дженнифер Лопес",
+      "Jennifer Lopez",
+      "J.Lo",
+      "JLO",
+      "Jennifer Lynn Lopez",
+      "ジェニファー・ロペス"
+    ],
+    "matchedLegacyId": "music:001_jennifer-lopez"
+  },
+  "music-106": {
+    "id": "music:editorial:music-106",
+    "sourceName": "Kylie Minogue",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-107": {
+    "id": "music:editorial:music-107",
+    "sourceName": "Cyndi Lauper",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-108": {
+    "id": "music:editorial:music-108",
+    "sourceName": "Annie Lennox",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-109": {
+    "id": "music:427_eurythmics",
+    "sourceName": "Eurythmics",
+    "gameTier": "core",
+    "aliases": [
+      "Eurythmics",
+      "Eurithmics",
+      "Eurthymics",
+      "Eurythmic",
+      "Eurythmics, Annie Lennox & David A. Stewart",
+      "The Eurythmics"
+    ],
+    "matchedLegacyId": "music:427_eurythmics"
+  },
+  "music-110": {
+    "id": "music:439_pet-shop-boys",
+    "sourceName": "Pet Shop Boys",
+    "gameTier": "niche",
+    "aliases": [
+      "Pet Shop Boys"
+    ],
+    "matchedLegacyId": "music:439_pet-shop-boys"
+  },
+  "music-111": {
+    "id": "music:441_a-ha",
+    "sourceName": "a-ha",
+    "gameTier": "core",
+    "aliases": [
+      "a-ha",
+      "Aha"
+    ],
+    "matchedLegacyId": "music:441_a-ha"
+  },
+  "music-112": {
+    "id": "music:editorial:music-112",
+    "sourceName": "Roxette",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-113": {
+    "id": "music:editorial:music-113",
+    "sourceName": "Ace of Base",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-114": {
+    "id": "music:editorial:music-114",
+    "sourceName": "Boney M.",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-115": {
+    "id": "music:editorial:music-115",
+    "sourceName": "Modern Talking",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-116": {
+    "id": "music:001_spice-girls",
+    "sourceName": "Spice Girls",
+    "gameTier": "popular",
+    "aliases": [
+      "Spice Girls",
+      "The Spice Girls"
+    ],
+    "matchedLegacyId": "music:001_spice-girls"
+  },
+  "music-117": {
+    "id": "music:editorial:music-117",
+    "sourceName": "Backstreet Boys",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-118": {
+    "id": "music:editorial:music-118",
+    "sourceName": "NSYNC",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-119": {
+    "id": "music:editorial:music-119",
+    "sourceName": "Take That",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-120": {
+    "id": "music:editorial:music-120",
+    "sourceName": "Robbie Williams",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-121": {
+    "id": "music:editorial:music-121",
+    "sourceName": "Westlife",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-122": {
+    "id": "music:editorial:music-122",
+    "sourceName": "Destiny’s Child",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-123": {
+    "id": "music:editorial:music-123",
+    "sourceName": "TLC",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-124": {
+    "id": "music:editorial:music-124",
+    "sourceName": "Black Eyed Peas",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-125": {
+    "id": "music:editorial:music-125",
+    "sourceName": "Justin Timberlake",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-126": {
+    "id": "music:083_beyonce",
+    "sourceName": "Beyoncé",
+    "gameTier": "core",
+    "aliases": [
+      "Бейонсе",
+      "Beyoncé",
+      "B1C",
+      "Beyoncé Giselle Knowles",
+      "Beyoncé Giselle Knowles-Carter",
+      "Beyoncé Knowles",
+      "Beyoncé Knowles-Carter",
+      "Queen Bey"
+    ],
+    "matchedLegacyId": "music:083_beyonce"
+  },
+  "music-127": {
+    "id": "music:001_rihanna",
+    "sourceName": "Rihanna",
+    "gameTier": "core",
+    "aliases": [
+      "Рианна",
+      "Rihanna",
+      "Фэнти, Робин Рианна",
+      "Робин Рианна Фэнти",
+      "Риана",
+      "Robyn Fenty",
+      "Robyn Rihanna Fenty"
+    ],
+    "matchedLegacyId": "music:001_rihanna"
+  },
+  "music-128": {
+    "id": "music:001_p-nk",
+    "sourceName": "P!nk",
+    "gameTier": "core",
+    "aliases": [
+      "Пинк",
+      "P.nk",
+      "Alecia B. Moore",
+      "Alecia Beth Moore",
+      "Alecia Moore",
+      "Pink",
+      "ピンク"
+    ],
+    "matchedLegacyId": "music:001_p-nk"
+  },
+  "music-129": {
+    "id": "music:editorial:music-129",
+    "sourceName": "Alicia Keys",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-130": {
+    "id": "music:editorial:music-130",
+    "sourceName": "Usher",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-131": {
+    "id": "music:editorial:music-131",
+    "sourceName": "Nelly Furtado",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-132": {
+    "id": "music:editorial:music-132",
+    "sourceName": "Dido",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-133": {
+    "id": "music:editorial:music-133",
+    "sourceName": "Avril Lavigne",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-134": {
+    "id": "music:editorial:music-134",
+    "sourceName": "Amy Winehouse",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-135": {
+    "id": "music:010_adele",
+    "sourceName": "Adele",
+    "gameTier": "core",
+    "aliases": [
+      "Адель",
+      "Adele",
+      "Adele Adkins",
+      "Adele Laurie Blue Adkins"
+    ],
+    "matchedLegacyId": "music:010_adele"
+  },
+  "music-136": {
+    "id": "music:001_lady-gaga",
+    "sourceName": "Lady Gaga",
+    "gameTier": "core",
+    "aliases": [
+      "Джо Кальдероне",
+      "Lady Gaga",
+      "Jo Calderone",
+      "Lady Ga Ga",
+      "Ledi Qaqa",
+      "Lejdi Gaga",
+      "Lēdija Gāga",
+      "S. Germanotta",
+      "Stefani Germanotta",
+      "Stefani Joanne Angelina Germanotta",
+      "Stefanija Džoana Andželina Germanota",
+      "Λέιντι Γκάγκα",
+      "Στέφανι Τζοάν Αντζελίνα Τζερμανότα",
+      "Џо Калдероне",
+      "Леди Гага",
+      "Леді Гага",
+      "Лейди Гага",
+      "Лејди Гага",
+      "Лэдзі Гага",
+      "Лэди Гага",
+      "Сте́фани Джоа́нн Анджели́на Джермано́тта",
+      "Сте́фані Джоа́н Анджеліна Джермано́тта",
+      "Стефани Џоан Анџелина Џерманота",
+      "Стефани Жоанн Анжелина Жерманотта",
+      "Стэфані Джаан Анджэліна Джэрманота",
+      "Լեդի Գագա",
+      "Լէյտի Կակա",
+      "ליידי גאגא",
+      "סטפני ג'ואן אנג'לינה ג'רמנוטה",
+      "جوآن استفانی جرمانوتا",
+      "ستيفاني جيرمانوتا",
+      "ليدى جاجا",
+      "ليدي غاغا",
+      "ليدي ڭاڭا",
+      "لیدی قاقا",
+      "لیدی گاگا",
+      "لیڈی گاگا",
+      "لېيدى گاگا",
+      "لەیدی گاگا",
+      "लेडी गागा",
+      "स्टेफनी जोआन अँजेलिना जर्मानोटा",
+      "स्टेफनी जोएन एन्जेलिना जर्मनोट्टा",
+      "লেডী গাগা",
+      "ਲੇਡੀ ਗਾਗਾ",
+      "ਸਟੇਫ਼ਨੀ ਜੋਐਨ ਏਂਜੇਲੀਨਾ ਜਰਮਨੋਟਾ",
+      "લેડી ગાગા",
+      "ଲେଡି ଗାଗା",
+      "லேடி காகா",
+      "లేడీ గాగా",
+      "ಲೇಡಿ ಗಾಗಾ",
+      "ലേഡി ഗാഗ",
+      "ලේඩි ගාගා",
+      "สเตฟานี โจแอนน์ แอนเจลินา เจอร์มาน็อตตา",
+      "เลดีกากา",
+      "ເລດີ້ ກາກ້າ",
+      "လေဒီဂါဂါ",
+      "ლედი გაგა",
+      "ስቲፋኒ ጆአኒ አንጀሊና ጀርማኖታ",
+      "በሌዲ ጋጋ",
+      "ឡេឌី ហ្គាហ្គា",
+      "ᱞᱮᱰᱤ ᱜᱟᱜᱟ",
+      "ステファニー・ジョアン・アンジェリーナ・ジャーマノッタ",
+      "レディー・ガガ",
+      "史蒂芬妮·乔安妮·安吉丽娜·杰尔马诺塔",
+      "嘎嘎小姐",
+      "女神卡卡",
+      "레이디 가가",
+      "스테퍼니 조앤 앤젤리나 제르마노타"
+    ],
+    "matchedLegacyId": "music:001_lady-gaga"
+  },
+  "music-137": {
+    "id": "music:001_katy-perry",
+    "sourceName": "Katy Perry",
+    "gameTier": "core",
+    "aliases": [
+      "Кэти Перри",
+      "Katy Perry",
+      "Katheryn Elizabeth Hudson",
+      "Katheryn Hudson",
+      "Katheryn Perry",
+      "Katy Hudson",
+      "Katy Pery",
+      "ケイティ・ペリー",
+      "凯蒂·佩里",
+      "水果姐"
+    ],
+    "matchedLegacyId": "music:001_katy-perry"
+  },
+  "music-138": {
+    "id": "music:001_bruno-mars",
+    "sourceName": "Bruno Mars",
+    "gameTier": "core",
+    "aliases": [
+      "Бруно Марс",
+      "Bruno Mars",
+      "Peter Gene Hernandez",
+      "ブルーノ・マーズ",
+      "브루노 마스"
+    ],
+    "matchedLegacyId": "music:001_bruno-mars"
+  },
+  "music-139": {
+    "id": "music:001_justin-bieber",
+    "sourceName": "Justin Bieber",
+    "gameTier": "core",
+    "aliases": [
+      "Джастин Бибер",
+      "Justin Bieber",
+      "Justin Beiber",
+      "Justin Drew Bieber",
+      "ジャスティン・ビーバー"
+    ],
+    "matchedLegacyId": "music:001_justin-bieber"
+  },
+  "music-140": {
+    "id": "music:077_taylor-swift",
+    "sourceName": "Taylor Swift",
+    "gameTier": "core",
+    "aliases": [
+      "Тейлор Свифт",
+      "Taylor Swift",
+      "Dr. Taylor Alison Swift",
+      "Nils Sjöberg",
+      "T-Swizzle",
+      "Taylor Alison Swift",
+      "Taylor Swiftová",
+      "Taylur Swift",
+      "Teilora Svifta",
+      "Teýlor Swift",
+      "Тейлор Свіфт",
+      "Тейлър Суифт",
+      "Тејлор Свифт",
+      "Тэйлар Свіфт",
+      "Тэйлор Свифт",
+      "Тэйлор Суифт"
+    ],
+    "matchedLegacyId": "music:077_taylor-swift"
+  },
+  "music-141": {
+    "id": "music:051_ed-sheeran",
+    "sourceName": "Ed Sheeran",
+    "gameTier": "core",
+    "aliases": [
+      "Эд Ширан",
+      "Ed Sheeran",
+      "Edward Christopher Sheeran"
+    ],
+    "matchedLegacyId": "music:051_ed-sheeran"
+  },
+  "music-142": {
+    "id": "music:001_ariana-grande",
+    "sourceName": "Ariana Grande",
+    "gameTier": "core",
+    "aliases": [
+      "Ариана Гранде",
+      "Ariana Grande",
+      "Ariana Grande-Butera",
+      "אריאנא גראנדע",
+      "آریانا گرانده",
+      "آریانا گراندِی-بوترا",
+      "أريانا غراندي",
+      "أريانا غراندي-بوتيرا",
+      "ئاریانا گراندێی",
+      "ئاریانا گراندێی-بوتێرا",
+      "アリアナ・グランデ",
+      "爱莉安娜·格兰德",
+      "艾尼安娜格兰德",
+      "아리아나 그란데"
+    ],
+    "matchedLegacyId": "music:001_ariana-grande"
+  },
+  "music-143": {
+    "id": "music:001_sia",
+    "sourceName": "Sia",
+    "gameTier": "core",
+    "aliases": [
+      "Сия",
+      "Sia",
+      "Sia Furler",
+      "Sia Kate Furler",
+      "Sia Kate I. Furler",
+      "Sia Kate Isobelle Furler",
+      "シーア"
+    ],
+    "matchedLegacyId": "music:001_sia"
+  },
+  "music-144": {
+    "id": "music:001_miley-cyrus",
+    "sourceName": "Miley Cyrus",
+    "gameTier": "core",
+    "aliases": [
+      "Майли Сайрус",
+      "Miley Cyrus",
+      "Ashley O",
+      "Destiny Hope Cyrus",
+      "Hannah Montana",
+      "Miley Ray Cyrus",
+      "Miley Ray Hemsworth",
+      "マイリー・サイラス"
+    ],
+    "matchedLegacyId": "music:001_miley-cyrus"
+  },
+  "music-145": {
+    "id": "music:001_selena-gomez",
+    "sourceName": "Selena Gomez",
+    "gameTier": "core",
+    "aliases": [
+      "Селена Гомес",
+      "Selena Gomez",
+      "Selena Marie Gomez",
+      "セレーナ・ゴメス"
+    ],
+    "matchedLegacyId": "music:001_selena-gomez"
+  },
+  "music-146": {
+    "id": "music:editorial:music-146",
+    "sourceName": "Demi Lovato",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-147": {
+    "id": "music:editorial:music-147",
+    "sourceName": "Lana Del Rey",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-148": {
+    "id": "music:editorial:music-148",
+    "sourceName": "Lorde",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-149": {
+    "id": "music:editorial:music-149",
+    "sourceName": "Sam Smith",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-150": {
+    "id": "music:001_the-weeknd",
+    "sourceName": "The Weeknd",
+    "gameTier": "core",
+    "aliases": [
+      "The Weeknd",
+      "Abel Makkonen Tesfaye",
+      "Abel Tesfaye",
+      "The Weekend",
+      "The Weeknd feat. Playboi Carti",
+      "አቤል መኮንን ተስፋዬ",
+      "ザ・ウィークエンド"
+    ],
+    "matchedLegacyId": "music:001_the-weeknd"
+  },
+  "music-151": {
+    "id": "music:148_dua-lipa",
+    "sourceName": "Dua Lipa",
+    "gameTier": "core",
+    "aliases": [
+      "Дуа Липа",
+      "Dua Lipa",
+      "Dula Peep"
+    ],
+    "matchedLegacyId": "music:148_dua-lipa"
+  },
+  "music-152": {
+    "id": "music:001_harry-styles",
+    "sourceName": "Harry Styles",
+    "gameTier": "popular",
+    "aliases": [
+      "Гарри Стайлз",
+      "Harry Styles",
+      "Harry Edward Styles"
+    ],
+    "matchedLegacyId": "music:001_harry-styles"
+  },
+  "music-153": {
+    "id": "music:001_one-direction",
+    "sourceName": "One Direction",
+    "gameTier": "core",
+    "aliases": [
+      "One Direction",
+      "1D",
+      "1D|One Direction"
+    ],
+    "matchedLegacyId": "music:001_one-direction"
+  },
+  "music-154": {
+    "id": "music:001_billie-eilish",
+    "sourceName": "Billie Eilish",
+    "gameTier": "core",
+    "aliases": [
+      "Билли Айлиш",
+      "Billie Eilish",
+      "Bil Cutie",
+      "Bili Ailiš",
+      "Bili Ailiš Pirat Beird O’Konel",
+      "Billi Ayliş",
+      "Billie Eilish O’Connell",
+      "Billie Eilish Pirate Baird O’Connell",
+      "Billie O’Connell",
+      "Billija Ailiša",
+      "Μπίλλι Άιλις",
+      "Били Ейлиш",
+      "Білі Айліш",
+      "Բիլլի Այլիշ",
+      "בילי אייליש",
+      "بيلي إيليش",
+      "بیلي آیليش",
+      "بیلی آیلیش",
+      "بیڵی_ئایڵش",
+      "बिली एलीश",
+      "বিলি আইলিশ",
+      "ბილი აილიში",
+      "ប៊ីលលី អៃលីស",
+      "ビリー・アイリッシュ",
+      "比莉艾莉什",
+      "빌리 아일리시"
+    ],
+    "matchedLegacyId": "music:001_billie-eilish"
+  },
+  "music-155": {
+    "id": "music:001_olivia-rodrigo",
+    "sourceName": "Olivia Rodrigo",
+    "gameTier": "popular",
+    "aliases": [
+      "Оливия Родриго",
+      "Olivia Rodrigo",
+      "Olivia Isabel Rodrigo",
+      "Olivia Rodrigová",
+      "Oliviya Rodriqo",
+      "Olīvija Rodrigo",
+      "Ολίβια Ροντρίγκο",
+      "Алівія Радрыга",
+      "Оливија Родриго",
+      "Олівія Родріґо",
+      "Օլիվիա Ռոդրիգո",
+      "אוליביה רודריגו",
+      "أوليفيا رودريغو",
+      "ئۆلیڤیا ڕادریگۆ",
+      "اوليفيا رودريجو",
+      "اولیویا رودریگو",
+      "اولیویا روڈریگو",
+      "ओलिभिया रोड्रिगो",
+      "ਓਲੀਵੀਆ ਰੌਡਰੀਗੋ",
+      "โอลิเวีย โรดริโก",
+      "ოლივია როდრიგო",
+      "オリヴィア・ロドリゴ",
+      "奥利维亚·罗德里戈",
+      "奧莉維亞·羅德里戈",
+      "올리비아 로드리고"
+    ],
+    "matchedLegacyId": "music:001_olivia-rodrigo"
+  },
+  "music-156": {
+    "id": "music:editorial:music-156",
+    "sourceName": "Doja Cat",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-157": {
+    "id": "music:editorial:music-157",
+    "sourceName": "SZA",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-158": {
+    "id": "music:editorial:music-158",
+    "sourceName": "Halsey",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-159": {
+    "id": "music:editorial:music-159",
+    "sourceName": "Camila Cabello",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-160": {
+    "id": "music:editorial:music-160",
+    "sourceName": "Shawn Mendes",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-161": {
+    "id": "music:editorial:music-161",
+    "sourceName": "Charlie Puth",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-162": {
+    "id": "music:001_sabrina-carpenter",
+    "sourceName": "Sabrina Carpenter",
+    "gameTier": "popular",
+    "aliases": [
+      "Сабрина Карпентер",
+      "Sabrina Carpenter",
+      "Sabrina Annlynn Carpenter",
+      "サブリナ・カーペンター"
+    ],
+    "matchedLegacyId": "music:001_sabrina-carpenter"
+  },
+  "music-163": {
+    "id": "music:editorial:music-163",
+    "sourceName": "Chappell Roan",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-164": {
+    "id": "music:editorial:music-164",
+    "sourceName": "Tate McRae",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-165": {
+    "id": "music:editorial:music-165",
+    "sourceName": "Kesha",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-166": {
+    "id": "music:246_eminem",
+    "sourceName": "Eminem",
+    "gameTier": "core",
+    "aliases": [
+      "Эминем",
+      "Eminem",
+      "EMINƎM",
+      "Em",
+      "EminemMusic",
+      "M&M",
+      "M. Mathers",
+      "Marshall Bruce Mathers",
+      "Marshall Bruce Mathers III",
+      "Marshall Mathers",
+      "Marshall Mathers III",
+      "Ominem",
+      "Slim Shady",
+      "The Real Slim Shady"
+    ],
+    "matchedLegacyId": "music:246_eminem"
+  },
+  "music-167": {
+    "id": "music:332_2pac",
+    "sourceName": "2Pac",
+    "gameTier": "core",
+    "aliases": [
+      "Тупак Шакур",
+      "2Pac",
+      "2 Pac",
+      "2 Pacalypse",
+      "2Pac (Makaveli the Don)",
+      "2Pacalypse",
+      "2パック",
+      "MC New York",
+      "Makaveli",
+      "Tupac",
+      "Tupac Shakur"
+    ],
+    "matchedLegacyId": "music:332_2pac"
+  },
+  "music-168": {
+    "id": "music:001_the-notorious-b-i-g",
+    "sourceName": "The Notorious B.I.G.",
+    "gameTier": "popular",
+    "aliases": [
+      "The Notorious B. I. G.",
+      "BIG",
+      "Biggie",
+      "Biggie Smalls",
+      "Biggie Smallz",
+      "Biggy Smalls",
+      "C. Wallace",
+      "Christopher George Latore Wallace",
+      "Christopher Wallace",
+      "Notorious B.I.G.",
+      "Notorious BIG.",
+      "Notrious B.I.G",
+      "The Notorious BIG"
+    ],
+    "matchedLegacyId": "music:001_the-notorious-b-i-g"
+  },
+  "music-169": {
+    "id": "music:303_dr-dre",
+    "sourceName": "Dr. Dre",
+    "gameTier": "core",
+    "aliases": [
+      "Dr. Dré",
+      "A. Young",
+      "Andre R. Young",
+      "Andre Romell Young",
+      "Andre Young",
+      "Doctor Dre",
+      "Dre.."
+    ],
+    "matchedLegacyId": "music:303_dr-dre"
+  },
+  "music-170": {
+    "id": "music:001_snoop-dogg",
+    "sourceName": "Snoop Dogg",
+    "gameTier": "core",
+    "aliases": [
+      "Snoop Dogg",
+      "Big Snoop Dogg",
+      "Bigg Snoop Dogg",
+      "Da Bigg Boss Dogg",
+      "Snoop",
+      "Snoop Doggy",
+      "Snoop Doggy Dog",
+      "Snoop Doggy Dogg",
+      "スヌープ・ドギー・ドッグ",
+      "スヌープ・ドッグ"
+    ],
+    "matchedLegacyId": "music:001_snoop-dogg"
+  },
+  "music-171": {
+    "id": "music:334_jay-z",
+    "sourceName": "JAY-Z",
+    "gameTier": "core",
+    "aliases": [
+      "JAŸ-Z",
+      "Shawn Carter"
+    ],
+    "matchedLegacyId": "music:334_jay-z"
+  },
+  "music-172": {
+    "id": "music:001_nas",
+    "sourceName": "Nas",
+    "gameTier": "popular",
+    "aliases": [
+      "Нас",
+      "Nas",
+      "Kid Wave",
+      "N. Jones",
+      "Nas Escobar",
+      "Nasir Jones",
+      "Nasir bin Olu Dara Jones",
+      "Nass",
+      "Nasty Nas",
+      "Scarlett"
+    ],
+    "matchedLegacyId": "music:001_nas"
+  },
+  "music-173": {
+    "id": "music:001_wu-tang-clan",
+    "sourceName": "Wu-Tang Clan",
+    "gameTier": "popular",
+    "aliases": [
+      "Wu Tang Clan",
+      "The Wu-Tang Clan",
+      "Wu-Tang",
+      "WuTang Clan"
+    ],
+    "matchedLegacyId": "music:001_wu-tang-clan"
+  },
+  "music-174": {
+    "id": "music:324_beastie-boys",
+    "sourceName": "Beastie Boys",
+    "gameTier": "core",
+    "aliases": [
+      "Beastie Boys",
+      "Beastie Boys - Sabotage",
+      "Beastie Boys, The",
+      "Beastie Boys-01",
+      "Beastie Boys-11",
+      "Beasty Boys",
+      "The Beastie Boys",
+      "The Beasty Boys"
+    ],
+    "matchedLegacyId": "music:324_beastie-boys"
+  },
+  "music-175": {
+    "id": "music:editorial:music-175",
+    "sourceName": "OutKast",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-176": {
+    "id": "music:001_50-cent",
+    "sourceName": "50 Cent",
+    "gameTier": "core",
+    "aliases": [
+      "50 Cent",
+      "50 Cents",
+      "C.Jackson",
+      "Curtis Jackson",
+      "Curtis Jackson III",
+      "Curtis/James/Jackson",
+      "Curtis James Jackson III",
+      "Fifty Cent",
+      "Jackson"
+    ],
+    "matchedLegacyId": "music:001_50-cent"
+  },
+  "music-177": {
+    "id": "music:editorial:music-177",
+    "sourceName": "Nelly",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-178": {
+    "id": "music:editorial:music-178",
+    "sourceName": "Missy Elliott",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-179": {
+    "id": "music:editorial:music-179",
+    "sourceName": "Lauryn Hill",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-180": {
+    "id": "music:001_kanye-west",
+    "sourceName": "Kanye West",
+    "gameTier": "core",
+    "aliases": [
+      "Канье Уэст",
+      "Kanye West Tribute Band",
+      "Ye",
+      "Канье",
+      "Канье Омари Уэст",
+      "Yeezus",
+      "Уэст, Канье",
+      "Йе",
+      "Kanye Omari West",
+      "Yeezy",
+      "Kon the Louis Vuitton Don"
+    ],
+    "matchedLegacyId": "music:001_kanye-west"
+  },
+  "music-181": {
+    "id": "music:001_lil-wayne",
+    "sourceName": "Lil Wayne",
+    "gameTier": "niche",
+    "aliases": [
+      "Лил Уэйн",
+      "Lil’ Wayne",
+      "D. Carter",
+      "Dwayne Carter",
+      "Dwayne Michael Carter, Jr.",
+      "Dwayne “The President” Carter",
+      "リル・ウェイン"
+    ],
+    "matchedLegacyId": "music:001_lil-wayne"
+  },
+  "music-182": {
+    "id": "music:001_nicki-minaj",
+    "sourceName": "Nicki Minaj",
+    "gameTier": "core",
+    "aliases": [
+      "Ники Минаж",
+      "Nicki Minaj",
+      "Nicki Maraj",
+      "Nicki Minai",
+      "Nikki Minaj",
+      "O. Maraj",
+      "Onika Maraj",
+      "Onika Tanya Maraj",
+      "Onika Tanya Maraj-Petty",
+      "Queen of Rap",
+      "Roman Zolanski",
+      "ニッキー・ミナージュ",
+      "妮琪米娜"
+    ],
+    "matchedLegacyId": "music:001_nicki-minaj"
+  },
+  "music-183": {
+    "id": "music:001_drake",
+    "sourceName": "Drake",
+    "gameTier": "core",
+    "aliases": [
+      "Дрейк",
+      "Drake",
+      "Aubrey Drake Graham",
+      "C. Papi",
+      "Champagne Papi",
+      "ドレイク"
+    ],
+    "matchedLegacyId": "music:001_drake"
+  },
+  "music-184": {
+    "id": "music:001_kendrick-lamar",
+    "sourceName": "Kendrick Lamar",
+    "gameTier": "core",
+    "aliases": [
+      "Кендрик Ламар",
+      "Kendrick Lamar",
+      "K‐Dot",
+      "K. Duckworth",
+      "Kendrick Duckworth",
+      "Kendrick Lamar Duckworth",
+      "Kendrick Lamar, SZA",
+      "OKLAMA",
+      "ケンドリック・ラマー",
+      "켄드릭 라마"
+    ],
+    "matchedLegacyId": "music:001_kendrick-lamar"
+  },
+  "music-185": {
+    "id": "music:001_j-cole",
+    "sourceName": "J. Cole",
+    "gameTier": "core",
+    "aliases": [
+      "Джей Коул",
+      "j.cole",
+      "Jermaine Cole",
+      "Jermaine L. Cole",
+      "Jermaine Lamarr Cole"
+    ],
+    "matchedLegacyId": "music:001_j-cole"
+  },
+  "music-186": {
+    "id": "music:editorial:music-186",
+    "sourceName": "Future",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-187": {
+    "id": "music:001_travis-scott",
+    "sourceName": "Travis Scott",
+    "gameTier": "core",
+    "aliases": [
+      "Трэвис Скотт",
+      "Travis Scott",
+      "Jacques Berman Webster II",
+      "Jacques Webster",
+      "T. Scott",
+      "Travi$ Scot",
+      "Travi$ Scott",
+      "Travis $cott",
+      "トラヴィス・スコット"
+    ],
+    "matchedLegacyId": "music:001_travis-scott"
+  },
+  "music-188": {
+    "id": "music:001_cardi-b",
+    "sourceName": "Cardi B",
+    "gameTier": "core",
+    "aliases": [
+      "Карди Би",
+      "Cardi B",
+      "Belcalis Almanzar",
+      "Belcalis Marlenis Almánzar",
+      "カーディ・B"
+    ],
+    "matchedLegacyId": "music:001_cardi-b"
+  },
+  "music-189": {
+    "id": "music:editorial:music-189",
+    "sourceName": "Post Malone",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-190": {
+    "id": "music:editorial:music-190",
+    "sourceName": "Tyler, The Creator",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-191": {
+    "id": "music:editorial:music-191",
+    "sourceName": "Childish Gambino",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-192": {
+    "id": "music:001_a-ap-rocky",
+    "sourceName": "A$AP Rocky",
+    "gameTier": "popular",
+    "aliases": [
+      "A$AP Rocky",
+      "ASAP Rocky",
+      "LORD FLACKO",
+      "Rakim Mayers"
+    ],
+    "matchedLegacyId": "music:001_a-ap-rocky"
+  },
+  "music-193": {
+    "id": "music:editorial:music-193",
+    "sourceName": "Mac Miller",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-194": {
+    "id": "music:001_xxxtentacion",
+    "sourceName": "XXXTENTACION",
+    "gameTier": "core",
+    "aliases": [
+      "XXXTENTACION",
+      "Jah",
+      "Jahseh Dwayne Ricardo Onfroy",
+      "MAKE OUT HILL",
+      "Triple X",
+      "X",
+      "XXX",
+      "XXXテンタシオン",
+      "Yung Dagger Dick",
+      "fuckjahseh",
+      "heroinfather",
+      "lildickgirl666",
+      "ジャセー・ドウェイン・リカルド・オンフロイ"
+    ],
+    "matchedLegacyId": "music:001_xxxtentacion"
+  },
+  "music-195": {
+    "id": "music:001_juice-wrld",
+    "sourceName": "Juice WRLD",
+    "gameTier": "core",
+    "aliases": [
+      "Juice WRLD",
+      "Jarad Anthony Higgins",
+      "Jarad Higgins",
+      "Juice",
+      "Juice The Kidd",
+      "Juice WORLD",
+      "JuiceTheKidd"
+    ],
+    "matchedLegacyId": "music:001_juice-wrld"
+  },
+  "music-196": {
+    "id": "music:001_daft-punk",
+    "sourceName": "Daft Punk",
+    "gameTier": "core",
+    "aliases": [
+      "Daft Punk",
+      "Da Funk",
+      "Duft Punk",
+      "ダフト・パンク"
+    ],
+    "matchedLegacyId": "music:001_daft-punk"
+  },
+  "music-197": {
+    "id": "music:001_the-prodigy",
+    "sourceName": "The Prodigy",
+    "gameTier": "popular",
+    "aliases": [
+      "The Prodigy",
+      "Prodigy",
+      "The Prodigy vs"
+    ],
+    "matchedLegacyId": "music:001_the-prodigy"
+  },
+  "music-198": {
+    "id": "music:editorial:music-198",
+    "sourceName": "The Chemical Brothers",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-199": {
+    "id": "music:editorial:music-199",
+    "sourceName": "Massive Attack",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-200": {
+    "id": "music:editorial:music-200",
+    "sourceName": "Moby",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-201": {
+    "id": "music:editorial:music-201",
+    "sourceName": "Fatboy Slim",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-202": {
+    "id": "music:editorial:music-202",
+    "sourceName": "Gorillaz",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-203": {
+    "id": "music:001_david-guetta",
+    "sourceName": "David Guetta",
+    "gameTier": "core",
+    "aliases": [
+      "Давид Гетта",
+      "David Guetta",
+      "David Ghetta",
+      "David Guette",
+      "Davie Guetta",
+      "Pierre David Guetta",
+      "デヴィッド・ゲッタ"
+    ],
+    "matchedLegacyId": "music:001_david-guetta"
+  },
+  "music-204": {
+    "id": "music:233_calvin-harris",
+    "sourceName": "Calvin Harris",
+    "gameTier": "core",
+    "aliases": [
+      "Кэлвин Харрис",
+      "Calvin Harris",
+      "Адам Ричард Вайлс",
+      "Adam Richard Wiles",
+      "Келвин Харрис",
+      "Stouffer",
+      "Love Regenerator"
+    ],
+    "matchedLegacyId": "music:233_calvin-harris"
+  },
+  "music-205": {
+    "id": "music:089_tiesto",
+    "sourceName": "Tiësto",
+    "gameTier": "core",
+    "aliases": [
+      "Tiesto",
+      "DJ Testo",
+      "DJ Tiesta",
+      "DJ Tïesto",
+      "Triësto"
+    ],
+    "matchedLegacyId": "music:089_tiesto"
+  },
+  "music-206": {
+    "id": "music:001_avicii",
+    "sourceName": "Avicii",
+    "gameTier": "core",
+    "aliases": [
+      "Авичи",
+      "Avicii",
+      "Avicci"
+    ],
+    "matchedLegacyId": "music:001_avicii"
+  },
+  "music-207": {
+    "id": "music:001_skrillex",
+    "sourceName": "Skrillex",
+    "gameTier": "core",
+    "aliases": [
+      "Скриллекс",
+      "Skrillex",
+      "Skillrex",
+      "Sonny",
+      "Sonny John Moore",
+      "Sonny Moore",
+      "Twipz",
+      "Σκρίλλεξ",
+      "スクリレックス"
+    ],
+    "matchedLegacyId": "music:001_skrillex"
+  },
+  "music-208": {
+    "id": "music:editorial:music-208",
+    "sourceName": "deadmau5",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-209": {
+    "id": "music:001_major-lazer",
+    "sourceName": "Major Lazer",
+    "gameTier": "core",
+    "aliases": [
+      "Major Lazer",
+      "Major Laser",
+      "Major Lazor",
+      "メジャー・レイザー"
+    ],
+    "matchedLegacyId": "music:001_major-lazer"
+  },
+  "music-210": {
+    "id": "music:001_zedd",
+    "sourceName": "Zedd",
+    "gameTier": "popular",
+    "aliases": [
+      "Анто́н И́горевич Засла́вский",
+      "Zedd",
+      "Anton Igorevich Zaslavski",
+      "ゼッド"
+    ],
+    "matchedLegacyId": "music:001_zedd"
+  },
+  "music-211": {
+    "id": "music:editorial:music-211",
+    "sourceName": "The Chainsmokers",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-212": {
+    "id": "music:editorial:music-212",
+    "sourceName": "Marshmello",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-213": {
+    "id": "music:202_alan-walker",
+    "sourceName": "Alan Walker",
+    "gameTier": "core",
+    "aliases": [
+      "Алан Уокер",
+      "Alan Walker",
+      "Alan Olav Walker",
+      "DJ Walkzz"
+    ],
+    "matchedLegacyId": "music:202_alan-walker"
+  },
+  "music-214": {
+    "id": "music:180_coldplay",
+    "sourceName": "Coldplay",
+    "gameTier": "core",
+    "aliases": [
+      "Coldplay",
+      "Cold Play",
+      "Coolplay",
+      "The Coldplay"
+    ],
+    "matchedLegacyId": "music:180_coldplay"
+  },
+  "music-215": {
+    "id": "music:editorial:music-215",
+    "sourceName": "Charli xcx",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-216": {
+    "id": "music:editorial:music-216",
+    "sourceName": "Tame Impala",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-217": {
+    "id": "music:491_deftones",
+    "sourceName": "Deftones",
+    "gameTier": "core",
+    "aliases": [
+      "Deftones",
+      "Def Tones",
+      "The Deftones"
+    ],
+    "matchedLegacyId": "music:491_deftones"
+  },
+  "music-218": {
+    "id": "music:340_nine-inch-nails",
+    "sourceName": "Nine Inch Nails",
+    "gameTier": "core",
+    "aliases": [
+      "Nine Inch Nails",
+      "NIN"
+    ],
+    "matchedLegacyId": "music:340_nine-inch-nails"
+  },
+  "music-219": {
+    "id": "music:editorial:music-219",
+    "sourceName": "LE SSERAFIM",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-220": {
+    "id": "music:473_weezer",
+    "sourceName": "Weezer",
+    "gameTier": "core",
+    "aliases": [
+      "Weezer"
+    ],
+    "matchedLegacyId": "music:473_weezer"
+  },
+  "music-221": {
+    "id": "music:485_tool",
+    "sourceName": "Tool",
+    "gameTier": "core",
+    "aliases": [
+      "Tool"
+    ],
+    "matchedLegacyId": "music:485_tool"
+  },
+  "music-222": {
+    "id": "music:479_smashing-pumpkins",
+    "sourceName": "The Smashing Pumpkins",
+    "gameTier": "core",
+    "aliases": [
+      "The Smashing Pumpkins",
+      "Smashing Pumpkins"
+    ],
+    "matchedLegacyId": "music:479_smashing-pumpkins"
+  },
+  "music-223": {
+    "id": "music:editorial:music-223",
+    "sourceName": "Frank Ocean",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-224": {
+    "id": "music:editorial:music-224",
+    "sourceName": "Queens of the Stone Age",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-225": {
+    "id": "music:editorial:music-225",
+    "sourceName": "Joji",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-226": {
+    "id": "music:editorial:music-226",
+    "sourceName": "PinkPantheress",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-227": {
+    "id": "music:editorial:music-227",
+    "sourceName": "Rage Against the Machine",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-228": {
+    "id": "music:editorial:music-228",
+    "sourceName": "Maroon 5",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-229": {
+    "id": "music:editorial:music-229",
+    "sourceName": "MGMT",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-230": {
+    "id": "music:446_pixies",
+    "sourceName": "Pixies",
+    "gameTier": "core",
+    "aliases": [
+      "Pixies"
+    ],
+    "matchedLegacyId": "music:446_pixies"
+  },
+  "music-231": {
+    "id": "music:editorial:music-231",
+    "sourceName": "Mitski",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-232": {
+    "id": "music:477_alice-in-chains",
+    "sourceName": "Alice in Chains",
+    "gameTier": "core",
+    "aliases": [
+      "Alice in Chains",
+      "Alice and Chains",
+      "Diamond Lie"
+    ],
+    "matchedLegacyId": "music:477_alice-in-chains"
+  },
+  "music-233": {
+    "id": "music:editorial:music-233",
+    "sourceName": "Miguel",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-234": {
+    "id": "music:editorial:music-234",
+    "sourceName": "Arcade Fire",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-235": {
+    "id": "music:editorial:music-235",
+    "sourceName": "Kali Uchis",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-236": {
+    "id": "music:editorial:music-236",
+    "sourceName": "Beck",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-237": {
+    "id": "music:editorial:music-237",
+    "sourceName": "Rise Against",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-238": {
+    "id": "music:001_lil-uzi-vert",
+    "sourceName": "Lil Uzi Vert",
+    "gameTier": "popular",
+    "aliases": [
+      "Лил Узи Верт",
+      "Lil Uzi Vert",
+      "Baby Pluto",
+      "LUV",
+      "Lil Uzi",
+      "Renji",
+      "Sealab Vertical",
+      "Symere Bysil Woods",
+      "Uzi London",
+      "Uzi Vert",
+      "Σάιμιρ Γούντς",
+      "Ліл Узі Верт",
+      "Саймер Вудс",
+      "Саймир Вудс",
+      "Սայմիր Վուդս",
+      "ליל אוזי ורט",
+      "סיימיר וודס",
+      "سايمير بايسل وودز",
+      "ليل أوزي فيرت",
+      "لیل اوزی فیرت",
+      "لیل اوزی ورت",
+      "サイミア・ウッズ",
+      "リル・ウージー・ヴァート",
+      "利尔·乌兹·弗特",
+      "小乌兹",
+      "릴 우지 버트",
+      "사이미어 우즈"
+    ],
+    "matchedLegacyId": "music:001_lil-uzi-vert"
+  },
+  "music-239": {
+    "id": "music:editorial:music-239",
+    "sourceName": "Bon Iver",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-240": {
+    "id": "music:editorial:music-240",
+    "sourceName": "Carly Rae Jepsen",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-241": {
+    "id": "music:editorial:music-241",
+    "sourceName": "Pharrell Williams",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-242": {
+    "id": "music:editorial:music-242",
+    "sourceName": "Disturbed",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-243": {
+    "id": "music:editorial:music-243",
+    "sourceName": "Avenged Sevenfold",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-244": {
+    "id": "music:editorial:music-244",
+    "sourceName": "OneRepublic",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-245": {
+    "id": "music:editorial:music-245",
+    "sourceName": "Gwen Stefani",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-246": {
+    "id": "music:editorial:music-246",
+    "sourceName": "Fergie",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-247": {
+    "id": "music:editorial:music-247",
+    "sourceName": "Kelly Clarkson",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-248": {
+    "id": "music:editorial:music-248",
+    "sourceName": "Bryan Adams",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-249": {
+    "id": "music:editorial:music-249",
+    "sourceName": "James Blunt",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-250": {
+    "id": "music:editorial:music-250",
+    "sourceName": "Jason Mraz",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-251": {
+    "id": "music:editorial:music-251",
+    "sourceName": "Sade",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-252": {
+    "id": "music:editorial:music-252",
+    "sourceName": "Seal",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-253": {
+    "id": "music:146_ray-charles",
+    "sourceName": "Ray Charles",
+    "gameTier": "popular",
+    "aliases": [
+      "Рэй Чарльз",
+      "Ray Charles",
+      "Charles Ray",
+      "R. Charles",
+      "Ray Charles Robinson"
+    ],
+    "matchedLegacyId": "music:146_ray-charles"
+  },
+  "music-254": {
+    "id": "music:348_louis-armstrong",
+    "sourceName": "Louis Armstrong",
+    "gameTier": "core",
+    "aliases": [
+      "Луи Армстронг",
+      "Louis Armstrong",
+      "Armstrong",
+      "Armstrong Louis",
+      "Armstrong, Louis (Satchmo)",
+      "Loius Armstrong",
+      "Loouis Aemstrong",
+      "Louie Armstrong",
+      "Louis Amstrong",
+      "Louis Armostrong",
+      "Louis Armstrong & The Commanders",
+      "Louis Armstrong and His Friends",
+      "Louis Armstrong with The Commanders",
+      "Louis Armstrong: Satchmo",
+      "Louis Arnstrong",
+      "Louis Daniel Armstrong",
+      "Louise Armstrong",
+      "Luis Armstrong"
+    ],
+    "matchedLegacyId": "music:348_louis-armstrong"
+  },
+  "music-255": {
+    "id": "music:184_shakira",
+    "sourceName": "Shakira",
+    "gameTier": "core",
+    "aliases": [
+      "Шакира",
+      "Shakira",
+      "Shaki",
+      "Shakira Isabel Mebarak Ripoll"
+    ],
+    "matchedLegacyId": "music:184_shakira"
+  },
+  "music-256": {
+    "id": "music:001_ricky-martin",
+    "sourceName": "Ricky Martin",
+    "gameTier": "popular",
+    "aliases": [
+      "Ricky Martin",
+      "Enrique Martín Morales",
+      "Rickey Martin",
+      "Ricky Marrtin"
+    ],
+    "matchedLegacyId": "music:001_ricky-martin"
+  },
+  "music-257": {
+    "id": "music:001_enrique-iglesias",
+    "sourceName": "Enrique Iglesias",
+    "gameTier": "core",
+    "aliases": [
+      "Энрике Иглесиас",
+      "Enrique Iglesias",
+      "Enriqué",
+      "Enrique Eglesias",
+      "Enrique Iglesisas",
+      "Enrique Igleslas",
+      "Enrique Inglesias",
+      "Enrique Miguel Iglesias Preysler"
+    ],
+    "matchedLegacyId": "music:001_enrique-iglesias"
+  },
+  "music-258": {
+    "id": "music:editorial:music-258",
+    "sourceName": "Gloria Estefan",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-259": {
+    "id": "music:editorial:music-259",
+    "sourceName": "Marc Anthony",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-260": {
+    "id": "music:editorial:music-260",
+    "sourceName": "Selena",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-261": {
+    "id": "music:001_daddy-yankee",
+    "sourceName": "Daddy Yankee",
+    "gameTier": "core",
+    "aliases": [
+      "Daddy Yankee",
+      "DY",
+      "Ramón Luis Ayala Rodríguez",
+      "Raymond Ayala",
+      "Winchester 30-30",
+      "Winchester Yankee",
+      "Winchestra Yankee"
+    ],
+    "matchedLegacyId": "music:001_daddy-yankee"
+  },
+  "music-262": {
+    "id": "music:editorial:music-262",
+    "sourceName": "Don Omar",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-263": {
+    "id": "music:editorial:music-263",
+    "sourceName": "Luis Fonsi",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-264": {
+    "id": "music:001_j-balvin",
+    "sourceName": "J Balvin",
+    "gameTier": "core",
+    "aliases": [
+      "Джей Бальвин",
+      "J.Balvin",
+      "José Álvaro Osorio Balvín"
+    ],
+    "matchedLegacyId": "music:001_j-balvin"
+  },
+  "music-265": {
+    "id": "music:001_maluma",
+    "sourceName": "Maluma",
+    "gameTier": "core",
+    "aliases": [
+      "Малума",
+      "Maluma",
+      "Juan Luis Londoño Arias"
+    ],
+    "matchedLegacyId": "music:001_maluma"
+  },
+  "music-266": {
+    "id": "music:001_bad-bunny",
+    "sourceName": "Bad Bunny",
+    "gameTier": "core",
+    "aliases": [
+      "Bad Bunny",
+      "Benito Antonio Martínez Ocasio"
+    ],
+    "matchedLegacyId": "music:001_bad-bunny"
+  },
+  "music-267": {
+    "id": "music:001_karol-g",
+    "sourceName": "Karol G",
+    "gameTier": "core",
+    "aliases": [
+      "Кароль Джи",
+      "KAROL G",
+      "Carolina Giraldo Navarro"
+    ],
+    "matchedLegacyId": "music:001_karol-g"
+  },
+  "music-268": {
+    "id": "music:editorial:music-268",
+    "sourceName": "Ozuna",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-269": {
+    "id": "music:editorial:music-269",
+    "sourceName": "Anitta",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-270": {
+    "id": "music:editorial:music-270",
+    "sourceName": "ROSALÍA",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-271": {
+    "id": "music:editorial:music-271",
+    "sourceName": "Rauw Alejandro",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-272": {
+    "id": "music:417_santana",
+    "sourceName": "Santana",
+    "gameTier": "popular",
+    "aliases": [
+      "Santana"
+    ],
+    "matchedLegacyId": "music:417_santana"
+  },
+  "music-273": {
+    "id": "music:014_bts",
+    "sourceName": "BTS",
+    "gameTier": "core",
+    "aliases": [
+      "BTS",
+      "Bangtan Boys",
+      "Bangtan Sonyeondan",
+      "Beyond the Scene",
+      "Bulletproof Boy Scouts",
+      "Bōdan Shōnendan",
+      "The Bangtan Boys"
+    ],
+    "matchedLegacyId": "music:014_bts"
+  },
+  "music-274": {
+    "id": "music:001_blackpink",
+    "sourceName": "BLACKPINK",
+    "gameTier": "core",
+    "aliases": [
+      "BLACKPINK",
+      "BLΛƆKPIИK",
+      "Beullaekpingkeu",
+      "Black Pink",
+      "Блекпинк",
+      "בלאקפינק",
+      "بلاكبينك",
+      "بلک‌پینک",
+      "بڵاکپینک",
+      "ब्लैकपिंक",
+      "ब्ल्याकपिङ्क",
+      "ব্ল্যাকপিঙ্ক",
+      "แบล็กพิงก์",
+      "ແບັກພິ້ງ",
+      "བླེཀ་པིངཀ་",
+      "ပလႅၵ်းၽိင်း",
+      "ဘလက်ပင့်",
+      "ប្លេកភីង",
+      "才貌俱全",
+      "블랙핑크"
+    ],
+    "matchedLegacyId": "music:001_blackpink"
+  },
+  "music-275": {
+    "id": "music:001_psy",
+    "sourceName": "PSY",
+    "gameTier": "popular",
+    "aliases": [
+      "PSY",
+      "Park Jae-sang",
+      "박재상",
+      "싸이",
+      "싸이(Psy)"
+    ],
+    "matchedLegacyId": "music:001_psy"
+  },
+  "music-276": {
+    "id": "music:001_bigbang",
+    "sourceName": "BIGBANG",
+    "gameTier": "popular",
+    "aliases": [
+      "BIG BANG",
+      "BIGBANG",
+      "ビッグバン",
+      "빅뱅"
+    ],
+    "matchedLegacyId": "music:001_bigbang"
+  },
+  "music-277": {
+    "id": "music:editorial:music-277",
+    "sourceName": "Girls’ Generation",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-278": {
+    "id": "music:001_exo",
+    "sourceName": "EXO",
+    "gameTier": "niche",
+    "aliases": [
+      "EXO",
+      "エクソ",
+      "エクソ (EXO)",
+      "엑소",
+      "엑소 (EXO)"
+    ],
+    "matchedLegacyId": "music:001_exo"
+  },
+  "music-279": {
+    "id": "music:001_twice",
+    "sourceName": "TWICE",
+    "gameTier": "niche",
+    "aliases": [
+      "TWICE",
+      "トゥワイス",
+      "트와이스"
+    ],
+    "matchedLegacyId": "music:001_twice"
+  },
+  "music-280": {
+    "id": "music:001_stray-kids",
+    "sourceName": "Stray Kids",
+    "gameTier": "popular",
+    "aliases": [
+      "Stray Kids",
+      "SKZ",
+      "スキズ",
+      "ストレイキッズ",
+      "스키즈",
+      "스트레이 키즈"
+    ],
+    "matchedLegacyId": "music:001_stray-kids"
+  },
+  "music-281": {
+    "id": "music:editorial:music-281",
+    "sourceName": "SEVENTEEN",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-282": {
+    "id": "music:editorial:music-282",
+    "sourceName": "NewJeans",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-283": {
+    "id": "music:editorial:music-283",
+    "sourceName": "aespa",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-284": {
+    "id": "music:editorial:music-284",
+    "sourceName": "(G)I-DLE",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-285": {
+    "id": "music:editorial:music-285",
+    "sourceName": "Utada Hikaru",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-286": {
+    "id": "music:editorial:music-286",
+    "sourceName": "YOASOBI",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-287": {
+    "id": "music:editorial:music-287",
+    "sourceName": "Ado",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-288": {
+    "id": "music:editorial:music-288",
+    "sourceName": "Hatsune Miku",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-289": {
+    "id": "music:editorial:music-289",
+    "sourceName": "BABYMETAL",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-290": {
+    "id": "music:editorial:music-290",
+    "sourceName": "Stromae",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-291": {
+    "id": "music:editorial:music-291",
+    "sourceName": "Édith Piaf",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-292": {
+    "id": "music:001_mylene-farmer",
+    "sourceName": "Mylène Farmer",
+    "gameTier": "popular",
+    "aliases": [
+      "Милен Фармер",
+      "Mylene Farmer",
+      "Mylhne Farmer",
+      "Mylène Gautier",
+      "Mylène Jeanne Gautier"
+    ],
+    "matchedLegacyId": "music:001_mylene-farmer"
+  },
+  "music-293": {
+    "id": "music:editorial:music-293",
+    "sourceName": "Indila",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-294": {
+    "id": "music:editorial:music-294",
+    "sourceName": "Zaz",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-295": {
+    "id": "music:editorial:music-295",
+    "sourceName": "Andrea Bocelli",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-296": {
+    "id": "music:editorial:music-296",
+    "sourceName": "Eros Ramazzotti",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-297": {
+    "id": "music:editorial:music-297",
+    "sourceName": "Ofra Haza",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-298": {
+    "id": "music:editorial:music-298",
+    "sourceName": "Cesária Évora",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-299": {
+    "id": "music:editorial:music-299",
+    "sourceName": "Fela Kuti",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-300": {
+    "id": "music:185_burna-boy",
+    "sourceName": "Burna Boy",
+    "gameTier": "popular",
+    "aliases": [
+      "Бёрна Бой",
+      "Burna Boy",
+      "Damini Ebunoluwa Ogulu",
+      "Damini Ogulu"
+    ],
+    "matchedLegacyId": "music:185_burna-boy"
+  },
+  "music-301": {
+    "id": "music:201_alla-pugacheva",
+    "sourceName": "Алла Пугачёва",
+    "gameTier": "core",
+    "aliases": [
+      "Алла Пугачёва",
+      "А. Пугачёва",
+      "Пугачёва Алла",
+      "Пугачева А.",
+      "Пугачева А. Б.",
+      "Примадонна российской эстрады",
+      "Пугачёва Алла Борисовна",
+      "Алла Борисовна Пугачева",
+      "Alla Pugachova",
+      "Alla Borisovna Pugacheva",
+      "Pugacheva",
+      "Alla Pugachyova",
+      "Alla Borisovna Pugachova"
+    ],
+    "matchedLegacyId": "music:201_alla-pugacheva"
+  },
+  "music-302": {
+    "id": "music:001_муслим-магомаев",
+    "sourceName": "Муслим Магомаев",
+    "gameTier": "niche",
+    "aliases": [
+      "Муслим Магомаев",
+      "Muslim Magomaev",
+      "Muslim Magomayev",
+      "Muslim Magometovich Magomayev",
+      "Muslum Magomayev",
+      "М. Магомаев",
+      "Муслим Магометович Магомаев"
+    ],
+    "matchedLegacyId": "music:001_муслим-магомаев"
+  },
+  "music-303": {
+    "id": "music:001_владимир-высоцкии",
+    "sourceName": "Владимир Высоцкий",
+    "gameTier": "popular",
+    "aliases": [
+      "Владимир Высоцкий",
+      "Vladimir Semjonovič Vysockij",
+      "Vladimir Semënovič Vysockij",
+      "Vladimir Visotskij",
+      "Vladimir Visotsky",
+      "Vladimir Vissotski",
+      "Vladimir Vissotsky",
+      "Vladimir Vysockij",
+      "Vladimir Vysocký",
+      "Vladimir Vysotski",
+      "Vladimir Vysotskij",
+      "Vladimir Vysotskiy",
+      "Vladimir Vysotsky",
+      "Vladimir Vyssotski",
+      "Vysotskij Vladimir Semenovich",
+      "Włodzimierz Wysocki",
+      "Âëàäèìèð Âûñîöêèé",
+      "Âûñîöêèé Âëàäèìèð",
+      "В.Высоцкий",
+      "Владимир Семёнович Высоцкий"
+    ],
+    "matchedLegacyId": "music:001_владимир-высоцкии"
+  },
+  "music-304": {
+    "id": "music:001_софия-ротару",
+    "sourceName": "София Ротару",
+    "gameTier": "niche",
+    "aliases": [
+      "София Ротару",
+      "Sofia Rotaru",
+      "Ротару, София Михайловна",
+      "София Михайловна Ротару",
+      "Sofia Mykhailivna Rotaru",
+      "Sofiia Rotaru",
+      "Sofiia Mykhailivna Rotaru"
+    ],
+    "matchedLegacyId": "music:001_софия-ротару"
+  },
+  "music-305": {
+    "id": "music:editorial:music-305",
+    "sourceName": "Машина времени",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-306": {
+    "id": "music:001_аквариум",
+    "sourceName": "Аквариум",
+    "gameTier": "popular",
+    "aliases": [
+      "Аквариум",
+      "Akvarium",
+      "Aquarium",
+      "Aquarium and Boris Grebenschikov",
+      "Àêâàðèóì",
+      "Борис Гребенщиков & Квартет Анны Карениной"
+    ],
+    "matchedLegacyId": "music:001_аквариум"
+  },
+  "music-307": {
+    "id": "music:048_кино",
+    "sourceName": "Кино",
+    "gameTier": "core",
+    "aliases": [
+      "Кино",
+      "Gruppa Kino",
+      "Kino",
+      "Абсолютное кино",
+      "Кіно",
+      "Киногерой"
+    ],
+    "matchedLegacyId": "music:048_кино"
+  },
+  "music-308": {
+    "id": "music:001_ддт",
+    "sourceName": "ДДТ",
+    "gameTier": "popular",
+    "aliases": [
+      "ДДТ",
+      "DDT",
+      "ÄÄÒ"
+    ],
+    "matchedLegacyId": "music:001_ддт"
+  },
+  "music-309": {
+    "id": "music:001_алиса",
+    "sourceName": "Алиса",
+    "gameTier": "popular",
+    "aliases": [
+      "АлисА",
+      "Alisa",
+      "Алиса (рок-группа)",
+      "Alice"
+    ],
+    "matchedLegacyId": "music:001_алиса"
+  },
+  "music-310": {
+    "id": "music:editorial:music-310",
+    "sourceName": "Ария",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-311": {
+    "id": "music:001_наутилус-помпилиус",
+    "sourceName": "Наутилус Помпилиус",
+    "gameTier": "popular",
+    "aliases": [
+      "Nautilus Pompilius",
+      "Наутилус Помпилиус",
+      "Али-Баба и сорок разбойников",
+      "Наутилу",
+      "Нау",
+      "Nau"
+    ],
+    "matchedLegacyId": "music:001_наутилус-помпилиус"
+  },
+  "music-312": {
+    "id": "music:001_сектор-газа",
+    "sourceName": "Сектор Газа",
+    "gameTier": "niche",
+    "aliases": [
+      "Сектор газа",
+      "Sector gaza",
+      "Sektor Gaza"
+    ],
+    "matchedLegacyId": "music:001_сектор-газа"
+  },
+  "music-313": {
+    "id": "music:001_любэ",
+    "sourceName": "Любэ",
+    "gameTier": "popular",
+    "aliases": [
+      "Любэ",
+      "Ljube",
+      "Lube",
+      "Lubeh",
+      "Lyube",
+      "Гр. Любэ",
+      "Группа Любэ",
+      "Любе"
+    ],
+    "matchedLegacyId": "music:001_любэ"
+  },
+  "music-314": {
+    "id": "music:001_мираж",
+    "sourceName": "Мираж",
+    "gameTier": "niche",
+    "aliases": [
+      "Мираж",
+      "Mirage",
+      "Ìèðàæ"
+    ],
+    "matchedLegacyId": "music:001_мираж"
+  },
+  "music-315": {
+    "id": "music:001_ласковыи-маи",
+    "sourceName": "Ласковый май",
+    "gameTier": "niche",
+    "aliases": [
+      "Ласковый Май",
+      "Май",
+      "Лм",
+      "Ласковые",
+      "Масковый лай"
+    ],
+    "matchedLegacyId": "music:001_ласковыи-маи"
+  },
+  "music-316": {
+    "id": "music:editorial:music-316",
+    "sourceName": "Комбинация",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-317": {
+    "id": "music:editorial:music-317",
+    "sourceName": "Валерий Леонтьев",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-318": {
+    "id": "music:editorial:music-318",
+    "sourceName": "Филипп Киркоров",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-319": {
+    "id": "music:editorial:music-319",
+    "sourceName": "Ирина Аллегрова",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-320": {
+    "id": "music:editorial:music-320",
+    "sourceName": "Александр Розенбаум",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-321": {
+    "id": "music:editorial:music-321",
+    "sourceName": "Агата Кристи",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-322": {
+    "id": "music:001_мумии-тролль",
+    "sourceName": "Мумий Тролль",
+    "gameTier": "niche",
+    "aliases": [
+      "Мумий Тролль",
+      "Mumii Troll",
+      "Mumij Troll",
+      "Mumiy Troll",
+      "Mumiy Trollx",
+      "Mummi Troll",
+      "Ìóìèé Òðîëëü",
+      "Муми Тролль",
+      "Мумий Троль"
+    ],
+    "matchedLegacyId": "music:001_мумии-тролль"
+  },
+  "music-323": {
+    "id": "music:001_сплин",
+    "sourceName": "Сплин",
+    "gameTier": "popular",
+    "aliases": [
+      "Сплин",
+      "Splean",
+      "Splin",
+      "Ñïëèí"
+    ],
+    "matchedLegacyId": "music:001_сплин"
+  },
+  "music-324": {
+    "id": "music:001_земфира",
+    "sourceName": "Земфира",
+    "gameTier": "popular",
+    "aliases": [
+      "Земфира",
+      "Zemfira",
+      "Zemfira Talgatovna Ramazanova",
+      "Zemphira",
+      "Zемфира",
+      "Земфира Талгатовна Рамазанова"
+    ],
+    "matchedLegacyId": "music:001_земфира"
+  },
+  "music-325": {
+    "id": "music:001_би-2",
+    "sourceName": "Би-2",
+    "gameTier": "popular",
+    "aliases": [
+      "Би 2",
+      "B-2",
+      "Bi-2",
+      "Bi2",
+      "Би2"
+    ],
+    "matchedLegacyId": "music:001_би-2"
+  },
+  "music-326": {
+    "id": "music:160_ленинград",
+    "sourceName": "Ленинград",
+    "gameTier": "core",
+    "aliases": [
+      "Ленинград",
+      "Leningrad",
+      "Ленинградский концертный оркестр"
+    ],
+    "matchedLegacyId": "music:160_ленинград"
+  },
+  "music-327": {
+    "id": "music:209_t-a-t-u",
+    "sourceName": "t.A.T.u.",
+    "gameTier": "core",
+    "aliases": [
+      "t.A.T.u.",
+      "tATu",
+      "tatoo",
+      "tattoo",
+      "taty"
+    ],
+    "matchedLegacyId": "music:209_t-a-t-u"
+  },
+  "music-328": {
+    "id": "music:001_виа-гра",
+    "sourceName": "ВИА Гра",
+    "gameTier": "niche",
+    "aliases": [
+      "ВИА Гра",
+      "Nu Virgos",
+      "VIA Gra",
+      "VIAgra",
+      "Виагра"
+    ],
+    "matchedLegacyId": "music:001_виа-гра"
+  },
+  "music-329": {
+    "id": "music:editorial:music-329",
+    "sourceName": "Иванушки International",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-330": {
+    "id": "music:001_руки-вверх",
+    "sourceName": "Руки Вверх!",
+    "gameTier": "niche",
+    "aliases": [
+      "Руки вверх",
+      "Ruki Vverh",
+      "Ruki Vverx",
+      "Ruki v verh",
+      "Ruki vverkh"
+    ],
+    "matchedLegacyId": "music:001_руки-вверх"
+  },
+  "music-331": {
+    "id": "music:150_дискотека-авария",
+    "sourceName": "Дискотека Авария",
+    "gameTier": "popular",
+    "aliases": [
+      "Дискотека Авария",
+      "Discoteca Avaria",
+      "Discoteca Avariya",
+      "Diskoteka Avariya"
+    ],
+    "matchedLegacyId": "music:150_дискотека-авария"
+  },
+  "music-332": {
+    "id": "music:editorial:music-332",
+    "sourceName": "Звери",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-333": {
+    "id": "music:editorial:music-333",
+    "sourceName": "МакSим",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-334": {
+    "id": "music:076_дима-билан",
+    "sourceName": "Дима Билан",
+    "gameTier": "core",
+    "aliases": [
+      "Дима Билан",
+      "Dima Bilan",
+      "Виктор Белан"
+    ],
+    "matchedLegacyId": "music:076_дима-билан"
+  },
+  "music-335": {
+    "id": "music:106_sergey-lazarev",
+    "sourceName": "Сергей Лазарев",
+    "gameTier": "popular",
+    "aliases": [
+      "Сергей Лазарев",
+      "Лазарев Сергей Вячеславович",
+      "Лазарев",
+      "Сергей Вячеславович Лазарев",
+      "Sergey Vyacheslavovich Lazarev"
+    ],
+    "matchedLegacyId": "music:106_sergey-lazarev"
+  },
+  "music-336": {
+    "id": "music:001_полина-гагарина",
+    "sourceName": "Полина Гагарина",
+    "gameTier": "niche",
+    "aliases": [
+      "Полина Гагарина",
+      "Polina Gagarina",
+      "Полина Сергеевна Гагарина"
+    ],
+    "matchedLegacyId": "music:001_полина-гагарина"
+  },
+  "music-337": {
+    "id": "music:editorial:music-337",
+    "sourceName": "Ёлка",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-338": {
+    "id": "music:editorial:music-338",
+    "sourceName": "Нюша",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-339": {
+    "id": "music:editorial:music-339",
+    "sourceName": "Океан Ельзи",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-340": {
+    "id": "music:editorial:music-340",
+    "sourceName": "Ночные Снайперы",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-341": {
+    "id": "music:editorial:music-341",
+    "sourceName": "Чичерина",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-342": {
+    "id": "music:001_гости-из-будущего",
+    "sourceName": "Гости из будущего",
+    "gameTier": "niche",
+    "aliases": [
+      "Гости Из Будущего",
+      "Gosti iz budushchego",
+      "Гости из будущего Группа",
+      "Группа Гости из будущего",
+      "Дуэт Гости из будущего"
+    ],
+    "matchedLegacyId": "music:001_гости-из-будущего"
+  },
+  "music-343": {
+    "id": "music:001_блестящие",
+    "sourceName": "Блестящие",
+    "gameTier": "niche",
+    "aliases": [
+      "Блестящие",
+      "Blestashie",
+      "Blestyaschie",
+      "Blestyashchie",
+      "Blestyashchiye",
+      "Blestyashie",
+      "Shining",
+      "Áëåñòÿùèå"
+    ],
+    "matchedLegacyId": "music:001_блестящие"
+  },
+  "music-344": {
+    "id": "music:001_hi-fi",
+    "sourceName": "Hi-Fi",
+    "gameTier": "niche",
+    "aliases": [
+      "Hi-FI"
+    ],
+    "matchedLegacyId": "music:001_hi-fi"
+  },
+  "music-345": {
+    "id": "music:editorial:music-345",
+    "sourceName": "SEREBRO",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-346": {
+    "id": "music:001_баста",
+    "sourceName": "Баста",
+    "gameTier": "popular",
+    "aliases": [
+      "Баста",
+      "Basta",
+      "N1NT3ND0",
+      "Nintendo",
+      "Noggano",
+      "Vasily Mikhailovich Vakulenko",
+      "Василий Вакуленко",
+      "Василий Михайлович Вакуленко",
+      "Нагано",
+      "Наггано",
+      "Ноганно",
+      "Ногано",
+      "Ноггано"
+    ],
+    "matchedLegacyId": "music:001_баста"
+  },
+  "music-347": {
+    "id": "music:001_тимати",
+    "sourceName": "Тимати",
+    "gameTier": "popular",
+    "aliases": [
+      "Тимати",
+      "Timati",
+      "Timur Ildarovich Junusov",
+      "Timur Yunusov",
+      "Тимур Ильдарович Юнусов"
+    ],
+    "matchedLegacyId": "music:001_тимати"
+  },
+  "music-348": {
+    "id": "music:095_гуф",
+    "sourceName": "Гуф",
+    "gameTier": "popular",
+    "aliases": [
+      "Гуф",
+      "Алексей Долматов"
+    ],
+    "matchedLegacyId": "music:095_гуф"
+  },
+  "music-349": {
+    "id": "music:editorial:music-349",
+    "sourceName": "Каста",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-350": {
+    "id": "music:001_noize-mc",
+    "sourceName": "Noize MC",
+    "gameTier": "popular",
+    "aliases": [
+      "Noize MC",
+      "Иван Александрович Алексеев",
+      "Нойз МС"
+    ],
+    "matchedLegacyId": "music:001_noize-mc"
+  },
+  "music-351": {
+    "id": "music:001_oxxxymiron",
+    "sourceName": "Oxxxymiron",
+    "gameTier": "popular",
+    "aliases": [
+      "Мирон Янович Фёдоров",
+      "Oxxxymiron",
+      "Окси",
+      "Оксимирон"
+    ],
+    "matchedLegacyId": "music:001_oxxxymiron"
+  },
+  "music-352": {
+    "id": "music:001_скриптонит",
+    "sourceName": "Скриптонит",
+    "gameTier": "popular",
+    "aliases": [
+      "Скриптонит",
+      "Scriptonite",
+      "Адиль Оралбекович Жалелов"
+    ],
+    "matchedLegacyId": "music:001_скриптонит"
+  },
+  "music-353": {
+    "id": "music:001_miyagi-эндшпиль",
+    "sourceName": "Miyagi & Andy Panda",
+    "gameTier": "popular",
+    "aliases": [
+      "Miyagi & Эндшпиль",
+      "Miyagi & Andy Panda"
+    ],
+    "matchedLegacyId": "music:001_miyagi-эндшпиль"
+  },
+  "music-354": {
+    "id": "music:001_макс-корж",
+    "sourceName": "Макс Корж",
+    "gameTier": "popular",
+    "aliases": [
+      "Макс Корж",
+      "Max Korzh",
+      "Максим Анатольевич Корж"
+    ],
+    "matchedLegacyId": "music:001_макс-корж"
+  },
+  "music-355": {
+    "id": "music:001_мот",
+    "sourceName": "Мот",
+    "gameTier": "popular",
+    "aliases": [
+      "Мот",
+      "Матвей Мельников"
+    ],
+    "matchedLegacyId": "music:001_мот"
+  },
+  "music-356": {
+    "id": "music:001_jah-khalib",
+    "sourceName": "Jah Khalib",
+    "gameTier": "popular",
+    "aliases": [
+      "Jah Khalib",
+      "Бахтияр Гусейнович Мамедов",
+      "Бахтияр Мамедов",
+      "Bakhtiyar Mammadov",
+      "Bəxtiyar Məmmədov"
+    ],
+    "matchedLegacyId": "music:001_jah-khalib"
+  },
+  "music-357": {
+    "id": "music:062_hammali",
+    "sourceName": "HammAli & Navai",
+    "gameTier": "popular",
+    "aliases": [
+      "HammAli & Navai",
+      "Aleksandr Aliev",
+      "Александр Алиев",
+      "HammAli"
+    ],
+    "matchedLegacyId": "music:062_hammali"
+  },
+  "music-358": {
+    "id": "music:001_элджеи",
+    "sourceName": "Элджей",
+    "gameTier": "popular",
+    "aliases": [
+      "Элджей",
+      "Allj",
+      "Eldzhey"
+    ],
+    "matchedLegacyId": "music:001_элджеи"
+  },
+  "music-359": {
+    "id": "music:239_каспиискии-груз",
+    "sourceName": "Каспийский Груз",
+    "gameTier": "popular",
+    "aliases": [
+      "Каспийский груз"
+    ],
+    "matchedLegacyId": "music:239_каспиискии-груз"
+  },
+  "music-360": {
+    "id": "music:001_pharaoh",
+    "sourceName": "PHARAOH",
+    "gameTier": "niche",
+    "aliases": [
+      "Pharaoh",
+      "Castro The Silent",
+      "ColdSiemens",
+      "Leroy Kid"
+    ],
+    "matchedLegacyId": "music:001_pharaoh"
+  },
+  "music-361": {
+    "id": "music:219_feduk",
+    "sourceName": "FEDUK",
+    "gameTier": "popular",
+    "aliases": [
+      "Feduk",
+      "Фёдор Андреевич Инсаров",
+      "Фёдор Инсаров",
+      "Fedor Andreevich Insarov",
+      "Fedor Insarov"
+    ],
+    "matchedLegacyId": "music:219_feduk"
+  },
+  "music-362": {
+    "id": "music:editorial:music-362",
+    "sourceName": "L'One",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-363": {
+    "id": "music:editorial:music-363",
+    "sourceName": "Cream Soda",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-364": {
+    "id": "music:001_little-big",
+    "sourceName": "Little Big",
+    "gameTier": "popular",
+    "aliases": [
+      "Little Big",
+      "Литтл Биг",
+      "Литл Биг"
+    ],
+    "matchedLegacyId": "music:001_little-big"
+  },
+  "music-365": {
+    "id": "music:editorial:music-365",
+    "sourceName": "MONATIK",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-366": {
+    "id": "music:editorial:music-366",
+    "sourceName": "LOBODA",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-367": {
+    "id": "music:007_asti",
+    "sourceName": "Artik & Asti",
+    "gameTier": "popular",
+    "aliases": [
+      "Artik & Asti",
+      "Артик и Асти"
+    ],
+    "matchedLegacyId": "music:007_asti"
+  },
+  "music-368": {
+    "id": "music:022_anna-asti",
+    "sourceName": "ANNA ASTI",
+    "gameTier": "popular",
+    "aliases": [
+      "ANNA ASTI",
+      "Ганна Дзюба",
+      "Анна Анатольевна Дзюба",
+      "Анна Дзюба"
+    ],
+    "matchedLegacyId": "music:022_anna-asti"
+  },
+  "music-369": {
+    "id": "music:001_zivert",
+    "sourceName": "Zivert",
+    "gameTier": "popular",
+    "aliases": [
+      "Zivert",
+      "Юлия Зиверт"
+    ],
+    "matchedLegacyId": "music:001_zivert"
+  },
+  "music-370": {
+    "id": "music:046_jony",
+    "sourceName": "JONY",
+    "gameTier": "popular",
+    "aliases": [
+      "JONY",
+      "Jahid Afrayil oglu Huseynli",
+      "Cahid Əfrail oğlu Hüseynli",
+      "Джахид Гусейнли"
+    ],
+    "matchedLegacyId": "music:046_jony"
+  },
+  "music-371": {
+    "id": "music:035_егор-крид",
+    "sourceName": "Егор Крид",
+    "gameTier": "core",
+    "aliases": [
+      "Егор Крид",
+      "KReeD",
+      "Егор Булаткин",
+      "Egor Kreed"
+    ],
+    "matchedLegacyId": "music:035_егор-крид"
+  },
+  "music-372": {
+    "id": "music:001_клава-кока",
+    "sourceName": "Клава Кока",
+    "gameTier": "popular",
+    "aliases": [
+      "Клава Кока",
+      "Klava Koka",
+      "Клавдия Вадимовна Высокова"
+    ],
+    "matchedLegacyId": "music:001_клава-кока"
+  },
+  "music-373": {
+    "id": "music:001_мари-краимбрери",
+    "sourceName": "Мари Краймбрери",
+    "gameTier": "popular",
+    "aliases": [
+      "Мари Краймбрери",
+      "Mari Kraimbrery",
+      "Mari Kraymbreri",
+      "Марина Жадан"
+    ],
+    "matchedLegacyId": "music:001_мари-краимбрери"
+  },
+  "music-374": {
+    "id": "music:027_macan",
+    "sourceName": "MACAN",
+    "gameTier": "core",
+    "aliases": [
+      "MACAN",
+      "Macan (family name)",
+      "Андрей Кириллович Косолапов"
+    ],
+    "matchedLegacyId": "music:027_macan"
+  },
+  "music-375": {
+    "id": "music:001_niletto",
+    "sourceName": "NILETTO",
+    "gameTier": "popular",
+    "aliases": [
+      "NILETTO",
+      "Данил Сергеевич Прытков",
+      "Данил Прытков",
+      "Daniil Sergeyevich Pritkov",
+      "Daniil Pritkov"
+    ],
+    "matchedLegacyId": "music:001_niletto"
+  },
+  "music-376": {
+    "id": "music:197_lusia-chebotina",
+    "sourceName": "Люся Чеботина",
+    "gameTier": "popular",
+    "aliases": [
+      "Люся Чеботина",
+      "Людмила Андреевна Чеботина",
+      "Чеботина, Люся",
+      "Lyudmila Andreevna Chebotina",
+      "Lusia Chebotina"
+    ],
+    "matchedLegacyId": "music:197_lusia-chebotina"
+  },
+  "music-377": {
+    "id": "music:001_rauf-faik",
+    "sourceName": "Rauf & Faik",
+    "gameTier": "popular",
+    "aliases": [
+      "Rauf & Faik",
+      "Рауф и Фаик",
+      "Rauf i Faik"
+    ],
+    "matchedLegacyId": "music:001_rauf-faik"
+  },
+  "music-378": {
+    "id": "music:editorial:music-378",
+    "sourceName": "Dabro",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-379": {
+    "id": "music:028_gayazov-brother",
+    "sourceName": "GAYAZOV$ BROTHER$",
+    "gameTier": "popular",
+    "aliases": [
+      "GAYAZOV$ BROTHER$"
+    ],
+    "matchedLegacyId": "music:028_gayazov-brother"
+  },
+  "music-380": {
+    "id": "music:editorial:music-380",
+    "sourceName": "Mary Gu",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-381": {
+    "id": "music:editorial:music-381",
+    "sourceName": "Моя Мишель",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-382": {
+    "id": "music:050_три-дня-дождя",
+    "sourceName": "Три дня дождя",
+    "gameTier": "popular",
+    "aliases": [
+      "Три дня дождя",
+      "Tri dnya dozhdya"
+    ],
+    "matchedLegacyId": "music:050_три-дня-дождя"
+  },
+  "music-383": {
+    "id": "music:040_комната-культуры",
+    "sourceName": "Комната культуры",
+    "gameTier": "popular",
+    "aliases": [
+      "Комната культуры",
+      "Komnata kultury",
+      "Komnata kul'tury"
+    ],
+    "matchedLegacyId": "music:040_комната-культуры"
+  },
+  "music-384": {
+    "id": "music:081_бонд-с-кнопкои",
+    "sourceName": "Бонд с кнопкой",
+    "gameTier": "niche",
+    "aliases": [
+      "Бонд с кнопкой",
+      "Bond s knopoj"
+    ],
+    "matchedLegacyId": "music:081_бонд-с-кнопкои"
+  },
+  "music-385": {
+    "id": "music:070_татьяна-куртукова",
+    "sourceName": "Татьяна Куртукова",
+    "gameTier": "popular",
+    "aliases": [
+      "Татьяна Куртукова",
+      "Татьяна Сергеевна Куртукова",
+      "Татьяна Сергеевна Макеева",
+      "Куртукова, Татьяна Сергеевна",
+      "Макеева, Татьяна Сергеевна",
+      "Татьяна Макеева",
+      "Tatyana Sergeyevna Kurtukova",
+      "Tatyana Sergeyevna Makeyeva",
+      "Tatiana Kurtukova"
+    ],
+    "matchedLegacyId": "music:070_татьяна-куртукова"
+  },
+  "music-386": {
+    "id": "music:112_ay-yola",
+    "sourceName": "AY YOLA",
+    "gameTier": "popular",
+    "aliases": [
+      "AY YOLA"
+    ],
+    "matchedLegacyId": "music:112_ay-yola"
+  },
+  "music-387": {
+    "id": "music:editorial:music-387",
+    "sourceName": "kizaru",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-388": {
+    "id": "music:009_big-baby-tape",
+    "sourceName": "Big Baby Tape",
+    "gameTier": "core",
+    "aliases": [
+      "Big Baby Tape",
+      "DJ Tape",
+      "Egor Olegovich Rakitin",
+      "Egor Rakitin",
+      "akidro",
+      "Егор Ракитин"
+    ],
+    "matchedLegacyId": "music:009_big-baby-tape"
+  },
+  "music-389": {
+    "id": "music:047_instasamka",
+    "sourceName": "INSTASAMKA",
+    "gameTier": "core",
+    "aliases": [
+      "Инстасамка",
+      "Да́рья Евге́ньевна Зоте́ева",
+      "Дарья Евгеньевна Еропкина",
+      "Дарья Зотеева"
+    ],
+    "matchedLegacyId": "music:047_instasamka"
+  },
+  "music-390": {
+    "id": "music:editorial:music-390",
+    "sourceName": "Мэйби Бэйби",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-391": {
+    "id": "music:116_gone-fludd",
+    "sourceName": "GONE.Fludd",
+    "gameTier": "popular",
+    "aliases": [
+      "GONE.Fludd",
+      "Александр Александрович Смирнов"
+    ],
+    "matchedLegacyId": "music:116_gone-fludd"
+  },
+  "music-392": {
+    "id": "music:editorial:music-392",
+    "sourceName": "SALUKI",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-393": {
+    "id": "music:editorial:music-393",
+    "sourceName": "The Limba",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-394": {
+    "id": "music:034_ваня-дмитриенко",
+    "sourceName": "Ваня Дмитриенко",
+    "gameTier": "popular",
+    "aliases": [
+      "Ваня Дмитриенко",
+      "Vanya Dmitrienko",
+      "Иван Дмитриенко"
+    ],
+    "matchedLegacyId": "music:034_ваня-дмитриенко"
+  },
+  "music-395": {
+    "id": "music:editorial:music-395",
+    "sourceName": "Хабиб",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-396": {
+    "id": "music:editorial:music-396",
+    "sourceName": "DEAD BLONDE",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-397": {
+    "id": "music:editorial:music-397",
+    "sourceName": "Минаева",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-398": {
+    "id": "music:editorial:music-398",
+    "sourceName": "polnalyubvi",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-399": {
+    "id": "music:editorial:music-399",
+    "sourceName": "ICEGERGERT",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-400": {
+    "id": "music:editorial:music-400",
+    "sourceName": "МОРГЕНШТЕРН",
+    "gameTier": "popular",
+    "aliases": [],
+    "matchedLegacyId": null
+  },
+  "music-401": {
+    "id": "music:004_shadowraze",
+    "sourceName": "Shadowraze",
+    "gameTier": "popular",
+    "aliases": [
+      "Shadowraze"
+    ],
+    "matchedLegacyId": "music:004_shadowraze"
+  },
+  "music-402": {
+    "id": "music:006_artik",
+    "sourceName": "Artik",
+    "gameTier": "popular",
+    "aliases": [
+      "Artik",
+      "A.R.T.I.K",
+      "Артём Игоревич Умрихин"
+    ],
+    "matchedLegacyId": "music:006_artik"
+  },
+  "music-403": {
+    "id": "music:012_face",
+    "sourceName": "FACE",
+    "gameTier": "core",
+    "aliases": [
+      "FACE",
+      "Ivan Dryomin",
+      "Ivan Timofeyevich Dryomin",
+      "Иван Дрёмин",
+      "Фэйс"
+    ],
+    "matchedLegacyId": "music:012_face"
+  },
+  "music-404": {
+    "id": "music:015_andy-panda",
+    "sourceName": "Andy Panda",
+    "gameTier": "popular",
+    "aliases": [
+      "Andy Panda",
+      "Сослан Бурнацев",
+      "Эндшпиль"
+    ],
+    "matchedLegacyId": "music:015_andy-panda"
+  },
+  "music-405": {
+    "id": "music:021_xolidayboy",
+    "sourceName": "Xolidayboy",
+    "gameTier": "popular",
+    "aliases": [
+      "Xolidayboy",
+      "Иван Олегович Минаев"
+    ],
+    "matchedLegacyId": "music:021_xolidayboy"
+  },
+  "music-406": {
+    "id": "music:024_by-индия",
+    "sourceName": "By Индия",
+    "gameTier": "popular",
+    "aliases": [
+      "By Индия",
+      "Виктор Сергеевич Вавилов"
+    ],
+    "matchedLegacyId": "music:024_by-индия"
+  },
+  "music-407": {
+    "id": "music:029_mona",
+    "sourceName": "MONA",
+    "gameTier": "popular",
+    "aliases": [
+      "MONA",
+      "Дарья Кустовская"
+    ],
+    "matchedLegacyId": "music:029_mona"
+  },
+  "music-408": {
+    "id": "music:043_navai",
+    "sourceName": "Navai",
+    "gameTier": "popular",
+    "aliases": [
+      "Navai",
+      "Navai Bakirov",
+      "Наваи Бакиров"
+    ],
+    "matchedLegacyId": "music:043_navai"
+  },
+  "music-409": {
+    "id": "music:049_163onmyneck",
+    "sourceName": "163ONMYNECK",
+    "gameTier": "popular",
+    "aliases": [
+      "163ONMYNECK",
+      "Роман Вадимович Щуров"
+    ],
+    "matchedLegacyId": "music:049_163onmyneck"
+  },
+  "music-410": {
+    "id": "music:058_poshlaya-molly",
+    "sourceName": "Пошлая Молли",
+    "gameTier": "popular",
+    "aliases": [
+      "Пошлая Молли"
+    ],
+    "matchedLegacyId": "music:058_poshlaya-molly"
+  },
+  "music-411": {
+    "id": "music:064_fem-love",
+    "sourceName": "fem.love",
+    "gameTier": "popular",
+    "aliases": [
+      "fem.love"
+    ],
+    "matchedLegacyId": "music:064_fem-love"
+  },
+  "music-412": {
+    "id": "music:067_kipelov",
+    "sourceName": "Кипелов",
+    "gameTier": "popular",
+    "aliases": [
+      "Кипелов",
+      "Кипелов (группа)",
+      "Valerij Kipelov"
+    ],
+    "matchedLegacyId": "music:067_kipelov"
+  },
+  "music-413": {
+    "id": "music:079_nervy",
+    "sourceName": "Нервы",
+    "gameTier": "popular",
+    "aliases": [
+      "Нервы"
+    ],
+    "matchedLegacyId": "music:079_nervy"
+  },
+  "music-414": {
+    "id": "music:080_aarne",
+    "sourceName": "Aarne",
+    "gameTier": "popular",
+    "aliases": [
+      "Aarne"
+    ],
+    "matchedLegacyId": "music:080_aarne"
+  },
+  "music-415": {
+    "id": "music:084_дора",
+    "sourceName": "Дора",
+    "gameTier": "popular",
+    "aliases": [
+      "Дора",
+      "Dora",
+      "Дарья Шиханова"
+    ],
+    "matchedLegacyId": "music:084_дора"
+  },
+  "music-416": {
+    "id": "music:093_skryptonite",
+    "sourceName": "Gruppa Skryptonite",
+    "gameTier": "popular",
+    "aliases": [
+      "Группа Скриптонит",
+      "Gruppa Skryptonite"
+    ],
+    "matchedLegacyId": "music:093_skryptonite"
+  },
+  "music-417": {
+    "id": "music:096_pornofilmy",
+    "sourceName": "Порнофильмы",
+    "gameTier": "popular",
+    "aliases": [
+      "Порнофильмы"
+    ],
+    "matchedLegacyId": "music:096_pornofilmy"
+  },
+  "music-418": {
+    "id": "music:098_король-и-шут",
+    "sourceName": "Король и Шут",
+    "gameTier": "core",
+    "aliases": [
+      "Король и Шут",
+      "Korol' i Shut",
+      "КиШ"
+    ],
+    "matchedLegacyId": "music:098_король-и-шут"
+  },
+  "music-419": {
+    "id": "music:100_bushido-zho",
+    "sourceName": "BUSHIDO ZHO",
+    "gameTier": "popular",
+    "aliases": [
+      "BUSHIDO ZHO",
+      "Жоас Львович Маскуров",
+      "Жоас Маскуров",
+      "Бушидо Жо",
+      "Zhoas L’vovich Maskurov",
+      "Zhoas Maskurov"
+    ],
+    "matchedLegacyId": "music:100_bushido-zho"
+  },
+  "music-420": {
+    "id": "music:102_10age",
+    "sourceName": "10AGE",
+    "gameTier": "popular",
+    "aliases": [
+      "10AGE"
+    ],
+    "matchedLegacyId": "music:102_10age"
+  },
+  "music-421": {
+    "id": "music:108_alyona-shvets",
+    "sourceName": "Алёна Швец",
+    "gameTier": "popular",
+    "aliases": [
+      "Алёна Швец",
+      "лунные камушки",
+      "Алёна Сергеевна Швецова",
+      "Швецова, Алёна Сергеевна",
+      "Alyona Sergeevna Shvetsova",
+      "Alyona Shvetsova"
+    ],
+    "matchedLegacyId": "music:108_alyona-shvets"
+  },
+  "music-422": {
+    "id": "music:115_toxi",
+    "sourceName": "Toxi$",
+    "gameTier": "popular",
+    "aliases": [
+      "Toxi$"
+    ],
+    "matchedLegacyId": "music:115_toxi"
+  },
+  "music-423": {
+    "id": "music:117_filatov",
+    "sourceName": "Filatov & Karas",
+    "gameTier": "popular",
+    "aliases": [
+      "Filatov & Karas",
+      "Филатов и Карась",
+      "Filatov and Karas"
+    ],
+    "matchedLegacyId": "music:117_filatov"
+  },
+  "music-424": {
+    "id": "music:127_космонавтов-нет",
+    "sourceName": "Космонавтов нет",
+    "gameTier": "popular",
+    "aliases": [
+      "Космонавтов нет"
+    ],
+    "matchedLegacyId": "music:127_космонавтов-нет"
+  },
+  "music-425": {
+    "id": "music:136_папин-олимпос",
+    "sourceName": "Папин Олимпос",
+    "gameTier": "popular",
+    "aliases": [
+      "Папин Олимпос"
+    ],
+    "matchedLegacyId": "music:136_папин-олимпос"
+  },
+  "music-426": {
+    "id": "music:140_a-studio",
+    "sourceName": "A’Studio",
+    "gameTier": "popular",
+    "aliases": [
+      "A’Studio"
+    ],
+    "matchedLegacyId": "music:140_a-studio"
+  },
+  "music-427": {
+    "id": "music:153_dvrst",
+    "sourceName": "DVRST",
+    "gameTier": "popular",
+    "aliases": [
+      "DVRST",
+      "Diverst",
+      "Valera Zaytsev",
+      "Валерий Алексеевич Зайцев",
+      "Валерий Зайцев",
+      "Дивёрст"
+    ],
+    "matchedLegacyId": "music:153_dvrst"
+  },
+  "music-428": {
+    "id": "music:175_husky",
+    "sourceName": "Хаски",
+    "gameTier": "popular",
+    "aliases": [
+      "Хаски",
+      "Дмитрий Кузнецов"
+    ],
+    "matchedLegacyId": "music:175_husky"
+  },
+  "music-429": {
+    "id": "music:195_rhyme",
+    "sourceName": "RaiM",
+    "gameTier": "popular",
+    "aliases": [
+      "RaiM",
+      "Райм",
+      "Раймбек Бактыгереев"
+    ],
+    "matchedLegacyId": "music:195_rhyme"
+  },
+  "music-430": {
+    "id": "music:196_гио-пика",
+    "sourceName": "Гио Пика",
+    "gameTier": "popular",
+    "aliases": [
+      "Гио Пика"
+    ],
+    "matchedLegacyId": "music:196_гио-пика"
+  },
+  "music-431": {
+    "id": "music:212_boulevard-depo",
+    "sourceName": "Boulevard Depo",
+    "gameTier": "popular",
+    "aliases": [
+      "Boulevard Depo",
+      "PowerPuff Luv"
+    ],
+    "matchedLegacyId": "music:212_boulevard-depo"
+  },
+  "music-432": {
+    "id": "music:225_loc-dog",
+    "sourceName": "Loc-Dog",
+    "gameTier": "popular",
+    "aliases": [
+      "Лок Дог",
+      "Loc-Dog",
+      "Log dog",
+      "Лог Дог",
+      "Лочи"
+    ],
+    "matchedLegacyId": "music:225_loc-dog"
+  },
+  "music-433": {
+    "id": "music:236_даите-танк",
+    "sourceName": "Дайте танк (!)",
+    "gameTier": "popular",
+    "aliases": [
+      "Дайте танк (!)",
+      "ДТ!",
+      "Daite Tank (!)"
+    ],
+    "matchedLegacyId": "music:236_даите-танк"
+  },
+  "music-434": {
+    "id": "music:238_mirele",
+    "sourceName": "Mirele",
+    "gameTier": "popular",
+    "aliases": [
+      "Мирель",
+      "Mirele",
+      "Mireles"
+    ],
+    "matchedLegacyId": "music:238_mirele"
+  },
+  "music-435": {
+    "id": "music:241_платина",
+    "sourceName": "Платина",
+    "gameTier": "popular",
+    "aliases": [
+      "Платина"
+    ],
+    "matchedLegacyId": "music:241_платина"
+  }
+}

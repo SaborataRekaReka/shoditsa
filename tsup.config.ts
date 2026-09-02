@@ -13,6 +13,7 @@ export default defineConfig({
     'content-import-kpop-special': 'scripts/content/import-kpop-special.ts',
     'content-migrate-media': 'scripts/content/migrate-media.ts',
     'content-repair-active-catalog': 'scripts/content/repair-active-catalog.ts',
+    'content-replace-music-catalog': 'scripts/content/replace-music-catalog.ts',
     'series-enrich-active-production': 'scripts/series/enrich-active-production.ts',
     'movie-repair-active-production': 'scripts/movies/repair-active-production.ts',
     'production-maintenance': 'scripts/maintenance/run-production-maintenance.ts',

@@ -1,0 +1,47 @@
+{
+  "music-273": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/b5c64fa8216ca158e52b4d88bd9388ff/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/6982223",
+    "reason": "BTS: artist portrait replaces the supplied Spotify album cover; identity matched to the existing artist link."
+  },
+  "music-326": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/a82efe17607f1b5bf8f684b39e08bd78/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/397415",
+    "reason": "Ленинград: artist portrait replaces the supplied Spotify album cover; identity matched to the existing artist link."
+  },
+  "music-331": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/b360f2b9f77a9a1e200ddde56ce58e66/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/4237487",
+    "reason": "Дискотека Авария: artist portrait replaces an album cover; identity checked against the artist's tracks."
+  },
+  "music-334": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/74c97991a68f919663d2c2085a6a36a4/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/808834",
+    "reason": "Дима Билан: artist portrait replaces the supplied Spotify album cover."
+  },
+  "music-371": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/c5b40a823c42ce34ea3240fdd82e60fe/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/5532315",
+    "reason": "Егор Крид: artist portrait replaces an album cover; identity checked against the artist's tracks, not the similarly named duplicate profile."
+  },
+  "music-383": {
+    "posterUrl": "https://static.tildacdn.com/tild6431-3036-4563-b164-616632393266/photo_2023-08-29_170.jpeg",
+    "sourceUrl": "https://komnatakultury.ru/",
+    "reason": "Комната культуры: performance photograph from the official artist website replaces the supplied album cover; Deezer's artist photo was also album art."
+  },
+  "music-386": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/43849c58bf1896c85f2b3ae780ad8f2e/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/302423661",
+    "reason": "AY YOLA: artist portrait replaces the supplied Spotify album cover; identity matched to the existing artist link."
+  },
+  "music-423": {
+    "posterUrl": "https://cdn-images.dzcdn.net/images/artist/8ce4be83a57a8fa6bdcf261fbe4752c1/500x500-000000-80-0-0.jpg",
+    "sourceUrl": "https://www.deezer.com/artist/9666514",
+    "reason": "Filatov & Karas: artist portrait replaces the supplied Spotify album cover."
+  },
+  "music-426": {
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Astudio.jpg/330px-Astudio.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Astudio.jpg",
+    "reason": "A’Studio: visually checked group photograph replaces the supplied album cover; Deezer's artist photo was also album art."
+  }
+}

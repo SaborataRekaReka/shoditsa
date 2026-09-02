@@ -1,4 +1,4 @@
-import { musicActivityStartYear, musicTypeLabel } from '../game'
+import { musicTypeLabel, musicYearMeta } from '../game'
 import type { TitleItem, TitleMode } from '../types'
 
 type SearchItem = Pick<
@@ -9,6 +9,7 @@ type SearchItem = Pick<
   | 'titleOriginal'
   | 'year'
   | 'activityStartYear'
+  | 'musicDebutYear'
   | 'country'
   | 'continent'
   | 'platforms'
@@ -66,10 +67,9 @@ export const searchResultMeta = (item: SearchItem) => {
     return meaningful([originalTitle(item), item.year, edition, release, ...(item.platforms ?? []).slice(0, 2)]).join(' · ')
   }
   if (item.mode === 'music') {
-    const startYear = musicActivityStartYear(item)
     return meaningful([
       originalTitle(item),
-      startYear != null ? `с ${startYear}` : null,
+      musicYearMeta(item),
       item.musicType ? musicTypeLabel(item.musicType) : null,
     ]).join(' · ')
   }

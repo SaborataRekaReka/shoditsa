@@ -168,7 +168,7 @@ type CompletionField = { label: string; present: (payload: Record<string, unknow
 
 const hasTextValue = (value: unknown) => typeof value === 'string' && value.trim().length > 0
 const numericContentFilterFields = new Set([
-  'reports', 'issues', 'year', 'activityStartYear', 'endYear', 'runtime', 'runtimeMinutes',
+  'reports', 'issues', 'year', 'activityStartYear', 'musicDebutYear', 'endYear', 'runtime', 'runtimeMinutes',
   'kinopoiskId', 'episodes', 'seasonsCount', 'episodesAired', 'animeEpisodesAired',
   'shikimoriId', 'shikimoriScore', 'steamAppId', 'metacritic',
 ])
@@ -422,7 +422,7 @@ const itemSchema = (mode: string) => ({
       key: 'game',
       title: 'Основные и игровые данные',
       fields: [
-        ...(mode === 'music' ? ['activityStartYear'] : ['year']),
+        ...(mode === 'music' ? ['musicDebutYear', 'musicDebutRelease', 'activityStartYear'] : ['year']),
         'endYear', 'releaseDate', 'countries', 'originalLanguage', 'genres', 'plotHint', 'description',
         'shortDescription', 'slogan', 'facts', 'allowedInGame', 'popularityScore', 'topRank',
       ],
@@ -431,7 +431,7 @@ const itemSchema = (mode: string) => ({
     ...(mode === 'series' ? [{ key: 'series', title: 'Профиль сериала', fields: ['runtimeMinutes', 'ageRating', 'episodes', 'seasonsCount', 'seriesStatus', 'directors', 'showrunners', 'writers', 'cast', 'supportingCast', 'studios', 'kinopoiskId', 'imdbId', 'ratings', 'votes', 'awards', 'dataQuality'] }] : []),
     ...(mode === 'anime' ? [{ key: 'anime', title: 'Профиль аниме', fields: ['animeKind', 'animeStatus', 'episodes', 'animeEpisodesAired', 'animeSource', 'runtimeMinutes', 'ageRating', 'directors', 'cast', 'studios', 'shikimoriId', 'shikimoriScore', 'shikimoriUrl', 'ratings', 'votes', 'dataQuality'] }] : []),
     ...(mode === 'game' ? [{ key: 'gameMeta', title: 'Профиль игры', fields: ['developers', 'publishers', 'platforms', 'supportedLanguages', 'ageRating', 'steamCategories', 'steamTags', 'steamAppId', 'steamUrl', 'price', 'metacritic', 'ratings', 'votes', 'dataQuality'] }] : []),
-    ...(mode === 'music' ? [{ key: 'music', title: 'Профиль исполнителя', fields: ['canonicalId', 'aliases', 'gameTier', 'gameDifficulty', 'contentStatus', 'musicIsActive', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
+    ...(mode === 'music' ? [{ key: 'music', title: 'Профиль исполнителя', fields: ['canonicalId', 'aliases', 'gameTier', 'gameDifficulty', 'contentStatus', 'musicIsActive', 'musicGender', 'musicLanguages', 'musicOrigin', 'musicType', 'topTracks', 'topAlbums', 'similarArtists', 'members', 'associatedActs', 'musicLinks', 'dataQuality'] }] : []),
     ...(mode === 'diagnosis' ? [{ key: 'diagnosis', title: 'Медицинский профиль', fields: ['icd10', 'icdGroup', 'bodySystems', 'diseaseTypes', 'course', 'contagiousness', 'typicalAgeGroups', 'sex', 'localization', 'keySymptoms', 'diagnostics', 'riskFactors', 'severityTypical', 'urgencyTypical', 'sourceRefs', 'comparisonHints', 'dataQuality'] }] : []),
     ...(mode === 'city' ? [{ key: 'city', title: 'Профиль города', fields: ['country', 'continent', 'languages', 'population', 'timezone', 'capital', 'popular', 'countryFlagUrl', 'cityFlagUrl', 'coatOfArmsUrl', 'ranks'] }] : []),
     ...(mode === 'danetki' ? [

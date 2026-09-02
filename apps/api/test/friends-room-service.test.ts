@@ -61,6 +61,12 @@ describe('friends room service helpers', () => {
     expect(hints.join(' ')).not.toContain(movie.titleRu)
   })
 
+  it('labels editorial music debut separately from a legacy career start', () => {
+    const artist = { ...movie, mode: 'music', musicDebutYear: 1971, activityStartYear: undefined } as TitleItem
+    expect(buildFriendsRoomHints(artist)[0]).toBe('Год дебюта: 1971')
+    expect(buildFriendsRoomHints({ ...artist, musicDebutYear: undefined, activityStartYear: 1964 })[0]).toBe('Начало карьеры: 1964')
+  })
+
   it('allows anonymous guests but requires a permanent creator account', () => {
     expect(() => assertFriendsRoomAccess(accessConfig(false, false), true)).not.toThrow()
     expect(() => assertFriendsRoomAccess(accessConfig(true, true), true)).not.toThrow()

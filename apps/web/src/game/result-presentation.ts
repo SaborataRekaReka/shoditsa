@@ -1,7 +1,7 @@
 import {
   canonicalMusicGenreLabel,
   localizeMusicCountry,
-  musicActivityStartYear,
+  musicYearMeta,
   musicTypeLabel,
 } from '../game'
 import type { TitleItem } from '../types'
@@ -12,6 +12,7 @@ type ResultItem = Pick<
   | 'titleOriginal'
   | 'year'
   | 'activityStartYear'
+  | 'musicDebutYear'
   | 'genres'
   | 'icd10'
   | 'icdGroup'
@@ -69,9 +70,8 @@ export const resultCardMeta = (item: ResultItem) => {
     ]).join(' · ')
   }
   if (item.mode === 'music') {
-    const startYear = musicActivityStartYear(item)
     return values([
-      startYear != null ? `с ${startYear}` : null,
+      musicYearMeta(item),
       item.musicType ? musicTypeLabel(item.musicType) : null,
       ...(item.countries ?? []).slice(0, 2).map(localizeMusicCountry),
     ]).join(' · ')

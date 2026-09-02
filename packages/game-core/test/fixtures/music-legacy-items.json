@@ -1,0 +1,4791 @@
+[
+  {
+    "id": "music:001_michael-jackson",
+    "mode": "music",
+    "titleRu": "Майкл Джексон",
+    "titleOriginal": "Michael Jackson",
+    "alternativeTitles": [
+      "JACKSON MICHAEL JOE",
+      "MJ",
+      "Michael Joe Jackson",
+      "Michael Joseph Jackson",
+      "Michaël Jackson",
+      "Micheal",
+      "Michel Jackson",
+      "Michael Jackson"
+    ],
+    "year": 1964,
+    "endYear": 2009,
+    "countries": [
+      "US"
+    ],
+    "genres": [
+      "dance",
+      "dance-pop",
+      "disco",
+      "funk",
+      "pop",
+      "r&b",
+      "soul"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 7105186,
+      "lastfmPlaycount": 408090429,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 7105186,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174997cc9a4aec335d46c9481fd",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb997cc9a4aec335d46c9481fd",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178997cc9a4aec335d46c9481fd",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174997cc9a4aec335d46c9481fd",
+      "https://i.scdn.co/image/ab6761610000e5eb997cc9a4aec335d46c9481fd",
+      "https://i.scdn.co/image/ab6761610000f178997cc9a4aec335d46c9481fd",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Michael_Jackson_1983_%283x4_cropped%29_%28contrast%29.jpg/330px-Michael_Jackson_1983_%283x4_cropped%29_%28contrast%29.jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Michael_Jackson_1983_(3x4_cropped)_(contrast).jpg",
+      "https://r2.theaudiodb.com/images/media/artist/banner/qqxrpy1353880391.jpg"
+    ],
+    "description": "Майкл Джексон — музыкальный исполнитель; US; музыкальная деятельность с 1964 по 2009. Основные жанры: dance, dance-pop, disco.",
+    "shortDescription": "музыкальный исполнитель; US; начало музыкальной деятельности — 1964.",
+    "plotHint": "Американский певец начал карьеру ребёнком в семейной группе, а позже превратил поп-концерт в синтез вокала, хореографии и кинематографичных клипов.",
+    "slogan": "Billie Jean",
+    "facts": [
+      "Начало музыкальной деятельности: 1964",
+      "Окончание деятельности: 2009",
+      "Страна или страны: US",
+      "Трек №1 в проверенном снимке: Billie Jean"
+    ],
+    "topRank": 1,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": false,
+    "musicOrigin": "intl",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Billie Jean",
+        "listeners": 3398258,
+        "playcount": 28909563,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Beat It",
+        "listeners": 2793408,
+        "playcount": 21293588,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Thriller",
+        "listeners": 2414085,
+        "playcount": 15033932,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Don't Stop 'Til You Get Enough",
+        "listeners": 1590587,
+        "playcount": 9839725,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Rock With You - Single Version",
+        "listeners": 1519140,
+        "playcount": 12378180,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "P.Y.T. (Pretty Young Thing)",
+        "listeners": 1481144,
+        "playcount": 10801059,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Smooth Criminal - 2012 Remaster",
+        "listeners": 1422487,
+        "playcount": 9816088,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Human Nature",
+        "listeners": 1418030,
+        "playcount": 10162114,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Remember the Time",
+        "listeners": 1378277,
+        "playcount": 10956355,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Chicago",
+        "listeners": 1300735,
+        "playcount": 14863564,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Thriller",
+        "playcount": 60220450,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Off the Wall",
+        "playcount": 38315331,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Thriller 25 Super Deluxe Edition",
+        "playcount": 23354066,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Xscape",
+        "playcount": 26337174,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Dangerous",
+        "playcount": 26912751,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "The Jacksons",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "The Jackson 5",
+        "match": 0.789547,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Michael Jackson & Paul McCartney",
+        "match": 0.401081,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.allmusic.com/artist/mn0000467203",
+      "https://www.bandsintown.com/a/294",
+      "https://www.bbc.co.uk/music/artists/f27ec8db-af05-4f36-916e-3d57f91ecf5e",
+      "https://www.discogs.com/artist/15885",
+      "https://www.discogs.com/artist/470023",
+      "http://www.mjfanclub.net/",
+      "https://audiomack.com/michael-jackson",
+      "https://play.anghami.com/artist/1278",
+      "https://www.boomplay.com/artists/1845320",
+      "https://www.deezer.com/artist/259",
+      "https://commons.wikimedia.org/wiki/File:Michael_Jackson_1983_(3x4_cropped)_(contrast).jpg",
+      "https://commons.wikimedia.org/wiki/File:Michael_Jackson_in_1988.jpg"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.99,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.allmusic.com/artist/mn0000467203",
+        "https://www.bandsintown.com/a/294",
+        "https://www.bbc.co.uk/music/artists/f27ec8db-af05-4f36-916e-3d57f91ecf5e",
+        "https://www.discogs.com/artist/15885",
+        "https://www.discogs.com/artist/470023"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "JACKSON MICHAEL JOE",
+      "MJ",
+      "Michael Joe Jackson",
+      "Michael Joseph Jackson",
+      "Michaël Jackson",
+      "Micheal",
+      "Michel Jackson",
+      "Michael Jackson"
+    ],
+    "canonicalId": "music:001_michael-jackson",
+    "contentStatus": "ready",
+    "gameTier": "core",
+    "gameDifficulty": "easy",
+    "identityConfidence": 0.99,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 1,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "broad_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:004_shadowraze",
+    "mode": "music",
+    "titleRu": "Shadowraze",
+    "titleOriginal": "Shadowraze",
+    "alternativeTitles": [],
+    "year": 2019,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "hip-hop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 56907,
+      "lastfmPlaycount": 1907341,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 56907,
+    "posterUrl": "https://i.scdn.co/image/ab676161000051749550012994c3a8955fb96140",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb9550012994c3a8955fb96140",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f1789550012994c3a8955fb96140",
+    "screenshots": [
+      "https://i.scdn.co/image/ab676161000051749550012994c3a8955fb96140",
+      "https://i.scdn.co/image/ab6761610000e5eb9550012994c3a8955fb96140",
+      "https://i.scdn.co/image/ab6761610000f1789550012994c3a8955fb96140"
+    ],
+    "description": "Shadowraze — музыкальный исполнитель; RU; музыкальная деятельность с 2019. Основные жанры: hip-hop.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2019.",
+    "plotHint": "Dota 2 стала для него словарём: astral step, adaptive strike и psiblades превратились в названия рэп-треков. Псевдоним буквально соединяет тень и разрушение.",
+    "slogan": "Showdown",
+    "facts": [
+      "Начало музыкальной деятельности: 2019",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: Showdown"
+    ],
+    "topRank": 4,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Showdown",
+        "listeners": 26996,
+        "playcount": 296891,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "astral step",
+        "listeners": 26059,
+        "playcount": 320177,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "холод",
+        "listeners": 14163,
+        "playcount": 199113,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "adaptive strike",
+        "listeners": 11757,
+        "playcount": 144586,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "psiblades",
+        "listeners": 11339,
+        "playcount": 152516,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "shadowfiend",
+        "listeners": 9913,
+        "playcount": 94700,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "juggernaut (Prod. by PLVSTIC)",
+        "listeners": 9506,
+        "playcount": 106075,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "1000-7",
+        "listeners": 9022,
+        "playcount": 103684,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "skyline ryodan",
+        "listeners": 8253,
+        "playcount": 118988,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "sunder",
+        "listeners": 6941,
+        "playcount": 81408,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "showdown",
+        "playcount": 289689,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "astral step",
+        "playcount": 306551,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "холод",
+        "playcount": 193598,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "adaptive strike",
+        "playcount": 144594,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "psiblades",
+        "playcount": 152560,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "dope17",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "fallen777angel",
+        "match": 0.897389,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "dabbackwood",
+        "match": 0.72325,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Shadowraze",
+      "https://www.shadowrazetour.ru/",
+      "https://music.apple.com/ru/artist/1557885261",
+      "https://www.twitch.tv/razedoto",
+      "https://open.spotify.com/artist/0TO6y1x0LQodwBnxGtQu9o",
+      "https://vk.com/razezxc",
+      "https://vk.com/shadowraze",
+      "https://www.instagram.com/razedoto/",
+      "https://www.youtube.com/channel/UCr-EPKkR9kIDJL0yNkF90Ug"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.94,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://genius.com/artists/Shadowraze",
+        "https://www.shadowrazetour.ru/",
+        "https://music.apple.com/ru/artist/1557885261",
+        "https://www.twitch.tv/razedoto",
+        "https://open.spotify.com/artist/0TO6y1x0LQodwBnxGtQu9o"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [],
+    "canonicalId": "music:004_shadowraze",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.94,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:006_artik",
+    "mode": "music",
+    "titleRu": "Artik",
+    "titleOriginal": "Artik",
+    "alternativeTitles": [
+      "A.R.T.I.K",
+      "Артём Игоревич Умрихин"
+    ],
+    "year": 2007,
+    "endYear": null,
+    "countries": [
+      "UA"
+    ],
+    "genres": [
+      "hip-hop",
+      "r&b"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 5292,
+      "lastfmPlaycount": 43822,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 5292,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174f12742ece6b33961de7002b8",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5ebf12742ece6b33961de7002b8",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178f12742ece6b33961de7002b8",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174f12742ece6b33961de7002b8",
+      "https://i.scdn.co/image/ab6761610000e5ebf12742ece6b33961de7002b8",
+      "https://i.scdn.co/image/ab6761610000f178f12742ece6b33961de7002b8",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Artik.JPG/330px-Artik.JPG",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/2024_%D0%92%D0%B8%D0%B4_%D0%BD%D0%B0_%D0%B3%D0%BE%D1%80%D0%BE%D0%B4_%D0%90%D1%80%D1%82%D0%B8%D0%BA_%D0%BE%D1%82_%D0%9B%D0%BC%D0%B1%D0%B0%D1%82%D0%B0%D0%B2%D0%B0%D0%BD%D0%BA%D0%B0.gif/330px-2024_%D0%92%D0%B8%D0%B4_%D0%BD%D0%B0_%D0%B3%D0%BE%D1%80%D0%BE%D0%B4_%D0%90%D1%80%D1%82%D0%B8%D0%BA_%D0%BE%D1%82_%D0%9B%D0%BC%D0%B1%D0%B0%D1%82%D0%B0%D0%B2%D0%B0%D0%BD%D0%BA%D0%B0.gif",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Artik01.jpg"
+    ],
+    "description": "Artik — музыкальный исполнитель; UA; ведёт деятельность с 2007 года. Основные жанры: hip-hop, r&b.",
+    "shortDescription": "музыкальный исполнитель; UA; начало музыкальной деятельности — 2007.",
+    "plotHint": "Продюсер и исполнитель, чьё имя долго стояло первым в названии популярного дуэта. После распада тандема продолжил выпускать русскоязычные поп-хиты.",
+    "slogan": "Мне не нужны с неба звезды",
+    "facts": [
+      "Начало музыкальной деятельности: 2007",
+      "Статус: действует",
+      "Страна или страны: UA",
+      "Трек №1 в полученном снимке Last.fm: Мне не нужны с неба звезды"
+    ],
+    "topRank": 6,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Мне не нужны с неба звезды",
+        "source": "lastfm",
+        "listeners": 677,
+        "playcount": 2367
+      },
+      {
+        "rank": 2,
+        "title": "Очень Очень",
+        "source": "lastfm",
+        "listeners": 643,
+        "playcount": 2535
+      },
+      {
+        "rank": 3,
+        "title": "Báilame",
+        "source": "lastfm",
+        "listeners": 456,
+        "playcount": 1688
+      },
+      {
+        "rank": 4,
+        "title": "Космос",
+        "source": "lastfm",
+        "listeners": 360,
+        "playcount": 1625
+      },
+      {
+        "rank": 5,
+        "title": "Больше, Чем Любовь",
+        "source": "lastfm",
+        "listeners": 317,
+        "playcount": 1362
+      },
+      {
+        "rank": 6,
+        "title": "Love For You.",
+        "source": "lastfm",
+        "listeners": 273,
+        "playcount": 761
+      },
+      {
+        "rank": 7,
+        "title": "До неба достать (feat.Asti)",
+        "source": "lastfm",
+        "listeners": 197,
+        "playcount": 1916
+      },
+      {
+        "rank": 8,
+        "title": "До Утра",
+        "source": "lastfm",
+        "listeners": 174,
+        "playcount": 609
+      },
+      {
+        "rank": 9,
+        "title": "Один На Миллион",
+        "source": "lastfm",
+        "listeners": 170,
+        "playcount": 744
+      },
+      {
+        "rank": 10,
+        "title": "Моя последняя надежда",
+        "source": "lastfm",
+        "listeners": 159,
+        "playcount": 773
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "#РайОдинНаДвоих",
+        "source": "lastfm",
+        "playcount": 10181
+      },
+      {
+        "rank": 2,
+        "title": "Báilame",
+        "source": "lastfm",
+        "playcount": 1685
+      },
+      {
+        "rank": 3,
+        "title": "Love For You.",
+        "source": "lastfm",
+        "playcount": 760
+      },
+      {
+        "rank": 4,
+        "title": "Shaman Tones",
+        "source": "lastfm",
+        "playcount": 2084
+      },
+      {
+        "rank": 5,
+        "title": "Космос",
+        "source": "lastfm",
+        "playcount": 535
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Nargiz",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Tamerlan",
+        "match": 0.752727,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Artik pres. Asti",
+        "match": 0.462481,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://music.apple.com/gb/artist/1446919814",
+      "https://open.spotify.com/artist/0p8eMSoEonlWbH3RIQFBMP",
+      "https://open.spotify.com/artist/5K7I26MxiGYaHQ2q6PPMnb"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "apple_music",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.91,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics"
+      ],
+      "issues": [],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "A.R.T.I.K",
+      "Артём Игоревич Умрихин"
+    ],
+    "canonicalId": "music:006_artik",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.91,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:007_asti",
+    "mode": "music",
+    "titleRu": "Artik & Asti",
+    "titleOriginal": "Artik & Asti",
+    "alternativeTitles": [
+      "Артик и Асти"
+    ],
+    "year": 2010,
+    "endYear": null,
+    "countries": [
+      "UA",
+      "RU"
+    ],
+    "genres": [
+      "pop",
+      "dance-pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": null,
+      "lastfmPlaycount": null,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": null,
+    "posterUrl": null,
+    "headerUrl": null,
+    "backdropUrl": null,
+    "screenshots": [],
+    "description": "Artik & Asti — музыкальная группа; UA, RU; музыкальная деятельность с 2010. Основные жанры: pop, dance-pop.",
+    "shortDescription": "музыкальная группа; UA, RU; начало музыкальной деятельности — 2010.",
+    "plotHint": "Украинский продюсер и певица начали делить один рай на двоих, а затем сменили вокалистку, сохранив название. В нём соединены два коротких сценических имени.",
+    "slogan": null,
+    "facts": [
+      "Начало музыкальной деятельности: 2010",
+      "Статус: действует",
+      "Страна или страны: UA, RU"
+    ],
+    "topRank": 7,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Group",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [],
+    "topAlbums": [],
+    "similarArtists": [],
+    "musicLinks": [
+      "https://www.allmusic.com/artist/mn0001674235",
+      "https://www.discogs.com/artist/2443587",
+      "http://id.loc.gov/authorities/names/n96046552",
+      "https://catalogue.bnf.fr/ark:/12148/cb16261628v",
+      "https://d-nb.info/gnd/134918185",
+      "http://viaf.org/viaf/50952819",
+      "https://open.spotify.com/artist/2NNbGiGbrWpcEvQ08MtPrS"
+    ],
+    "dataQuality": {
+      "source": [
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.98,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.allmusic.com/artist/mn0001674235",
+        "https://www.discogs.com/artist/2443587",
+        "http://id.loc.gov/authorities/names/n96046552",
+        "https://catalogue.bnf.fr/ark:/12148/cb16261628v",
+        "https://d-nb.info/gnd/134918185"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Артик и Асти"
+    ],
+    "canonicalId": "music:007_asti",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.98,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:009_big-baby-tape",
+    "mode": "music",
+    "titleRu": "Big Baby Tape",
+    "titleOriginal": "Big Baby Tape",
+    "alternativeTitles": [
+      "DJ Tape",
+      "Egor Olegovich Rakitin",
+      "Egor Rakitin",
+      "akidro",
+      "Егор Раки́тин",
+      "Егор Ракитин"
+    ],
+    "year": 2017,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "hip-hop",
+      "trap"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 109626,
+      "lastfmPlaycount": 6304395,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 109626,
+    "posterUrl": "https://i.scdn.co/image/ab6761610000517425cb3316ce05456bd7fbcd4f",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb25cb3316ce05456bd7fbcd4f",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f17825cb3316ce05456bd7fbcd4f",
+    "screenshots": [
+      "https://i.scdn.co/image/ab6761610000517425cb3316ce05456bd7fbcd4f",
+      "https://i.scdn.co/image/ab6761610000e5eb25cb3316ce05456bd7fbcd4f",
+      "https://i.scdn.co/image/ab6761610000f17825cb3316ce05456bd7fbcd4f",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Big_Baby_Tape_%D0%BD%D0%B0_Teen_City_Day_%282023.05.27%29_%28cropped%29.jpg/330px-Big_Baby_Tape_%D0%BD%D0%B0_Teen_City_Day_%282023.05.27%29_%28cropped%29.jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Big_Baby_Tape_%D0%BD%D0%B0_Teen_City_Day_(2023.05.27)_(cropped).jpg",
+      "https://r2.theaudiodb.com/images/media/artist/fanart/ypxwxv1548625081.jpg"
+    ],
+    "description": "Big Baby Tape — музыкальный исполнитель; RU; ведёт деятельность с 2017 года. Основные жанры: hip-hop, trap.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2017.",
+    "plotHint": "Московский рэпер с англоязычным детским псевдонимом, полюбивший американский trap-сленг. Альбом Dragonborn и хит Gimme the Loot вывели его в чарты.",
+    "slogan": "Gimme The Loot",
+    "facts": [
+      "Начало музыкальной деятельности: 2017",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в полученном снимке Last.fm: Gimme The Loot"
+    ],
+    "topRank": 9,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Gimme The Loot",
+        "source": "lastfm",
+        "listeners": 43528,
+        "playcount": 429672
+      },
+      {
+        "rank": 2,
+        "title": "Million",
+        "source": "lastfm",
+        "listeners": 28427,
+        "playcount": 313027
+      },
+      {
+        "rank": 3,
+        "title": "99 Problems",
+        "source": "lastfm",
+        "listeners": 26684,
+        "playcount": 236157
+      },
+      {
+        "rank": 4,
+        "title": "Bandana",
+        "source": "lastfm",
+        "listeners": 21979,
+        "playcount": 225240
+      },
+      {
+        "rank": 5,
+        "title": "Trap Luv",
+        "source": "lastfm",
+        "listeners": 18929,
+        "playcount": 161898
+      },
+      {
+        "rank": 6,
+        "title": "Supersonic",
+        "source": "lastfm",
+        "listeners": 18307,
+        "playcount": 179748
+      },
+      {
+        "rank": 7,
+        "title": "Hokage",
+        "source": "lastfm",
+        "listeners": 16992,
+        "playcount": 150147
+      },
+      {
+        "rank": 8,
+        "title": "Surname (Prod. DJ Tape & Aarne)",
+        "source": "lastfm",
+        "listeners": 16686,
+        "playcount": 133179
+      },
+      {
+        "rank": 9,
+        "title": "Turbo (Majestic)",
+        "source": "lastfm",
+        "listeners": 14770,
+        "playcount": 143988
+      },
+      {
+        "rank": 10,
+        "title": "Big Tymers",
+        "source": "lastfm",
+        "listeners": 14249,
+        "playcount": 129372
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Dragonborn",
+        "source": "lastfm",
+        "playcount": 1543462
+      },
+      {
+        "rank": 2,
+        "title": "BANDANA I",
+        "source": "lastfm",
+        "playcount": 1596330
+      },
+      {
+        "rank": 3,
+        "title": "PEEKABOO",
+        "source": "lastfm",
+        "playcount": 608556
+      },
+      {
+        "rank": 4,
+        "title": "ARGUMENTS & FACTS",
+        "source": "lastfm",
+        "playcount": 352161
+      },
+      {
+        "rank": 5,
+        "title": "Trap Luv",
+        "source": "lastfm",
+        "playcount": 141974
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Aarne",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Kizaru",
+        "match": 0.855715,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Bushido Zho",
+        "match": 0.774619,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Big-baby-tape",
+      "https://music.apple.com/ru/artist/1356097231",
+      "https://www.wikidata.org/wiki/Q59312925",
+      "https://open.spotify.com/artist/5NMwoStnfHT4LdETlJSwDT"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "genius",
+        "apple_music",
+        "wikidata",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.98,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics"
+      ],
+      "issues": [],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "DJ Tape",
+      "Egor Olegovich Rakitin",
+      "Egor Rakitin",
+      "akidro",
+      "Егор Раки́тин",
+      "Егор Ракитин"
+    ],
+    "canonicalId": "music:009_big-baby-tape",
+    "contentStatus": "ready",
+    "gameTier": "core",
+    "gameDifficulty": "easy",
+    "identityConfidence": 0.98,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 1,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "broad_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:010_adele",
+    "mode": "music",
+    "titleRu": "Адель",
+    "titleOriginal": "Adele",
+    "alternativeTitles": [
+      "Adele Adkins",
+      "Adele Laurie Blue Adkins",
+      "Adèle",
+      "Adele"
+    ],
+    "year": 2006,
+    "endYear": null,
+    "countries": [
+      "GB"
+    ],
+    "genres": [
+      "soul",
+      "neo soul",
+      "pop",
+      "r&b",
+      "rock"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 5702245,
+      "lastfmPlaycount": 323700095,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 5702245,
+    "posterUrl": null,
+    "headerUrl": "https://r2.theaudiodb.com/images/media/artist/banner/ssqswr1347900886.jpg",
+    "backdropUrl": "https://r2.theaudiodb.com/images/media/artist/banner/ssqswr1347900886.jpg",
+    "screenshots": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Adele_2016.jpg/330px-Adele_2016.jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Adele_2016.jpg",
+      "https://r2.theaudiodb.com/images/media/artist/banner/ssqswr1347900886.jpg"
+    ],
+    "description": "Адель — музыкальный исполнитель; GB; ведёт деятельность с 2006 года. Основные жанры: soul, neo soul, pop.",
+    "shortDescription": "музыкальный исполнитель; GB; начало музыкальной деятельности — 2006.",
+    "plotHint": "Она называет альбомы своим возрастом, а её голос одинаково убедительно звучит и в «Hello», и в «Someone Like You». Обладательница множества Grammy родом из Лондона.",
+    "slogan": "Rolling in the Deep",
+    "facts": [
+      "Начало музыкальной деятельности: 2006",
+      "Статус: действует",
+      "Страна или страны: GB",
+      "Трек №1 в полученном снимке Last.fm: Rolling in the Deep"
+    ],
+    "topRank": 10,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "intl",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Rolling in the Deep",
+        "source": "lastfm",
+        "listeners": 2656241,
+        "playcount": 28635708
+      },
+      {
+        "rank": 2,
+        "title": "Someone Like You",
+        "source": "lastfm",
+        "listeners": 2180736,
+        "playcount": 22370239
+      },
+      {
+        "rank": 3,
+        "title": "Set Fire to the Rain",
+        "source": "lastfm",
+        "listeners": 2096685,
+        "playcount": 22852364
+      },
+      {
+        "rank": 4,
+        "title": "Chasing Pavements",
+        "source": "lastfm",
+        "listeners": 1638049,
+        "playcount": 15020198
+      },
+      {
+        "rank": 5,
+        "title": "Skyfall",
+        "source": "lastfm",
+        "listeners": 1404526,
+        "playcount": 14076473
+      },
+      {
+        "rank": 6,
+        "title": "Make You Feel My Love",
+        "source": "lastfm",
+        "listeners": 1216750,
+        "playcount": 10074308
+      },
+      {
+        "rank": 7,
+        "title": "Easy on Me",
+        "source": "lastfm",
+        "listeners": 1122205,
+        "playcount": 12715672
+      },
+      {
+        "rank": 8,
+        "title": "Rumour Has It",
+        "source": "lastfm",
+        "listeners": 1107055,
+        "playcount": 8721869
+      },
+      {
+        "rank": 9,
+        "title": "Hello",
+        "source": "lastfm",
+        "listeners": 1055989,
+        "playcount": 9382587
+      },
+      {
+        "rank": 10,
+        "title": "When We Were Young",
+        "source": "lastfm",
+        "listeners": 1028613,
+        "playcount": 10043006
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "21",
+        "source": "lastfm",
+        "playcount": 116318621
+      },
+      {
+        "rank": 2,
+        "title": "19",
+        "source": "lastfm",
+        "playcount": 52261573
+      },
+      {
+        "rank": 3,
+        "title": "25",
+        "source": "lastfm",
+        "playcount": 52793118
+      },
+      {
+        "rank": 4,
+        "title": "Skyfall",
+        "source": "lastfm",
+        "playcount": 12107135
+      },
+      {
+        "rank": 5,
+        "title": "30",
+        "source": "lastfm",
+        "playcount": 34792940
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Sam Smith",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Beyoncé",
+        "match": 0.788778,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Whitney Houston",
+        "match": 0.770167,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Adele",
+      "https://www.adele.com/",
+      "https://music.apple.com/gb/artist/262836961",
+      "https://music.apple.com/us/artist/262836961",
+      "https://www.wikidata.org/wiki/Q23215",
+      "https://open.spotify.com/artist/4dpARuHxo51G3z768sgnrY"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "genius",
+        "apple_music",
+        "wikidata",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.99,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics"
+      ],
+      "issues": [],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Adele Adkins",
+      "Adele Laurie Blue Adkins",
+      "Adèle",
+      "Adele"
+    ],
+    "canonicalId": "music:010_adele",
+    "contentStatus": "ready",
+    "gameTier": "core",
+    "gameDifficulty": "easy",
+    "identityConfidence": 0.99,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 1,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "broad_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:012_face",
+    "mode": "music",
+    "titleRu": "FACE",
+    "titleOriginal": "FACE",
+    "alternativeTitles": [
+      "Ivan Dryomin",
+      "Ivan Timofeyevich Dryomin",
+      "Иван Дрёмин",
+      "Фэйс"
+    ],
+    "year": 2015,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "hip-hop",
+      "trap"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 170651,
+      "lastfmPlaycount": 11106107,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 170651,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174816013e6b6a4cf226883fdc2",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb816013e6b6a4cf226883fdc2",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178816013e6b6a4cf226883fdc2",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174816013e6b6a4cf226883fdc2",
+      "https://i.scdn.co/image/ab6761610000e5eb816013e6b6a4cf226883fdc2",
+      "https://i.scdn.co/image/ab6761610000f178816013e6b6a4cf226883fdc2",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Face_tele-club_%28cropped%29.jpg/330px-Face_tele-club_%28cropped%29.jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Face_tele-club_(cropped).jpg",
+      "https://r2.theaudiodb.com/images/media/artist/fanart/stswpt1548626633.jpg"
+    ],
+    "description": "FACE — музыкальный исполнитель; RU; ведёт деятельность с 2015 года. Основные жанры: hip-hop, trap.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2015.",
+    "plotHint": "Уфимский рэпер начал с эпатажных мем-хитов, а затем резко повернул к социальной и политической лирике. Псевдоним — одно короткое английское слово.",
+    "slogan": "ЮМОРИСТ - Original Motion Picture Soundtrack",
+    "facts": [
+      "Начало музыкальной деятельности: 2015",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в полученном снимке Last.fm: ЮМОРИСТ - Original Motion Picture Soundtrack"
+    ],
+    "topRank": 12,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "ЮМОРИСТ - Original Motion Picture Soundtrack",
+        "source": "lastfm",
+        "listeners": 37928,
+        "playcount": 353544
+      },
+      {
+        "rank": 2,
+        "title": "ЛАБИРИНТ",
+        "source": "lastfm",
+        "listeners": 37705,
+        "playcount": 295794
+      },
+      {
+        "rank": 3,
+        "title": "МОЙ КАЛАШНИКОВ",
+        "source": "lastfm",
+        "listeners": 33990,
+        "playcount": 4555290
+      },
+      {
+        "rank": 4,
+        "title": "СПАСАТЕЛЬНЫЙ КРУГ",
+        "source": "lastfm",
+        "listeners": 31712,
+        "playcount": 257694
+      },
+      {
+        "rank": 5,
+        "title": "ПОДРУГА ПОДРУГ",
+        "source": "lastfm",
+        "listeners": 29353,
+        "playcount": 235075
+      },
+      {
+        "rank": 6,
+        "title": "Антидепрессант",
+        "source": "lastfm",
+        "listeners": 25328,
+        "playcount": 218029
+      },
+      {
+        "rank": 7,
+        "title": "Бургер",
+        "source": "lastfm",
+        "listeners": 21835,
+        "playcount": 134692
+      },
+      {
+        "rank": 8,
+        "title": "Я РОНЯЮ ЗАПАД",
+        "source": "lastfm",
+        "listeners": 18709,
+        "playcount": 106321
+      },
+      {
+        "rank": 9,
+        "title": "Лиза",
+        "source": "lastfm",
+        "listeners": 18471,
+        "playcount": 150920
+      },
+      {
+        "rank": 10,
+        "title": "VLONE",
+        "source": "lastfm",
+        "listeners": 18434,
+        "playcount": 141561
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "SLIME",
+        "source": "lastfm",
+        "playcount": 3647991
+      },
+      {
+        "rank": 2,
+        "title": "12",
+        "source": "lastfm",
+        "playcount": 546649
+      },
+      {
+        "rank": 3,
+        "title": "ЮМОРИСТ (Original Motion Picture Soundtrack)",
+        "source": "lastfm",
+        "playcount": 367866
+      },
+      {
+        "rank": 4,
+        "title": "HATE LOVE",
+        "source": "lastfm",
+        "playcount": 569336
+      },
+      {
+        "rank": 5,
+        "title": "REVENGE",
+        "source": "lastfm",
+        "playcount": 409341
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "GONE.Fludd",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Платина",
+        "match": 0.988198,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Big Baby Tape",
+        "match": 0.823231,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Face",
+      "https://facehatesyou.com/",
+      "https://music.apple.com/ru/artist/1290520265",
+      "https://www.wikidata.org/wiki/Q42296351",
+      "https://open.spotify.com/artist/2z20q6EEfm6w6PiIKsgtb3"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "genius",
+        "apple_music",
+        "wikidata",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.98,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics"
+      ],
+      "issues": [],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Ivan Dryomin",
+      "Ivan Timofeyevich Dryomin",
+      "Иван Дрёмин",
+      "Фэйс"
+    ],
+    "canonicalId": "music:012_face",
+    "contentStatus": "ready",
+    "gameTier": "core",
+    "gameDifficulty": "easy",
+    "identityConfidence": 0.98,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 1,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "broad_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:014_bts",
+    "mode": "music",
+    "titleRu": "BTS",
+    "titleOriginal": "BTS",
+    "alternativeTitles": [
+      "Bangtan Boys",
+      "Bangtan Sonyeondan",
+      "Beyond the Scene",
+      "Bulletproof Boy Scouts",
+      "Bōdan Shōnendan",
+      "The Bangtan Boys"
+    ],
+    "year": 2013,
+    "endYear": null,
+    "countries": [
+      "KR"
+    ],
+    "genres": [
+      "dance",
+      "k-pop",
+      "pop",
+      "rock"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 2531027,
+      "lastfmPlaycount": 4542664754,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 2531027,
+    "posterUrl": "https://i.scdn.co/image/ab67616d00001e023c11d1e623868027634bb8a6",
+    "headerUrl": "https://i.scdn.co/image/ab67616d000048513c11d1e623868027634bb8a6",
+    "backdropUrl": "https://i.scdn.co/image/ab67616d0000b2733c11d1e623868027634bb8a6",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616d00001e023c11d1e623868027634bb8a6",
+      "https://i.scdn.co/image/ab67616d000048513c11d1e623868027634bb8a6",
+      "https://i.scdn.co/image/ab67616d0000b2733c11d1e623868027634bb8a6",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/BTS_during_a_White_House_press_conference_May_31%2C_2022_%28cropped%29.jpg/330px-BTS_during_a_White_House_press_conference_May_31%2C_2022_%28cropped%29.jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/BTS_during_a_White_House_press_conference_May_31%2C_2022_(cropped).jpg",
+      "https://r2.theaudiodb.com/images/media/artist/banner/1bqa1f1641907068.jpg"
+    ],
+    "description": "BTS — музыкальная группа; KR; музыкальная деятельность с 2013. Основные жанры: dance, k-pop, pop.",
+    "shortDescription": "музыкальная группа; KR; начало музыкальной деятельности — 2013.",
+    "plotHint": "Семеро корейских музыкантов превратили название «Пуленепробиваемые бойскауты» в глобальный бренд. Их армия знает, как поджечь Dynamite и любить себя в каждой эпохе.",
+    "slogan": "Dynamite",
+    "facts": [
+      "Начало музыкальной деятельности: 2013",
+      "Статус: действует",
+      "Страна или страны: KR",
+      "Трек №1 в проверенном снимке: Dynamite"
+    ],
+    "topRank": 14,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Group",
+    "musicIsActive": true,
+    "musicOrigin": "intl",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Dynamite",
+        "listeners": 1109702,
+        "playcount": 176248493,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Boy With Luv (feat. Halsey)",
+        "listeners": 961144,
+        "playcount": 78850681,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "FAKE LOVE",
+        "listeners": 882594,
+        "playcount": 133981130,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Butter",
+        "listeners": 868217,
+        "playcount": 150441069,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "DNA",
+        "listeners": 843472,
+        "playcount": 48118947,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Blood Sweat & Tears",
+        "listeners": 835876,
+        "playcount": 32622566,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "I NEED U",
+        "listeners": 730291,
+        "playcount": 21101071,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "IDOL",
+        "listeners": 723109,
+        "playcount": 42663007,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Black Swan",
+        "listeners": 705771,
+        "playcount": 37636258,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Spring Day",
+        "listeners": 694358,
+        "playcount": 26638005,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "LOVE YOURSELF 結 'Answer'",
+        "playcount": 295638989,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "MAP OF THE SOUL : PERSONA",
+        "playcount": 168984753,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "LOVE YOURSELF 轉 'Tear'",
+        "playcount": 190534087,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "BE",
+        "playcount": 237341616,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "LOVE YOURSELF 承 'Her'",
+        "playcount": 96902140,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Agust D",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "RM",
+        "match": 0.945664,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "BTS, Halsey",
+        "match": 0.758586,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.allmusic.com/artist/mn0003136056",
+      "https://www.bandsintown.com/a/695158",
+      "https://www.discogs.com/artist/5034422",
+      "https://www.deezer.com/artist/6982223",
+      "https://commons.wikimedia.org/wiki/File:Bangtan_Boys_in_October_2013.jpg",
+      "https://www.imdb.com/name/nm7808003/",
+      "https://www.last.fm/music/BTS",
+      "https://www.last.fm/music/%EB%B0%A9%ED%83%84%EC%86%8C%EB%85%84%EB%8B%A8",
+      "https://genius.com/api/artists/70113",
+      "https://genius.com/artists/Bts",
+      "https://www.musixmatch.com/artist/BTS",
+      "http://bts.ibighit.com/"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.99,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.allmusic.com/artist/mn0003136056",
+        "https://www.bandsintown.com/a/695158",
+        "https://www.discogs.com/artist/5034422",
+        "https://www.deezer.com/artist/6982223",
+        "https://commons.wikimedia.org/wiki/File:Bangtan_Boys_in_October_2013.jpg"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Bangtan Boys",
+      "Bangtan Sonyeondan",
+      "Beyond the Scene",
+      "Bulletproof Boy Scouts",
+      "Bōdan Shōnendan",
+      "The Bangtan Boys"
+    ],
+    "canonicalId": "music:014_bts",
+    "contentStatus": "ready",
+    "gameTier": "core",
+    "gameDifficulty": "easy",
+    "identityConfidence": 0.99,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 1,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "broad_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:015_andy-panda",
+    "mode": "music",
+    "titleRu": "Andy Panda",
+    "titleOriginal": "Andy Panda",
+    "alternativeTitles": [
+      "Сослан Бурнацев",
+      "Эндшпиль"
+    ],
+    "year": 2014,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "hip-hop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": null,
+      "lastfmPlaycount": null,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": null,
+    "posterUrl": null,
+    "headerUrl": null,
+    "backdropUrl": null,
+    "screenshots": [],
+    "description": "Andy Panda — музыкальный исполнитель; RU; музыкальная деятельность с 2014. Основные жанры: hip-hop.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2014.",
+    "plotHint": "Осетинский рэпер сменил ранний сценический образ на имя с чёрно-белым зверем и вместе с постоянным партнёром записал один из крупнейших русскоязычных хитов YouTube.",
+    "slogan": "Orange Sunset",
+    "facts": [
+      "Начало музыкальной деятельности: 2014",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: Orange Sunset"
+    ],
+    "topRank": 15,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Orange Sunset",
+        "listeners": 13528,
+        "playcount": 91648,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Endorphin",
+        "listeners": 11274,
+        "playcount": 94850,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Billboard",
+        "listeners": 6117,
+        "playcount": 38207,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "King kong",
+        "playcount": 291554,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Billboard",
+        "playcount": 38297,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [],
+    "musicLinks": [
+      "https://itunes.apple.com/ru/artist/id252533",
+      "https://vk.com/endspiel_group",
+      "https://www.forbes.ru/profile/463535-soslan-burnacev-andy-panda"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.97,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.forbes.ru/profile/463535-soslan-burnacev-andy-panda",
+        "https://sport24.ru/news/football/2019-12-09-intervyu-repera-andy-panda-endshpilya--o-bolenii-za-alaniyu-gabulove-tsska-repe-stremlenii-v-ssha-smene-imeni-i-albome-king-kong"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Сослан Бурнацев",
+      "Эндшпиль"
+    ],
+    "canonicalId": "music:015_andy-panda",
+    "mergedRecordIds": [
+      "music:036_эндшпиль"
+    ],
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.97,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:016_bearwolf",
+    "mode": "music",
+    "titleRu": "Bearwolf",
+    "titleOriginal": "Bearwolf",
+    "alternativeTitles": [
+      "Валерия Алексеевна Василевская",
+      "Валерия Василевская",
+      "Valeriya Alekseyevna Vasilevskaya"
+    ],
+    "year": 2023,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 18967,
+      "lastfmPlaycount": 321146,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 18967,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174d4c12d4116cbb196b74f0f6b",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5ebd4c12d4116cbb196b74f0f6b",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178d4c12d4116cbb196b74f0f6b",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174d4c12d4116cbb196b74f0f6b",
+      "https://i.scdn.co/image/ab6761610000e5ebd4c12d4116cbb196b74f0f6b",
+      "https://i.scdn.co/image/ab6761610000f178d4c12d4116cbb196b74f0f6b",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Bearwolf_%D0%BD%D0%B0_VK_Fest_2025_%D0%B2_%D0%A1%D0%9F%D0%B1.jpg/330px-Bearwolf_%D0%BD%D0%B0_VK_Fest_2025_%D0%B2_%D0%A1%D0%9F%D0%B1.jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Bearwolf_%D0%BD%D0%B0_VK_Fest_2025_%D0%B2_%D0%A1%D0%9F%D0%B1.jpg"
+    ],
+    "description": "Bearwolf — музыкальный исполнитель; RU; музыкальная деятельность с 2023. Основные жанры: pop.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2023.",
+    "plotHint": "В её песнях один воин остаётся в поле, появляется Валькирия и просыпается GODZILLA. Псевдоним соединяет медведя и волка в одного мифического зверя.",
+    "slogan": "GODZILLA",
+    "facts": [
+      "Начало музыкальной деятельности: 2023",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: GODZILLA"
+    ],
+    "topRank": 16,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "GODZILLA",
+        "listeners": 9776,
+        "playcount": 84300,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Один в поле воин",
+        "listeners": 9674,
+        "playcount": 64602,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Валькирия",
+        "listeners": 5485,
+        "playcount": 44436,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Гроза",
+        "listeners": 2445,
+        "playcount": 8226,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Феникс",
+        "listeners": 1985,
+        "playcount": 21961,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Я с тобой",
+        "listeners": 1743,
+        "playcount": 9826,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Посмотри в глаза",
+        "listeners": 1606,
+        "playcount": 10442,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Голоса",
+        "listeners": 1550,
+        "playcount": 9427,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Холод",
+        "listeners": 1336,
+        "playcount": 6850,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Мы падали",
+        "listeners": 948,
+        "playcount": 3343,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "GODZILLA",
+        "playcount": 82136,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Один в поле воин",
+        "playcount": 56405,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Валькирия",
+        "playcount": 42096,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Гроза",
+        "playcount": 8229,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Один в поле воин (Remixes)",
+        "playcount": 7898,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Xolidayboy",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Jakone",
+        "match": 0.896977,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Quattroteque",
+        "match": 0.696177,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.deezer.com/artist/12169850",
+      "https://music.apple.com/us/artist/1764325904",
+      "https://tidal.com/artist/8616926",
+      "https://open.spotify.com/artist/4sgO0Ssqay0RC2rsC2BfqW",
+      "https://vk.com/artist/bearwolf",
+      "https://t.me/+U91QiEmDDpvpyVn5",
+      "https://vk.com/lerabearwolf",
+      "https://www.instagram.com/valeriya_bearwolf/",
+      "https://www.tiktok.com/@valeriyabearwolf",
+      "https://www.youtube.com/channel/UCZu-RZZdzuaO2OnZm1xMk7Q",
+      "https://music.youtube.com/channel/UCic0ppn2sgDUs7NEi2Lshxw"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "apple_music",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.91,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.deezer.com/artist/12169850",
+        "https://music.apple.com/us/artist/1764325904",
+        "https://tidal.com/artist/8616926",
+        "https://open.spotify.com/artist/4sgO0Ssqay0RC2rsC2BfqW",
+        "https://vk.com/artist/bearwolf"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Валерия Алексеевна Василевская",
+      "Валерия Василевская",
+      "Valeriya Alekseyevna Vasilevskaya"
+    ],
+    "canonicalId": "music:016_bearwolf",
+    "contentStatus": "ready",
+    "gameTier": "discovery",
+    "gameDifficulty": "hard",
+    "identityConfidence": 0.91,
+    "hintQuality": "high",
+    "allowedInGame": false,
+    "allowedGameModes": [
+      "discovery",
+      "expert"
+    ],
+    "gameWeight": 0.2,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "young_or_low_reach_catalogue"
+      ]
+    }
+  },
+  {
+    "id": "music:020_enzro",
+    "mode": "music",
+    "titleRu": "ENZRO",
+    "titleOriginal": "ENZRO",
+    "alternativeTitles": [],
+    "year": 2026,
+    "endYear": null,
+    "countries": [],
+    "genres": [
+      "pop",
+      "dance-pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 80,
+      "lastfmPlaycount": 673,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 80,
+    "posterUrl": "https://i.scdn.co/image/ab67616d0000b273c7a368dcd0d6263cdfad88a2",
+    "headerUrl": "https://i.scdn.co/image/ab67616d00004851c7a368dcd0d6263cdfad88a2",
+    "backdropUrl": "https://i.scdn.co/image/ab67616d0000b273c7a368dcd0d6263cdfad88a2",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616d00001e02c7a368dcd0d6263cdfad88a2",
+      "https://i.scdn.co/image/ab67616d00004851c7a368dcd0d6263cdfad88a2",
+      "https://i.scdn.co/image/ab67616d0000b273c7a368dcd0d6263cdfad88a2"
+    ],
+    "description": "ENZRO — музыкальный проект; страна требует уточнения; музыкальная деятельность с 2026. Основные жанры: pop, dance-pop.",
+    "shortDescription": "музыкальный проект; страна требует уточнения; начало музыкальной деятельности — 2026.",
+    "plotHint": "Проект Михаила Кучука просит не бояться ночи, потому что рядом обязательно кто-то будет. Романтический поп-каталог появился в 2026 году и быстро разошёлся по видео.",
+    "slogan": "Ты не бойся ночи",
+    "facts": [
+      "Начало музыкальной деятельности: 2026",
+      "Статус: действует",
+      "Страна или страны: страна требует уточнения",
+      "Трек №1 в проверенном снимке: Ты не бойся ночи"
+    ],
+    "topRank": 20,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Project",
+    "musicIsActive": true,
+    "musicOrigin": "intl",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Ты не бойся ночи",
+        "listeners": 57,
+        "playcount": 462,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Я буду рядом",
+        "listeners": 14,
+        "playcount": 21,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Она такая",
+        "listeners": 5,
+        "playcount": 100,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "А я по ночам не сплю",
+        "listeners": 4,
+        "playcount": 9,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Dusha",
+        "listeners": 2,
+        "playcount": 12,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Я прячу свою боль",
+        "listeners": 2,
+        "playcount": 8,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Молоды",
+        "listeners": 2,
+        "playcount": 5,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Если б не было тебя | Enzro • 2025",
+        "listeners": 2,
+        "playcount": 2,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Ты не бойся ночи (Alexx Slam rmx)",
+        "listeners": 1,
+        "playcount": 25,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "По беспредельной",
+        "listeners": 1,
+        "playcount": 5,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Ты не бойся ночи",
+        "playcount": 421,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Я буду рядом",
+        "playcount": 18,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "unnamed",
+        "playcount": 33,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Она такая",
+        "playcount": 100,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "А я по ночам не сплю",
+        "playcount": 8,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "VORSKIY",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Sayan",
+        "match": 0.956923,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Дискотека Авария, VONAMOUR",
+        "match": 0.838054,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://open.spotify.com/artist/2dI6ZwOr4oYRIwuwosAhYJ",
+      "https://music.apple.com/us/album/%D1%82%D1%8B-%D0%BD%D0%B5-%D0%B1%D0%BE%D0%B9%D1%81%D1%8F-%D0%BD%D0%BE%D1%87%D0%B8-single/1896427685"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "spotify",
+        "apple_music",
+        "manual_factcheck"
+      ],
+      "verified": false,
+      "missingFields": [
+        "country_unresolved"
+      ]
+    },
+    "verification": {
+      "status": "needs_review",
+      "confidence": 0.8,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [
+        "Каталог и авторство Михаила Кучука подтверждены; страна и природа проекта остаются неподтверждёнными.",
+        "country_unresolved"
+      ],
+      "sources": [
+        "https://music.apple.com/us/album/%D1%82%D1%8B-%D0%BD%D0%B5-%D0%B1%D0%BE%D0%B9%D1%81%D1%8F-%D0%BD%D0%BE%D0%B9%D1%81%D1%8F-%D0%BD%D0%BE%D1%87%D0%B8-single/1896427685",
+        "https://weekend.rambler.ru/muzyka/56632680-enzro-ty-ne-boysya-nochi-tekst-pesni-interesnye-fakty-slushat-trek/"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [],
+    "canonicalId": "music:020_enzro",
+    "contentStatus": "limited",
+    "gameTier": "experimental",
+    "gameDifficulty": "expert",
+    "identityConfidence": 0.8,
+    "hintQuality": "medium",
+    "allowedInGame": false,
+    "allowedGameModes": [
+      "experimental",
+      "expert"
+    ],
+    "gameWeight": 0,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "identity_or_project_transparency_limited",
+        "manual_review_pending",
+        "non_standard_artist_entity"
+      ]
+    }
+  },
+  {
+    "id": "music:020_taemin",
+    "mode": "music",
+    "titleRu": "Тэмин",
+    "titleOriginal": "Taemin",
+    "alternativeTitles": [
+      "Lee Tae-min",
+      "Lee Taemin",
+      "Taemin"
+    ],
+    "year": 2008,
+    "endYear": null,
+    "countries": [
+      "KR"
+    ],
+    "genres": [
+      "k-pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 645363,
+      "lastfmPlaycount": 53599984,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 645363,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174687403ffbb639b82ecfe5fc6",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb687403ffbb639b82ecfe5fc6",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178687403ffbb639b82ecfe5fc6",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174687403ffbb639b82ecfe5fc6",
+      "https://i.scdn.co/image/ab6761610000e5eb687403ffbb639b82ecfe5fc6",
+      "https://i.scdn.co/image/ab6761610000f178687403ffbb639b82ecfe5fc6",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/2025-12-08_Taemin_at_AHC_event_04_(cropped).jpg",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/240919_SHINEE_Taemin.jpg",
+      "https://r2.theaudiodb.com/images/media/artist/fanart/ocz4231728047532.jpg"
+    ],
+    "description": "Тэмин — музыкальный исполнитель; KR; музыкальная деятельность с 2008. Основные жанры: k-pop.",
+    "shortDescription": "музыкальный исполнитель; KR; начало музыкальной деятельности — 2008.",
+    "plotHint": "Самый младший участник SHINee вырос в одного из главных танцоров K-pop. Его сольная хореография заставляет двигаться, а песни раздают советы и признают вину.",
+    "slogan": "MOVE",
+    "facts": [
+      "Начало музыкальной деятельности: 2008",
+      "Статус: действует",
+      "Страна или страны: KR",
+      "Трек №1 в проверенном снимке: MOVE"
+    ],
+    "topRank": 30,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "intl",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "MOVE",
+        "listeners": 367593,
+        "playcount": 4891177,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Advice",
+        "listeners": 259609,
+        "playcount": 4407272,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Guilty",
+        "listeners": 246778,
+        "playcount": 4093927,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Criminal",
+        "listeners": 224541,
+        "playcount": 3136076,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "WANT",
+        "listeners": 188743,
+        "playcount": 2745122,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "IDEA (理想)",
+        "listeners": 142906,
+        "playcount": 1775512,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Heaven",
+        "listeners": 124461,
+        "playcount": 1630910,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "괴도 (Danger)",
+        "listeners": 117330,
+        "playcount": 1342282,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Press Your Number",
+        "listeners": 107979,
+        "playcount": 1287500,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Thirsty",
+        "listeners": 98095,
+        "playcount": 985885,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "MOVE - The 2nd Album",
+        "playcount": 8005516,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Advice - The 3rd Mini Album",
+        "playcount": 5750670,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "GUILTY - The 4th Mini Album",
+        "playcount": 7064939,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Never Gonna Dance Again : ACT 1 - The 3rd Album",
+        "playcount": 5051211,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "WANT - The 2nd Mini Album",
+        "playcount": 4551905,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "SHINee",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "온유",
+        "match": 0.788114,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Key",
+        "match": 0.785284,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.allmusic.com/artist/mn0002992899",
+      "https://www.discogs.com/artist/5304944",
+      "https://www.deezer.com/artist/7988496",
+      "https://commons.wikimedia.org/wiki/File:Taemin_at_a_showcase_in_Taiwan,_in_May_2016_03.jpg",
+      "https://www.imdb.com/name/nm4901097/",
+      "https://www.last.fm/music/%ED%83%9C%EB%AF%BC",
+      "https://www.last.fm/music/TAEMIN",
+      "https://taemin-official.com/",
+      "http://taemin.smtown.com/",
+      "http://www.shinee.jp/taemin/",
+      "https://rateyourmusic.com/artist/taemin",
+      "https://www.generasia.com/wiki/Taemin"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.99,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.allmusic.com/artist/mn0002992899",
+        "https://www.discogs.com/artist/5304944",
+        "https://www.deezer.com/artist/7988496",
+        "https://commons.wikimedia.org/wiki/File:Taemin_at_a_showcase_in_Taiwan,_in_May_2016_03.jpg",
+        "https://www.imdb.com/name/nm4901097/"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Lee Tae-min",
+      "Lee Taemin",
+      "Taemin"
+    ],
+    "canonicalId": "music:020_taemin",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.99,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:021_xolidayboy",
+    "mode": "music",
+    "titleRu": "Xolidayboy",
+    "titleOriginal": "Xolidayboy",
+    "alternativeTitles": [
+      "Иван Олегович Минаев"
+    ],
+    "year": 2021,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "pop",
+      "rock",
+      "alternative pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 25912,
+      "lastfmPlaycount": 813822,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 25912,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174b563774a888c693cde54c2d5",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5ebb563774a888c693cde54c2d5",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178b563774a888c693cde54c2d5",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174b563774a888c693cde54c2d5",
+      "https://i.scdn.co/image/ab6761610000e5ebb563774a888c693cde54c2d5",
+      "https://i.scdn.co/image/ab6761610000f178b563774a888c693cde54c2d5"
+    ],
+    "description": "Xolidayboy — музыкальный исполнитель; RU; музыкальная деятельность с 2021. Основные жанры: pop, rock, alternative pop.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2021.",
+    "plotHint": "Тикток-образ с ярким макияжем превратился в поп-рок-карьеру с «Пожарами», «Манией» и «Моей хулиганкой». Псевдоним начинается с икса вместо привычной буквы.",
+    "slogan": "Пожары",
+    "facts": [
+      "Начало музыкальной деятельности: 2021",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: Пожары"
+    ],
+    "topRank": 21,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Пожары",
+        "listeners": 14024,
+        "playcount": 131019,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Моя хулиганка",
+        "listeners": 10296,
+        "playcount": 94455,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Мания",
+        "listeners": 6864,
+        "playcount": 61665,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Океаны",
+        "listeners": 6233,
+        "playcount": 55311,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Мы не будем спать",
+        "listeners": 4696,
+        "playcount": 28545,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Кино",
+        "listeners": 4391,
+        "playcount": 33361,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Мотыльки",
+        "listeners": 3913,
+        "playcount": 31750,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Твой романс",
+        "listeners": 3805,
+        "playcount": 30667,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Чёрное вино",
+        "listeners": 2705,
+        "playcount": 22961,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Малышка хочет движа",
+        "listeners": 2519,
+        "playcount": 17953,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Пожары",
+        "playcount": 127367,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Моя хулиганка",
+        "playcount": 90980,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Мания",
+        "playcount": 59373,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Трибьют Валерии",
+        "playcount": 44581,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Клуб анонимных романтиков",
+        "playcount": 92990,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Bearwolf",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "VESNA305",
+        "match": 0.902946,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "ВАНЯ ДМИТРИЕНКО",
+        "match": 0.878659,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.deezer.com/artist/123346752"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.96,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.deezer.com/artist/123346752"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Иван Олегович Минаев"
+    ],
+    "canonicalId": "music:021_xolidayboy",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.96,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:022_anna-asti",
+    "mode": "music",
+    "titleRu": "ANNA ASTI",
+    "titleOriginal": "ANNA ASTI",
+    "alternativeTitles": [
+      "Ганна Дзюба",
+      "Анна Анатольевна Дзюба",
+      "Анна Дзюба"
+    ],
+    "year": 2021,
+    "endYear": null,
+    "countries": [
+      "UA",
+      "RU"
+    ],
+    "genres": [
+      "pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 38244,
+      "lastfmPlaycount": 1408958,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 38244,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174f8ff3ac65da05d31890bc541",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5ebf8ff3ac65da05d31890bc541",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178f8ff3ac65da05d31890bc541",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174f8ff3ac65da05d31890bc541",
+      "https://i.scdn.co/image/ab6761610000e5ebf8ff3ac65da05d31890bc541",
+      "https://i.scdn.co/image/ab6761610000f178f8ff3ac65da05d31890bc541",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%98%D0%B3%D0%BE%D1%80%D1%8C_%D0%9A%D1%80%D1%83%D1%82%D0%BE%D0%B9_%D0%B8_Anna_Asti_%D0%BD%D0%B0_%D0%A0%D0%9D%D0%9C%D0%9F_-_2025_(cropped_anna).jpg"
+    ],
+    "description": "ANNA ASTI — музыкальный исполнитель; UA, RU; ведёт деятельность с 2021 года. Основные жанры: pop.",
+    "shortDescription": "музыкальный исполнитель; UA, RU; начало музыкальной деятельности — 2021.",
+    "plotHint": "После успеха в известном поп-дуэте она начала сольную главу и быстро собрала стадионы. В её песнях часто встречаются сильные героини, драма и танцевальный бит.",
+    "slogan": "Царица",
+    "facts": [
+      "Начало музыкальной деятельности: 2021",
+      "Статус: действует",
+      "Страна или страны: UA, RU",
+      "Трек №1 в полученном снимке Last.fm: Царица"
+    ],
+    "topRank": 22,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Царица",
+        "source": "lastfm",
+        "listeners": 21717,
+        "playcount": 241123
+      },
+      {
+        "rank": 2,
+        "title": "По барам",
+        "source": "lastfm",
+        "listeners": 20073,
+        "playcount": 204870
+      },
+      {
+        "rank": 3,
+        "title": "Повело",
+        "source": "lastfm",
+        "listeners": 10940,
+        "playcount": 104089
+      },
+      {
+        "rank": 4,
+        "title": "Феникс",
+        "source": "lastfm",
+        "listeners": 9608,
+        "playcount": 80407
+      },
+      {
+        "rank": 5,
+        "title": "Ночью На Кухне",
+        "source": "lastfm",
+        "listeners": 9560,
+        "playcount": 102876
+      },
+      {
+        "rank": 6,
+        "title": "Хобби",
+        "source": "lastfm",
+        "listeners": 9040,
+        "playcount": 72083
+      },
+      {
+        "rank": 7,
+        "title": "Верю в тебя",
+        "source": "lastfm",
+        "listeners": 7290,
+        "playcount": 62672
+      },
+      {
+        "rank": 8,
+        "title": "Звенит январская вьюга",
+        "source": "lastfm",
+        "listeners": 6116,
+        "playcount": 26895
+      },
+      {
+        "rank": 9,
+        "title": "Топит",
+        "source": "lastfm",
+        "listeners": 4843,
+        "playcount": 34448
+      },
+      {
+        "rank": 10,
+        "title": "Сорри",
+        "source": "lastfm",
+        "listeners": 4668,
+        "playcount": 50986
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Феникс",
+        "source": "lastfm",
+        "playcount": 479254
+      },
+      {
+        "rank": 2,
+        "title": "Царица",
+        "source": "lastfm",
+        "playcount": 355763
+      },
+      {
+        "rank": 3,
+        "title": "Царица (Делюкс)",
+        "source": "lastfm",
+        "playcount": 132026
+      },
+      {
+        "rank": 4,
+        "title": "Ночью на кухне",
+        "source": "lastfm",
+        "playcount": 58387
+      },
+      {
+        "rank": 5,
+        "title": "Феникс (Делюкс)",
+        "source": "lastfm",
+        "playcount": 77280
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Artik & Asti",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "LOBODA",
+        "match": 0.591091,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Люся Чеботина",
+        "match": 0.545728,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Asti",
+      "https://music.apple.com/ru/artist/1603420021",
+      "https://www.wikidata.org/wiki/Q107646300",
+      "https://open.spotify.com/artist/40YXr3tdSqFv0kfmgjj8vP"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "genius",
+        "apple_music",
+        "wikidata",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.97,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics"
+      ],
+      "issues": [],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Ганна Дзюба",
+      "Анна Анатольевна Дзюба",
+      "Анна Дзюба"
+    ],
+    "canonicalId": "music:022_anna-asti",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.97,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:024_by-индия",
+    "mode": "music",
+    "titleRu": "By Индия",
+    "titleOriginal": "By Индия",
+    "alternativeTitles": [
+      "Виктор Сергеевич Вавилов"
+    ],
+    "year": 2019,
+    "endYear": null,
+    "countries": [
+      "BY",
+      "RU"
+    ],
+    "genres": [
+      "r&b",
+      "hip-hop",
+      "pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 28128,
+      "lastfmPlaycount": 508561,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 28128,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174acaaf2f72d48ad1b258d580d",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5ebacaaf2f72d48ad1b258d580d",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178acaaf2f72d48ad1b258d580d",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174acaaf2f72d48ad1b258d580d",
+      "https://i.scdn.co/image/ab6761610000e5ebacaaf2f72d48ad1b258d580d",
+      "https://i.scdn.co/image/ab6761610000f178acaaf2f72d48ad1b258d580d"
+    ],
+    "description": "By Индия — музыкальный исполнитель; BY, RU; музыкальная деятельность с 2019. Основные жанры: r&b, hip-hop, pop.",
+    "shortDescription": "музыкальный исполнитель; BY, RU; начало музыкальной деятельности — 2019.",
+    "plotHint": "Белорусский R&B-исполнитель соединяет мягкую вокальную подачу, современный бит и атмосферу ночного клубного попа.",
+    "slogan": "money",
+    "facts": [
+      "Начало музыкальной деятельности: 2019",
+      "Статус: действует",
+      "Страна или страны: BY, RU",
+      "Трек №1 в проверенном снимке: money"
+    ],
+    "topRank": 24,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "money",
+        "listeners": 6499,
+        "playcount": 44209,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "вечеринка",
+        "listeners": 6275,
+        "playcount": 42179,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Люби меня так",
+        "listeners": 5962,
+        "playcount": 38776,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "еще хуже",
+        "listeners": 4024,
+        "playcount": 25216,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "я не помню",
+        "listeners": 4011,
+        "playcount": 23589,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Полет",
+        "listeners": 3575,
+        "playcount": 22841,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Вселенная",
+        "listeners": 3188,
+        "playcount": 20953,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "ICECUBE",
+        "listeners": 3085,
+        "playcount": 15966,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "целуйся правильно",
+        "listeners": 3061,
+        "playcount": 16644,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Полет - Sowyol Remix",
+        "listeners": 3020,
+        "playcount": 15295,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "RnB в твоей комнате",
+        "playcount": 118385,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "money",
+        "playcount": 33416,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "RnB в твоём городе",
+        "playcount": 46908,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Хочу спать сладко",
+        "playcount": 28775,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Полет",
+        "playcount": 21698,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Акулич",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "EVEN CUTE",
+        "match": 0.427555,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Kambulat",
+        "match": 0.37129,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.wikidata.org/wiki/Q140090238"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "wikidata",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.91,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.wikidata.org/wiki/Q140090238"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Виктор Сергеевич Вавилов"
+    ],
+    "canonicalId": "music:024_by-индия",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.91,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:025_hugel",
+    "mode": "music",
+    "titleRu": "HUGEL",
+    "titleOriginal": "HUGEL",
+    "alternativeTitles": [
+      "Florent Hugel"
+    ],
+    "year": 2015,
+    "endYear": null,
+    "countries": [
+      "FR"
+    ],
+    "genres": [
+      "latin house",
+      "house",
+      "electronic"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": null,
+      "lastfmPlaycount": null,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": null,
+    "posterUrl": null,
+    "headerUrl": null,
+    "backdropUrl": null,
+    "screenshots": [],
+    "description": "HUGEL — музыкальный исполнитель; FR; музыкальная деятельность с 2015. Основные жанры: latin house, house, electronic.",
+    "shortDescription": "музыкальный исполнитель; FR; начало музыкальной деятельности — 2015.",
+    "plotHint": "Французский диджей из Марселя соединяет хаус с латинскими ритмами и превращает знакомые мелодии в фестивальные танцевальные версии.",
+    "slogan": "I Adore You",
+    "facts": [
+      "Начало музыкальной деятельности: 2015",
+      "Статус: действует",
+      "Страна или страны: FR",
+      "Трек №1 в проверенном снимке: I Adore You"
+    ],
+    "topRank": 25,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "intl",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "I Adore You",
+        "listeners": null,
+        "playcount": null,
+        "source": "manual_factcheck"
+      },
+      {
+        "rank": 2,
+        "title": "Morenita",
+        "listeners": null,
+        "playcount": null,
+        "source": "manual_factcheck"
+      },
+      {
+        "rank": 3,
+        "title": "Bella Ciao (HUGEL Remix)",
+        "listeners": null,
+        "playcount": null,
+        "source": "manual_factcheck"
+      }
+    ],
+    "topAlbums": [],
+    "similarArtists": [],
+    "musicLinks": [
+      "https://en.wikipedia.org/wiki/Hugel_(DJ)"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "wikipedia",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.98,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hugel_(DJ)"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Florent Hugel"
+    ],
+    "canonicalId": "music:025_hugel",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.98,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:025_sayan",
+    "mode": "music",
+    "titleRu": "SAYAN",
+    "titleOriginal": "SAYAN",
+    "alternativeTitles": [
+      "District Sayan",
+      "Sayan District"
+    ],
+    "year": 2021,
+    "endYear": null,
+    "countries": [
+      "AM",
+      "RU"
+    ],
+    "genres": [
+      "pop",
+      "rap"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 4619,
+      "lastfmPlaycount": 32581,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 4619,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174009a995138aeafeb61cfe9ab",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb009a995138aeafeb61cfe9ab",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178009a995138aeafeb61cfe9ab",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174009a995138aeafeb61cfe9ab",
+      "https://i.scdn.co/image/ab6761610000e5eb009a995138aeafeb61cfe9ab",
+      "https://i.scdn.co/image/ab6761610000f178009a995138aeafeb61cfe9ab"
+    ],
+    "description": "SAYAN — музыкальный исполнитель; AM, RU; музыкальная деятельность с 2021. Основные жанры: pop, rap.",
+    "shortDescription": "музыкальный исполнитель; AM, RU; начало музыкальной деятельности — 2021.",
+    "plotHint": "Русскоязычный артист, чей вирусный «Мальборо» звучит как летняя история с сигаретным названием. Следом в каталоге можно искать «Заблудился» и Te Amo.",
+    "slogan": "Мальборо",
+    "facts": [
+      "Начало музыкальной деятельности: 2021",
+      "Статус: действует",
+      "Страна или страны: AM, RU",
+      "Трек №1 в проверенном снимке: Мальборо"
+    ],
+    "topRank": 37,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Мальборо",
+        "listeners": 1589,
+        "playcount": 10466,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Заблудился",
+        "listeners": 792,
+        "playcount": 3726,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Te Amo",
+        "listeners": 563,
+        "playcount": 2981,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Приснись мне",
+        "listeners": 480,
+        "playcount": 2246,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Пустой космос",
+        "listeners": 303,
+        "playcount": 1087,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Выдыхаю",
+        "listeners": 254,
+        "playcount": 980,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Нравишься",
+        "listeners": 242,
+        "playcount": 1464,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Закрой мои глаза",
+        "listeners": 146,
+        "playcount": 681,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Shi-Fu-Mi",
+        "listeners": 127,
+        "playcount": 642,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Do Aasmaan",
+        "listeners": 109,
+        "playcount": 351,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Мальборо",
+        "playcount": 10248,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Заблудился",
+        "playcount": 3718,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Te Amo",
+        "playcount": 2937,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Приснись мне",
+        "playcount": 2228,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Пустой космос",
+        "playcount": 1497,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Tsoy",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Shena",
+        "match": 0.909188,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Neki",
+        "match": 0.722998,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://music.apple.com/fr/artist/1611382258"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.93,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://24smi.org/celebrity/478620-sayan.html",
+        "https://www.shazam.com/ru-ru/artist/sayan/1571657261"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "District Sayan",
+      "Sayan District"
+    ],
+    "canonicalId": "music:025_sayan",
+    "contentStatus": "ready",
+    "gameTier": "discovery",
+    "gameDifficulty": "hard",
+    "identityConfidence": 0.93,
+    "hintQuality": "high",
+    "allowedInGame": false,
+    "allowedGameModes": [
+      "discovery",
+      "expert"
+    ],
+    "gameWeight": 0.2,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "young_or_low_reach_catalogue"
+      ]
+    }
+  },
+  {
+    "id": "music:026_женя-трофимов",
+    "mode": "music",
+    "titleRu": "Женя Трофимов",
+    "titleOriginal": "Женя Трофимов",
+    "alternativeTitles": [
+      "Zhenya Trofimov",
+      "Евгений Трофимов"
+    ],
+    "year": 2017,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "pop rock",
+      "indie pop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 20050,
+      "lastfmPlaycount": 455148,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 20050,
+    "posterUrl": "https://i.scdn.co/image/ab676161000051741a3edb7282f3bf3d9cc29474",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb1a3edb7282f3bf3d9cc29474",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f1781a3edb7282f3bf3d9cc29474",
+    "screenshots": [
+      "https://i.scdn.co/image/ab676161000051741a3edb7282f3bf3d9cc29474",
+      "https://i.scdn.co/image/ab6761610000e5eb1a3edb7282f3bf3d9cc29474",
+      "https://i.scdn.co/image/ab6761610000f1781a3edb7282f3bf3d9cc29474"
+    ],
+    "description": "Женя Трофимов — музыкальный исполнитель; RU; ведёт деятельность с 2017 года. Основные жанры: pop rock, indie pop.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2017.",
+    "plotHint": "Барнаульский музыкант и фронтмен «Комнаты культуры». Если слышите «Поезда», ищите голос, который связывает эту сольную запись с группой.",
+    "slogan": "Поезда",
+    "facts": [
+      "Начало музыкальной деятельности: 2017",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в полученном снимке Last.fm: Поезда"
+    ],
+    "topRank": 26,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Поезда",
+        "source": "lastfm",
+        "listeners": 15821,
+        "playcount": 156906
+      },
+      {
+        "rank": 2,
+        "title": "Самолеты",
+        "source": "lastfm",
+        "listeners": 7368,
+        "playcount": 58408
+      },
+      {
+        "rank": 3,
+        "title": "Ночь",
+        "source": "lastfm",
+        "listeners": 4615,
+        "playcount": 32991
+      },
+      {
+        "rank": 4,
+        "title": "Все они о тебе",
+        "source": "lastfm",
+        "listeners": 3895,
+        "playcount": 19602
+      },
+      {
+        "rank": 5,
+        "title": "Привет",
+        "source": "lastfm",
+        "listeners": 3553,
+        "playcount": 15847
+      },
+      {
+        "rank": 6,
+        "title": "Пусть она поёт",
+        "source": "lastfm",
+        "listeners": 2793,
+        "playcount": 27397
+      },
+      {
+        "rank": 7,
+        "title": "Самолёты",
+        "source": "lastfm",
+        "listeners": 2558,
+        "playcount": 17015
+      },
+      {
+        "rank": 8,
+        "title": "Больше никому меня не прощай",
+        "source": "lastfm",
+        "listeners": 2455,
+        "playcount": 17019
+      },
+      {
+        "rank": 9,
+        "title": "Первая любовь",
+        "source": "lastfm",
+        "listeners": 2314,
+        "playcount": 15910
+      },
+      {
+        "rank": 10,
+        "title": "Море",
+        "source": "lastfm",
+        "listeners": 1960,
+        "playcount": 13139
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Поезда",
+        "source": "lastfm",
+        "playcount": 158571
+      },
+      {
+        "rank": 2,
+        "title": "что бы она пела",
+        "source": "lastfm",
+        "playcount": 71353
+      },
+      {
+        "rank": 3,
+        "title": "Ночь",
+        "source": "lastfm",
+        "playcount": 33127
+      },
+      {
+        "rank": 4,
+        "title": "Все они о тебе",
+        "source": "lastfm",
+        "playcount": 19713
+      },
+      {
+        "rank": 5,
+        "title": "Привет",
+        "source": "lastfm",
+        "playcount": 16150
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Моя Мишель",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Каспий",
+        "match": 0.920839,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Братья Грим",
+        "match": 0.762291,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Zhenya-trofimov",
+      "https://music.apple.com/ru/artist/1488772305",
+      "https://www.wikidata.org/wiki/Q134776230",
+      "https://open.spotify.com/artist/3JYowG5k65ROJjN5PXx9Ce"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "genius",
+        "apple_music",
+        "wikidata",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.91,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics"
+      ],
+      "issues": [],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Zhenya Trofimov",
+      "Евгений Трофимов"
+    ],
+    "canonicalId": "music:026_женя-трофимов",
+    "contentStatus": "ready",
+    "gameTier": "niche",
+    "gameDifficulty": "hard",
+    "identityConfidence": 0.91,
+    "hintQuality": "high",
+    "allowedInGame": false,
+    "allowedGameModes": [
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.35,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "established_genre_relevance"
+      ]
+    }
+  },
+  {
+    "id": "music:027_macan",
+    "mode": "music",
+    "titleRu": "MACAN",
+    "titleOriginal": "MACAN",
+    "alternativeTitles": [
+      "Macan (family name)",
+      "Андрей Кириллович Косолапов"
+    ],
+    "year": 2019,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "rap",
+      "hip-hop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 63432,
+      "lastfmPlaycount": 2245884,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 63432,
+    "posterUrl": "https://i.scdn.co/image/ab6761610000517453d13b3a26b7686fa401b047",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb53d13b3a26b7686fa401b047",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f17853d13b3a26b7686fa401b047",
+    "screenshots": [
+      "https://i.scdn.co/image/ab6761610000517453d13b3a26b7686fa401b047",
+      "https://i.scdn.co/image/ab6761610000e5eb53d13b3a26b7686fa401b047",
+      "https://i.scdn.co/image/ab6761610000f17853d13b3a26b7686fa401b047"
+    ],
+    "description": "MACAN — музыкальный исполнитель; RU; музыкальная деятельность с 2019. Основные жанры: rap, hip-hop.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2019.",
+    "plotHint": "В его мире асфальт, чёрные автомобили, братство и взросление без лишней сентиментальности. Один из главных альбомов назван как мобильная гоночная игра.",
+    "slogan": "ASPHALT 8",
+    "facts": [
+      "Начало музыкальной деятельности: 2019",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: ASPHALT 8"
+    ],
+    "topRank": 27,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "ASPHALT 8",
+        "listeners": 24971,
+        "playcount": 236541,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Кино",
+        "listeners": 17921,
+        "playcount": 174503,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "За всех",
+        "listeners": 12666,
+        "playcount": 107057,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Бенз",
+        "listeners": 10273,
+        "playcount": 82248,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Как je",
+        "listeners": 9366,
+        "playcount": 72860,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "IVL",
+        "listeners": 8103,
+        "playcount": 64162,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "веселящий газ",
+        "listeners": 6553,
+        "playcount": 52741,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Самый пьяный округ в мире",
+        "listeners": 6495,
+        "playcount": 56178,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "77",
+        "listeners": 6363,
+        "playcount": 61080,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "Привыкаю",
+        "listeners": 6039,
+        "playcount": 35595,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "ASPHALT 8",
+        "playcount": 231637,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "I AM",
+        "playcount": 388791,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Кино",
+        "playcount": 163935,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "За всех",
+        "playcount": 103831,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "1000 км до мечты",
+        "playcount": 151359,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Jakone",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "WHITE GALLOWS",
+        "match": 0.669026,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Jamik",
+        "match": 0.570228,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.deezer.com/artist/8720732",
+      "https://tidal.com/artist/7171175",
+      "https://open.spotify.com/artist/5VKufGMVAZ6fs111xYNKnU"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.97,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.deezer.com/artist/8720732",
+        "https://tidal.com/artist/7171175",
+        "https://open.spotify.com/artist/5VKufGMVAZ6fs111xYNKnU"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "Macan (family name)",
+      "Андрей Кириллович Косолапов"
+    ],
+    "canonicalId": "music:027_macan",
+    "contentStatus": "ready",
+    "gameTier": "core",
+    "gameDifficulty": "easy",
+    "identityConfidence": 0.97,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 1,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "broad_recognition"
+      ]
+    }
+  },
+  {
+    "id": "music:028_полка",
+    "mode": "music",
+    "titleRu": "полька",
+    "titleOriginal": "полька",
+    "alternativeTitles": [
+      "barn dance",
+      "polka"
+    ],
+    "year": 2022,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "hip-hop",
+      "pop rap"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 9104,
+      "lastfmPlaycount": 194889,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 9104,
+    "posterUrl": "https://i.scdn.co/image/ab67616100005174ce7fcda4c71a61b132c1fc5b",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5ebce7fcda4c71a61b132c1fc5b",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f178ce7fcda4c71a61b132c1fc5b",
+    "screenshots": [
+      "https://i.scdn.co/image/ab67616100005174ce7fcda4c71a61b132c1fc5b",
+      "https://i.scdn.co/image/ab6761610000e5ebce7fcda4c71a61b132c1fc5b",
+      "https://i.scdn.co/image/ab6761610000f178ce7fcda4c71a61b132c1fc5b"
+    ],
+    "description": "полька — музыкальный исполнитель; RU; музыкальная деятельность с 2022. Основные жанры: hip-hop, pop rap.",
+    "shortDescription": "музыкальный исполнитель; RU; начало музыкальной деятельности — 2022.",
+    "plotHint": "Не танец из Центральной Европы, а артист новой русскоязычной сцены. Узнать помогут «Pose», сообщения в «Директ» и псевдоним, написанный со строчной буквы.",
+    "slogan": "Pose",
+    "facts": [
+      "Начало музыкальной деятельности: 2022",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: Pose"
+    ],
+    "topRank": 42,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Person",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Pose",
+        "listeners": 4707,
+        "playcount": 37396,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Знаю",
+        "listeners": 4549,
+        "playcount": 42717,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Директ",
+        "listeners": 2452,
+        "playcount": 15055,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Низко",
+        "listeners": 2234,
+        "playcount": 16887,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Словил звезду",
+        "listeners": 2072,
+        "playcount": 12553,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Вместе",
+        "listeners": 1831,
+        "playcount": 9448,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "MMS",
+        "listeners": 1373,
+        "playcount": 6411,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "Звёзды",
+        "listeners": 1180,
+        "playcount": 6014,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "Чем прежде",
+        "listeners": 990,
+        "playcount": 7068,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "nolimit",
+        "listeners": 890,
+        "playcount": 3987,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Pose",
+        "playcount": 36741,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Знаю",
+        "playcount": 42068,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "Директ",
+        "playcount": 14916,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Низко",
+        "playcount": 16629,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Словил звезду",
+        "playcount": 12457,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Icegergert",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "2hug",
+        "match": 0.961781,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Whole Lotta Swag",
+        "match": 0.947609,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://genius.com/artists/Polkapretty",
+      "https://soundcloud.com/polochka1",
+      "https://open.spotify.com/artist/5VxeSwDCDsUT35ggejgYo2",
+      "https://www.youtube.com/channel/UC81_DVaoCz-qtisePx_jelg"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "spotify",
+        "manual_factcheck"
+      ],
+      "verified": false,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "needs_review",
+      "confidence": 0.8,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [
+        "Стриминговый профиль подтверждён; публичной биографии недостаточно."
+      ],
+      "sources": [
+        "https://genius.com/artists/Polkapretty",
+        "https://soundcloud.com/polochka1",
+        "https://open.spotify.com/artist/5VxeSwDCDsUT35ggejgYo2",
+        "https://www.youtube.com/channel/UC81_DVaoCz-qtisePx_jelg"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [
+      "barn dance",
+      "polka"
+    ],
+    "canonicalId": "music:028_полка",
+    "contentStatus": "limited",
+    "gameTier": "discovery",
+    "gameDifficulty": "hard",
+    "identityConfidence": 0.8,
+    "hintQuality": "medium",
+    "allowedInGame": false,
+    "allowedGameModes": [
+      "discovery",
+      "expert"
+    ],
+    "gameWeight": 0.2,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "young_or_low_reach_catalogue",
+        "manual_review_pending"
+      ]
+    }
+  },
+  {
+    "id": "music:028_gayazov-brother",
+    "mode": "music",
+    "titleRu": "GAYAZOV$ BROTHER$",
+    "titleOriginal": "GAYAZOV$ BROTHER$",
+    "alternativeTitles": [],
+    "year": 2014,
+    "endYear": null,
+    "countries": [
+      "RU"
+    ],
+    "genres": [
+      "hip-hop"
+    ],
+    "directors": [],
+    "cast": [],
+    "ratings": {},
+    "votes": {
+      "lastfmListeners": 59664,
+      "lastfmPlaycount": 1688118,
+      "snapshotDate": "2026-07-11"
+    },
+    "popularityScore": 59664,
+    "posterUrl": "https://i.scdn.co/image/ab6761610000517491362f54aaafe97771832c61",
+    "headerUrl": "https://i.scdn.co/image/ab6761610000e5eb91362f54aaafe97771832c61",
+    "backdropUrl": "https://i.scdn.co/image/ab6761610000f17891362f54aaafe97771832c61",
+    "screenshots": [
+      "https://i.scdn.co/image/ab6761610000517491362f54aaafe97771832c61",
+      "https://i.scdn.co/image/ab6761610000e5eb91362f54aaafe97771832c61",
+      "https://i.scdn.co/image/ab6761610000f17891362f54aaafe97771832c61",
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Gayazov_Brothers_(%D0%91%D0%B5%D0%BB%D1%8B%D0%B5_%D0%BD%D0%BE%D1%87%D0%B8_%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%D0%B0_%E2%80%94_2021._%D0%97%D0%B2%D1%91%D0%B7%D0%B4%D1%8B_%D1%85%D0%B0%D0%B9%D0%BF%D0%B0).jpg"
+    ],
+    "description": "GAYAZOV$ BROTHER$ — музыкальная группа; RU; музыкальная деятельность с 2014. Основные жанры: hip-hop.",
+    "shortDescription": "музыкальная группа; RU; начало музыкальной деятельности — 2014.",
+    "plotHint": "Два брата из Татарстана добавили доллары в семейную фамилию, сели в «Малиновую ладу» и попросили увезти их на дип-хаус.",
+    "slogan": "Малиновая лада",
+    "facts": [
+      "Начало музыкальной деятельности: 2014",
+      "Статус: действует",
+      "Страна или страны: RU",
+      "Трек №1 в проверенном снимке: Малиновая лада"
+    ],
+    "topRank": 28,
+    "notes": [
+      "dynamic_metrics_snapshot:2026-07-11"
+    ],
+    "musicType": "Group",
+    "musicIsActive": true,
+    "musicOrigin": "ru",
+    "topTracks": [
+      {
+        "rank": 1,
+        "title": "Малиновая лада",
+        "listeners": 25756,
+        "playcount": 278435,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Увезите меня на Дип-хаус",
+        "listeners": 23345,
+        "playcount": 255358,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "До встречи на танцполе",
+        "listeners": 16393,
+        "playcount": 151403,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "КРЕДО",
+        "listeners": 14161,
+        "playcount": 117090,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Пошла жара",
+        "listeners": 12978,
+        "playcount": 103358,
+        "source": "lastfm"
+      },
+      {
+        "rank": 6,
+        "title": "Я, Ты и Море",
+        "listeners": 11243,
+        "playcount": 101100,
+        "source": "lastfm"
+      },
+      {
+        "rank": 7,
+        "title": "Пьяный туман",
+        "listeners": 7863,
+        "playcount": 73266,
+        "source": "lastfm"
+      },
+      {
+        "rank": 8,
+        "title": "ФАИНА",
+        "listeners": 5394,
+        "playcount": 31320,
+        "source": "lastfm"
+      },
+      {
+        "rank": 9,
+        "title": "До встречи на танцполе - Frost & Artem Shustov Remix",
+        "listeners": 4749,
+        "playcount": 34943,
+        "source": "lastfm"
+      },
+      {
+        "rank": 10,
+        "title": "ХЕДШОТ",
+        "listeners": 4660,
+        "playcount": 37949,
+        "source": "lastfm"
+      }
+    ],
+    "topAlbums": [
+      {
+        "rank": 1,
+        "title": "Малиновая лада",
+        "playcount": 261865,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "title": "Увезите меня на Дип-хаус",
+        "playcount": 228254,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "title": "КРЕДО",
+        "playcount": 382647,
+        "source": "lastfm"
+      },
+      {
+        "rank": 4,
+        "title": "Пошла жара",
+        "playcount": 168233,
+        "source": "lastfm"
+      },
+      {
+        "rank": 5,
+        "title": "Я, Ты и Море",
+        "playcount": 92676,
+        "source": "lastfm"
+      }
+    ],
+    "similarArtists": [
+      {
+        "rank": 1,
+        "name": "Тайпан",
+        "match": 1,
+        "source": "lastfm"
+      },
+      {
+        "rank": 2,
+        "name": "Filatov & Karas",
+        "match": 0.915261,
+        "source": "lastfm"
+      },
+      {
+        "rank": 3,
+        "name": "Bearwolf",
+        "match": 0.886669,
+        "source": "lastfm"
+      }
+    ],
+    "musicLinks": [
+      "https://www.allmusic.com/artist/mn0003779120",
+      "https://www.discogs.com/artist/10886962",
+      "https://www.deezer.com/artist/51802942",
+      "https://www.last.fm/music/GAYAZOV$+BROTHER$",
+      "https://genius.com/artists/Gayazov-brother",
+      "http://gayazovsbrothers.ru/",
+      "https://itunes.apple.com/ru/artist/id1437398609",
+      "https://open.qobuz.com/artist/3998225",
+      "https://www.songkick.com/artists/10149733",
+      "https://soundcloud.com/user-586708734",
+      "https://web.napster.com/artist/gayazovs-brothers",
+      "https://music.amazon.com/artists/B07HM86WY6"
+    ],
+    "dataQuality": {
+      "source": [
+        "lastfm",
+        "manual_factcheck"
+      ],
+      "verified": true,
+      "missingFields": []
+    },
+    "verification": {
+      "status": "verified",
+      "confidence": 0.98,
+      "checkedAt": "2026-07-11",
+      "checkedFields": [
+        "identity",
+        "name",
+        "careerYears",
+        "countries",
+        "entityType",
+        "activeStatus",
+        "genres",
+        "canonicalLinks",
+        "metricSemantics",
+        "plotHint"
+      ],
+      "issues": [],
+      "sources": [
+        "https://www.allmusic.com/artist/mn0003779120",
+        "https://www.discogs.com/artist/10886962",
+        "https://www.deezer.com/artist/51802942",
+        "https://www.last.fm/music/GAYAZOV$+BROTHER$",
+        "https://genius.com/artists/Gayazov-brother"
+      ],
+      "correctionsApplied": true
+    },
+    "aliases": [],
+    "canonicalId": "music:028_gayazov-brother",
+    "contentStatus": "ready",
+    "gameTier": "popular",
+    "gameDifficulty": "medium",
+    "identityConfidence": 0.98,
+    "hintQuality": "high",
+    "allowedInGame": true,
+    "allowedGameModes": [
+      "classic",
+      "mixed",
+      "expert"
+    ],
+    "gameWeight": 0.8,
+    "curation": {
+      "version": "music-001-300-v1",
+      "curatedAt": "2026-07-11",
+      "reasonCodes": [
+        "strong_market_or_genre_recognition"
+      ]
+    }
+  }
+]

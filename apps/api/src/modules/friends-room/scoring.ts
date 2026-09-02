@@ -37,7 +37,7 @@ const MODE_WEIGHTS: Record<PlayableCatalogGuessModeId, Record<string, number>> =
   anime: { anime_kind: 30, anime_status: 20, episodes: 30, episodes_aired: 25, anime_source: 65, shiki: 25 },
   game: { players: 35, steam_positive: 25, metacritic: 30, reviews: 25, price: 20 },
   city: { economy: 45, humanCapital: 45, qualityOfLife: 45, ecology: 45, governance: 45 },
-  music: { activity_start_year: 25, decade: 25, music_type: 45, music_active: 15 },
+  music: { activity_start_year: 25, music_debut_year: 25, decade: 25, music_type: 45, music_active: 15, music_gender: 20, music_languages: 35 },
   diagnosis: { course: 45, contagiousness: 45, typical_age: 40, risk_factors: 60 },
   animal: { animal_class: 25, animal_order: 55, animal_family: 70, body_coverings: 30, habitats: 35, animal_continents: 25, diets: 35, locomotion: 25, reproduction: 30, body_mass: 35, leg_count: 25 },
   book: { book_authors: 90, book_country: 45, book_language: 45, book_year: 30, book_genres: 35, book_series: 20, book_adaptation: 25, book_adaptation_count: 25, book_awards: 25 },

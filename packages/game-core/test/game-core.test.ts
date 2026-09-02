@@ -25,7 +25,10 @@ const fixtures = JSON.parse(readFileSync(new URL('./fixtures/compare-golden.json
 
 describe('game-core characterization', () => {
   for (const mode of Object.keys(fixtures) as TitleMode[]) it(`${mode}: preserves 20 golden comparisons`, () => {
-    const items = JSON.parse(readFileSync(new URL(`../../../public/data/libraries/${libraryDirs[mode]}/items.json`, import.meta.url), 'utf8')) as TitleItem[]
+    // The music roster now uses release-debut semantics. Retain the original
+    // golden cases to guard saved sessions on legacy immutable revisions.
+    const source = mode === 'music' ? './fixtures/music-legacy-items.json' : `../../../public/data/libraries/${libraryDirs[mode]}/items.json`
+    const items = JSON.parse(readFileSync(new URL(source, import.meta.url), 'utf8')) as TitleItem[]
     const byId = new Map(items.map((item) => [item.id, item]))
     const fixture = fixtures[mode]!
     for (const entry of fixture.cases) {

@@ -19,7 +19,7 @@ import {
   economyFriendsRoomCost,
   friendsRoomMinimumRounds,
 } from '@shoditsa/contracts'
-import { canonicalMusicGenreLabel, isExactTitleSearchMatch, localizeMusicCountry, musicDifficultyPool, normalize } from '@shoditsa/game-core'
+import { canonicalMusicGenreLabel, isExactTitleSearchMatch, localizeMusicCountry, musicComparisonYear, musicDifficultyPool, normalize } from '@shoditsa/game-core'
 import {
   contentItemVersions,
   contentRevisions,
@@ -99,7 +99,7 @@ export const buildFriendsRoomHints = (item: TitleItem): string[] => {
     : item.mode === 'city'
       ? [hint('Страна', item.country), hint('Континент', item.continent), hint('Языки', list(item.languages, 3)), item.population ? `Население: ${new Intl.NumberFormat('ru-RU').format(item.population)}` : '']
       : item.mode === 'music'
-        ? [hint('Начало карьеры', item.activityStartYear), hint('Страны', list(item.countries?.map(localizeMusicCountry))), hint('Жанры', list(item.genres?.map(canonicalMusicGenreLabel), 3)), hint('Известный трек', item.topTracks?.[0]?.title)]
+        ? [hint(item.musicDebutYear != null ? 'Год дебюта' : 'Начало карьеры', musicComparisonYear(item)), hint('Страны', list(item.countries?.map(localizeMusicCountry))), hint('Жанры', list(item.genres?.map(canonicalMusicGenreLabel), 3)), hint('Известный трек', item.topTracks?.[0]?.title)]
         : item.mode === 'diagnosis'
           ? [hint('Системы организма', list(item.bodySystems, 2)), hint('Симптомы', list(item.keySymptoms, 3)), hint('Диагностика', first(item.diagnostics)), hint('Группа МКБ', item.icdGroup)]
           : item.mode === 'animal'
