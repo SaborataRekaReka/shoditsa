@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { compareTitles, isAllowedInRegularGame, musicDifficultyPool, musicYearMeta, poolFor, searchTitles } from '@shoditsa/game-core'
+import { compareTitles, isAllowedInRegularGame, localizeMusicCountry, musicDifficultyPool, musicYearMeta, poolFor, searchTitles } from '@shoditsa/game-core'
 import type { TitleItem } from '@shoditsa/contracts'
 import { buildEditorialMusicCatalog, buildEditorialMusicSearchIndex, validateEditorialMusicDocument, type ArtistCompatibility, type EditorialMusicDocument } from '../src/modules/admin/music-editorial-catalog.js'
 
@@ -45,10 +45,25 @@ describe('editorial music catalog', () => {
     expect(recent.every((item) => Number(item.musicDebutYear) >= 2010)).toBe(true)
   })
 
+  it('compares country names with legacy codes and retains historical countries', () => {
+    const answer = { ...items[0], countries: ['США'] }
+    expect(compareTitles({ ...answer, countries: ['US'] }, answer).find((hint) => hint.key === 'country'))
+      .toMatchObject({ status: 'match', value: '🇺🇸 США' })
+    expect(compareTitles({ ...answer, countries: ['Россия'] }, { ...answer, countries: ['Россия', 'СССР'] }).find((hint) => hint.key === 'country'))
+      .toMatchObject({ status: 'partial', matchedValues: ['🇷🇺 Россия'] })
+    expect(compareTitles({ ...answer, countries: ['Россия'] }, { ...answer, countries: ['СССР'] }).find((hint) => hint.key === 'country'))
+      .toMatchObject({ status: 'miss' })
+    expect(localizeMusicCountry('Латвия')).toBe('🇱🇻 Латвия')
+    expect(localizeMusicCountry('СССР')).toBe('СССР')
+  })
+
   it('has complete self-comparisons and real language/composition comparisons on every artist', () => {
     for (const item of items) {
       const hints = compareTitles(item, item)
-      expect(hints.length).toBeGreaterThanOrEqual(8)
+      expect(hints.map((hint) => hint.key), item.id).toEqual([
+        'music_debut_year', 'decade', 'country', 'genres', 'music_type',
+        'music_active', 'music_gender', 'music_languages', 'similar_artists',
+      ])
       expect(hints.every((hint) => hint.status === 'match' && hint.direction === null), item.id).toBe(true)
       expect(hints.some((hint) => hint.key === 'music_languages')).toBe(true)
       expect(hints.some((hint) => hint.key === 'music_gender')).toBe(true)

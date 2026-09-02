@@ -5,7 +5,7 @@ import { DIFFICULTY_ORDER, compareTitles, isAllowedInRegularGame, musicDifficult
 import type { TitleItem } from '@shoditsa/contracts'
 import { validateContentPayload } from '../../apps/api/src/modules/admin/content-service.js'
 import { releaseAliasesFor, type ReleaseContentItem } from '../../apps/api/src/modules/admin/release-content-loader.js'
-import { buildEditorialMusicCatalog, buildEditorialMusicSearchIndex, prepareArtistCompatibility, type ArtistCompatibility, type EditorialMusicDocument, type EditorialMusicOverrides } from '../../apps/api/src/modules/admin/music-editorial-catalog.js'
+import { EDITORIAL_MUSIC_COMPARISON_KEYS, buildEditorialMusicCatalog, buildEditorialMusicSearchIndex, prepareArtistCompatibility, type ArtistCompatibility, type EditorialMusicDocument, type EditorialMusicOverrides } from '../../apps/api/src/modules/admin/music-editorial-catalog.js'
 
 const options = new Map(process.argv.slice(2).map((argument) => {
   const at = argument.indexOf('=')
@@ -36,7 +36,13 @@ const compatibility = JSON.parse(await readFile(compatibilityPath, 'utf8')) as R
 const overrides = JSON.parse(await readFile(overridesPath, 'utf8')) as EditorialMusicOverrides
 const items = buildEditorialMusicCatalog(document, checksum, compatibility, overrides)
 const issues = items.flatMap((item) => validateContentPayload(item as unknown as Record<string, unknown>, 'music').map((issue) => ({ id: item.id, sourceId: item.musicCatalog?.sourceId, title: item.titleRu, ...issue })))
-const selfComparisonIssues = items.flatMap((item) => compareTitles(item, item).filter((hint) => hint.status !== 'match' || hint.direction != null).map((hint) => ({ id: item.id, hint })))
+const selfComparisonIssues = items.flatMap((item) => {
+  const hints = compareTitles(item, item)
+  return [
+    ...EDITORIAL_MUSIC_COMPARISON_KEYS.filter((key) => !hints.some((hint) => hint.key === key)).map((key) => ({ id: item.id, missingKey: key })),
+    ...hints.filter((hint) => hint.status !== 'match' || hint.direction != null).map((hint) => ({ id: item.id, hint })),
+  ]
+})
 const aliases = new Map<string, string[]>()
 for (const item of items) for (const alias of releaseAliasesFor(item as ReleaseContentItem)) aliases.set(alias.normalizedAlias, [...(aliases.get(alias.normalizedAlias) ?? []), item.id])
 const aliasCollisions = [...aliases].filter(([, ids]) => ids.length > 1).map(([alias, ids]) => ({ alias, ids }))

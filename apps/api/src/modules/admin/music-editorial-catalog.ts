@@ -2,6 +2,11 @@ import { createHash } from 'node:crypto'
 import { musicComparisonYear, normalize, resolveMusicRedirectId } from '@shoditsa/game-core'
 import type { LibrarySearchIndex, MusicGameTier, TitleItem } from '@shoditsa/contracts'
 
+export const EDITORIAL_MUSIC_COMPARISON_KEYS = [
+  'music_debut_year', 'decade', 'country', 'genres', 'music_type',
+  'music_active', 'music_gender', 'music_languages', 'similar_artists',
+] as const
+
 export type EditorialArtist = {
   id: string
   name: string

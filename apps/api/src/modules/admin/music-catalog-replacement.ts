@@ -8,6 +8,7 @@ import {
 } from '@shoditsa/database'
 import { compareTitles, isAllowedInRegularGame, normalize } from '@shoditsa/game-core'
 import { contentPayloadsEqual, validateContentPayload } from './content-service.js'
+import { EDITORIAL_MUSIC_COMPARISON_KEYS } from './music-editorial-catalog.js'
 import { releaseAliasesFor, type ReleaseContentItem } from './release-content-loader.js'
 
 type VersionRow = typeof contentItemVersions.$inferSelect
@@ -29,7 +30,8 @@ export const planMusicCatalogReplacement = (revision: Revision, rows: VersionRow
     if (item.mode !== 'music' || item.cardType || !isAllowedInRegularGame(item)) throw new Error(`${item.id}: replacement contains a special, foreign-mode or unplayable card`)
     if (!item.musicCatalog?.sourceId || item.musicCatalog.sourceChecksum !== source.sourceChecksum || item.musicCatalog.version !== source.version || item.musicCatalog.dataset !== source.dataset) throw new Error(`${item.id}: mixed music sources`)
     const issues = validateContentPayload(item as unknown as Record<string, unknown>, 'music').filter((issue) => issue.level === 'error')
-    if (issues.length || compareTitles(item, item).some((hint) => hint.status !== 'match' || hint.direction != null)) throw new Error(`${item.id}: invalid gameplay payload (${JSON.stringify(issues)})`)
+    const hints = compareTitles(item, item)
+    if (issues.length || EDITORIAL_MUSIC_COMPARISON_KEYS.some((key) => !hints.some((hint) => hint.key === key)) || hints.some((hint) => hint.status !== 'match' || hint.direction != null)) throw new Error(`${item.id}: invalid gameplay payload (${JSON.stringify(issues)})`)
     for (const alias of releaseAliasesFor(item as ReleaseContentItem)) {
       const owner = aliasOwners.get(alias.normalizedAlias)
       if (owner && owner !== item.id) throw new Error(`Ambiguous music alias: ${alias.alias}`)

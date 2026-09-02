@@ -746,6 +746,8 @@ const list = (values: string[]) => {
   return comparable.length ? comparable.join(', ') : 'Нет данных'
 }
 const countryCode = (value: string) => {
+  const namedCode = MUSIC_COUNTRY_CODES_BY_NAME.get(normalize(value))
+  if (namedCode) return namedCode
   const firstChunk = value.split(',')[0]?.trim().toUpperCase() ?? ''
   if (/^[A-Z]{2}$/.test(firstChunk)) return firstChunk
   const fallback = value.toUpperCase().match(/\b[A-Z]{2}\b/)
@@ -753,7 +755,12 @@ const countryCode = (value: string) => {
 }
 
 const MUSIC_COUNTRY_LABELS: Record<string, string> = {
+  AL: 'Албания',
   AZ: 'Азербайджан',
+  BB: 'Барбадос',
+  BE: 'Бельгия',
+  BG: 'Болгария',
+  BY: 'Беларусь',
   RU: 'Россия',
   GB: 'Великобритания',
   UK: 'Великобритания',
@@ -768,18 +775,41 @@ const MUSIC_COUNTRY_LABELS: Record<string, string> = {
   DK: 'Дания',
   FI: 'Финляндия',
   CA: 'Канада',
+  CH: 'Швейцария',
+  CO: 'Колумбия',
+  CU: 'Куба',
+  CV: 'Кабо-Верде',
   AU: 'Австралия',
   NZ: 'Новая Зеландия',
   JP: 'Япония',
   KR: 'Южная Корея',
   CN: 'Китай',
   IN: 'Индия',
+  IE: 'Ирландия',
+  IL: 'Израиль',
+  GE: 'Грузия',
+  GH: 'Гана',
+  HR: 'Хорватия',
+  JM: 'Ямайка',
+  KZ: 'Казахстан',
+  LV: 'Латвия',
+  MD: 'Молдова',
   BR: 'Бразилия',
   AR: 'Аргентина',
   MX: 'Мексика',
   TR: 'Турция',
   PL: 'Польша',
+  NG: 'Нигерия',
+  NL: 'Нидерланды',
+  PR: 'Пуэрто-Рико',
+  PT: 'Португалия',
+  RO: 'Румыния',
+  TT: 'Тринидад и Тобаго',
 }
+
+const MUSIC_COUNTRY_CODES_BY_NAME = new Map(
+  Object.entries(MUSIC_COUNTRY_LABELS).filter(([code]) => code !== 'UK').map(([code, label]) => [normalize(label), code]),
+)
 
 const flagEmojiByCode = (code: string) => {
   const upperCode = code.trim().toUpperCase()
@@ -805,8 +835,9 @@ const countryCodes = (values: string[]) => {
   const seen = new Set<string>()
   const result: string[] = []
   for (const value of values) {
-    const code = countryCode(value)
-    if (!code || seen.has(code)) continue
+    // Keep historical or unfamiliar country names instead of dropping a criterion.
+    const code = countryCode(value) ?? value
+    if (seen.has(code)) continue
     seen.add(code)
     result.push(code)
   }
