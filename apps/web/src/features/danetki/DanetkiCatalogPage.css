@@ -788,9 +788,8 @@
 
   .danetki-catalog-collections {
     display: flex;
-    margin-right: -18px;
     overflow-x: auto;
-    padding: 0 18px 6px 0;
+    padding-bottom: 6px;
     scrollbar-width: thin;
   }
 

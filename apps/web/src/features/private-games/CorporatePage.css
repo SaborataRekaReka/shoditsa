@@ -846,6 +846,7 @@
   .corporate-order__intro > p,
   .corporate-order__promise small,
   .corporate-order__form label > span,
+  .corporate-order__form > .ui-button,
   .corporate-order__error,
   .corporate-order__success p { font-size: 14px; }
   .corporate-order__consent span { font-size: 14px !important; }
