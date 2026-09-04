@@ -291,7 +291,9 @@ const buildDiagnosisRecommendations = (events: NormalizedClientEvent[]): AdminDi
     .map((event) => [event.row.gameSessionId!, event]))
   const clicks = new Map(publicEvents.filter(({ row, properties }) => row.eventName === 'game_next_clicked'
     && property(properties, 'from_mode') === 'diagnosis'
-    && property(properties, 'placement') === 'diagnosis-result-recommendations'
+    // Before the unified result instrumentation, the primary next-game button
+    // had no placement. These are real recorded clicks, not a zero or a backfill.
+    && (!property(properties, 'placement') || property(properties, 'placement') === 'diagnosis-result-recommendations')
     && destinations.includes(property(properties, 'to_mode') ?? ''))
     .map((event) => [`${event.row.userId}:${property(event.properties, 'transition_id') ?? event.row.eventId}`, event]))
   const next = new Map(publicEvents.filter(({ row }) => row.eventName === 'game_next_start')

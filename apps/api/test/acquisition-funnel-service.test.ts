@@ -60,6 +60,9 @@ describe('admin acquisition funnel', () => {
     expect(result.byMode.find(({ mode }) => mode === 'book')).toMatchObject({ clicks: 1, confirmedStarts: 0 })
     const historical = buildAdminAcquisitionFunnel(events.map((row) => row.eventName === 'game_next_clicked' ? { ...row, gameSessionId: null } : row), [], 7, NOW).diagnosisRecommendations.organic
     expect(historical).toMatchObject({ clicks: 2, confirmedStarts: 1, completeToNextRate: null, unlinkedClicks: 2 })
+    const legacyPrimary = buildAdminAcquisitionFunnel(events.map((row) => row.eventName === 'game_next_clicked'
+      ? { ...row, gameSessionId: null, properties: { ...row.properties, placement: null } } : row), [], 7, NOW).diagnosisRecommendations.organic
+    expect(legacyPrimary).toMatchObject({ clicks: 2, confirmedStarts: 1, completeToNextRate: null, unlinkedClicks: 2 })
   })
 
   it('does not turn old-room completions or repeated rooms into a Danetki conversion above 100%', () => {
