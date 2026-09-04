@@ -3387,7 +3387,10 @@ function Game({
         challengeOutcome={challenge ? challengeOutcome(attempts.length, challenge.opponentAttempts) : undefined}
         opponentAttempts={challenge?.opponentAttempts}
         onNext={() => {
-          if (nextMode) trackNextGameClick(mode, nextMode, { outcome: status })
+          if (nextMode && !routeCompleted) trackNextGameClick(mode, nextMode, {
+            outcome: status,
+            ...(mode === 'diagnosis' ? { placement: 'diagnosis-result-recommendations' } : {}),
+          })
           if (routeCompleted) onHome()
           else onPlayNext(nextMode)
         }}
@@ -4171,7 +4174,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             nextPackSession.mutate({ packId: session.packId, position: nextPackPosition })
           }
         : () => {
-            if (nextMode) trackNextGameClick(session.mode, nextMode, { outcome: session.status })
+            if (nextMode && !routeCompleted) trackNextGameClick(session.mode, nextMode, {
+              outcome: session.status,
+              ...(session.mode === 'diagnosis' ? { placement: 'diagnosis-result-recommendations' } : {}),
+            }, sessionId)
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
           }} onRecommendedMode={(recommendedMode) => {
