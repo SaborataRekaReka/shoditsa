@@ -36,6 +36,11 @@ beforeEach(() => {
 })
 
 describe('unified game analytics', () => {
+  it('links the recommendation to the owned source session without sending that session id to Metrika', () => {
+    const id = trackNextGameClick('diagnosis', 'animal', { placement: 'diagnosis-result-recommendations' }, 'source-session')
+    expect(trackClientEvent).toHaveBeenCalledWith('game_next_clicked', expect.objectContaining({ transition_id: id }), { eventId: id, gameSessionId: 'source-session' })
+    for (const [, payload] of trackMetrikaGoal.mock.calls) expect(JSON.stringify(payload)).not.toContain('source-session')
+  })
   it('tracks generic and diagnosis starts once with the same session', () => {
     trackGameStartOnce('diagnosis-start-test', { mode: 'diagnosis', kind: 'daily' })
     trackGameStartOnce('diagnosis-start-test', { mode: 'diagnosis', kind: 'daily' })

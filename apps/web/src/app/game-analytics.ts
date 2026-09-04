@@ -115,7 +115,7 @@ export const trackGameCompleteOnce = (sessionKey: string, meta: Record<string, u
   if (options.serverSession) trackServerGameCompleteObserved(sessionKey, meta)
 }
 
-export const trackNextGameClick = (fromMode: string, toMode: string, meta?: Record<string, unknown>) => {
+export const trackNextGameClick = (fromMode: string, toMode: string, meta?: Record<string, unknown>, sourceSessionId?: string) => {
   const transition: PendingNextGameTransition = {
     id: crypto.randomUUID(),
     fromMode,
@@ -131,7 +131,7 @@ export const trackNextGameClick = (fromMode: string, toMode: string, meta?: Reco
     transition_id: transition.id,
   }
   trackMetrikaGoal('game_next_clicked', payload)
-  trackClientEvent('game_next_clicked', payload, { eventId: transition.id })
+  trackClientEvent('game_next_clicked', payload, { eventId: transition.id, ...(sourceSessionId ? { gameSessionId: sourceSessionId } : {}) })
   if (fromMode === 'diagnosis') trackDiagnosisGoal('nextGame', payload)
   return transition.id
 }

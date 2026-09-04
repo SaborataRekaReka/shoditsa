@@ -99,10 +99,24 @@ export type AdminRegistrationSummary = {
   signUpsAttributedToOrganic: number
   signUpAccountCoverageRate: number | null
   acquisitionCoverageRate: number | null
+  attributedAccountCoverageRate: number | null
+  unattributedAccounts: number | null
   organicAttributionRate: number | null
 }
 
 export type AdminDanetkiFunnel = {
+  entryCohort: {
+    landings: number
+    started: number
+    landingToRoomRate: number | null
+    unkeyedLandingViews: number
+  }
+  roomCohort: {
+    starts: number
+    firstQuestions: number
+    completions: number
+    completionRate: number | null
+  }
   content: {
     catalogViews: number
     storyViews: number
@@ -128,6 +142,16 @@ export type AdminDanetkiFunnel = {
     roomToCompletionRate: number | null
     completionToNextRate: number | null
   }
+}
+
+export type AdminDiagnosisRecommendations = {
+  completedSessions: number
+  clicks: number
+  confirmedStarts: number
+  completedSessionsWithNextStart: number
+  completeToNextRate: number | null
+  unlinkedClicks: number
+  byMode: { mode: string; label: string; clicks: number; confirmedStarts: number }[]
 }
 
 export type AdminAcquisitionFunnelResponse = {
@@ -180,6 +204,10 @@ export type AdminAcquisitionFunnelResponse = {
     limitations: string[]
   }
   registrations: AdminRegistrationSummary
+  diagnosisRecommendations: {
+    all: AdminDiagnosisRecommendations
+    organic: AdminDiagnosisRecommendations
+  }
   danetki: {
     all: AdminDanetkiFunnel
     organic: AdminDanetkiFunnel

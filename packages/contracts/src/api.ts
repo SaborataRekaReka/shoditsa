@@ -88,7 +88,11 @@ export type MeResponse = {
   user: ApiUser
   profile: PlayerProfile
   badges: UserBadge[]
-  auth: { hasPassword: boolean; providers: string[] }
+  auth: {
+    hasPassword: boolean
+    providers: string[]
+    analyticsOutcome?: { eventId: string; action: 'sign_up' | 'sign_in' } | null
+  }
 }
 
 export type AuthActionResponse = {

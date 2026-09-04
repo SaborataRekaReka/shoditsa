@@ -44,6 +44,39 @@ const dailyRow = (activityDate: string, eventName: string, eventsCount = 0, opti
 })
 
 describe('admin acquisition funnel', () => {
+  it('links diagnosis recommendation clicks to confirmed destination starts and keeps unlinked history explicit', () => {
+    const base = { entry_source: 'organic_search', acquisition_id: 'diagnosis-entry' }
+    const recommendation = { ...base, from_mode: 'diagnosis', to_mode: 'animal', transition_id: 'tx-animal', placement: 'diagnosis-result-recommendations' }
+    const events = [
+      clientEvent('finish', 'game_session_complete', '2026-08-18T09:00:00Z', { ...base, mode: 'diagnosis' }, { gameSessionId: 'diagnosis-source' }),
+      clientEvent('click', 'game_next_clicked', '2026-08-18T09:01:00Z', recommendation, { gameSessionId: 'diagnosis-source' }),
+      clientEvent('start', 'game_session_start', '2026-08-18T09:02:00Z', { ...base, mode: 'animal' }, { gameSessionId: 'animal-target' }),
+      clientEvent('next', 'game_next_start', '2026-08-18T09:02:00Z', recommendation, { gameSessionId: 'animal-target' }),
+      clientEvent('next-retry', 'game_next_start', '2026-08-18T09:02:01Z', recommendation, { gameSessionId: 'animal-target' }),
+      clientEvent('book-click', 'game_next_clicked', '2026-08-18T09:03:00Z', { ...recommendation, to_mode: 'book', transition_id: 'tx-book' }, { gameSessionId: 'diagnosis-source' }),
+    ]
+    const result = buildAdminAcquisitionFunnel(events, [], 7, NOW).diagnosisRecommendations.organic
+    expect(result).toMatchObject({ completedSessions: 1, clicks: 2, confirmedStarts: 1, completedSessionsWithNextStart: 1, completeToNextRate: 100, unlinkedClicks: 0 })
+    expect(result.byMode.find(({ mode }) => mode === 'book')).toMatchObject({ clicks: 1, confirmedStarts: 0 })
+    const historical = buildAdminAcquisitionFunnel(events.map((row) => row.eventName === 'game_next_clicked' ? { ...row, gameSessionId: null } : row), [], 7, NOW).diagnosisRecommendations.organic
+    expect(historical).toMatchObject({ clicks: 2, confirmedStarts: 1, completeToNextRate: null, unlinkedClicks: 2 })
+  })
+
+  it('does not turn old-room completions or repeated rooms into a Danetki conversion above 100%', () => {
+    const base = { entry_source: 'organic_search', acquisition_id: 'entry-danetki', mode: 'danetki' }
+    const events = [
+      clientEvent('landing', 'danetki_landing_view', '2026-08-18T09:00:00Z', base),
+      clientEvent('start-a', 'danetki_room_started', '2026-08-18T09:01:00Z', base, { gameSessionId: 'room-a' }),
+      clientEvent('start-b', 'danetki_room_started', '2026-08-18T09:02:00Z', base, { gameSessionId: 'room-b' }),
+      clientEvent('finish-a', 'danetki_room_completed', '2026-08-18T09:03:00Z', base, { gameSessionId: 'room-a' }),
+      clientEvent('finish-old', 'danetki_room_completed', '2026-08-18T09:03:00Z', base, { gameSessionId: 'old-room' }),
+    ]
+    const funnel = buildAdminAcquisitionFunnel(events, [], 7, NOW).danetki.organic
+    expect(funnel.entryCohort).toMatchObject({ landings: 1, started: 1, landingToRoomRate: 100 })
+    expect(funnel.roomCohort).toEqual({ starts: 2, firstQuestions: 0, completions: 1, completionRate: 50 })
+    expect(funnel.game.roomCompletions).toBe(2)
+  })
+
   it('deduplicates compatibility events and attributes a registration to the organic cohort', () => {
     const events = [
       clientEvent('page-organic', 'page_view', '2026-08-13T09:00:00.000Z', {
@@ -322,6 +355,8 @@ describe('admin acquisition funnel', () => {
       signUpsAttributedToOrganic: 1,
       signUpAccountCoverageRate: 100,
       acquisitionCoverageRate: 50,
+      attributedAccountCoverageRate: 50,
+      unattributedAccounts: 1,
       organicAttributionRate: 50,
     })
     expect(result.byLanding[0]?.label).toBe('Главная')

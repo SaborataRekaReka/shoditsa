@@ -440,7 +440,7 @@ function ContentRevisionControl({ activeRevision, navigate, notify }: {
 
 const acquisitionRate = (value: number | null) => value == null ? '—' : `${value.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}%`
 
-function AcquisitionFunnelPanel({
+export function AcquisitionFunnelPanel({
   data,
   loading,
   error,
@@ -488,17 +488,39 @@ function AcquisitionFunnelPanel({
           <span><small>sign_in success</small><strong>{data.registrations.signInSuccesses?.toLocaleString('ru-RU') ?? '—'}</strong><em>успешные входы</em></span>
           <span><small>sign_up / аккаунты</small><strong>{acquisitionRate(data.registrations.signUpAccountCoverageRate)}</strong><em>контроль полноты</em></span>
           <span><small>С acquisition</small><strong>{data.registrations.signUpsWithAcquisition.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.registrations.acquisitionCoverageRate)} от sign_up</em></span>
+          <span><small>Атрибуция / аккаунты</small><strong>{acquisitionRate(data.registrations.attributedAccountCoverageRate ?? null)}</strong><em>тот же период создания аккаунтов</em></span>
+          <span><small>Источник неизвестен</small><strong>{data.registrations.unattributedAccounts?.toLocaleString('ru-RU') ?? '—'}</strong><em>не считаются прямыми переходами</em></span>
           <span><small>Из органики</small><strong>{data.registrations.signUpsAttributedToOrganic.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.registrations.organicAttributionRate)} от sign_up</em></span>
         </div>
       </section>
+      {data.diagnosisRecommendations && <section className="admin-acquisition__danetki">
+        <header><div><span>После результата · SEO страницы не меняем</span><h3>Диагнозы → следующая игра</h3></div><small>Цель: 6–8 стартов за 7 дней либо ≥25% завершивших</small></header>
+        <div className="admin-acquisition__danetki-columns">
+          {([['all', 'Весь трафик'], ['organic', 'Органика']] as const).map(([scope, label]) => {
+            const funnel = data.diagnosisRecommendations[scope]
+            return <article key={scope}>
+              <header><strong>{label}</strong><small>Клик ≠ подтверждённый старт</small></header>
+              <div className="admin-acquisition__danetki-group"><dl>
+                <div><dt>Завершили «Диагнозы»</dt><dd>{funnel.completedSessions}</dd></div>
+                <div><dt>Нажали рекомендацию</dt><dd>{funnel.clicks}</dd></div>
+                {funnel.byMode.map((row) => <div key={row.mode}><dt>{row.label}</dt><dd>{row.confirmedStarts}<small>{row.clicks} кликов → старт</small></dd></div>)}
+                <div><dt>Подтверждённые старты</dt><dd>{funnel.confirmedStarts}<small>{acquisitionRate(funnel.completeToNextRate)} завершивших с переходом</small></dd></div>
+              </dl></div>
+              {!!funnel.unlinkedClicks && <p>{funnel.unlinkedClicks} кликов без связи с завершением в этом окне. Конверсия неизвестна; старые события не дополнены предположениями.</p>}
+            </article>
+          })}
+        </div>
+        <p>Проверка 7 сентября — промежуточная. Полная неделя 1–7 сентября доступна 8 сентября. Цель по числу стартов применима только к семидневному окну.</p>
+      </section>}
       <section className="admin-acquisition__danetki">
-        <header><div><span>Отдельное измерение</span><h3>Данетки: контент и игра с ведущим</h3></div><small>Решение по комнате — после 20 стартов</small></header>
+        <header><div><span>Отдельное измерение</span><h3>Данетки: контент и игра с ведущим</h3></div><small>Не менять до 4 сентября; затем минимум 20 органических стартов</small></header>
         <div className="admin-acquisition__danetki-columns">
           {([['all', 'Весь трафик'], ['organic', 'Органика']] as const).map(([scope, label]) => {
             const funnel = data.danetki[scope]
-            const enoughStarts = funnel.game.roomStarts >= 20
+            const enoughStarts = scope === 'organic' && (funnel.roomCohort?.starts ?? 0) >= 20 && data.dataSources.eventTotalsExact
+            const checkpointReady = data.generatedAt >= '2026-09-04T00:00:00.000Z'
             return <article key={scope}>
-              <header><strong>{label}</strong><small>{enoughStarts ? 'Выборка достаточна для решения' : `${funnel.game.roomStarts}/20 стартов комнаты`}</small></header>
+              <header><strong>{label}</strong><small>{scope === 'all' ? 'Контекст, не порог решения по SEO' : enoughStarts && checkpointReady ? 'Можно проверять гипотезу о комнате' : `${funnel.roomCohort?.starts ?? funnel.game.roomStarts}/20 органических стартов${checkpointReady ? '' : ' · до контрольной даты'}`}</small></header>
               <div className="admin-acquisition__danetki-group"><h4>Контентная воронка</h4><dl>
                 <div><dt>Каталог</dt><dd>{funnel.content.catalogViews}</dd></div>
                 <div><dt>Истории</dt><dd>{funnel.content.storyViews}</dd></div>
@@ -507,12 +529,16 @@ function AcquisitionFunnelPanel({
               </dl></div>
               <div className="admin-acquisition__danetki-group"><h4>Играть с ведущим</h4><dl>
                 <div><dt>Входы</dt><dd>{funnel.game.landingViews}</dd></div>
-                <div><dt>Нажали старт</dt><dd>{funnel.game.startClicks}<small>{acquisitionRate(funnel.game.landingToStartRate)} · цель ≥40%</small></dd></div>
-                <div><dt>Комнаты</dt><dd>{funnel.game.roomStarts}<small>{acquisitionRate(funnel.game.startToRoomRate)} от кликов</small></dd></div>
+                <div><dt>Нажали старт</dt><dd>{funnel.game.startClicks}<small>{acquisitionRate(funnel.game.landingToStartRate)} · отношение событий</small></dd></div>
+                <div><dt>Комнаты</dt><dd>{funnel.game.roomStarts}<small>фактические старты</small></dd></div>
                 <div><dt>Первый вопрос</dt><dd>{funnel.game.firstQuestions}<small>{acquisitionRate(funnel.game.roomToFirstQuestionRate)}</small></dd></div>
-                <div><dt>Завершили</dt><dd>{funnel.game.roomCompletions}<small>{acquisitionRate(funnel.game.roomToCompletionRate)} · цель ≥30%</small></dd></div>
+                <div><dt>Завершили</dt><dd>{funnel.game.roomCompletions}<small>все завершения в окне</small></dd></div>
                 <div><dt>Следующая игра</dt><dd>{funnel.game.nextClicks}<small>{acquisitionRate(funnel.game.completionToNextRate)}</small></dd></div>
               </dl></div>
+              {funnel.entryCohort && funnel.roomCohort && <div className="admin-acquisition__danetki-group"><h4>Сопоставимые когорты</h4><dl>
+                <div><dt>Входы → первая комната</dt><dd>{funnel.entryCohort.started}/{funnel.entryCohort.landings}<small>{acquisitionRate(funnel.entryCohort.landingToRoomRate)} · цель ≥40%</small></dd></div>
+                <div><dt>Начатые комнаты → завершение</dt><dd>{funnel.roomCohort.completions}/{funnel.roomCohort.starts}<small>{acquisitionRate(funnel.roomCohort.completionRate)} · цель ≥30%</small></dd></div>
+              </dl><p>Без acquisition не включены {funnel.entryCohort.unkeyedLandingViews} просмотров. Завершения сопоставлены с комнатами, начатыми в этом же окне.</p></div>}
             </article>
           })}
         </div>

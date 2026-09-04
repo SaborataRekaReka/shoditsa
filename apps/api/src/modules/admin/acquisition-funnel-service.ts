@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm'
 import type {
   AdminAcquisitionActivityBreakdown,
   AdminDanetkiFunnel,
+  AdminDiagnosisRecommendations,
   AdminAcquisitionFunnelBreakdown,
   AdminAcquisitionFunnelPeriod,
   AdminAcquisitionFunnelResponse,
@@ -222,7 +223,37 @@ const buildDanetkiFunnel = (events: NormalizedClientEvent[]): AdminDanetkiFunnel
   const registrationClicks = count('danetki_registration_offer_clicked')
   const registrations = count('danetki_registration_succeeded')
   const nextClicks = count('danetki_cross_game_clicked', transitionIdentity)
+  const landings = new Map<string, Date>()
+  const startedEntries = new Set<string>()
+  const startedRooms = new Map<string, Date>()
+  const firstQuestionRooms = new Set<string>()
+  const completedRooms = new Set<string>()
+  let unkeyedLandingViews = 0
+  for (const event of [...danetkiRows].sort((a, b) => a.at.getTime() - b.at.getTime())) {
+    const { row, properties, at } = event
+    const acquisitionId = acquisitionIdOf(properties)
+    const entryKey = acquisitionId ? acquisitionMapKey(row.userId, acquisitionId) : null
+    if (row.eventName === 'danetki_landing_view') {
+      if (entryKey) landings.set(entryKey, landings.get(entryKey) ?? at)
+      else unkeyedLandingViews += 1
+    }
+    if (row.eventName === 'danetki_room_started' && row.gameSessionId) {
+      startedRooms.set(row.gameSessionId, startedRooms.get(row.gameSessionId) ?? at)
+      if (entryKey && landings.has(entryKey)) startedEntries.add(entryKey)
+    }
+    if (!row.gameSessionId || !startedRooms.has(row.gameSessionId)) continue
+    if (row.eventName === 'danetki_first_question') firstQuestionRooms.add(row.gameSessionId)
+    if (row.eventName === 'danetki_room_completed') completedRooms.add(row.gameSessionId)
+  }
   return {
+    entryCohort: {
+      landings: landings.size, started: startedEntries.size,
+      landingToRoomRate: ratio(startedEntries.size, landings.size), unkeyedLandingViews,
+    },
+    roomCohort: {
+      starts: startedRooms.size, firstQuestions: firstQuestionRooms.size, completions: completedRooms.size,
+      completionRate: ratio(completedRooms.size, startedRooms.size),
+    },
     content: {
       catalogViews,
       storyViews,
@@ -251,19 +282,61 @@ const buildDanetkiFunnel = (events: NormalizedClientEvent[]): AdminDanetkiFunnel
   }
 }
 
+const buildDiagnosisRecommendations = (events: NormalizedClientEvent[]): AdminDiagnosisRecommendations => {
+  const destinations = ['animal', 'character', 'book']
+  const publicEvents = events.filter(({ properties }) => !property(properties, 'packId', 'pack_id') && property(properties, 'kind') !== 'special')
+  const completed = new Map(publicEvents.filter(({ row, properties }) => row.eventName === 'game_session_complete'
+    && row.gameSessionId && modeOf(row, properties) === 'diagnosis').map((event) => [event.row.gameSessionId!, event]))
+  const started = new Map(publicEvents.filter(({ row }) => row.eventName === 'game_session_start' && row.gameSessionId)
+    .map((event) => [event.row.gameSessionId!, event]))
+  const clicks = new Map(publicEvents.filter(({ row, properties }) => row.eventName === 'game_next_clicked'
+    && property(properties, 'from_mode') === 'diagnosis'
+    && property(properties, 'placement') === 'diagnosis-result-recommendations'
+    && destinations.includes(property(properties, 'to_mode') ?? ''))
+    .map((event) => [`${event.row.userId}:${property(event.properties, 'transition_id') ?? event.row.eventId}`, event]))
+  const next = new Map(publicEvents.filter(({ row }) => row.eventName === 'game_next_start')
+    .map((event) => [`${event.row.userId}:${property(event.properties, 'transition_id')}`, event]))
+  const modes = new Map(destinations.map((mode) => [mode, { mode, label: modeLabel[mode]!, clicks: 0, confirmedStarts: 0 }]))
+  const converted = new Set<string>()
+  let confirmedStarts = 0
+  let unlinkedClicks = 0
+  for (const [key, click] of clicks) {
+    const mode = property(click.properties, 'to_mode')!
+    modes.get(mode)!.clicks += 1
+    const source = click.row.gameSessionId ? completed.get(click.row.gameSessionId) : null
+    const linkedSource = source && source.row.userId === click.row.userId && source.at <= click.at
+    if (!linkedSource) unlinkedClicks += 1
+    const transition = next.get(key)
+    const target = transition?.row.gameSessionId ? started.get(transition.row.gameSessionId) : null
+    if (!transition || !target || target.row.userId !== click.row.userId || modeOf(target.row, target.properties) !== mode
+      || property(transition.properties, 'to_mode') !== mode || transition.at < click.at
+      || target.at < click.at || transition.at.getTime() - click.at.getTime() > 15 * 60_000) continue
+    confirmedStarts += 1
+    modes.get(mode)!.confirmedStarts += 1
+    if (linkedSource) converted.add(source.row.gameSessionId!)
+  }
+  return {
+    completedSessions: completed.size, clicks: clicks.size, confirmedStarts,
+    completedSessionsWithNextStart: converted.size,
+    completeToNextRate: unlinkedClicks ? null : ratio(converted.size, completed.size),
+    unlinkedClicks, byMode: [...modes.values()],
+  }
+}
+
 const registrationSummary = (
   rowsInWindow: AcquisitionSignUpRow[],
   aggregate?: AcquisitionRegistrationAggregateRow,
 ): AdminRegistrationSummary => {
-  const signUpSuccesses = aggregate ? dailyCount(aggregate.signUpSuccesses) : rowsInWindow.length
+  const uniqueAccounts = [...new Map(rowsInWindow.map((entry) => [entry.userId, entry])).values()]
+  const signUpSuccesses = aggregate ? dailyCount(aggregate.signUpSuccesses) : uniqueAccounts.length
   const signInSuccesses = aggregate ? dailyCount(aggregate.signInSuccesses) : null
   const accountsCreated = aggregate ? dailyCount(aggregate.accountsCreated) : null
   const signUpsWithAcquisition = aggregate
     ? dailyCount(aggregate.signUpsWithAcquisition)
-    : rowsInWindow.filter((entry) => Boolean(text(entry.acquisitionId))).length
+    : uniqueAccounts.filter((entry) => Boolean(text(entry.acquisitionId))).length
   const signUpsAttributedToOrganic = aggregate
     ? dailyCount(aggregate.signUpsAttributedToOrganic)
-    : rowsInWindow.filter((entry) => organicSource(text(entry.entrySource))).length
+    : uniqueAccounts.filter((entry) => Boolean(text(entry.acquisitionId)) && organicSource(text(entry.entrySource))).length
   return {
     accountsCreated,
     signUpSuccesses,
@@ -272,6 +345,8 @@ const registrationSummary = (
     signUpsAttributedToOrganic,
     signUpAccountCoverageRate: accountsCreated == null ? null : ratio(signUpSuccesses, accountsCreated),
     acquisitionCoverageRate: ratio(signUpsWithAcquisition, signUpSuccesses),
+    attributedAccountCoverageRate: accountsCreated == null ? null : ratio(signUpsWithAcquisition, accountsCreated),
+    unattributedAccounts: accountsCreated == null ? null : Math.max(0, accountsCreated - signUpsWithAcquisition),
     organicAttributionRate: ratio(signUpsAttributedToOrganic, signUpSuccesses),
   }
 }
@@ -532,6 +607,10 @@ export const buildAdminAcquisitionFunnel = (
       limitations,
     },
     registrations,
+    diagnosisRecommendations: {
+      all: buildDiagnosisRecommendations(inWindow),
+      organic: buildDiagnosisRecommendations(inWindow.filter(({ properties }) => organicSource(sourceOf(properties)))),
+    },
     danetki,
     territory: {
       ...territory,
@@ -710,13 +789,15 @@ export const loadAdminAcquisitionFunnel = async (
       order by occurred_at asc
       limit ${RAW_EVENT_ROW_LIMIT + 1}`),
     db.execute(sql`
-      select id "eventId", occurred_at "occurredAt", user_id "userId",
-        acquisition_id "acquisitionId", entry_source "entrySource",
-        search_engine "searchEngine", entry_path "entryPath"
-      from auth_events
-      where occurred_at >= ${registrationRawFrom}::timestamptz and occurred_at < ${reportTo}::timestamptz
-        and event_name = 'sign_up' and result = 'success'
-      order by occurred_at asc
+      select ae.id "eventId", ae.occurred_at "occurredAt", ae.user_id "userId",
+        ae.acquisition_id "acquisitionId", ae.entry_source "entrySource",
+        ae.search_engine "searchEngine", ae.entry_path "entryPath"
+      from auth_events ae
+      inner join "user" u on u.id = ae.user_id and u.is_anonymous = false
+      where ae.occurred_at >= ${registrationRawFrom}::timestamptz and ae.occurred_at < ${reportTo}::timestamptz
+        and ae.event_name = 'sign_up' and ae.result = 'success'
+        and not exists (select 1 from player_profiles p where p.user_id = ae.user_id and p.role = 'admin')
+      order by ae.occurred_at asc
       limit ${SIGN_UP_ROW_LIMIT + 1}`),
     db.execute(sql`
       select
@@ -727,16 +808,21 @@ export const loadAdminAcquisitionFunnel = async (
             and u.is_anonymous = false
             and not exists (select 1 from player_profiles p where p.user_id = u.id and p.role = 'admin')
         ) "accountsCreated",
-        count(distinct ae.user_id) filter (where ae.event_name = 'sign_up' and ae.result = 'success')::int "signUpSuccesses",
+        count(distinct ae.user_id) filter (where ae.event_name = 'sign_up' and ae.result = 'success'
+          and u."createdAt" >= ${reportFrom}::timestamptz and u."createdAt" < ${reportTo}::timestamptz)::int "signUpSuccesses",
         count(*) filter (where ae.event_name = 'sign_in' and ae.result = 'success')::int "signInSuccesses",
         count(distinct ae.user_id) filter (
           where ae.event_name = 'sign_up' and ae.result = 'success' and ae.acquisition_id is not null
+            and u."createdAt" >= ${reportFrom}::timestamptz and u."createdAt" < ${reportTo}::timestamptz
         )::int "signUpsWithAcquisition",
         count(distinct ae.user_id) filter (
           where ae.event_name = 'sign_up' and ae.result = 'success'
+            and ae.acquisition_id is not null
+            and u."createdAt" >= ${reportFrom}::timestamptz and u."createdAt" < ${reportTo}::timestamptz
             and lower(coalesce(nullif(ae.entry_source, ''), '')) in ('organic_search', 'organic')
         )::int "signUpsAttributedToOrganic"
       from auth_events ae
+      inner join "user" u on u.id = ae.user_id and u.is_anonymous = false
       where ae.occurred_at >= ${reportFrom}::timestamptz and ae.occurred_at < ${reportTo}::timestamptz
         and ae.event_name in ('sign_up', 'sign_in')
         and not exists (select 1 from player_profiles p where p.user_id = ae.user_id and p.role = 'admin')`),

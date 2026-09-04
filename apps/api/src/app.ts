@@ -29,6 +29,7 @@ import {
   type Database,
 } from '@shoditsa/database'
 import { createAuth, type Auth } from './modules/auth/auth.js'
+import { AUTH_ACQUISITION_HEADER, loadAuthAnalyticsOutcome, parseAuthAcquisition, withOAuthAcquisition } from './modules/auth/analytics.js'
 import { getRequestUser, requireAdmin } from './modules/auth/session.js'
 import { ApiError, requireIdempotencyKey, sendError } from './lib/errors.js'
 import { rateLimitError, rateLimitKey, rateLimitMax } from './lib/rate-limit.js'
@@ -64,41 +65,6 @@ type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
 const paramsId = Type.Object({ sessionId: UuidSchema }, { additionalProperties: false })
 const idempotencyHeaders = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
-const AUTH_ACQUISITION_HEADER = 'x-shoditsa-acquisition'
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-
-type AuthAcquisition = {
-  acquisitionId: string
-  entrySource: 'organic_search' | 'direct' | 'referral'
-  searchEngine: string | null
-  entryPath: string
-  referrerHost: string | null
-}
-
-const canonicalAuthEntryPath = (value: unknown) => {
-  if (typeof value !== 'string' || !value.startsWith('/') || value.length > 160 || !/^\/[a-zA-Z0-9_~%./:@-]*$/.test(value)) return null
-  if (/^\/sessions\/[^/]+/.test(value)) return '/sessions/:id'
-  if (/^\/danetki\/join\/[^/]+/.test(value)) return '/danetki/join'
-  if (/^\/specials\/[^/]+/.test(value)) return '/specials/:pack'
-  return value || '/'
-}
-
-const parseAuthAcquisition = (value: string | string[] | undefined): AuthAcquisition | null => {
-  if (typeof value !== 'string' || value.length > 1_200) return null
-  try {
-    const raw = JSON.parse(value) as Record<string, unknown>
-    const acquisitionId = typeof raw.acquisition_id === 'string' && UUID_PATTERN.test(raw.acquisition_id) ? raw.acquisition_id : null
-    const entrySource = raw.entry_source === 'organic_search' || raw.entry_source === 'direct' || raw.entry_source === 'referral' ? raw.entry_source : null
-    const entryPath = canonicalAuthEntryPath(raw.entry_path)
-    if (!acquisitionId || !entrySource || !entryPath) return null
-    const searchEngine = typeof raw.entry_search_engine === 'string' && /^[a-z0-9-]{1,32}$/i.test(raw.entry_search_engine) ? raw.entry_search_engine.toLowerCase() : null
-    const referrerHost = typeof raw.entry_referrer_host === 'string' && /^[a-z0-9.-]{1,253}$/i.test(raw.entry_referrer_host) ? raw.entry_referrer_host.toLowerCase() : null
-    return { acquisitionId, entrySource, searchEngine, entryPath, referrerHost }
-  } catch {
-    return null
-  }
-}
-
 const forwardAuthResponse = async (reply: FastifyReply, response: Response) => {
   reply.status(response.status)
   response.headers.forEach((value, key) => {
@@ -280,10 +246,15 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
             : /\/change-password\/?$/i.test(authPath) ? 'password_changed' : null
     const priorUser = eventName ? await getRequestUser(request, auth, db, false, config, true) : null
     const acquisition = eventName ? parseAuthAcquisition(request.headers[AUTH_ACQUISITION_HEADER]) : null
+    const body = (request.body ?? {}) as Record<string, unknown>
+    const authBody = /\/sign-in\/oauth2\/?$/i.test(authPath)
+      ? withOAuthAcquisition(body, request.headers[AUTH_ACQUISITION_HEADER]) : body
+    const authHeaders = fromNodeHeaders(request.headers)
+    authHeaders.set('x-request-id', request.id)
     const url = new URL(request.url, config.authUrl)
     const response = await auth.handler(new Request(url, {
-      method: request.method, headers: fromNodeHeaders(request.headers),
-      body: request.method === 'GET' || request.method === 'HEAD' ? undefined : JSON.stringify(request.body ?? {}),
+      method: request.method, headers: authHeaders,
+      body: request.method === 'GET' || request.method === 'HEAD' ? undefined : JSON.stringify(authBody),
     }))
     const registrationReferral = normalizeRegistrationReferral(request.headers[REGISTRATION_REFERRAL_HEADER])
     if (registrationReferral && /\/sign-in\/oauth2\/?$/i.test(authPath) && response.ok) {
@@ -292,11 +263,14 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     if (/\/oauth2\/callback\//i.test(authPath)) {
       response.headers.append('set-cookie', clearRegistrationReferralCookie(config.cookieSecure))
     }
-    if (eventName) {
+    // Successful sign-up/sign-in are recorded by database lifecycle hooks, including OAuth callbacks.
+    // Starting an OAuth redirect is not a successful login; anonymous sessions are not registrations.
+    if (eventName && !/\/sign-in\/(oauth2|anonymous)\/?$/i.test(authPath)
+      && (!(eventName === 'sign_up' || eventName === 'sign_in') || !response.ok)) {
       const payload = await response.clone().json().catch(() => null) as { user?: { id?: string } } | null
       const responseUserId = payload?.user?.id ?? null
       const candidateUserId = responseUserId ?? priorUser?.id ?? null
-      const eventUser = candidateUserId ? await db.select({ id: user.id }).from(user).where(eq(user.id, candidateUserId)).limit(1) : []
+      const eventUser = candidateUserId ? await db.select({ id: user.id }).from(user).where(and(eq(user.id, candidateUserId), eq(user.isAnonymous, false))).limit(1) : []
       if (eventUser[0]) await db.insert(authEvents).values({
         userId: eventUser[0].id,
         authSessionId: null,
@@ -321,10 +295,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
 
   app.get('/api/v1/me', async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
-    const [profile, linkedAccounts, userBadgeList] = await Promise.all([
+    const [profile, linkedAccounts, userBadgeList, analyticsOutcome] = await Promise.all([
       db.select().from(playerProfiles).where(eq(playerProfiles.userId, user!.id)).limit(1),
       db.select({ providerId: account.providerId, password: account.password }).from(account).where(eq(account.userId, user!.id)),
       listUserBadges(db, user!.id),
+      user!.isAnonymous ? null : loadAuthAnalyticsOutcome(db, user!.id, user!.authSessionId),
     ])
     return {
       user,
@@ -333,6 +308,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       auth: {
         hasPassword: linkedAccounts.some((entry) => entry.providerId === 'credential' && Boolean(entry.password)),
         providers: [...new Set(linkedAccounts.map((entry) => entry.providerId))],
+        analyticsOutcome,
       },
     }
   })

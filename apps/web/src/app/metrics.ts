@@ -301,6 +301,21 @@ export const trackAuthOutcome = (outcome: AnalyticsAuthIntent, meta?: Record<str
   trackMetrikaGoal(outcome === 'sign_up' ? 'sign_up_success' : 'sign_in_success', payload)
 }
 
+/** Only the authenticated server session can decide whether this was a new account or a login. */
+export const trackConfirmedAuthOutcome = (
+  confirmed: { eventId: string; action: AnalyticsAuthIntent } | null | undefined,
+  meta?: Record<string, unknown>,
+): AnalyticsAuthIntent | null => {
+  if (!confirmed || !uuid(confirmed.eventId) || !['sign_up', 'sign_in'].includes(confirmed.action) || typeof window === 'undefined') return null
+  const key = 'shoditsa:last-auth-analytics-event:v1'
+  try {
+    if (window.sessionStorage.getItem(key) === confirmed.eventId) return null
+    window.sessionStorage.setItem(key, confirmed.eventId)
+  } catch { /* auth must also work with unavailable storage */ }
+  trackAuthOutcome(confirmed.action, { ...meta, outcome_source: 'server_session' })
+  return confirmed.action
+}
+
 export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {
   if (!canUseMetrika()) return
   const params = normalizeMetrikaParams({ screen, ...(meta ?? {}), ...consentedAnalyticsEntryParams() })

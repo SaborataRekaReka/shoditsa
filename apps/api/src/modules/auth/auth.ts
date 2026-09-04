@@ -7,12 +7,14 @@ import type { Database } from '@shoditsa/database'
 import * as schema from '@shoditsa/database'
 import { mergeAnonymousAccount } from './merge.js'
 import { createAuthEmailSender } from './email.js'
+import { createAuthAnalytics } from './analytics.js'
 import { awardRegistrationBadge, registrationReferralFromContext } from '../users/badges.js'
 
 export const createAuth = (config: AppConfig, db: Database) => {
   const smtpConfigured = Boolean(config.smtp.host && config.smtp.from)
   const emailVerificationEnabled = config.authEmailEnabled && smtpConfigured
   const send = createAuthEmailSender(config)
+  const analytics = createAuthAnalytics(db)
 
   const plugins = [
     ...(config.authYandexEnabled
@@ -49,13 +51,16 @@ export const createAuth = (config: AppConfig, db: Database) => {
     databaseHooks: {
       user: {
         create: {
+          before: analytics.beforeCreate,
           after: async (createdUser, context) => {
             if (createdUser.isAnonymous) return
+            await analytics.userCreated(createdUser, context)
             const referral = registrationReferralFromContext(context)
             if (referral) await awardRegistrationBadge(db, createdUser.id, referral)
           },
         },
       },
+      session: { create: { before: analytics.beforeCreate, after: analytics.sessionCreated } },
     },
     emailAndPassword: {
       enabled: config.authEmailEnabled,

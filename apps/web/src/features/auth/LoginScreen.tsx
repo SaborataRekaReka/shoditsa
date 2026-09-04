@@ -6,7 +6,7 @@ import {
   consumeAnalyticsAuthIntent,
   markAnalyticsAuthIntent,
   markAnalyticsOAuthReturnPending,
-  trackAuthOutcome,
+  trackConfirmedAuthOutcome,
   trackMetrikaGoal,
   type AnalyticsAuthIntent,
 } from '../../app/metrics'
@@ -154,9 +154,11 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       window.sessionStorage.removeItem('shoditsa:friends-room-registration')
     }
     const authIntent = consumeAnalyticsAuthIntent()
-    if (authIntent) {
-      trackAuthOutcome(authIntent, { method: 'yandex', ...danetkiAcquisitionMeta() })
-      completeDanetkiRegistrationAttribution('yandex', authIntent)
+    const emailReturn = new URLSearchParams(window.location.search).get('auth_return') === 'email'
+    if (authIntent || emailReturn) {
+      const method = emailReturn ? 'email' : 'yandex'
+      const outcome = trackConfirmedAuthOutcome(serverRuntime.me.auth.analyticsOutcome, { method, ...danetkiAcquisitionMeta() })
+      if (outcome) completeDanetkiRegistrationAttribution(method, outcome)
     }
     window.location.replace(currentReturnUrl())
   }, [returnUrl, serverRuntime.me])
@@ -260,6 +262,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     try {
       const registrationCallback = new URL(window.location.pathname, window.location.origin)
       if (returnUrl !== '/') registrationCallback.searchParams.set('returnUrl', returnUrl)
+      registrationCallback.searchParams.set('auth_return', 'email')
       if (register && returnUrl.startsWith('/games/together')) {
         window.sessionStorage.setItem('shoditsa:friends-room-registration', 'pending')
       }
@@ -268,17 +271,17 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
         : await api.signIn(email.trim(), password)
 
       if (register && !authResult.token) {
-        trackAuthOutcome('sign_up', { method: 'email', status: 'pending_verification', ...danetkiAcquisitionMeta() })
-        completeDanetkiRegistrationAttribution('email', 'sign_up')
+        // Better Auth deliberately returns the same response for an existing email.
+        // Account creation is counted on the server; client success waits for a verified session.
         setPassword('')
         setRegister(false)
         setNotice(`Аккаунт создан. Подтвердите ${email.trim()} по ссылке из письма.`)
         return
       }
       if (!authResult.token) throw new Error('Сервер не создал пользовательскую сессию. Попробуйте войти еще раз.')
-      const authOutcome = register ? 'sign_up' : 'sign_in'
-      trackAuthOutcome(authOutcome, { method: 'email', ...danetkiAcquisitionMeta() })
-      completeDanetkiRegistrationAttribution('email', authOutcome)
+      const me = await api.me().catch(() => null)
+      const authOutcome = trackConfirmedAuthOutcome(me?.auth.analyticsOutcome, { method: 'email', ...danetkiAcquisitionMeta() })
+      if (authOutcome) completeDanetkiRegistrationAttribution('email', authOutcome)
       notifyAuthSessionChanged()
       redirectAfterAuth()
     } catch (value) {

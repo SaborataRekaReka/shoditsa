@@ -4175,7 +4175,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             if (routeCompleted) onHome()
             else onPlayNext(nextMode)
           }} onRecommendedMode={(recommendedMode) => {
-            trackNextGameClick(session.mode, recommendedMode, { outcome: session.status, placement: 'diagnosis-result-recommendations' })
+            trackNextGameClick(session.mode, recommendedMode, { outcome: session.status, placement: 'diagnosis-result-recommendations' }, sessionId)
             onPlayNext(recommendedMode)
           }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
       {session.status === 'lost' && session.mode === 'character' && answer && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">

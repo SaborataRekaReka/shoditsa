@@ -8,6 +8,7 @@ import {
   markAnalyticsOAuthReturnPending,
   trackMetrikaGoal,
   trackMetrikaScreen,
+  trackConfirmedAuthOutcome,
 } from './metrics'
 
 const memoryStorage = () => {
@@ -36,6 +37,18 @@ describe('analytics acquisition context', () => {
       },
     })
     vi.stubGlobal('document', { referrer: 'https://www.google.com/search?q=guess+character' })
+  })
+
+  it('uses the server auth outcome and deduplicates it, without inventing success for unknown outcomes', () => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
+    window.ym = vi.fn()
+    const event = { eventId: '10000000-0000-4000-8000-000000000005', action: 'sign_in' as const }
+    expect(trackConfirmedAuthOutcome(event, { method: 'yandex' })).toBe('sign_in')
+    expect(trackConfirmedAuthOutcome(event)).toBeNull()
+    expect(trackConfirmedAuthOutcome(null)).toBeNull()
+    expect(window.ym).toHaveBeenCalledTimes(2)
+    expect(window.ym).toHaveBeenCalledWith(110517987, 'reachGoal', 'sign_in_success', expect.objectContaining({ action: 'sign_in', outcome_source: 'server_session' }))
+    expect(window.ym).not.toHaveBeenCalledWith(110517987, 'reachGoal', 'sign_up_success', expect.anything())
   })
 
   it('keeps a stable opaque acquisition id and exposes it only after consent', () => {
