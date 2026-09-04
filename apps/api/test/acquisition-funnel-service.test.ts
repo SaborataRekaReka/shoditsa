@@ -19,7 +19,7 @@ const clientEvent = (
   occurredAt: string,
   properties: Record<string, unknown>,
   options: Partial<Pick<AcquisitionClientEventRow, 'userId' | 'gameSessionId' | 'route'>> = {},
-): AcquisitionClientEventRow => ({
+): AcquisitionClientEventRow & { properties: Record<string, unknown> } => ({
   eventId,
   eventName,
   occurredAt,
