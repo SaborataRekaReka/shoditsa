@@ -813,8 +813,8 @@
   .corporate-hero__stats { min-height: 0; padding: 16px 20px; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 0; }
   .corporate-hero__stats > div { padding: 0 8px; }
   .corporate-hero__stats > div strong { font-size: 20px; }
-  .corporate-hero__stats > div span { font-size: 12px; letter-spacing: .04em; }
-  .corporate-hero__stats > p { grid-column: 1 / -1; padding-left: 0; font-size: 12px; }
+  .corporate-hero__stats > div span { font-size: 14px; letter-spacing: 0; }
+  .corporate-hero__stats > p { grid-column: 1 / -1; padding-left: 0; font-size: 14px; }
   .corporate-section { padding-top: 76px; }
   .corporate-section__heading h2 { font-size: 42px; }
   .corporate-format-card { display: block; }
@@ -839,4 +839,14 @@
   .corporate-order__form { grid-template-columns: 1fr; }
   .corporate-order__form > label { grid-column: 1 / -1; }
   .corporate-order__success { margin: 30px 22px; }
+  .corporate-hero__action,
+  .corporate-section__heading > p,
+  .corporate-features span,
+  .corporate-value__lead > p,
+  .corporate-order__intro > p,
+  .corporate-order__promise small,
+  .corporate-order__form label > span,
+  .corporate-order__error,
+  .corporate-order__success p { font-size: 14px; }
+  .corporate-order__consent span { font-size: 14px !important; }
 }
