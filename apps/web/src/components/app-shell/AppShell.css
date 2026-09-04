@@ -943,8 +943,8 @@
   .app-footer__danetki a { font-size: 14px; }
   .app-footer__danetki > div {
     display: flex;
-    margin-right: -18px;
-    padding-right: 18px;
+    margin-right: -16px;
+    padding-right: 16px;
     overflow-x: auto;
     flex-wrap: nowrap;
     scrollbar-width: none;

@@ -154,7 +154,7 @@ export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, on
           <p>{collectionDefinition?.lead ?? 'Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.'}</p>
           <div className="danetki-catalog-hero__actions">
             <a className="ui-button ui-button--primary" href={playHref('catalog', undefined, collection)} onClick={() => trackPlayClick('catalog', undefined, collection)}><Play aria-hidden="true" /> Играть с ведущим</a>
-            <a className="ui-button ui-button--secondary" href="#stories"><BookOpen aria-hidden="true" /> Смотреть истории</a>
+            <a className="ui-button ui-button--secondary" href={`${collectionDefinition?.canonicalPath ?? '/danetki'}#stories`}><BookOpen aria-hidden="true" /> Смотреть истории</a>
           </div>
         </div>
         <dl className="danetki-catalog-facts">
