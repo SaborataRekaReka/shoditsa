@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import './LoginScreen.css'
-import { ArrowLeft, Eye, EyeOff, LoaderCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import {
   clearAnalyticsAuthIntent,
   consumeAnalyticsAuthIntent,
@@ -124,7 +124,8 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>(emptyFieldErrors)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
-  const [pending, setPending] = useState(false)
+  const [pendingAction, setPendingAction] = useState<'email' | 'yandex' | null>(null)
+  const pending = pendingAction !== null
 
   const returnUrl = useMemo(() => currentReturnUrl(), [])
   const registrationReferral = useMemo(
@@ -205,7 +206,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     if (nextErrors.password) return
 
     clearMessages()
-    setPending(true)
+    setPendingAction('email')
     try {
       await api.resetPassword(resetToken, password)
       trackMetrikaGoal('auth_success', { action: 'reset_password' })
@@ -217,7 +218,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       trackMetrikaGoal('auth_error', { action: 'reset_password' })
       setError(authErrorMessage(value))
     } finally {
-      setPending(false)
+      setPendingAction(null)
     }
   }
 
@@ -228,7 +229,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     if (emailError) return
 
     clearMessages()
-    setPending(true)
+    setPendingAction('email')
     try {
       const redirect = new URL('/login', window.location.origin)
       if (returnUrl !== '/') redirect.searchParams.set('returnUrl', returnUrl)
@@ -240,7 +241,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       trackMetrikaGoal('auth_error', { action: 'request_password_reset' })
       setError(authErrorMessage(value))
     } finally {
-      setPending(false)
+      setPendingAction(null)
     }
   }
 
@@ -258,7 +259,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     if (!validateForm()) return
 
     clearMessages()
-    setPending(true)
+    setPendingAction('email')
     try {
       const registrationCallback = new URL(window.location.pathname, window.location.origin)
       if (returnUrl !== '/') registrationCallback.searchParams.set('returnUrl', returnUrl)
@@ -288,14 +289,14 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       trackMetrikaGoal('auth_error', { action: register ? 'sign_up' : 'sign_in' })
       setError(authErrorMessage(value))
     } finally {
-      setPending(false)
+      setPendingAction(null)
     }
   }
 
   const signInWithYandex = async () => {
     if (pending) return
     clearMessages()
-    setPending(true)
+    setPendingAction('yandex')
     let redirected = false
     try {
       if (register && returnUrl.startsWith('/games/together')) {
@@ -316,7 +317,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
         ? 'Вход через Яндекс пока не настроен на сервере.'
         : authErrorMessage(value))
     } finally {
-      if (!redirected) setPending(false)
+      if (!redirected) setPendingAction(null)
     }
   }
 
@@ -324,14 +325,15 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setRegister(nextRegister)
     setForgotMode(false)
     setResetToken('')
+    setShowPassword(false)
     setPersonalDataAccepted(false)
     setFieldErrors(emptyFieldErrors)
     clearMessages()
     removeResetTokenFromAddress()
   }
 
-  const title = resetMode ? 'Новый пароль' : forgotMode ? 'Восстановление' : register ? 'Создать аккаунт' : 'Войти'
-  const eyebrow = resetMode ? 'Безопасность' : forgotMode ? 'Вернуть доступ' : register ? 'Новый аккаунт' : 'Личный кабинет'
+  const title = resetMode ? 'Новый пароль' : forgotMode ? 'Восстановить доступ' : register ? 'Создать аккаунт' : 'Войти в аккаунт'
+  const showYandex = !resetMode && !forgotMode && yandexAuthEnabled
   const description = resetMode
     ? 'Задайте новый пароль и вернитесь к своим играм.'
     : forgotMode
@@ -339,13 +341,13 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     : register
       ? 'Сохраните серию, билеты и статистику на любом устройстве.'
       : 'Продолжите с того места, где остановились.'
-  const submitLabel = resetMode ? 'Сохранить пароль' : register ? 'Создать аккаунт' : 'Войти'
+  const submitLabel = resetMode ? 'Сохранить пароль' : register ? 'Создать аккаунт по почте' : 'Войти по почте'
 
   return <div className="login-page">
     <main className="login-main">
       <section className="login-card" aria-labelledby="login-title">
         <div className="login-art-panel">
-          <a className="login-brand" href="/" aria-label="Сходится! — на главную"><BrandLogo /></a>
+          <a className="login-brand" href="/" aria-label="Сходится! — на главную"><BrandLogo compactOnMobile={false} /></a>
           <img className="login-art" src={loginIllustrationUrl} srcSet={`${loginIllustrationUrl} 1536w`} sizes="(max-width: 767px) 100vw, 580px" alt="" width="1536" height="1024" fetchPriority="high" />
           <div className="login-art-copy">
             <span>Ваш игровой профиль</span>
@@ -359,7 +361,6 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
             <span>К играм</span>
           </a>
           <div className="login-form-wrap">
-            <span className="login-eyebrow">{eyebrow}</span>
             <h1 id="login-title">{title}</h1>
             <p className="login-description">{description}</p>
             {register && serverRuntime.meta?.growth?.registration && <aside className="login-referral-invite">
@@ -375,49 +376,57 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
             {serverRuntime.loading
               ? <div className="login-session-loading" role="status" aria-live="polite"><LoaderCircle className="login-spinner" /> Проверяем сессию…</div>
-              : <form className="login-form" onSubmit={submitEmail} noValidate>
-                {!resetMode && !forgotMode && yandexAuthEnabled && <>
-                  <ControlButton className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending}>
+              : <form className="login-form" onSubmit={submitEmail} noValidate aria-busy={pending}>
+                {error && <InlineAlert tone="danger" className="login-error">{error}</InlineAlert>}
+                {notice && <InlineAlert tone="success" className="login-notice">{notice}</InlineAlert>}
+                {showYandex && <div className="login-yandex-section">
+                  <ActionButton className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending} aria-describedby="login-yandex-caption login-yandex-terms">
                     <span className="login-yandex-mark" aria-hidden="true">Я</span>
-                    <span>{pending ? 'Переходим…' : 'Продолжить с Яндексом'}</span>
-                  </ControlButton>
-                  <p className="login-form-hint">Без нового пароля. Продолжая, вы принимаете <a href="/legal/terms" target="_blank" rel="noreferrer">соглашение</a> и <a href="/legal/privacy" target="_blank" rel="noreferrer">политику конфиденциальности</a>.</p>
-                  {emailAuthEnabled && <div className="login-divider" aria-hidden="true"><span />ИЛИ ПО EMAIL<span /></div>}
-                </>}
-                {register && !resetMode && <div className="login-field">
+                    <span>{pendingAction === 'yandex' ? 'Переходим в Яндекс…' : 'Продолжить с Яндексом'}</span>
+                    {pendingAction === 'yandex' ? <LoaderCircle className="login-spinner" aria-hidden="true" /> : <ArrowRight aria-hidden="true" />}
+                  </ActionButton>
+                  <p className="login-yandex-caption" id="login-yandex-caption">Без нового пароля</p>
+                  <p className="login-form-hint" id="login-yandex-terms">Продолжая, вы принимаете <a href="/legal/terms" target="_blank" rel="noreferrer">соглашение</a> и <a href="/legal/privacy" target="_blank" rel="noreferrer">политику конфиденциальности</a>.</p>
+                </div>}
+                {showYandex && emailAuthEnabled && <div className="login-divider" aria-hidden="true"><span />или по почте<span /></div>}
+
+                {(emailAuthEnabled || resetMode || forgotMode) && <div className="login-email-section">
+                {register && !resetMode && !forgotMode && <div className="login-field">
                   <label htmlFor="login-name">Имя</label>
-                  <TextInput surface="paper" className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
+                  <TextInput surface="paper" className="ym-disable-keys" id="login-name" value={name} disabled={pending} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" placeholder="Как к вам обращаться" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
                   {fieldErrors.name && <small id="login-name-error" className="login-field-error">{fieldErrors.name}</small>}
                 </div>}
 
                 {!resetMode && <div className="login-field">
-                  <label htmlFor="login-email">Email</label>
+                  <label htmlFor="login-email">Почта</label>
                   <div className="login-input-wrap">
-                    <TextInput surface="paper" className="ym-disable-keys" id="login-email" type="email" value={email} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="Введите email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
+                    <TextInput surface="paper" className="ym-disable-keys" id="login-email" type="email" value={email} disabled={pending} onChange={(event) => { setEmail(event.target.value); clearFieldError('email') }} autoComplete="email" placeholder="you@example.com" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? 'login-email-error' : undefined} />
                   </div>
                   {fieldErrors.email && <small id="login-email-error" className="login-field-error">{fieldErrors.email}</small>}
                 </div>}
 
                 {!resetMode && !forgotMode && <div className="login-field">
-                  <label htmlFor="login-password">Пароль</label>
+                  <div className="login-field-heading"><label htmlFor="login-password">Пароль</label>{!register && passwordResetEnabled && <ControlButton className="login-forgot" type="button" disabled={pending} onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</ControlButton>}</div>
                   <div className="login-input-wrap">
-                    <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder="Введите пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
-                    <ControlButton className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
+                    <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} disabled={pending} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder={register ? 'Придумайте пароль' : 'Введите пароль'} aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : register ? 'login-password-hint' : undefined} />
+                    <ControlButton className="login-password-toggle" type="button" disabled={pending} onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} aria-pressed={showPassword}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </ControlButton>
                   </div>
                   {fieldErrors.password && <small id="login-password-error" className="login-field-error">{fieldErrors.password}</small>}
+                  {register && !fieldErrors.password && <small className="login-field-hint" id="login-password-hint">Не менее 10 символов</small>}
                 </div>}
 
                 {resetMode && <div className="login-field">
                   <label htmlFor="login-password">Новый пароль</label>
                   <div className="login-input-wrap">
-                    <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : undefined} />
-                    <ControlButton className="login-password-toggle" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>
+                    <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} disabled={pending} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete="new-password" placeholder="Придумайте новый пароль" aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : 'login-password-hint'} />
+                    <ControlButton className="login-password-toggle" type="button" disabled={pending} onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} aria-pressed={showPassword}>
                       {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                     </ControlButton>
                   </div>
                   {fieldErrors.password && <small id="login-password-error" className="login-field-error">{fieldErrors.password}</small>}
+                  {!fieldErrors.password && <small className="login-field-hint" id="login-password-hint">Не менее 10 символов</small>}
                 </div>}
 
                 {register && !resetMode && <div className="login-consent">
@@ -425,6 +434,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                     id="login-personal-data-consent"
                     type="checkbox"
                     checked={personalDataAccepted}
+                    disabled={pending}
                     onChange={(event) => {
                       setPersonalDataAccepted(event.target.checked)
                       clearFieldError('consent')
@@ -438,15 +448,11 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                   {fieldErrors.consent && <small id="login-consent-error" className="login-field-error">{fieldErrors.consent}</small>}
                 </div>}
 
-                {!register && !resetMode && !forgotMode && <ControlButton className="login-forgot" type="button" onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</ControlButton>}
-                {error && <InlineAlert tone="danger" className="login-error">{error}</InlineAlert>}
-
-                <ActionButton className="login-submit" type="submit" disabled={pending || (!emailAuthEnabled && !resetMode && !forgotMode)}>
-                  {pending && <LoaderCircle className="login-spinner" aria-hidden="true" />}
-                  <span>{pending ? resetMode ? 'Сохраняем…' : forgotMode ? 'Отправляем…' : register ? 'Создаём…' : 'Входим…' : forgotMode ? 'Отправить ссылку' : submitLabel}</span>
+                <ActionButton className="login-submit" variant={showYandex ? 'secondary' : 'primary'} surface="paper" type="submit" disabled={pending}>
+                  {pendingAction === 'email' && <LoaderCircle className="login-spinner" aria-hidden="true" />}
+                  <span>{pendingAction === 'email' ? resetMode ? 'Сохраняем…' : forgotMode ? 'Отправляем…' : register ? 'Создаём…' : 'Входим…' : forgotMode ? 'Отправить ссылку' : submitLabel}</span>
                 </ActionButton>
-
-                {notice && <InlineAlert tone="success" className="login-notice">{notice}</InlineAlert>}
+                </div>}
 
                 {(forgotMode || resetMode) && <ControlButton className="login-secondary-link" type="button" onClick={() => switchMode(false)}>Вернуться ко входу</ControlButton>}
                 {register && !resetMode && <p className="login-register-line">Уже есть аккаунт? <ControlButton type="button" onClick={() => switchMode(false)}>Войти</ControlButton></p>}

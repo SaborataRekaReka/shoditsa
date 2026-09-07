@@ -31,9 +31,9 @@ const brandLogoUrl = publicAssetUrl('images/logo.svg')
 let lastKnownHeaderWallet: ReturnType<typeof loadWallet> | null = null
 let lastKnownHeaderAttendance: ReturnType<typeof loadAttendanceStats> | null = null
 
-export function BrandLogo({ className = '' }: { className?: string }) {
+export function BrandLogo({ className = '', compactOnMobile = true }: { className?: string; compactOnMobile?: boolean }) {
   return <picture className={className}>
-    <source media="(max-width: 719px)" srcSet={brandSymbolUrl} />
+    {compactOnMobile && <source media="(max-width: 719px)" srcSet={brandSymbolUrl} />}
     <img src={brandLogoUrl} alt="Сходится!" />
   </picture>
 }

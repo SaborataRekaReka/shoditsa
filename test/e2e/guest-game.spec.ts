@@ -355,9 +355,9 @@ test('guest winnings survive registration, logout, login and a second browser', 
   const secondPage = await secondContext.newPage()
   try {
     await secondPage.goto('/login')
-    await secondPage.getByLabel('Email').fill(email)
+    await secondPage.getByLabel('Почта', { exact: true }).fill(email)
     await secondPage.getByRole('textbox', { name: 'Пароль' }).fill(password)
-    await secondPage.getByRole('button', { name: 'ВОЙТИ', exact: true }).click()
+    await secondPage.getByRole('button', { name: 'Войти по почте', exact: true }).click()
     await expect.poll(() => secondPage.url(), { timeout: 15_000 }).not.toContain('/login')
     await footerNavigation(secondPage).getByRole('button', { name: 'Профиль' }).click()
     await expect(secondPage.getByRole('heading', { name: 'Lifecycle Player' })).toBeVisible({ timeout: 15_000 })
