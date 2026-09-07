@@ -58,7 +58,7 @@ const replayFreePlay = async (
     .from(walletLedger).where(eq(walletLedger.operationKey, operationKey)).limit(1)
   if (!ledger[0]) {
     const wallet = await lockedWallet(tx, userId)
-    return { ...(await buildSessionSnapshot(tx, session)), cost: 0, balanceAfter: wallet.balance, ledgerId: null, accessSource: session.accessSource === 'registration_bonus' ? 'registration_bonus' as const : 'club' as const }
+    return { ...(await buildSessionSnapshot(tx, session)), cost: 0, balanceAfter: wallet.balance, ledgerId: null, accessSource: session.accessSource === 'registration_bonus' ? 'registration_bonus' as const : session.accessSource === 'tickets' ? 'tickets' as const : 'club' as const }
   }
   return {
     ...(await buildSessionSnapshot(tx, session)),

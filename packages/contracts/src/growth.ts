@@ -3,6 +3,8 @@ export const GROWTH_STAGES = ['baseline', 'replay', 'registration', 'club'] as c
 export type GrowthStage = typeof GROWTH_STAGES[number]
 export const GROWTH_CAMPAIGN = 'diagnosis-continuation-v1'
 export const GROWTH_NOT_BEFORE = '2026-09-12T00:00:00.000Z'
+// First complete UTC day after the production instrumentation release.
+export const GROWTH_MEASUREMENT_FROM = '2026-09-08T00:00:00.000Z'
 export const REGISTRATION_BONUS_ROUNDS = 3
 export type GrowthPolicy = {
   stage: GrowthStage
@@ -27,8 +29,9 @@ export type GrowthReport = {
   notBefore: string
   nextStageAvailableAt: string
   period: { from: string; toExclusive: string; days: number }
-  sessions: { completions: number; firstCompleters: number; repeatStarts: number; repeatCompletions: number; repeatingCompleters: number; bonusStarts: number; bonusCompletions: number; clubStarts: number }
+  measurement: { from: string; coverage: 'not_started' | 'partial' | 'complete' }
+  sessions: { completions: number; firstCompleters: number; measuredCompleters: number | null; repeatStarts: number | null; repeatCompletions: number | null; repeatingCompleters: number | null; bonusStarts: number; bonusCompletions: number; clubStarts: number | null }
   accounts: { created: number; signUps: number; bonusGranted: number; bonusPlayers: number }
-  commerce: { orders: number; paidOrders: number; payingUsers: number; paidUsersUsedClub: number; revenueMinor: number }
+  commerce: { orders: number; paidOrders: number; payingUsers: number; paidUsersUsedClub: number | null; revenueMinor: number }
   events: Array<{ eventName: string; stage: string; consent: string; events: number; users: number }>
 }

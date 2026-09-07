@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { growthFeatures, type GrowthPolicy } from '@shoditsa/contracts'
-import { advanceGrowthPolicy, nextGrowthStageAt, normalizeGrowthPolicy } from '../src/modules/growth/service.js'
+import { advanceGrowthPolicy, growthMeasurementWindow, nextGrowthStageAt, normalizeGrowthPolicy } from '../src/modules/growth/service.js'
 
 const baseline: GrowthPolicy = { stage: 'baseline', changedAt: null, registrationOpenedAt: null }
 describe('sequential Diagnosis growth rollout', () => {
+  it('distinguishes unmeasured history from partial and complete windows', () => {
+    expect(growthMeasurementWindow('2026-08-31', '2026-09-07').coverage).toBe('not_started')
+    expect(growthMeasurementWindow('2026-09-02', '2026-09-09')).toEqual({ from: '2026-09-08T00:00:00.000Z', coverage: 'partial' })
+    expect(growthMeasurementWindow('2026-09-09', '2026-09-16').coverage).toBe('complete')
+  })
   it('defaults unknown settings to the untouched baseline', () => {
     expect(normalizeGrowthPolicy({ stage: 'everything', changedAt: 'bad' })).toEqual(baseline)
     expect(growthFeatures({ ...baseline, stage: 'club' }, new Date('2026-09-11T23:59:59Z')).replay).toBe(false)

@@ -1,6 +1,6 @@
 import { eq, sql } from 'drizzle-orm'
 import { appSettings, registrationPlayCredits, type Database } from '@shoditsa/database'
-import { GROWTH_NOT_BEFORE, GROWTH_STAGES, growthFeatures, type GrowthPolicy, type GrowthStage } from '@shoditsa/contracts'
+import { GROWTH_MEASUREMENT_FROM, GROWTH_NOT_BEFORE, GROWTH_STAGES, growthFeatures, type GrowthPolicy, type GrowthStage } from '@shoditsa/contracts'
 import { ApiError } from '../../lib/errors.js'
 
 export const GROWTH_SETTING = 'growth.diagnosisContinuation'
@@ -48,19 +48,28 @@ export const registrationBonusSummary = async (db: Database, userId: string) => 
   return { mode: 'diagnosis' as const, granted: row ? 3 : 0, remaining: row?.remaining ?? 0 }
 }
 
+export const growthMeasurementWindow = (from: string, to: string) => ({
+  from: new Date(Math.max(Date.parse(from), Date.parse(GROWTH_MEASUREMENT_FROM))).toISOString(),
+  coverage: Date.parse(to) <= Date.parse(GROWTH_MEASUREMENT_FROM) ? 'not_started' as const
+    : Date.parse(from) < Date.parse(GROWTH_MEASUREMENT_FROM) ? 'partial' as const : 'complete' as const,
+})
+
 /** Completed UTC days, staff excluded. Activity counts and linked cohorts stay separate. */
 export const growthReport = async (db: Database, days: number) => {
   const policy = await loadGrowthPolicy(db)
   const to = new Date(new Date().toISOString().slice(0, 10)).toISOString()
   const from = new Date(Date.parse(to) - days * 86_400_000).toISOString()
+  const measurement = growthMeasurementWindow(from, to)
   const [sessions, accounts, commerce, events] = await Promise.all([
     db.execute(sql`
       with completed as (
         select g.id, g.user_id, g.completed_at from game_sessions g left join player_profiles p on p.user_id=g.user_id
         where g.mode='diagnosis' and g.kind in ('daily','archive','free_play')
           and g.completed_at >= ${from} and g.completed_at < ${to} and coalesce(p.role,'player') <> 'admin'
-      ), first_completed as (
+      ), all_first_completed as (
         select distinct on (user_id) * from completed order by user_id, completed_at, id
+      ), first_completed as (
+        select distinct on (user_id) * from completed where completed_at >= ${measurement.from} order by user_id, completed_at, id
       ), repeats as (
         select g.* from game_sessions g join first_completed c on c.id=g.source_session_id
         where g.mode='diagnosis' and g."startedAt" < ${to}
@@ -69,13 +78,14 @@ export const growthReport = async (db: Database, days: number) => {
         where g.mode='diagnosis' and g."startedAt" >= ${from} and g."startedAt" < ${to} and coalesce(p.role,'player') <> 'admin'
       ) select
         (select count(*)::int from completed) as completions,
-        (select count(*)::int from first_completed) as "firstCompleters",
+        (select count(*)::int from all_first_completed) as "firstCompleters",
+        (select count(*)::int from first_completed) as "measuredCompleters",
         (select count(*)::int from repeats) as "repeatStarts",
         (select count(*)::int from repeats where completed_at < ${to}) as "repeatCompletions",
         (select count(distinct source_session_id)::int from repeats) as "repeatingCompleters",
         (select count(*)::int from activity where access_source='registration_bonus') as "bonusStarts",
         (select count(*)::int from activity where access_source='registration_bonus' and completed_at < ${to}) as "bonusCompletions",
-        (select count(*)::int from activity where access_source='club') as "clubStarts"`),
+        (select count(*)::int from activity where access_source='club' and "startedAt">=${measurement.from}) as "clubStarts"`),
     db.execute(sql`select
       (select count(*)::int from "user" u left join player_profiles p on p.user_id=u.id where not u.is_anonymous and u."createdAt">=${from} and u."createdAt"<${to} and coalesce(p.role,'player')<>'admin') as created,
       (select count(distinct a.user_id)::int from auth_events a join "user" u on u.id=a.user_id left join player_profiles p on p.user_id=u.id where a.event_name='sign_up' and not u.is_anonymous and u."createdAt">=${from} and u."createdAt"<${to} and coalesce(p.role,'player')<>'admin') as "signUps",
@@ -87,7 +97,7 @@ export const growthReport = async (db: Database, days: number) => {
     ) select count(*)::int as orders, count(*) filter(where status='paid')::int as "paidOrders",
       count(distinct user_id) filter(where status='paid')::int as "payingUsers",
       coalesce(sum(amount_minor) filter(where status='paid'),0)::int as "revenueMinor",
-      count(distinct user_id) filter(where status='paid' and exists(select 1 from game_sessions g where g.user_id=orders.user_id and g.access_source='club' and g."startedAt">=orders.paid_at and g."startedAt"<${to}))::int as "paidUsersUsedClub" from orders`),
+      count(distinct user_id) filter(where status='paid' and exists(select 1 from game_sessions g where g.user_id=orders.user_id and g.access_source='club' and g."startedAt">=orders.paid_at and g."startedAt">=${measurement.from} and g."startedAt"<${to}))::int as "paidUsersUsedClub" from orders`),
     db.execute(sql`select e.event_name as "eventName", coalesce(e.properties->>'growth_stage','unversioned') as stage,
       coalesce(e.properties->>'analytics_consent','unknown') as consent, count(*)::int as events, count(distinct e.user_id)::int as users
       from client_events e left join player_profiles p on p.user_id=e.user_id
@@ -96,5 +106,8 @@ export const growthReport = async (db: Database, days: number) => {
       and (e.event_name not in ('commerce_plan_selected','checkout_started') or e.properties->>'productId' in ('club_30d','club_365d'))
       group by 1,2,3 order by 1,2,3`),
   ])
-  return { policy, effective: growthFeatures(policy), notBefore: GROWTH_NOT_BEFORE, nextStageAvailableAt: nextGrowthStageAt(policy), period: { from, toExclusive: to, days }, sessions: sessions[0], accounts: accounts[0], commerce: commerce[0], events: [...events] }
+  const noMeasurement = measurement.coverage === 'not_started'
+  return { policy, effective: growthFeatures(policy), notBefore: GROWTH_NOT_BEFORE, nextStageAvailableAt: nextGrowthStageAt(policy), period: { from, toExclusive: to, days }, measurement,
+    sessions: { ...sessions[0], ...(noMeasurement ? { measuredCompleters: null, repeatStarts: null, repeatCompletions: null, repeatingCompleters: null, clubStarts: null } : {}) },
+    accounts: accounts[0], commerce: { ...commerce[0], ...(noMeasurement ? { paidUsersUsedClub: null } : {}) }, events: [...events] }
 }
