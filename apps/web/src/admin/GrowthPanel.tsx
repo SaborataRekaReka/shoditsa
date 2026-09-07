@@ -1,9 +1,31 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { GROWTH_STAGES } from '@shoditsa/contracts'
+import { ArrowRight, Check, ChevronDown, CircleDollarSign, Clock3, Crown, Eye, Gift, Info, LockKeyhole, Pause, RotateCcw, UsersRound } from 'lucide-react'
+import { GROWTH_STAGES, type GrowthStage } from '@shoditsa/contracts'
 import { adminApi } from './api'
+import './GrowthPanel.css'
 
-const labels = { baseline: 'Наблюдение', replay: 'Следующий случай', registration: 'Бонус за регистрацию', club: 'Контекстный клуб' }
+const labels: Record<GrowthStage, string> = { baseline: 'Наблюдение', replay: 'Следующий случай', registration: 'Бонус за регистрацию', club: 'Предложение клуба' }
+const steps = [
+  { stage: 'replay', Icon: RotateCcw, title: 'Ещё одна партия', description: 'После результата — «Следующий случай». Стоимость видна до начала игры.' },
+  { stage: 'registration', Icon: Gift, title: 'Причина зарегистрироваться', description: 'Новому аккаунту — 3 дополнительные партии «Диагнозов», один раз.' },
+  { stage: 'club', Icon: Crown, title: 'Предложение клуба', description: 'Когда игроку хочется продолжить или не хватает билетов — предложить клуб.' },
+] as const
+const eventLabels: Record<string, string> = {
+  diagnosis_replay_offer_view: 'Увидели «Следующий случай»',
+  diagnosis_replay_clicked: 'Нажали «Следующий случай»',
+  registration_bonus_offer_view: 'Увидели бонус за регистрацию',
+  registration_bonus_offer_clicked: 'Нажали на предложение бонуса',
+  club_context_offer_view: 'Увидели предложение клуба',
+  club_context_offer_clicked: 'Нажали на предложение клуба',
+  commerce_plan_selected: 'Выбрали клубный тариф',
+}
+const dateLabel = (value: string) => new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(value))
+const numberLabel = (value: number | null) => value == null ? '—' : value.toLocaleString('ru-RU')
+function MetricRow({ label, children }: { label: string; children: ReactNode }) {
+  return <div><dt>{label}</dt><dd>{children}</dd></div>
+}
+
 export function GrowthPanel() {
   const [days, setDays] = useState<7 | 14 | 31>(7)
   const [reviewed, setReviewed] = useState(false)
@@ -16,30 +38,123 @@ export function GrowthPanel() {
   const data = query.data
   const next = data ? GROWTH_STAGES[GROWTH_STAGES.indexOf(data.policy.stage) + 1] : undefined
   const available = Boolean(data && Date.now() >= Date.parse(data.nextStageAvailableAt))
-  return <section className="admin-panel" id="growth" style={{ marginBottom: 24 }}>
-    <header><div><span>Эксперимент · Диагнозы</span><h2>Игра → регистрация → клуб</h2></div><div className="admin-periods">{([7, 14, 31] as const).map((value) => <button key={value} className={days === value ? 'is-active' : ''} onClick={() => setDays(value)}>{value} {value === 31 ? 'день' : 'дней'}</button>)}</div></header>
-    <div style={{ padding: 20 }}>
-      {query.isLoading && <p role="status">Загружаем серверные агрегаты…</p>}
-      {query.error && <p role="alert">{query.error.message}</p>}
+  const baseline = data?.effective.stage === 'baseline'
+
+  return <section className="admin-panel admin-growth" id="growth" aria-labelledby="growth-title">
+    <header className="admin-growth__header">
+      <div>
+        <span>Рост · эксперимент в «Диагнозах»</span>
+        <h2 id="growth-title">Игра → регистрация → клуб</h2>
+        <p>Что включено и что делают игроки</p>
+      </div>
+      <div className="admin-periods" role="group" aria-label="Период показателей роста">
+        {([7, 14, 31] as const).map((value) => <button type="button" key={value} aria-pressed={days === value} className={days === value ? 'is-active' : ''} onClick={() => { setDays(value); setReviewed(false) }}>{value} {value === 31 ? 'день' : 'дней'}</button>)}
+      </div>
+    </header>
+
+    <div className="admin-growth__body">
+      {query.isLoading && <div className="admin-growth__notice" role="status"><Clock3 aria-hidden="true" /><p>Загружаем показатели за выбранный период…</p></div>}
+      {query.error && <div className="admin-growth__notice admin-growth__notice--error" role="alert"><Info aria-hidden="true" /><p>Не удалось загрузить показатели. {query.error.message}</p></div>}
       {data && <>
-        <p><strong>Текущий этап: {labels[data.effective.stage]}.</strong> Окно: {data.period.from.slice(0, 10)} — {new Date(Date.parse(data.period.toExclusive) - 1).toISOString().slice(0, 10)} включительно, UTC. Сегодня не включено; администраторы исключены.</p>
-        <p>До 12 сентября сохраняем действующие рекомендации. Затем включаем по одному этапу и оставляем минимум 7 полных дней на измерение. Автоматического включения нет.</p>
-        <p>{data.measurement.coverage === 'not_started' ? 'За это окно ещё нет полных дней нового измерения повторов и использования клуба. Первый полный день — 8 сентября; отсутствие истории обозначено «—», не нулём.' : `Повторы и использование клуба: измеренная часть окна с ${data.measurement.from.slice(0, 10)}. ${data.measurement.coverage === 'partial' ? 'Период покрыт частично; раннюю историю не считать нулём.' : 'Все дни окна после начала измерения.'}`}</p>
-        <div className="admin-economy-observability">
-          <div><h3>Повторные партии «Диагнозов»</h3><p>Завершённых сессий: <strong>{data.sessions.completions}</strong>. Игроков с завершением: <strong>{data.sessions.firstCompleters}</strong>.</p><p>Игроков с первым завершением в измеренной части: <strong>{data.sessions.measuredCompleters ?? '—'}</strong> → продолжили: <strong>{data.sessions.repeatingCompleters ?? '—'}</strong>.</p><p>Связанные повторные старты: <strong>{data.sessions.repeatStarts ?? '—'}</strong> → завершения: <strong>{data.sessions.repeatCompletions ?? '—'}</strong>.</p></div>
-          <div><h3>Новые аккаунты и бонус</h3><p>Аккаунты / server sign_up: <strong>{data.accounts.created} / {data.accounts.signUps}</strong>.</p><p>Получили бонус / начали его использовать: <strong>{data.accounts.bonusGranted} / {data.accounts.bonusPlayers}</strong>.</p><p>Бонусные старты / завершения: <strong>{data.sessions.bonusStarts} / {data.sessions.bonusCompletions}</strong>.</p></div>
-          <div><h3>Клуб · все источники</h3><p>Заказы / оплачены: <strong>{data.commerce.orders} / {data.commerce.paidOrders}</strong>.</p><p>Покупатели / использовали свободную игру после оплаты в измеренной части: <strong>{data.commerce.payingUsers} / {data.commerce.paidUsersUsedClub ?? '—'}</strong>.</p><p>Выручка когорты заказов: <strong>{(data.commerce.revenueMinor / 100).toLocaleString('ru-RU')} ₽</strong>.</p></div>
+        <div className={`admin-growth__status ${baseline ? '' : 'is-running'}`}>
+          <span className="admin-growth__status-icon">{baseline ? <Eye aria-hidden="true" /> : <Check aria-hidden="true" />}</span>
+          <div>
+            <h3>{baseline ? 'Наблюдаем. Новые предложения пока выключены' : `Включён этап: ${labels[data.effective.stage]}`}</h3>
+            <p>{baseline
+              ? `Собираем исходные показатели. Первый этап можно включить не раньше ${dateLabel(data.nextStageAvailableAt)}.`
+              : 'Смотрим, помогает ли изменение. Перед следующим этапом — минимум 7 полных дней измерений.'}</p>
+          </div>
+          <span className="admin-growth__manual"><LockKeyhole aria-hidden="true" />Включение вручную</span>
         </div>
-        <p>Связь повторов и источник доступа измеряются с релиза 7 сентября. Старые сессии без этой связи — неизвестны, не нулевая конверсия. Завершение — серверный финальный статус, не обязательно победа или просмотр результата. Оплаты сверяются по серверным заказам, не кликам; stub и администраторы исключены, прочие тестовые покупки требуют отдельной классификации.</p>
-        <details><summary>Показы и клики по этапам / согласиям</summary><div style={{ overflowX: 'auto' }}><table className="admin-table"><thead><tr><th>Событие</th><th>Этап</th><th>Согласие</th><th>События</th><th>Пользователи</th></tr></thead><tbody>{data.events.map((row) => <tr key={`${row.eventName}:${row.stage}:${row.consent}`}><td>{row.eventName}</td><td>{row.stage}</td><td>{row.consent}</td><td>{row.events}</td><td>{row.users}</td></tr>)}</tbody></table>{!data.events.length && <p>Новые показы и клики пока не зарегистрированы.</p>}</div></details>
-        {next && <div className="admin-toolbar" style={{ flexWrap: 'wrap', marginTop: 20 }}>
-          <label><input type="checkbox" checked={reviewed} onChange={(event) => setReviewed(event.target.checked)} /> Проверил результаты текущего окна и готов включить следующий этап</label>
-          <button className="admin-btn admin-btn--primary" disabled={!available || !reviewed || mutation.isPending} onClick={() => mutation.mutate(next)}>Включить: {labels[next]}</button>
-          {!available && <small>Не раньше {data.nextStageAvailableAt.slice(0, 10)} UTC</small>}
+
+        <div className="admin-growth__steps" aria-label="Новые предложения игроку">
+          {steps.map(({ stage, Icon, title, description }) => <article className={`admin-growth__step ${data.effective[stage] ? 'is-enabled' : ''}`} key={stage}>
+            <div className="admin-growth__step-top"><span className="admin-growth__icon"><Icon aria-hidden="true" /></span><span className={`admin-growth__badge ${data.effective[stage] ? 'is-enabled' : ''}`}>{data.effective[stage] ? 'Включено' : 'Выключено'}</span></div>
+            <h3>{title}</h3><p>{description}</p>
+          </article>)}
+        </div>
+
+        <div className="admin-growth__section-heading">
+          <div><h3>Результаты за {days} {days === 31 ? 'день' : 'дней'}</h3><p>{dateLabel(data.period.from)} — {dateLabel(new Date(Date.parse(data.period.toExclusive) - 1).toISOString())} {new Date(data.period.from).getUTCFullYear()} · UTC</p></div>
+          <p>Сегодня не включено · без администраторов</p>
+        </div>
+
+        <div className="admin-growth__metrics">
+          <article className="admin-growth__metric">
+            <div className="admin-growth__metric-heading"><RotateCcw aria-hidden="true" /><h4>Завершённые «Диагнозы»</h4></div>
+            <strong className="admin-growth__value">{numberLabel(data.sessions.completions)}</strong>
+            <p className="admin-growth__metric-caption">Игроков с завершённой партией: {numberLabel(data.sessions.firstCompleters)}</p>
+            <dl>
+              <MetricRow label="Игроки в измерении повторов">{numberLabel(data.sessions.measuredCompleters)}</MetricRow>
+              <MetricRow label="Продолжили после результата">{numberLabel(data.sessions.repeatingCompleters)}</MetricRow>
+              <MetricRow label="Повторные старты">{numberLabel(data.sessions.repeatStarts)}</MetricRow>
+              <MetricRow label="Завершённые повторы">{numberLabel(data.sessions.repeatCompletions)}</MetricRow>
+            </dl>
+          </article>
+          <article className="admin-growth__metric">
+            <div className="admin-growth__metric-heading"><UsersRound aria-hidden="true" /><h4>Новые аккаунты</h4></div>
+            <strong className="admin-growth__value">{numberLabel(data.accounts.created)}</strong>
+            <p className="admin-growth__metric-caption">Создано на сайте · все источники</p>
+            <dl>
+              <MetricRow label="Регистрации, отмеченные событием">{numberLabel(data.accounts.signUps)}</MetricRow>
+              <MetricRow label="Получили бонус из 3 партий">{numberLabel(data.accounts.bonusGranted)}</MetricRow>
+              <MetricRow label="Воспользовались бонусом">{numberLabel(data.accounts.bonusPlayers)}</MetricRow>
+              <MetricRow label="Бонусные старты / завершения">{numberLabel(data.sessions.bonusStarts)} / {numberLabel(data.sessions.bonusCompletions)}</MetricRow>
+            </dl>
+          </article>
+          <article className="admin-growth__metric">
+            <div className="admin-growth__metric-heading"><CircleDollarSign aria-hidden="true" /><h4>Оплаты клуба</h4></div>
+            <strong className="admin-growth__value">{numberLabel(data.commerce.revenueMinor / 100)} <span>₽</span></strong>
+            <p className="admin-growth__metric-caption">По заказам, созданным в этом окне · все источники</p>
+            <dl>
+              <MetricRow label="Создано заказов">{numberLabel(data.commerce.orders)}</MetricRow>
+              <MetricRow label="Оплачено заказов">{numberLabel(data.commerce.paidOrders)}</MetricRow>
+              <MetricRow label="Покупатели">{numberLabel(data.commerce.payingUsers)}</MetricRow>
+              <MetricRow label="Играли с клубом после оплаты">{numberLabel(data.commerce.paidUsersUsedClub)}</MetricRow>
+            </dl>
+          </article>
+        </div>
+
+        <div className="admin-growth__notice"><Info aria-hidden="true" /><p>{data.measurement.coverage === 'not_started'
+          ? <>Повторы и игру с клубом начинаем измерять с <strong>{dateLabel(data.measurement.from)}</strong>. «—» — ещё нет измерений, а не нулевой результат.</>
+          : <>Повторы и игра с клубом измерены с <strong>{dateLabel(data.measurement.from)}</strong>. {data.measurement.coverage === 'partial' ? 'Ранняя часть выбранного периода не покрыта — не считаем её нулём.' : 'Выбранный период покрыт полностью.'}</>}</p></div>
+
+        <div className="admin-growth__details-group">
+          <details className="admin-growth__details">
+            <summary><Info aria-hidden="true" /><span>Как читать эти цифры</span><ChevronDown aria-hidden="true" /></summary>
+            <div className="admin-growth__details-body">
+              <ul>
+                <li>Партии относятся к «Диагнозам». Новые аккаунты и оплаты — ко всему сайту, из всех источников. Эти числа не означают, что все зарегистрировались или купили клуб после «Диагнозов».</li>
+                <li>Завершённая партия — финальный статус на сервере, не обязательно победа или открытый экран результата. Повтор учитывается, когда он связан с предыдущей завершённой партией.</li>
+                <li>Связь повторов и способ доступа к игре начали сохранять 7 сентября. Первый полный день — 8 сентября. Для старой истории без этой связи показываем «—».</li>
+                <li>Число аккаунтов берём из созданных записей на сервере. Событие регистрации — отдельная проверка учёта; если числа расходятся, это не дополнительные пользователи.</li>
+                <li>Оплаты подтверждаются серверными заказами, а не нажатием кнопки. Показаны заказы, созданные в выбранном периоде. Администраторы и заказы тестового платёжного режима исключены; другие тестовые покупки нужно проверять отдельно.</li>
+                <li>«Играли с клубом после оплаты» — свободная игра после покупки в измеренной части периода. Использование архива и других преимуществ клуба в этот показатель не входит.</li>
+              </ul>
+            </div>
+          </details>
+          <details className="admin-growth__details">
+            <summary><Eye aria-hidden="true" /><span>Показы и нажатия на предложения</span><ChevronDown aria-hidden="true" /></summary>
+            <div className="admin-growth__details-body">
+              <div className="admin-growth__table-scroll"><table className="admin-table"><thead><tr><th>Действие</th><th>Этап</th><th>Согласие на аналитику</th><th>События</th><th>Пользователи</th></tr></thead><tbody>{data.events.map((row) => <tr key={`${row.eventName}:${row.stage}:${row.consent}`}><td>{eventLabels[row.eventName] || row.eventName}<small>{eventLabels[row.eventName] ? row.eventName : ''}</small></td><td>{labels[row.stage as GrowthStage] || row.stage}</td><td>{({ granted: 'Дано', denied: 'Не дано', unknown: 'Неизвестно' } as Record<string, string>)[row.consent] || row.consent}</td><td>{numberLabel(row.events)}</td><td>{numberLabel(row.users)}</td></tr>)}</tbody></table></div>
+              {!data.events.length && <p className="admin-growth__empty">Новых показов и нажатий пока нет.{baseline ? ' Предложения ещё выключены — это ожидаемо.' : ''}</p>}
+            </div>
+          </details>
+        </div>
+
+        {next && <div className="admin-growth__activation">
+          <div className="admin-growth__activation-heading"><span className="admin-growth__icon">{available ? <ArrowRight aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}</span><div><h3>Следующий этап: {labels[next]}</h3><p>{available ? 'Доступен для ручного включения после оценки результатов.' : `Можно включить не раньше ${dateLabel(data.nextStageAvailableAt)} (UTC). Сам не включится.`}</p></div></div>
+          <div className="admin-growth__activation-controls">
+            <label className={`admin-growth__confirmation ${!available ? 'is-disabled' : ''}`}><input type="checkbox" checked={reviewed} disabled={!available || mutation.isPending} onChange={(event) => setReviewed(event.target.checked)} /><span>Проверил результаты и готов включить следующий этап</span></label>
+            <button type="button" className="admin-btn admin-btn--primary" disabled={!available || !reviewed || mutation.isPending} onClick={() => mutation.mutate(next)}>{mutation.isPending ? 'Сохраняем…' : `Включить: ${labels[next]}`}<ArrowRight aria-hidden="true" /></button>
+          </div>
+          <p className="admin-growth__activation-note">Меняем по одному шагу и измеряем минимум 7 полных дней, чтобы понимать, что именно помогло.</p>
         </div>}
-        {data.policy.stage !== 'baseline' && <button className="admin-btn admin-btn--secondary" disabled={mutation.isPending} onClick={() => mutation.mutate('baseline')}>Приостановить эксперимент</button>}
-        <p>Выданные бонусы при паузе не пропадают. Цена и условия действующих клубных билетов не меняются.</p>
-        {mutation.error && <p role="alert">{mutation.error.message}</p>}
+        <div className="admin-growth__footer">
+          <p>Выданные бонусы сохраняются при паузе. Цены и условия действующих клубных билетов не меняются.</p>
+          {data.policy.stage !== 'baseline' && <button type="button" className="admin-btn admin-btn--secondary" disabled={mutation.isPending} onClick={() => mutation.mutate('baseline')}><Pause aria-hidden="true" />Приостановить эксперимент</button>}
+        </div>
+        {mutation.error && <div className="admin-growth__notice admin-growth__notice--error" role="alert"><Info aria-hidden="true" /><p>{mutation.error.message}</p></div>}
       </>}
     </div>
   </section>
