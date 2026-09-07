@@ -41,6 +41,9 @@ export const registerCommerceRoutes = async (app: FastifyInstance, deps: Deps) =
       offerVersion: body.offerVersion,
       termsAccepted: body.termsAccepted,
       autoRenew: body.autoRenew,
+      intentId: body.intentId,
+      placement: body.placement,
+      sourceMode: body.sourceMode,
     })
   })
   app.get('/api/v1/commerce/orders/:orderId', {

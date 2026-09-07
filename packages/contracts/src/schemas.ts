@@ -113,7 +113,7 @@ export const ProfilePatchSchema = Type.Partial(Type.Object({
 }, { additionalProperties: false }))
 
 export const PeriodUnlockBodySchema = Type.Object({ mode: PlayableModeSchema, period: PeriodKeySchema }, { additionalProperties: false })
-export const FreePlayBodySchema = Type.Object({ mode: PlayableCatalogGuessModeSchema, difficulty: Type.Optional(NullableDifficultySchema) }, { additionalProperties: false })
+export const FreePlayBodySchema = Type.Object({ mode: PlayableCatalogGuessModeSchema, difficulty: Type.Optional(NullableDifficultySchema), sourceSessionId: Type.Optional(UuidSchema) }, { additionalProperties: false })
 export const PromoRedeemBodySchema = Type.Object({ code: Type.String({ minLength: 1, maxLength: 64 }) }, { additionalProperties: false })
 
 export const ArchiveQuerySchema = Type.Object({

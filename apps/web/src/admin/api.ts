@@ -1,6 +1,6 @@
 import type {
   AdminAcquisitionFunnelPeriod, AdminAcquisitionFunnelResponse, AdminContentItemsResponse, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, AdminUserListItem, AdminWorkspaceSummary,
-  ContentMode, MeResponse,
+  ContentMode, MeResponse, GrowthReport, GrowthStage, GrowthPolicy,
 } from '@shoditsa/contracts'
 
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
@@ -222,6 +222,8 @@ export type ReleaseContentStatus = {
 }
 
 export const adminApi = {
+  growth: (days: 7 | 14 | 31) => request<GrowthReport>(`/admin/growth?days=${days}`),
+  updateGrowth: (stage: GrowthStage) => request<GrowthPolicy>('/admin/growth', { method: 'PATCH', body: JSON.stringify({ stage, measurementReviewed: true }) }),
   me: () => request<MeResponse>('/me'),
   dashboard: () => request<AdminDashboardResponse>('/admin/dashboard'),
   acquisitionFunnel: (days: AdminAcquisitionFunnelPeriod) => request<AdminAcquisitionFunnelResponse>(`/admin/acquisition-funnel?days=${days}`),

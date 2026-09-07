@@ -362,6 +362,9 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
             <span className="login-eyebrow">{eyebrow}</span>
             <h1 id="login-title">{title}</h1>
             <p className="login-description">{description}</p>
+            {register && serverRuntime.meta?.growth?.registration && <aside className="login-referral-invite">
+              <span><strong>Три дополнительных случая в «Диагнозах»</strong><small>Один раз за создание нового аккаунта. Без оплаты. После входа вернём вас к игре и сохраним гостевой результат.</small></span>
+            </aside>}
             {register && registrationInvite && <aside className="login-referral-invite" aria-label={registrationInvite.title}>
               <span className="login-referral-invite__badge" aria-hidden="true">{registrationInvite.label}</span>
               <span>
@@ -373,6 +376,14 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
             {serverRuntime.loading
               ? <div className="login-session-loading" role="status" aria-live="polite"><LoaderCircle className="login-spinner" /> Проверяем сессию…</div>
               : <form className="login-form" onSubmit={submitEmail} noValidate>
+                {!resetMode && !forgotMode && yandexAuthEnabled && <>
+                  <ControlButton className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending}>
+                    <span className="login-yandex-mark" aria-hidden="true">Я</span>
+                    <span>{pending ? 'Переходим…' : 'Продолжить с Яндексом'}</span>
+                  </ControlButton>
+                  <p className="login-form-hint">Без нового пароля. Продолжая, вы принимаете <a href="/legal/terms" target="_blank" rel="noreferrer">соглашение</a> и <a href="/legal/privacy" target="_blank" rel="noreferrer">политику конфиденциальности</a>.</p>
+                  {emailAuthEnabled && <div className="login-divider" aria-hidden="true"><span />ИЛИ ПО EMAIL<span /></div>}
+                </>}
                 {register && !resetMode && <div className="login-field">
                   <label htmlFor="login-name">Имя</label>
                   <TextInput surface="paper" className="ym-disable-keys" id="login-name" value={name} onChange={(event) => { setName(event.target.value); clearFieldError('name') }} autoComplete="name" aria-invalid={Boolean(fieldErrors.name)} aria-describedby={fieldErrors.name ? 'login-name-error' : undefined} />
@@ -436,14 +447,6 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 </ActionButton>
 
                 {notice && <InlineAlert tone="success" className="login-notice">{notice}</InlineAlert>}
-
-                {!resetMode && !forgotMode && <>
-                  <div className="login-divider" aria-hidden="true"><span />ИЛИ<span /></div>
-                  <ControlButton className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending || !yandexAuthEnabled}>
-                    <span className="login-yandex-mark" aria-hidden="true">Я</span>
-                    <span>{pending ? 'Переходим…' : 'Войти через Яндекс'}</span>
-                  </ControlButton>
-                </>}
 
                 {(forgotMode || resetMode) && <ControlButton className="login-secondary-link" type="button" onClick={() => switchMode(false)}>Вернуться ко входу</ControlButton>}
                 {register && !resetMode && <p className="login-register-line">Уже есть аккаунт? <ControlButton type="button" onClick={() => switchMode(false)}>Войти</ControlButton></p>}

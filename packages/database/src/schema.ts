@@ -469,6 +469,9 @@ export const gameSessions = pgTable('game_sessions', {
   attemptsCount: smallint('attempts_count').notNull().default(0),
   rulesVersion: integer('rules_version').notNull(),
   startIdempotencyKey: uuid('start_idempotency_key'),
+  accessSource: text('access_source'),
+  sourceSessionId: uuid('source_session_id').references((): AnyPgColumn => gameSessions.id, { onDelete: 'set null' }),
+  growthStage: text('growth_stage'),
   startedAt: now(),
   updatedAt: now(),
   completedAt: timestamp('completed_at', { withTimezone: true }),
@@ -479,6 +482,8 @@ export const gameSessions = pgTable('game_sessions', {
   uniqueIndex('game_session_pack_user_position_unique').on(table.userId, table.packId, table.packPosition).where(sql`${table.packId} is not null and ${table.packPosition} is not null`),
   index('game_session_user_status_idx').on(table.userId, table.status),
   index('game_session_auth_session_idx').on(table.authSessionId),
+  index('game_session_source_idx').on(table.sourceSessionId),
+  check('game_session_access_source_check', sql`${table.accessSource} is null or ${table.accessSource} in ('tickets','club','registration_bonus')`),
   check('game_session_kind_check', sql`${table.kind} in ('daily','archive','free_play','pack')`),
   check('game_session_pack_fields_check', sql`(${table.kind} = 'pack' and ${table.packId} is not null and ${table.packPosition} is not null) or (${table.kind} <> 'pack' and ${table.packId} is null and ${table.packPosition} is null)`),
   check('game_session_status_check', sql`${table.status} in ('playing','final_choice','won','lost','expired')`),
@@ -1066,6 +1071,14 @@ export const freePlayUsage = pgTable('free_play_usage', {
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }), activityDate: date('activity_date').notNull(), launches: integer().notNull().default(0),
 }, (table) => [primaryKey({ columns: [table.userId, table.activityDate] })])
 
+// A finite non-monetary entitlement, not wallet currency. One grant per account;
+// consumed atomically with a Diagnosis session, never with AI-powered rooms.
+export const registrationPlayCredits = pgTable('registration_play_credits', {
+  userId: uuid('user_id').primaryKey().references(() => user.id, { onDelete: 'cascade' }),
+  remaining: smallint().notNull().default(3),
+  grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [check('registration_play_credits_remaining_check', sql`${table.remaining} between 0 and 3`)])
+
 export const promoCodes = pgTable('promo_codes', {
   id: uuid().primaryKey().defaultRandom(), codeHash: text('code_hash').notNull().unique(), title: text().notNull(), rewardType: text('reward_type').notNull(),
   rewardValue: jsonb('reward_value').notNull(), perUserLimit: integer('per_user_limit').notNull().default(1), globalLimit: integer('global_limit'),
@@ -1315,7 +1328,7 @@ export const clientEvents = pgTable('client_events', {
   properties: jsonb().notNull().default({}),
   createdAt: now(),
 }, (table) => [
-    check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','game_session_start','game_session_complete','game_next_clicked','game_next_start','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','danetki_landing_view','danetki_start_clicked','danetki_first_question','danetki_catalog_view','danetki_story_view','danetki_story_answer_opened','danetki_catalog_play_clicked','danetki_registration_offer_view','danetki_registration_offer_clicked','danetki_registration_succeeded','danetki_result_view','danetki_cross_game_offer_view','danetki_cross_game_clicked','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable','connections_started','connections_guess_submitted','connections_one_away','connections_group_solved','connections_hint_used','connections_completed','connections_shared','connections_report_submitted','territory_landing_view','territory_room_created','territory_room_started','territory_duel_completed','territory_match_completed','territory_rematch_clicked','territory_rematch_started')`),
+    check('client_event_name_check', sql`${table.eventName} in ('page_view','mode_opened','game_session_start','game_session_complete','game_next_clicked','game_next_start','client_error','api_error','network_offline','network_online','report_form_opened','report_submit_failed','club_screen_view','club_interest_clicked','archive_paywall_view','archive_paywall_clicked','checkout_started','checkout_returned','purchase_succeeded','purchase_failed','club_free_play_started','pack_opened','pack_paywall_view','ticket_earned','ticket_spent','insufficient_tickets_view','ticket_offer_view','ticket_offer_clicked','ticket_bundle_purchased','period_unlocked','free_play_started','danetki_room_started','danetki_room_completed','danetki_limit_reached','danetki_landing_view','danetki_start_clicked','danetki_first_question','danetki_catalog_view','danetki_story_view','danetki_story_answer_opened','danetki_catalog_play_clicked','danetki_registration_offer_view','danetki_registration_offer_clicked','danetki_registration_succeeded','danetki_result_view','danetki_cross_game_offer_view','danetki_cross_game_clicked','club_paywall_view','special_locked_view','special_club_cta_clicked','friends_room_created','friends_room_started','friends_room_free_block_started','friends_room_block_completed','friends_room_intermission_view','friends_room_continue_clicked','friends_room_continued','friends_room_ended_at_intermission','friends_room_guest_joined','friends_room_guest_registered','final_choice_shown','final_choice_candidate_selected','final_choice_submitted','final_choice_reveal_opened','final_choice_reveal_cancelled','final_choice_revealed','final_choice_timed_out','final_choice_unavailable','connections_started','connections_guess_submitted','connections_one_away','connections_group_solved','connections_hint_used','connections_completed','connections_shared','connections_report_submitted','territory_landing_view','territory_room_created','territory_room_started','territory_duel_completed','territory_match_completed','territory_rematch_clicked','territory_rematch_started','diagnosis_replay_offer_view','diagnosis_replay_clicked','registration_bonus_offer_view','registration_bonus_offer_clicked','club_context_offer_view','club_context_offer_clicked','commerce_plan_selected')`),
   index('client_event_occurred_idx').on(table.occurredAt),
   index('client_event_user_occurred_idx').on(table.userId, table.occurredAt),
   index('client_event_game_session_idx').on(table.gameSessionId),

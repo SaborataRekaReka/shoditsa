@@ -92,6 +92,9 @@ export const CheckoutBodySchema = Type.Object({
   termsAccepted: Type.Literal(true),
   offerVersion: Type.Literal(CURRENT_OFFER_VERSION),
   autoRenew: Type.Optional(Type.Boolean()),
+  intentId: Type.Optional(UuidSchema),
+  placement: Type.Optional(Type.String({ maxLength: 80, pattern: '^[a-z0-9_-]+$' })),
+  sourceMode: Type.Optional(Type.Literal('diagnosis')),
 }, { additionalProperties: false })
 export type CheckoutBody = Static<typeof CheckoutBodySchema>
 
@@ -100,6 +103,8 @@ export type CommerceOrderParams = Static<typeof CommerceOrderParamsSchema>
 
 export type PaymentOrderStatus = 'created' | 'pending' | 'paid' | 'failed' | 'canceled' | 'expired' | 'refunded' | 'chargeback'
 export type PaymentOrderPublic = {
+  sourceMode?: 'diagnosis'
+  intentId?: string
   id: string
   productId: string
   status: PaymentOrderStatus

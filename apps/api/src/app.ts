@@ -22,6 +22,7 @@ import {
   type LedgerQuery, type PeriodUnlockBody, type ProfilePatch, type PromoRedeemBody,
   isCatalogGuessModeId,
   isPlayableModeId,
+  growthFeatures,
 } from '@shoditsa/contracts'
 import {
   account, appSettings, auditLog, authEvents, contentItemVersions, contentReports, contentReviewDecisions, contentRevisionModes, contentRevisions,
@@ -60,6 +61,8 @@ import { registerTerritoryRoutes } from './modules/territory/routes.js'
 import { getConnectionsSession, startConnectionsSession } from './modules/connections/service.js'
 import { registerConnectionsRoutes } from './modules/connections/routes.js'
 import { registerConnectionsAdminRoutes } from './modules/connections/admin-routes.js'
+import { loadGrowthPolicy } from './modules/growth/service.js'
+import { registerGrowthRoutes } from './modules/growth/routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -155,18 +158,20 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     } catch { return reply.status(503).send({ status: 'not-ready', checks: { database: false, activeContentRevision: false } }) }
   })
   app.get('/api/v1/meta', async () => {
-    const [active, danetkiFeatures] = await Promise.all([
+    const [active, danetkiFeatures, growthPolicy] = await Promise.all([
       db.select({ id: contentRevisions.id, version: contentRevisions.version }).from(contentRevisions).where(eq(contentRevisions.status, 'active')).limit(1),
       loadDanetkiFeatureFlags(db, {
         enabled: config.danetkiEnabled,
         multiplayerEnabled: config.danetkiMultiplayerEnabled,
       }),
+      loadGrowthPolicy(db),
     ])
     const counts = active[0] ? await db.select({ mode: contentRevisionModes.mode, count: contentRevisionModes.itemsCount }).from(contentRevisionModes).where(eq(contentRevisionModes.revisionId, active[0].id)) : []
     const territoryCount = counts.find((entry) => entry.mode === 'territory')?.count ?? 0
     const emailInfrastructureReady = Boolean(config.smtp.host && config.smtp.from)
     return {
       serverTime: new Date().toISOString(),
+      growth: growthFeatures(growthPolicy),
       moscowDate: getMoscowDate(),
       apiVersion: 'v1',
       rulesVersion: ECONOMY_RULES_VERSION,
@@ -476,7 +481,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   })
   app.post('/api/v1/economy/free-play/start', { schema: { body: FreePlayBodySchema, headers: idempotencyHeaders } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config); const body = request.body as FreePlayBody
-    return startFreePlay(db, user!.id, user!.role, config.economy.v4RolloutPercent, body.mode, body.difficulty ?? null, requireIdempotencyKey(request), user!.authSessionId)
+    return startFreePlay(db, user!.id, user!.role, config.economy.v4RolloutPercent, body.mode, body.difficulty ?? null, requireIdempotencyKey(request), user!.authSessionId, body.sourceSessionId)
   })
   app.post('/api/v1/promos/redeem', { schema: { body: PromoRedeemBodySchema, headers: idempotencyHeaders }, config: { rateLimit: { max: 5, timeWindow: '1 hour' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -513,6 +518,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   })
 
   await registerCommerceRoutes(app, { db, auth, config })
+  await registerGrowthRoutes(app, { db, auth, config })
   await registerCommerceAdminRoutes(app, { db, auth, config })
   registerPackRoutes(app, db, auth, config)
   registerPrivateGameRoutes(app, { db, auth, config })

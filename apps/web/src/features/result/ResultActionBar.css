@@ -8,6 +8,9 @@
   box-shadow: 3px 3px 0 color-mix(in srgb, var(--result-next-color, var(--color-primary)) 55%, var(--color-paper-line));
 }
 
+/* A price is part of consent to spend tickets, not optional route decoration. */
+.result-primary-actions.is-replay .result-next em { display: block; line-height: 1.4; }
+
 .result-primary-actions .result-next {
   position: relative;
   width: 100%;

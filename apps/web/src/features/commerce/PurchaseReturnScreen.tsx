@@ -102,6 +102,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onProfile, onArchive, onS
               : pendingTimedOut ? <><Clock3 /><h1>Платёж ещё обрабатывается</h1><p>Мы продолжаем автоматически проверять CloudPayments. Обновлять страницу или оплачивать повторно не нужно.</p></>
                 : <><Clock3 className="purchase-return__spin" /><h1>Проверяем оплату</h1><p>Не закрывайте страницу — подтверждение обычно занимает несколько секунд.</p></>}
       <div className="purchase-return__actions">
+        {status === 'paid' && order.data?.order.sourceMode === 'diagnosis' && <ControlButton type="button" onClick={() => window.location.assign('/games/diagnosis')}>Продолжить «Диагнозы»</ControlButton>}
         {pendingTimedOut && <ControlButton type="button" disabled={order.isFetching} onClick={() => { void order.refetch() }}>
           {order.isFetching ? 'Проверяем…' : 'Проверить ещё раз'}
         </ControlButton>}

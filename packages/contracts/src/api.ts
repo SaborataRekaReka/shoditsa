@@ -4,6 +4,7 @@ import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
 import type { CatalogGuessModeId } from './game-modes.js'
 import type { EconomyQuote, EconomyRuleSet } from './economy.js'
 import type { ConnectionsGameState, ConnectionsHintSnapshot } from './connections.js'
+import type { GrowthFeatures } from './growth.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'final_choice' | 'won' | 'lost' | 'expired'
@@ -52,6 +53,7 @@ export type PublicContentItem = {
 } & Partial<Omit<TitleItem, 'id' | 'mode' | 'titleRu' | 'titleOriginal' | 'year' | 'genres' | 'posterUrl' | 'comments'>>
 
 export type MetaResponse = {
+  growth?: GrowthFeatures
   serverTime: string
   moscowDate: string
   apiVersion: string
@@ -155,6 +157,7 @@ export type ActiveSessionSummary = {
 }
 
 export type DashboardResponse = {
+  registrationBonus?: { mode: 'diagnosis'; granted: number; remaining: number }
   wallet: WalletAccount
   attendance: AttendanceSummary | null
   today: TodayAttendance | null
@@ -334,7 +337,7 @@ export type PeriodUnlockResponse = {
   accessSource: 'tickets' | 'club'
   rulesVersion: number
 }
-export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string | null; accessSource: 'tickets' | 'club' }
+export type FreePlayResponse = GameSessionSnapshot & { cost: number; balanceAfter: number; ledgerId: string | null; accessSource: 'tickets' | 'club' | 'registration_bonus' }
 export type PromoRedeemResponse = { reward?: { type: 'tickets'; amount: number; balanceAfter: number }; alreadyRedeemed: boolean }
 
 export type LedgerEntry = { id: string; amount: number; balanceAfter: number; reason: string; type: string; rulesVersion: number; createdAt: string }

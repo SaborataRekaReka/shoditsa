@@ -273,6 +273,8 @@ const applyReconciledPaymentState = async (
 })
 
 export const publicOrder = (order: Order) => ({
+  ...(order.metadata && typeof order.metadata === 'object' && (order.metadata as Record<string, unknown>).sourceMode === 'diagnosis' ? { sourceMode: 'diagnosis' as const } : {}),
+  ...(order.metadata && typeof order.metadata === 'object' && typeof (order.metadata as Record<string, unknown>).intentId === 'string' ? { intentId: (order.metadata as Record<string, unknown>).intentId as string } : {}),
   id: order.id,
   productId: order.productId,
   status: order.status as 'created' | 'pending' | 'paid' | 'failed' | 'canceled' | 'expired' | 'refunded' | 'chargeback',
@@ -340,7 +342,7 @@ export const startCheckout = async (
   actor: { id: string; email: string; isAnonymous: boolean },
   productId: string,
   idempotencyKey: string,
-  acceptance: { offerVersion: string; termsAccepted: true; autoRenew?: boolean },
+  acceptance: { offerVersion: string; termsAccepted: true; autoRenew?: boolean; intentId?: string; placement?: string; sourceMode?: 'diagnosis' },
 ) => {
   if (!config.commerce.enabled) throw new ApiError(503, 'COMMERCE_DISABLED', 'Оплата пока не включена. Вы можете продолжать играть бесплатно')
   if (actor.isAnonymous) throw new ApiError(403, 'COMMERCE_ACCOUNT_REQUIRED', 'Создайте постоянный аккаунт, чтобы покупка сохранилась')
@@ -395,6 +397,9 @@ export const startCheckout = async (
         termsAccepted: acceptance.termsAccepted,
         termsAcceptedAt: new Date().toISOString(),
         autoRenew: Boolean(recurrence),
+        ...(acceptance.intentId ? { intentId: acceptance.intentId } : {}),
+        ...(acceptance.placement ? { placement: acceptance.placement } : {}),
+        ...(acceptance.sourceMode ? { sourceMode: acceptance.sourceMode } : {}),
         ...(recurrence ? { recurrence } : {}),
       },
     }).onConflictDoNothing().returning()

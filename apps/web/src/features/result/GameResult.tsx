@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { FULL_HOUSE_MODE_IDS, type GameCompletionType } from '@shoditsa/contracts'
+import { FULL_HOUSE_MODE_IDS, type GameCompletionType, type GrowthFeatures, type CommerceProduct } from '@shoditsa/contracts'
 import {
   CalendarDays,
   CheckCircle2,
@@ -24,6 +24,7 @@ import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
 import { ControlButton } from '../../components/ui'
 import './GameResult.css'
+import { DiagnosisClubOffer, DiagnosisRegistrationOffer, trackGrowthAction, useGrowthImpression } from './DiagnosisGrowth'
 
 const TipCheckoutTrigger = lazy(() => import('../commerce/TipCheckout').then((module) => ({ default: module.TipCheckoutTrigger })))
 const diagnosisSystemRewardIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
@@ -46,6 +47,11 @@ export type ResultAward = {
 type AccountState = 'auto' | 'guest' | 'authenticated'
 
 type Props = {
+  sessionId?: string
+  growth?: GrowthFeatures
+  registrationBonusRemaining?: number
+  monthlyClubProduct?: CommerceProduct
+  clubOfferEligible?: boolean
   mode: TitleMode
   won: boolean
   completionType?: GameCompletionType | null
@@ -76,7 +82,7 @@ type Props = {
   replayCost?: number
   replayShortage?: number
   replayPending?: boolean
-  replayAccessSource?: 'tickets' | 'club'
+  replayAccessSource?: 'tickets' | 'club' | 'registration_bonus'
   onReport?: (reason: ContentReportReason, comment: string) => void
   autoScroll?: boolean
   accountState?: AccountState
@@ -107,6 +113,8 @@ export function GameResult(props: Props) {
   const resultViewKeyRef = useRef('')
   const rewardDetailsId = useId()
   const { session: authSession, loading: authLoading } = useAuthSession()
+  const primaryReplay = Boolean(props.mode === 'diagnosis' && props.onReplay && (props.growth?.replay || (props.registrationBonusRemaining ?? 0) > 0))
+  const replayRef = useGrowthImpression('diagnosis_replay_offer_view', primaryReplay ? props.growth : undefined, props.sessionId)
 
   useEffect(() => {
     if (props.autoScroll === false) return
@@ -204,7 +212,10 @@ export function GameResult(props: Props) {
       : '',
   ].filter(Boolean)
   const progressSummary = joinList(progressItems)
-  const persistence = accountState === 'guest'
+  const recommendations: TitleMode[] = primaryReplay ? ['animal', 'character', 'book'] : props.recommendedModes ?? []
+  const persistence = accountState === 'guest' && props.mode === 'diagnosis' && props.growth?.registration
+    ? <DiagnosisRegistrationOffer growth={props.growth} sessionId={props.sessionId} href={`${currentRegistrationHref()}&bonus=diagnosis`} />
+    : accountState === 'guest'
     ? <section className="result-persistence result-card__wide" aria-label="Сохранить прогресс">
         <span className="result-persistence__icon" aria-hidden="true"><Save /></span>
         <div className="result-persistence__copy">
@@ -224,7 +235,7 @@ export function GameResult(props: Props) {
           <span className="result-persistence__icon" aria-hidden="true"><CheckCircle2 /></span>
           <div className="result-persistence__copy">
             <strong>Прогресс сохранён в профиле</strong>
-            <p>Этот результат уже доступен на всех ваших устройствах.</p>
+            <p>{props.mode === 'diagnosis' && (props.registrationBonusRemaining ?? 0) > 0 ? `Этот результат уже сохранён. Дополнительных случаев без списания билетов: ${props.registrationBonusRemaining}. Нажмите «Следующий случай».` : 'Этот результат уже доступен на всех ваших устройствах.'}</p>
           </div>
         </section>
       : null
@@ -304,9 +315,11 @@ export function GameResult(props: Props) {
     </section>}
 
     <ResultActionBar
+      primaryReplay={primaryReplay}
+      primaryRef={replayRef}
       nextLabel={props.nextLabel}
       nextDestination={nextDestination}
-      nextArtworkUrl={nextPresentation.watermarkUrl}
+      nextArtworkUrl={primaryReplay ? MODE_PRESENTATION.diagnosis.watermarkUrl : nextPresentation.watermarkUrl}
       nextTicketNumber={nextTicketNumber}
       nextActionLabel={props.nextActionLabel}
       configureLabel={props.configureLabel}
@@ -315,6 +328,9 @@ export function GameResult(props: Props) {
       onNext={props.onNext}
       onConfigure={props.onConfigure}
       onChallenge={props.onChallenge}
+      onReplayOfferClick={() => {
+        if (primaryReplay && props.growth) trackGrowthAction('diagnosis_replay_clicked', props.growth, props.sessionId, { source: props.replayAccessSource ?? 'tickets', amount: props.replayCost ?? 0 })
+      }}
       onReplay={props.onReplay}
       replayCost={props.replayCost}
       replayShortage={props.replayShortage}
@@ -324,9 +340,11 @@ export function GameResult(props: Props) {
       showReplayGate={Boolean(props.onReplay) || props.completedToday !== undefined}
     />
 
-    {!!props.recommendedModes?.length && props.onRecommendedMode && <section className="result-recommendations result-card__wide" aria-label="Другие игры после результата">
+    {props.mode === 'diagnosis' && props.growth?.club && props.clubOfferEligible && props.monthlyClubProduct && <DiagnosisClubOffer growth={props.growth} sessionId={props.sessionId} product={props.monthlyClubProduct} />}
+
+    {!!recommendations.length && props.onRecommendedMode && <section className="result-recommendations result-card__wide" aria-label="Другие игры после результата">
       <header><div><span>Продолжить</span><strong>Выберите следующую игру</strong></div><small>Животные, персонажи или книги</small></header>
-      <div>{props.recommendedModes.map((mode) => {
+      <div>{recommendations.map((mode) => {
         const presentation = MODE_PRESENTATION[mode]
         const Icon = presentation.icon
         return <ControlButton

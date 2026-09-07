@@ -9,6 +9,7 @@ import { mergeAnonymousAccount } from './merge.js'
 import { createAuthEmailSender } from './email.js'
 import { createAuthAnalytics } from './analytics.js'
 import { awardRegistrationBadge, registrationReferralFromContext } from '../users/badges.js'
+import { grantRegistrationPlays } from '../growth/service.js'
 
 export const createAuth = (config: AppConfig, db: Database) => {
   const smtpConfigured = Boolean(config.smtp.host && config.smtp.from)
@@ -55,6 +56,7 @@ export const createAuth = (config: AppConfig, db: Database) => {
           after: async (createdUser, context) => {
             if (createdUser.isAnonymous) return
             await analytics.userCreated(createdUser, context)
+            await grantRegistrationPlays(db, createdUser)
             const referral = registrationReferralFromContext(context)
             if (referral) await awardRegistrationBadge(db, createdUser.id, referral)
           },

@@ -128,6 +128,8 @@ export function ClubScreen({
   const runtime = useServerRuntime()
   const [notice, setNotice] = useState('')
   const resumedPlan = useRef(false)
+  const diagnosisContext = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('from') === 'diagnosis'
+  const contextualOffer = diagnosisContext && Boolean(runtime.meta?.growth?.club)
   const authenticated = Boolean(runtime.me && !runtime.me.user.isAnonymous)
   const catalog = useQuery({
     queryKey: queryKeys.commerceCatalog,
@@ -389,7 +391,7 @@ export function ClubScreen({
           <section className="club-pricing" id="club-offers" aria-labelledby="club-pricing-title">
             <header>
               <h2 id="club-pricing-title">Выберите, как играть</h2>
-              <p>Один состав клуба — два срока действия билета</p>
+              <p>{contextualOffer ? 'Продолжайте «Диагнозы»: новые случаи и весь архив без списания билетиков. Для начала — билет на 30 дней.' : 'Один состав клуба — два срока действия билета'}</p>
             </header>
             {notice && <InlineAlert tone="warning" className="club-pricing__notice">{notice}</InlineAlert>}
             <div className="club-pricing__grid">
@@ -405,6 +407,7 @@ export function ClubScreen({
               />
               <ClubCard
                 planId={monthly.id}
+                featured={Boolean(runtime.meta?.growth?.club)}
                 eyebrow="Клубный билет"
                 title={`${monthly.durationDays ?? 30} дней`}
                 priceLabel={money(monthly.priceMinor, monthly.currency)}
@@ -417,6 +420,7 @@ export function ClubScreen({
                     hasClub={hasClub}
                     label={`Выбрать ${monthly.durationDays ?? 30} дней`}
                     placement="club_pricing_monthly"
+                    growthStage={runtime.meta?.growth?.stage}
                   />
                   : <ActionButton type="button" onClick={() => setNotice('Оплата временно недоступна. Попробуйте немного позже.')}>
                     Выбрать {monthly.durationDays ?? 30} дней
@@ -424,7 +428,7 @@ export function ClubScreen({
                 note={<><LockKeyhole aria-hidden="true" /> Автопродление — только по вашему выбору</>}
               />
               <ClubCard
-                featured
+                featured={!runtime.meta?.growth?.club}
                 planId={annual.id}
                 eyebrow="Клубный билет"
                 title={`${annual.durationDays ?? 365} дней`}
@@ -439,6 +443,7 @@ export function ClubScreen({
                     hasClub={hasClub}
                     label={`Выбрать ${annual.durationDays ?? 365} дней`}
                     placement="club_pricing_annual"
+                    growthStage={runtime.meta?.growth?.stage}
                   />
                   : <ActionButton type="button" onClick={() => setNotice('Оплата временно недоступна. Попробуйте немного позже.')}>
                     Выбрать {annual.durationDays ?? 365} дней

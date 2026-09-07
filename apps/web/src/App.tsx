@@ -2921,7 +2921,7 @@ function Game({
   replayCost: number
   replayShortage: number
   replayPending: boolean
-  replayAccessSource: 'tickets' | 'club'
+  replayAccessSource: 'tickets' | 'club' | 'registration_bonus'
   onConfigureMode: () => void
 }) {
   const effectivePeriod: PeriodKey = GAME_MODE_MANIFEST[mode].periodPolicy === 'all' ? 'all' : period
@@ -3585,7 +3585,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   replayCost: number
   replayShortage: number
   replayPending: boolean
-  replayAccessSource: 'tickets' | 'club'
+  replayAccessSource: 'tickets' | 'club' | 'registration_bonus'
   onConfigureMode: () => void
   onSessionLoaded: (session: GameSessionSnapshot) => void
   onPackSession: (session: GameSessionSnapshot) => void
@@ -3627,6 +3627,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     staleTime: 30_000,
   })
   const dashboard = useQuery({ queryKey: queryKeys.dashboard, queryFn: api.dashboard })
+  const growthMeta = useQuery({ queryKey: ['meta'], queryFn: api.meta })
+  const growthCatalog = useQuery({ queryKey: queryKeys.commerceCatalog, queryFn: api.commerceCatalog, enabled: session?.mode === 'diagnosis' && Boolean(growthMeta.data?.growth?.club) })
   const searchParams = useMemo(() => {
     if (!session || !debouncedQuery || selected) return null
     return new URLSearchParams({ mode: session.mode, q: debouncedQuery, sessionId, limit: '10' })
@@ -4157,7 +4159,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         onRevealDialogCancel={() => trackClientEvent('final_choice_reveal_cancelled', { sessionId, mode: session.mode, kind: session.kind, packId: session.packId, attemptsCount: session.attemptsCount }, { gameSessionId: sessionId })}
       />}
       {session.status === 'final_choice' && <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => setGameMatchStripOpen((current) => !current)} />}
-      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} packProgress={isDtfCommentSession && packDetail.data?.pack ? {
+      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult sessionId={session.id} growth={!isSpecialSession ? growthMeta.data?.growth : undefined} registrationBonusRemaining={dashboard.data?.registrationBonus?.remaining} monthlyClubProduct={growthCatalog.data?.enabled ? growthCatalog.data.products.find((product) => product.id === 'club_30d') : undefined} clubOfferEligible={!dashboard.data?.membership.active && (replayShortage > 0 || (dashboard.data?.stats.find((entry) => entry.mode === 'diagnosis')?.played ?? 0) + (dashboard.data?.freePlayLaunchesToday ?? 0) >= 3)} mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} packProgress={isDtfCommentSession && packDetail.data?.pack ? {
         played: packDetail.data.pack.completedItems,
         won: packDetail.data.pack.wonItems ?? 0,
         lost: packDetail.data.pack.lostItems ?? 0,
@@ -4362,6 +4364,7 @@ function GameApp() {
   const lastTrackedSeoLandingRef = useRef<string | null>(null)
   const adminDailySaltRef = useRef(0)
   const globalDailySaltRef = useRef(0)
+  const freePlayPendingRef = useRef(false)
   const effectiveDailySalt = globalDailySalt + adminDailySalt
   const wallet = useMemo<Wallet>(() => SERVER_RUNTIME ? toLegacyWallet(serverRuntime.dashboard) : loadWallet(), [economyVersion, serverRuntime.dashboard])
   const todayAttendance = useMemo<DailyAttendance>(() => SERVER_RUNTIME
@@ -4374,11 +4377,12 @@ function GameApp() {
     ? serverRuntime.dashboard?.freePlayLaunchesToday ?? 0
     : loadFreePlayUsage(getMoscowDate()), [economyVersion, serverRuntime.dashboard])
   const clubFreePlay = hasActiveClub
-  const freePlayCostValue = useMemo(() => clubFreePlay
+  const bonusFreePlay = mode === 'diagnosis' && (serverRuntime.dashboard?.registrationBonus?.remaining ?? 0) > 0
+  const freePlayCostValue = useMemo(() => clubFreePlay || bonusFreePlay
     ? 0
     : SERVER_RUNTIME
       ? serverRuntime.dashboard?.freePlayNextCost ?? ECONOMY_RULE_SET.freePlay.ladder[0] ?? ECONOMY_RULE_SET.freePlay.max
-      : freePlayCost(freePlayLaunchesToday), [clubFreePlay, freePlayLaunchesToday, serverRuntime.dashboard])
+      : freePlayCost(freePlayLaunchesToday), [clubFreePlay, bonusFreePlay, freePlayLaunchesToday, serverRuntime.dashboard])
   const freePlayShortage = Math.max(0, freePlayCostValue - wallet.tickets)
   const periodUnlockCostValue = SERVER_RUNTIME
     ? serverRuntime.dashboard?.economyRules.periodUnlock ?? ECONOMY_RULE_SET.periodUnlock
@@ -4532,9 +4536,9 @@ function GameApp() {
     },
   })
   const startServerFreePlay = useMutation({
-    mutationFn: async ({ key }: { key: string; backTarget: 'title' | 'rewatch' | 'hub' }) => {
+    mutationFn: async ({ key, sourceSessionId }: { key: string; backTarget: 'title' | 'rewatch' | 'hub'; sourceSessionId?: string }) => {
       await ensureServerSession()
-      return api.freePlay(mode, mode === 'music' ? apiDifficulty(difficulty) : null, key)
+      return api.freePlay(mode, mode === 'music' ? apiDifficulty(difficulty) : null, key, sourceSessionId)
     },
     onSuccess: async (session, variables) => {
       activateServerSession(session, variables.backTarget)
@@ -4597,6 +4601,7 @@ function GameApp() {
       setServerActionError(apiErrorMessage(error))
       if (error instanceof ApiClientError && error.code === 'INSUFFICIENT_TICKETS') trackClientEvent('insufficient_tickets_view', { ...error.details, mode, sessionKind: 'free_play', hasClub: clubFreePlay })
     },
+    onSettled: () => { freePlayPendingRef.current = false },
   })
   const unlockServerPeriod = useMutation({
     mutationFn: async ({ periodKey, key }: { periodKey: PeriodKey; key: string }) => {
@@ -5360,6 +5365,7 @@ function GameApp() {
     return true
   }
   const launchFreePlay = () => {
+    if (freePlayPendingRef.current) return
     if (startServerSession.isPending || startServerFreePlay.isPending || unlockServerPeriod.isPending) return
     if (transition === 'title-to-game') return
     if (!FREE_PLAY_MODES.has(mode)) return
@@ -5388,7 +5394,8 @@ function GameApp() {
         return
       }
       setFreePlayArmed(false)
-      startServerFreePlay.mutate({ key: crypto.randomUUID(), backTarget })
+      freePlayPendingRef.current = true
+      startServerFreePlay.mutate({ key: crypto.randomUUID(), backTarget, sourceSessionId: screen === 'game' && serverSessionId ? serverSessionId : undefined })
       return
     }
 
@@ -5614,7 +5621,7 @@ function GameApp() {
             replayCost={freePlayCostValue}
             replayShortage={freePlayShortage}
             replayPending={titleActionPending}
-            replayAccessSource={clubFreePlay ? 'club' : 'tickets'}
+            replayAccessSource={clubFreePlay ? 'club' : bonusFreePlay ? 'registration_bonus' : 'tickets'}
             onConfigureMode={() => moveToScreen('title')}
             onSessionLoaded={syncServerSessionContext}
             onPackSession={(session) => activateServerSession(session, 'hub')}
@@ -5650,7 +5657,7 @@ function GameApp() {
           replayCost={freePlayCostValue}
           replayShortage={freePlayShortage}
           replayPending={titleActionPending}
-          replayAccessSource={clubFreePlay ? 'club' : 'tickets'}
+          replayAccessSource={clubFreePlay ? 'club' : bonusFreePlay ? 'registration_bonus' : 'tickets'}
           onConfigureMode={() => moveToScreen('title')}
             />)}
 

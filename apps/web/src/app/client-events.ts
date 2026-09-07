@@ -1,6 +1,9 @@
 import { ANALYTICS_CONSENT_EVENT, canonicalAnalyticsPath, consentedAnalyticsEntryParams, storedAnalyticsConsent } from './metrics'
 
 export type EventName =
+  | 'diagnosis_replay_offer_view' | 'diagnosis_replay_clicked'
+  | 'registration_bonus_offer_view' | 'registration_bonus_offer_clicked'
+  | 'club_context_offer_view' | 'club_context_offer_clicked' | 'commerce_plan_selected'
   | 'page_view'
   | 'mode_opened'
   | 'game_session_start'

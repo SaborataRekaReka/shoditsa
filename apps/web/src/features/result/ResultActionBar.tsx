@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react'
+import { useId, useState, type ReactNode, type Ref } from 'react'
 import { ArrowRight, Check, ChevronDown, Copy, RotateCcw, SlidersHorizontal, Swords, X } from 'lucide-react'
 import { ControlButton } from '../../components/ui'
 import { formatTickets } from '../economy/economy-rules'
@@ -29,6 +29,9 @@ export function ResultActionBar({
   afterLabel = null,
   showCopy = false,
   showReplayGate = false,
+  primaryReplay = false,
+  primaryRef,
+  onReplayOfferClick,
 }: {
   nextLabel: string
   nextDestination: string
@@ -46,7 +49,10 @@ export function ResultActionBar({
   replayCost?: number
   replayShortage?: number
   replayPending?: boolean
-  replayAccessSource?: 'tickets' | 'club'
+  replayAccessSource?: 'tickets' | 'club' | 'registration_bonus'
+  primaryReplay?: boolean
+  primaryRef?: Ref<HTMLDivElement>
+  onReplayOfferClick?: () => void
   compactNext?: boolean
   persistence?: ReactNode
   afterMeta?: ReactNode
@@ -76,15 +82,15 @@ export function ResultActionBar({
   }
 
   return <>
-    <div className={`result-primary-actions result-card__wide${compactNext ? ' is-compact' : ''}`}>
-      <ControlButton className="result-next" onClick={onNext} aria-label={nextLabel}>
+    <div ref={primaryRef} className={`result-primary-actions result-card__wide${compactNext ? ' is-compact' : ''}${primaryReplay ? ' is-replay' : ''}`}>
+      <ControlButton className="result-next" disabled={primaryReplay && replayPending} onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} aria-label={primaryReplay ? `Следующий случай · ${replayShortageValue > 0 ? 'недостаточно билетов' : replayAccessSource === 'club' ? 'по клубному билету' : replayAccessSource === 'registration_bonus' ? 'за регистрационный бонус' : formatTickets(replayCostValue)}` : nextLabel}>
         <img className="result-next__art" src={nextArtworkUrl} alt="" aria-hidden="true" loading="lazy" />
         <span className="result-next__copy">
-          <small>{nextKicker}</small>
-          <strong>{nextDestination}</strong>
-          {nextTicketNumber !== 'СЕАНС' && <em>{nextTicketNumber} · по маршруту</em>}
+          <small>{primaryReplay ? 'Продолжить «Диагнозы»' : nextKicker}</small>
+          <strong>{primaryReplay ? 'Следующий случай' : nextDestination}</strong>
+          {primaryReplay ? <em>{replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия · без списания билетов' : `${formatTickets(replayCostValue)} · новая загадка`}</em> : nextTicketNumber !== 'СЕАНС' && <em>{nextTicketNumber} · по маршруту</em>}
         </span>
-        <span className="result-next__arrow" aria-hidden="true"><span>{nextActionLabel}</span><ArrowRight /></span>
+        <span className="result-next__arrow" aria-hidden="true"><span>{primaryReplay ? replayPending ? 'Запускаем…' : replayShortageValue > 0 ? 'Дальше' : replayCostValue > 0 ? `За ${replayCostValue}` : 'Играть' : nextActionLabel}</span><ArrowRight /></span>
       </ControlButton>
     </div>
 
@@ -96,7 +102,8 @@ export function ResultActionBar({
       </ControlButton>
       <div className="result-after-actions" id={secondaryActionsId}>
         {afterLabel && <span className="result-after-actions__label">{afterLabel}</span>}
-        {showReplayGate && <ControlButton className="result-replay" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending}>
+        {primaryReplay && <ControlButton className="result-replay" onClick={onNext}><ArrowRight /><span>{nextLabel}</span></ControlButton>}
+        {showReplayGate && !primaryReplay && <ControlButton className="result-replay" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending}>
           <RotateCcw />
           <span>{replayPending ? 'Запускаем новую игру…' : 'Сыграть ещё раз'}</span>
         </ControlButton>}
@@ -128,6 +135,8 @@ export function ResultActionBar({
               ? `Не хватает ${formatTickets(replayShortageValue)}`
               : replayAccessSource === 'club'
                 ? 'Новая игра по клубному абонементу'
+                : replayAccessSource === 'registration_bonus'
+                  ? 'Новый случай за регистрационный бонус'
                 : `Новая игра за ${formatTickets(replayCostValue)}`}</strong>
             <p>{replayShortageValue > 0
               ? `Нужно ${formatTickets(replayCostValue)}, на балансе ${formatTickets(replayBalance)}.`
@@ -139,11 +148,11 @@ export function ResultActionBar({
           </div>}
       {paidReplay
         ? replayShortageValue > 0
-          ? <a className="result-replay-notice__action" href="/club">Получить билеты</a>
+          ? <a className="result-replay-notice__action" href={primaryReplay ? '/club?from=diagnosis#club-offers' : '/club'}>Посмотреть клубный билет</a>
           : <ControlButton className="result-replay-notice__action" onClick={confirmReplay} disabled={replayPending}>
               {replayPending
                 ? 'Запускаем…'
-                : replayAccessSource === 'club'
+                : replayAccessSource === 'club' || replayAccessSource === 'registration_bonus'
                   ? 'Начать новую игру'
                   : `Начать за ${formatTickets(replayCostValue)}`}
             </ControlButton>
