@@ -71,7 +71,8 @@ describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () =
     const result = await report()
     expect(result.measurement).toEqual({
       from: '2026-09-08T00:00:00.000Z', coverage: 'partial',
-      definitionsVersion: 'linked-repeat-v2-free-archive', offerVisibilityVersion: 'visible-v2',
+      definitionsVersion: 'linked-repeat-v3-episode-facts', offerVisibilityVersion: 'visible-v2',
+      episodeFacts: before.measurement.episodeFacts,
       freeArchiveFirstObservedAt: before.measurement.freeArchiveFirstObservedAt && before.measurement.freeArchiveFirstObservedAt < firstFreeArchive
         ? before.measurement.freeArchiveFirstObservedAt : firstFreeArchive,
     })

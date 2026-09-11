@@ -1,9 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import { growthFeatures, type GrowthPolicy } from '@shoditsa/contracts'
-import { advanceGrowthPolicy, growthMeasurementWindow, nextGrowthStageAt, normalizeGrowthPolicy } from '../src/modules/growth/service.js'
+import { advanceGrowthPolicy, episodeFactsWindow, growthMeasurementWindow, nextGrowthStageAt, normalizeGrowthPolicy } from '../src/modules/growth/service.js'
 
 const baseline: GrowthPolicy = { stage: 'baseline', changedAt: null, registrationOpenedAt: null }
 describe('sequential Diagnosis growth rollout', () => {
+  it('does not claim snapshot history is protected before the actual facts migration', () => {
+    const metadata = { recordingStartedAt: '2026-09-11T16:12:00Z' }
+    expect(episodeFactsWindow('2026-09-04', '2026-09-11', metadata).coverage).toBe('legacy_partial')
+    expect(episodeFactsWindow('2026-09-06', '2026-09-13', metadata).coverage).toBe('partial')
+    expect(episodeFactsWindow('2026-09-12', '2026-09-19', metadata)).toEqual({
+      recordingStartedAt: '2026-09-11T16:12:00.000Z', fullDaysFrom: '2026-09-12T00:00:00.000Z', coverage: 'complete',
+    })
+    expect(episodeFactsWindow('2026-09-12', '2026-09-19', null).coverage).toBe('unavailable')
+    expect(episodeFactsWindow('2026-09-12', '2026-09-19', { recordingStartedAt: 'bad' }).coverage).toBe('unavailable')
+  })
   it('distinguishes unmeasured history from partial and complete windows', () => {
     expect(growthMeasurementWindow('2026-08-31', '2026-09-07').coverage).toBe('not_started')
     expect(growthMeasurementWindow('2026-09-02', '2026-09-09')).toEqual({ from: '2026-09-08T00:00:00.000Z', coverage: 'partial' })

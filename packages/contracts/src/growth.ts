@@ -5,7 +5,7 @@ export const GROWTH_CAMPAIGN = 'diagnosis-continuation-v1'
 export const GROWTH_NOT_BEFORE = '2026-09-12T00:00:00.000Z'
 // First complete UTC day after the production instrumentation release.
 export const GROWTH_MEASUREMENT_FROM = '2026-09-08T00:00:00.000Z'
-export const GROWTH_DEFINITIONS_VERSION = 'linked-repeat-v2-free-archive'
+export const GROWTH_DEFINITIONS_VERSION = 'linked-repeat-v3-episode-facts'
 export const GROWTH_OFFER_VISIBILITY_VERSION = 'visible-v2'
 export const REGISTRATION_BONUS_ROUNDS = 3
 export type GrowthPolicy = {
@@ -39,6 +39,13 @@ export type GrowthReport = {
     offerVisibilityVersion: typeof GROWTH_OFFER_VISIBILITY_VERSION
     /** First non-admin Diagnosis free-archive start before toExclusive, even outside this window. */
     freeArchiveFirstObservedAt: string | null
+    /** Original episodes survive account deduplication only after this migration.
+     * Existing surviving rows are a partial historical snapshot, not a backfill. */
+    episodeFacts: {
+      recordingStartedAt: string | null
+      fullDaysFrom: string | null
+      coverage: 'unavailable' | 'legacy_partial' | 'partial' | 'complete'
+    }
   }
   sessions: {
     completions: number; firstCompleters: number; measuredCompleters: number | null

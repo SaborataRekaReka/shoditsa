@@ -13,6 +13,13 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
       order by id
       for update`)
     await tx.execute(sql`select set_config('shoditsa.account_merge', 'on', true)`)
+    // Completion writes the live session before its fact row. Take locks in the
+    // same order to avoid introducing a fact-row/live-session lock inversion.
+    // The user locks above block new FK inserts while ownership is transferred.
+    await tx.execute(sql`
+      select id from game_sessions
+      where user_id in (${anonymousUserId}::uuid, ${targetUserId}::uuid)
+      order by id for update`)
     // Keep the more advanced session for each challenge before moving ownership.
     // Reports belong to the surviving session too; otherwise the session/user
     // cascade would silently erase guest feedback during account linking. Client
@@ -65,6 +72,11 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
       where old.user_id = ${anonymousUserId}::uuid and target.user_id = ${targetUserId}::uuid
         and old.challenge_id is not null and old.challenge_id = target.challenge_id`)
     await tx.execute(sql`update game_sessions set user_id = ${targetUserId}::uuid where user_id = ${anonymousUserId}::uuid`)
+    // Includes facts for BOTH losing branches, even if the repeated session itself
+    // was deduplicated. Do not relink original episode IDs or rewrite timestamps.
+    // Transfer before Better Auth deletes the anonymous user (facts cascade on
+    // genuine account deletion). Surviving sessions' facts were moved by trigger.
+    await tx.execute(sql`update game_session_facts set user_id = ${targetUserId}::uuid where user_id = ${anonymousUserId}::uuid`)
     await tx.execute(sql`update content_reports set user_id = ${targetUserId}::uuid where user_id = ${anonymousUserId}::uuid`)
     await tx.execute(sql`update client_events set user_id = ${targetUserId}::uuid where user_id = ${anonymousUserId}::uuid`)
 

@@ -492,6 +492,29 @@ export const gameSessions = pgTable('game_sessions', {
   check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
 ])
 
+// Original play episodes are independent of the deduplicated gameplay record.
+// Session/source IDs intentionally have no FK: account linking may delete either
+// record. Only ownership transfers; the trigger preserves original chronology.
+export const gameSessionFacts = pgTable('game_session_facts', {
+  id: uuid().primaryKey(),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  kind: text().notNull(),
+  mode: contentMode().notNull(),
+  startedAt: timestamp('startedAt', { withTimezone: true }).notNull(),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+  completionStatus: text('completion_status'),
+  sourceSessionId: uuid('source_session_id'),
+  accessSource: text('access_source'),
+  growthStage: text('growth_stage'),
+  origin: text().notNull(),
+  recordedAt: timestamp('recorded_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index('game_session_fact_user_completed_idx').on(table.userId, table.completedAt),
+  index('game_session_fact_mode_completed_idx').on(table.mode, table.completedAt),
+  index('game_session_fact_source_idx').on(table.sourceSessionId),
+  check('game_session_fact_origin_check', sql`${table.origin} in ('existing_snapshot','live')`),
+])
+
 export const connectionsSchedule = pgTable('connections_schedule', {
   puzzleDate: date('puzzle_date').primaryKey(),
   itemVersionId: uuid('item_version_id').notNull().references(() => contentItemVersions.id),

@@ -379,6 +379,13 @@
       "when": 1789115386220,
       "tag": "0053_free_diagnosis_continuation_attribution",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1789128737373,
+      "tag": "0054_preserve_game_session_facts",
+      "breakpoints": true
     }
   ]
 }
