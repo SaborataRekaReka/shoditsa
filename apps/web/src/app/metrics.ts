@@ -16,6 +16,12 @@ export const ANALYTICS_CONSENT_STORAGE_KEY = 'shoditsa:analytics-consent:v1'
 export const ANALYTICS_CONSENT_EVENT = 'shoditsa:analytics-consent-changed'
 export type AnalyticsConsent = 'accepted' | 'rejected'
 
+type AnalyticsCampaign = { utmSource?: string; utmMedium?: string; utmCampaign?: string }
+const CAMPAIGN_FIELDS = [['utm_source', 'utmSource'], ['utm_medium', 'utmMedium'], ['utm_campaign', 'utmCampaign']] as const
+const safeCampaignSlug = (value: unknown) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,80}$/.test(value) ? value : undefined
+// Keep only allowed campaign values in memory until the visitor makes a choice.
+let pendingCampaign: { acquisitionId: string; values: AnalyticsCampaign } | null = null
+
 type AnalyticsEntry = {
   acquisitionId: string
   url: string
@@ -24,7 +30,27 @@ type AnalyticsEntry = {
   referrerHost: string
   source: 'organic_search' | 'direct' | 'referral'
   searchEngine: string
+} & AnalyticsCampaign
+
+const campaignFromUrl = (url: string): AnalyticsCampaign => {
+  try {
+    const params = new URL(url).searchParams
+    const campaign: AnalyticsCampaign = {}
+    for (const [queryKey, field] of CAMPAIGN_FIELDS) {
+      const values = params.getAll(queryKey)
+      const value = values.length === 1 ? safeCampaignSlug(values[0]) : undefined
+      if (value) campaign[field] = value
+    }
+    return campaign
+  } catch { return {} }
 }
+
+const safeCampaign = (value: AnalyticsCampaign): AnalyticsCampaign => Object.fromEntries(
+  CAMPAIGN_FIELDS.flatMap(([, field]) => {
+    const slug = safeCampaignSlug(value[field])
+    return slug ? [[field, slug]] : []
+  }),
+)
 
 declare global {
   interface Window {
@@ -67,6 +93,7 @@ const safeNavigationUrl = (value: unknown) => {
   if (typeof value !== 'string' || !value) return ''
   try {
     const parsed = new URL(value, typeof window === 'undefined' ? 'https://shoditsa.ru' : window.location.origin)
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return ''
     return `${parsed.origin}${canonicalAnalyticsPath(parsed.pathname)}`
   } catch {
     return ''
@@ -130,6 +157,7 @@ const readAnalyticsEntry = (): AnalyticsEntry | null => {
       referrerHost: value.referrerHost ?? '',
       source: value.source as AnalyticsEntry['source'],
       searchEngine: value.searchEngine ?? '',
+      ...(storedAnalyticsConsent() === 'accepted' ? safeCampaign(value) : {}),
     }
   } catch {
     return null
@@ -138,16 +166,25 @@ const readAnalyticsEntry = (): AnalyticsEntry | null => {
 
 export const captureAnalyticsEntry = () => {
   if (typeof window === 'undefined') return
-  if (storedAnalyticsConsent() === 'rejected') return
+  const consent = storedAnalyticsConsent()
+  if (consent === 'rejected') { pendingCampaign = null; return }
   let referrerHost = ''
   try { referrerHost = document.referrer ? new URL(document.referrer).hostname : '' } catch { /* ignore invalid referrers */ }
   const existing = readAnalyticsEntry()
   const oauthReturnPending = consumeAnalyticsOAuthReturnPending()
-  if (existing && (oauthReturnPending || referrerHost === window.location.hostname || preservesAcquisitionHost(referrerHost))) {
+  let isConsentedReload = false
+  try {
+    const navigation = window.performance?.getEntriesByType?.('navigation')?.[0] as PerformanceNavigationTiming | undefined
+    isConsentedReload = consent === 'accepted' && navigation?.type === 'reload'
+  } catch { /* navigation timing is optional */ }
+  // A SPA reload keeps the original (possibly empty Telegram) document referrer.
+  // It is continuation of the accepted acquisition, not another paid/direct entry.
+  if (existing && (isConsentedReload || oauthReturnPending || referrerHost === window.location.hostname || preservesAcquisitionHost(referrerHost))) {
     try { window.sessionStorage.setItem(ANALYTICS_ENTRY_STORAGE_KEY, JSON.stringify({ ...existing, acquisitionId: existing.acquisitionId || crypto.randomUUID() })) } catch { /* ignore unavailable storage */ }
     return
   }
   const searchEngine = searchEngineFromHost(referrerHost)
+  const campaign = campaignFromUrl(window.location.href)
   const entry: AnalyticsEntry = {
     acquisitionId: crypto.randomUUID(),
     url: safeNavigationUrl(window.location.href),
@@ -156,7 +193,9 @@ export const captureAnalyticsEntry = () => {
     referrerHost,
     source: searchEngine ? 'organic_search' : document.referrer ? 'referral' : 'direct',
     searchEngine,
+    ...(consent === 'accepted' ? campaign : {}),
   }
+  pendingCampaign = consent === 'accepted' ? null : { acquisitionId: entry.acquisitionId, values: campaign }
   try { window.sessionStorage.setItem(ANALYTICS_ENTRY_STORAGE_KEY, JSON.stringify(entry)) } catch { /* ignore unavailable storage */ }
 }
 
@@ -169,6 +208,7 @@ export const analyticsEntryParams = (): Record<string, MetrikaParamValue> => {
     entry_source: entry.source,
     ...(entry.searchEngine ? { entry_search_engine: entry.searchEngine } : {}),
     ...(entry.referrerHost ? { entry_referrer_host: entry.referrerHost } : {}),
+    ...Object.fromEntries(CAMPAIGN_FIELDS.flatMap(([queryKey, field]) => entry[field] ? [[queryKey, entry[field]!]] : [])),
   }
 }
 
@@ -189,7 +229,7 @@ export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
 }
 
 export const initMetrika = () => {
-  if (typeof window === 'undefined' || window.__SHODITSA_METRIKA_INITIALIZED__) return
+  if (typeof window === 'undefined' || storedAnalyticsConsent() !== 'accepted' || window.__SHODITSA_METRIKA_INITIALIZED__) return
   const entry = readAnalyticsEntry()
   const stub: MetrikaStub = (window.ym as MetrikaStub | undefined) ?? ((...args: unknown[]) => {
     stub.a = stub.a ?? []
@@ -212,6 +252,15 @@ export const initMetrika = () => {
     landing_hit: true,
     ...consentedAnalyticsEntryParams(),
   })
+  let trackingUrl = entry?.url || safeNavigationUrl(window.location.href)
+  try {
+    const parsed = new URL(trackingUrl)
+    for (const [queryKey, field] of CAMPAIGN_FIELDS) {
+      const value = safeCampaignSlug(entry?.[field])
+      if (value) parsed.searchParams.set(queryKey, value)
+    }
+    trackingUrl = parsed.toString()
+  } catch { /* malformed optional storage must not block consent or gameplay */ }
   stub(METRIKA_COUNTER_ID, 'init', {
     ssr: true,
     webvisor: false,
@@ -219,7 +268,8 @@ export const initMetrika = () => {
     ecommerce: 'dataLayer',
     accurateTrackBounce: true,
     trackLinks: true,
-    url: entry?.url ?? safeNavigationUrl(window.location.href),
+    // Only this initial, consented hit carries campaign query keys. Route paths stay redacted.
+    url: trackingUrl,
     referrer: entry?.referrer ?? safeReferrerUrl(document.referrer),
     ...(landingParams ? { params: landingParams } : {}),
   })
@@ -233,12 +283,18 @@ export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
   if (typeof window === 'undefined') return
   window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, consent)
   if (consent === 'accepted') {
-    if (!readAnalyticsEntry()) captureAnalyticsEntry()
+    const entry = readAnalyticsEntry()
+    if (!entry) captureAnalyticsEntry()
+    else if (pendingCampaign?.acquisitionId === entry.acquisitionId) {
+      try { window.sessionStorage.setItem(ANALYTICS_ENTRY_STORAGE_KEY, JSON.stringify({ ...entry, ...pendingCampaign.values })) } catch { /* optional attribution only */ }
+    }
+    pendingCampaign = null
     window.dispatchEvent(new CustomEvent(ANALYTICS_CONSENT_EVENT, { detail: { consent } }))
     initMetrika()
     return
   }
 
+  pendingCampaign = null
   window.dispatchEvent(new CustomEvent(ANALYTICS_CONSENT_EVENT, { detail: { consent } }))
 
   try { window.sessionStorage.removeItem(ANALYTICS_ENTRY_STORAGE_KEY) } catch { /* ignore unavailable storage */ }

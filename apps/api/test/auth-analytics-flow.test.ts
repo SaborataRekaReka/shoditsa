@@ -56,10 +56,10 @@ describe('actual Better Auth callback lifecycle without network or a database se
       expect(callback.headers.get('location')).toBe('http://localhost:5173/login')
     }
 
-    await flow(JSON.stringify({ acquisition_id: '10000000-0000-4000-8000-000000000003', entry_source: 'organic_search', entry_search_engine: 'google', entry_path: '/games/diagnosis' }))
+    await flow(JSON.stringify({ acquisition_id: '10000000-0000-4000-8000-000000000003', entry_source: 'organic_search', entry_search_engine: 'google', entry_path: '/games/diagnosis', utm_source: 'tg_med', utm_medium: 'paid_social', utm_campaign: 'diagnosis_pilot_202609' }))
     expect(memory.user).toHaveLength(1)
     expect(events.size).toBe(1)
-    expect([...events.values()][0]).toMatchObject({ eventName: 'sign_up', acquisitionId: '10000000-0000-4000-8000-000000000003', authSessionId: expect.any(String) })
+    expect([...events.values()][0]).toMatchObject({ eventName: 'sign_up', acquisitionId: '10000000-0000-4000-8000-000000000003', authSessionId: expect.any(String), utmSource: 'tg_med', utmMedium: 'paid_social', utmCampaign: 'diagnosis_pilot_202609' })
 
     await flow()
     expect(memory.user).toHaveLength(1)
@@ -67,5 +67,6 @@ describe('actual Better Auth callback lifecycle without network or a database se
     const login = [...events.values()].find((event) => event.eventName === 'sign_in')
     expect(login).toMatchObject({ result: 'success', authSessionId: expect.any(String) })
     expect(login).not.toHaveProperty('entrySource')
+    expect(login).not.toHaveProperty('utmCampaign')
   })
 })

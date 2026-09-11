@@ -184,7 +184,7 @@ export function ClubScreen({
     { label: 'Свободная игра', value: `${view.stats.guestFreePlayCost} билетиков` },
     { label: 'Клубные спецпоказы', value: 'Закрыты', locked: true },
     { label: 'Данетки', value: `${view.stats.guestDanetkiPerDay} в сутки` },
-    { label: 'Комната друзей', value: `${view.stats.guestFriendRoomRoundLimit} раундов` },
+    { label: 'Комната друзей', value: 'По приглашению' },
     { label: 'Билетики', value: 'Сохраняются' },
   ]
 
@@ -373,12 +373,12 @@ export function ClubScreen({
                 title="Комната друзей"
                 description={hasClub
                   ? `До ${view.stats.friendRoomRoundLimit} раундов · включая совместные Данетки`
-                  : 'Совместная игра, включая Данетки'}
+                  : 'Создание комнаты — с клубом. Друзья могут присоединиться по приглашению бесплатно.'}
                 image={publicAssetUrl('images/friends-room/lobby-collage-lower.webp')}
                 icon={hasClub ? <UsersRound aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
                 action={featureAction(
                   () => window.location.assign('/games/together?new=1'),
-                  'Комната друзей и совместные Данетки входят в клубный билет.',
+                  'Создание комнаты и совместные Данетки входят в клубный билет. Участникам по приглашению клуб не нужен.',
                 )}
                 actionLabel={hasClub ? 'Создать комнату' : 'Только с клубным билетом'}
                 clubOnly={!hasClub}

@@ -1,5 +1,5 @@
 import type {
-  AdminAcquisitionFunnelPeriod, AdminAcquisitionFunnelResponse, AdminContentItemsResponse, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, AdminUserListItem, AdminWorkspaceSummary,
+  AdminAcquisitionFunnelPeriod, AdminAcquisitionFunnelResponse, AdminCampaignFunnelResponse, AdminCampaignPeriod, AdminContentItemsResponse, AdminContentTag, AdminDashboardResponse, AdminTimelineEvent, AdminUserListItem, AdminWorkspaceSummary,
   ContentMode, MeResponse, GrowthReport, GrowthStage, GrowthPolicy,
 } from '@shoditsa/contracts'
 
@@ -227,6 +227,7 @@ export const adminApi = {
   me: () => request<MeResponse>('/me'),
   dashboard: () => request<AdminDashboardResponse>('/admin/dashboard'),
   acquisitionFunnel: (days: AdminAcquisitionFunnelPeriod) => request<AdminAcquisitionFunnelResponse>(`/admin/acquisition-funnel?days=${days}`),
+  campaignFunnel: (days: AdminCampaignPeriod) => request<AdminCampaignFunnelResponse>(`/admin/campaign-funnel?days=${days}`),
   contentItems: (filters: Record<string, unknown>, signal?: AbortSignal) => request<AdminContentItemsResponse>(`/admin/content/items${query(filters)}`, { signal }),
   tags: () => request<{ items: AdminContentTag[] }>('/admin/content/tags'),
   createTag: (name: string, color?: string) => request<AdminContentTag>('/admin/content/tags', { method: 'POST', body: json({ name, ...(color ? { color } : {}) }) }),

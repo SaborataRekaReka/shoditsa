@@ -26,6 +26,7 @@ import type { AppConfig } from '@shoditsa/config'
 import { canStartArchiveSession } from '../archive/access.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
 import { loadAssignedEconomyRules } from '../economy/rules.js'
+import { loadGrowthPolicy } from '../growth/service.js'
 import { isSpecialSession } from './special.js'
 import { canAccessPack } from '../packs/access.js'
 import { getMoscowDate } from '../../lib/time.js'
@@ -487,7 +488,7 @@ const dailySalt = async (tx: Transaction) => {
 }
 
 export const startGame = async (db: Database, userId: string, input: {
-  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null;
+  kind: 'daily' | 'archive'; mode: TitleMode; period?: PeriodKey; difficulty?: ApiDifficultyKey | null; archiveDate?: string | null; variantKey?: string | null; sourceSessionId?: string;
 }, authSessionId: string | null = null, actorRole: ApiRole = 'player', config?: AppConfig) => {
   const rules = await loadAssignedEconomyRules(db, userId, actorRole, config?.economy.v4RolloutPercent ?? 100)
   return db.transaction(async (tx) => {
@@ -538,10 +539,25 @@ export const startGame = async (db: Database, userId: string, input: {
   const puzzleDate = input.kind === 'daily' ? today : input.archiveDate
   if (!puzzleDate) throw new ApiError(422, 'ARCHIVE_DATE_REQUIRED', 'Для архивной игры нужна дата')
   if (puzzleDate > today) throw new ApiError(422, 'ARCHIVE_DATE_IN_FUTURE', 'Архивная дата не может быть в будущем')
+  if (input.sourceSessionId) {
+    const source = (await tx.select().from(gameSessions).where(and(
+      eq(gameSessions.id, input.sourceSessionId), eq(gameSessions.userId, userId),
+    )).limit(1))[0]
+    if (input.kind !== 'archive' || input.mode !== 'diagnosis' || !config
+      || !source || source.mode !== 'diagnosis' || await isSpecialSession(tx, source)
+      || !source.completedAt || source.puzzleDate === puzzleDate) {
+      throw new ApiError(422, 'INVALID_REPLAY_SOURCE', 'Продолжите свою завершённую игру новым архивным случаем')
+    }
+  }
   if (input.kind === 'archive' && config) {
     const access = await canStartArchiveSession(tx as unknown as Database, userId, puzzleDate, config, new Date(), { mode: input.mode, period, difficulty })
     if (access.source === 'before-launch') throw new ApiError(422, 'ARCHIVE_DATE_BEFORE_LAUNCH', 'Эта дата была до запуска архива', { archiveDate: puzzleDate, archiveFirstDate: config.commerce.archiveFirstDate })
     if (!access.allowed) throw new ApiError(403, 'ARCHIVE_CLUB_REQUIRED', 'Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем', { archiveDate: puzzleDate, freeFrom: access.freeFrom })
+    // A CTA promising a free case must never silently fall back to paid access,
+    // including when the free window moves at midnight while a result is open.
+    if (input.sourceSessionId && puzzleDate < access.freeFrom) {
+      throw new ApiError(409, 'FREE_ARCHIVE_WINDOW_MOVED', 'Бесплатные даты обновились. Обновите результат и выберите следующий случай')
+    }
   }
   const revisionId = await activeRevision(tx)
   const salt = await dailySalt(tx)
@@ -565,6 +581,11 @@ export const startGame = async (db: Database, userId: string, input: {
   const insertedSession = await tx.insert(gameSessions).values({
     userId, authSessionId, challengeId: challenge[0].id, kind: input.kind, mode: input.mode, period, difficulty,
     puzzleDate, revisionId: challenge[0].revisionId, answerItemVersionId: challenge[0].answerItemVersionId, rulesVersion: rules.version,
+    ...(input.sourceSessionId ? {
+      sourceSessionId: input.sourceSessionId,
+      accessSource: 'free_archive',
+      growthStage: (await loadGrowthPolicy(tx as unknown as Database)).stage,
+    } : {}),
   }).onConflictDoNothing().returning()
   const session = insertedSession[0] ?? (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.challengeId, challenge[0].id))).limit(1))[0]
   return buildSessionSnapshot(tx, session)

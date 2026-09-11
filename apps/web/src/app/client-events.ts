@@ -10,6 +10,8 @@ export type EventName =
   | 'game_session_complete'
   | 'game_next_clicked'
   | 'game_next_start'
+  | 'challenge_opened' | 'challenge_accepted' | 'challenge_started' | 'challenge_completed'
+  | 'result_registration_offer_view' | 'result_registration_offer_clicked'
   | 'client_error'
   | 'api_error'
   | 'network_offline'
@@ -59,7 +61,7 @@ type EventProperty = string | number | boolean | null
 
 const STORAGE_KEY = 'shoditsa:client-events:v1'
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
-const ATTRIBUTION_PROPERTIES = new Set(['acquisition_id', 'entry_path', 'entry_source', 'entry_search_engine', 'entry_referrer_host'])
+const ATTRIBUTION_PROPERTIES = new Set(['acquisition_id', 'entry_path', 'entry_source', 'entry_search_engine', 'entry_referrer_host', 'utm_source', 'utm_medium', 'utm_campaign'])
 const CLIENT_EVENT_SESSION_STARTED_AT = Date.now()
 let flushing = false
 

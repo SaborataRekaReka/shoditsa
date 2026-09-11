@@ -5,6 +5,8 @@ export const GROWTH_CAMPAIGN = 'diagnosis-continuation-v1'
 export const GROWTH_NOT_BEFORE = '2026-09-12T00:00:00.000Z'
 // First complete UTC day after the production instrumentation release.
 export const GROWTH_MEASUREMENT_FROM = '2026-09-08T00:00:00.000Z'
+export const GROWTH_DEFINITIONS_VERSION = 'linked-repeat-v2-free-archive'
+export const GROWTH_OFFER_VISIBILITY_VERSION = 'visible-v2'
 export const REGISTRATION_BONUS_ROUNDS = 3
 export type GrowthPolicy = {
   stage: GrowthStage
@@ -29,8 +31,25 @@ export type GrowthReport = {
   notBefore: string
   nextStageAvailableAt: string
   period: { from: string; toExclusive: string; days: number }
-  measurement: { from: string; coverage: 'not_started' | 'partial' | 'complete' }
-  sessions: { completions: number; firstCompleters: number; measuredCompleters: number | null; repeatStarts: number | null; repeatCompletions: number | null; repeatingCompleters: number | null; bonusStarts: number; bonusCompletions: number; clubStarts: number | null }
+  measurement: {
+    from: string
+    coverage: 'not_started' | 'partial' | 'complete'
+    definitionsVersion: typeof GROWTH_DEFINITIONS_VERSION
+    /** Current collector definition; does not relabel historical mount-based events. */
+    offerVisibilityVersion: typeof GROWTH_OFFER_VISIBILITY_VERSION
+    /** First non-admin Diagnosis free-archive start before toExclusive, even outside this window. */
+    freeArchiveFirstObservedAt: string | null
+  }
+  sessions: {
+    completions: number; firstCompleters: number; measuredCompleters: number | null
+    repeatStarts: number | null; repeatCompletions: number | null; repeatingCompleters: number | null
+    /** Same linked cohort as the totals. Unique completers overlap between access sources; do not sum them. */
+    repeatByAccessSource: Array<{
+      accessSource: 'tickets' | 'club' | 'registration_bonus' | 'free_archive' | 'unknown'
+      repeatStarts: number; repeatCompletions: number; repeatingCompleters: number
+    }> | null
+    bonusStarts: number; bonusCompletions: number; clubStarts: number | null
+  }
   accounts: { created: number; signUps: number; bonusGranted: number; bonusPlayers: number }
   commerce: { orders: number; paidOrders: number; payingUsers: number; paidUsersUsedClub: number | null; revenueMinor: number }
   events: Array<{ eventName: string; stage: string; consent: string; events: number; users: number }>

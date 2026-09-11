@@ -41,6 +41,34 @@ describe('server auth analytics', () => {
     }
   })
 
+  it('keeps only the three validated campaign slugs and carries them through OAuth state', () => {
+    const campaignHeader = JSON.stringify({ ...JSON.parse(header),
+      utm_source: 'tg_med_students', utm_medium: 'paid_social', utm_campaign: 'diagnosis_pilot_202609',
+      utm_content: 'ignored', email: 'private@example.test', token: 'private-token',
+    })
+    const safe = withOAuthAcquisition({ providerId: 'yandex' }, campaignHeader)
+    expect(parseAuthAcquisition(safe.additionalData.shoditsaAcquisition)).toMatchObject({
+      acquisitionId: ACQUISITION, entrySource: 'organic_search',
+      utmSource: 'tg_med_students', utmMedium: 'paid_social', utmCampaign: 'diagnosis_pilot_202609',
+    })
+    expect(safe.additionalData.shoditsaAcquisition).not.toContain('private')
+    expect(safe.additionalData.shoditsaAcquisition).not.toContain('utm_content')
+    expect(withOAuthAcquisition({ providerId: 'yandex', additionalData: { shoditsaAcquisition: campaignHeader } }, undefined).additionalData.shoditsaAcquisition).toBeNull()
+  })
+
+  it.each(['person@example.test', 'campaign with spaces', '/private/path', 'кампания', 'x'.repeat(81), ''])('drops invalid campaign value %s without losing a valid account acquisition', (value) => {
+    const parsed = parseAuthAcquisition(JSON.stringify({ ...JSON.parse(header), utm_source: value, utm_medium: 'paid_social', utm_campaign: value }))
+    expect(parsed).toMatchObject({ acquisitionId: ACQUISITION, utmSource: null, utmMedium: 'paid_social', utmCampaign: null })
+  })
+
+  it.each(['/sign-up/email', '/oauth2/callback/yandex'])('persists campaign on real account creation for %s', async (path) => {
+    const campaignHeader = JSON.stringify({ ...JSON.parse(header), utm_source: 'tg_med', utm_medium: 'paid_social', utm_campaign: 'pilot' })
+    const { db, saved } = fakeDb()
+    vi.mocked(getOAuthState).mockResolvedValue({ shoditsaAcquisition: campaignHeader } as never)
+    await createAuthAnalytics(db).userCreated({ id: USER, createdAt: at }, context(path, path.includes('callback') ? null : campaignHeader))
+    expect([...saved.values()][0]).toMatchObject({ eventName: 'sign_up', utmSource: 'tg_med', utmMedium: 'paid_social', utmCampaign: 'pilot' })
+  })
+
   it.each(['/sign-up/email', '/oauth2/callback/yandex'])('counts actual creation once, not a second login, for %s', async (path) => {
     const { db, saved } = fakeDb()
     vi.mocked(getOAuthState).mockResolvedValue({ shoditsaAcquisition: header } as never)

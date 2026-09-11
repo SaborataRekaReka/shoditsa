@@ -369,6 +369,8 @@ export const ClientEventSchema = Type.Object({
   eventId: UuidSchema,
   eventName: Type.Union([
     'page_view', 'mode_opened', 'game_session_start', 'game_session_complete', 'game_next_clicked', 'game_next_start',
+    'challenge_opened', 'challenge_accepted', 'challenge_started', 'challenge_completed',
+    'result_registration_offer_view', 'result_registration_offer_clicked',
     'diagnosis_replay_offer_view', 'diagnosis_replay_clicked', 'registration_bonus_offer_view', 'registration_bonus_offer_clicked', 'club_context_offer_view', 'club_context_offer_clicked', 'commerce_plan_selected',
     'client_error', 'api_error', 'network_offline', 'network_online', 'report_form_opened', 'report_submit_failed',
     'club_screen_view', 'club_interest_clicked', 'archive_paywall_view', 'archive_paywall_clicked', 'checkout_started', 'checkout_returned',

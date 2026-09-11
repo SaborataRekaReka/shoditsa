@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ANALYTICS_CONSENT_STORAGE_KEY,
+  analyticsAcquisitionHeaders,
   analyticsEntryParams,
   captureAnalyticsEntry,
   consentedAnalyticsEntryParams,
   initMetrika,
   markAnalyticsOAuthReturnPending,
+  setAnalyticsConsent,
   trackMetrikaGoal,
   trackMetrikaScreen,
   trackConfirmedAuthOutcome,
@@ -30,13 +32,18 @@ describe('analytics acquisition context', () => {
     vi.stubGlobal('window', {
       localStorage,
       sessionStorage,
+      dispatchEvent: vi.fn(),
       location: {
-        href: 'https://shoditsa.ru/games/character?utm_source=test',
+        href: 'https://shoditsa.ru/games/character',
         hostname: 'shoditsa.ru',
         pathname: '/games/character',
       },
     })
-    vi.stubGlobal('document', { referrer: 'https://www.google.com/search?q=guess+character' })
+    vi.stubGlobal('document', {
+      referrer: 'https://www.google.com/search?q=guess+character',
+      getElementById: () => ({ id: 'yandex-metrika-script', remove: vi.fn() }),
+      cookie: '',
+    })
   })
 
   it('uses the server auth outcome and deduplicates it, without inventing success for unknown outcomes', () => {
@@ -154,5 +161,126 @@ describe('analytics acquisition context', () => {
         entry_source: 'organic_search',
       }),
     }))
+  })
+
+  it('keeps campaign only in memory before consent and sends three safe UTM keys after acceptance', () => {
+    window.location.href = 'https://shoditsa.ru/games/diagnosis?utm_source=tg_med_students&utm_medium=paid_social&utm_campaign=diagnosis_pilot_202609&utm_content=discard_me&email=private%40example.test&token=secret'
+    window.location.pathname = '/games/diagnosis'
+    Object.defineProperty(document, 'referrer', { configurable: true, value: '' })
+    const ym = vi.fn()
+    window.ym = ym
+    captureAnalyticsEntry()
+
+    const beforeConsent = window.sessionStorage.getItem('shoditsa:analytics-entry:v1')!
+    expect(beforeConsent).not.toContain('utm')
+    expect(beforeConsent).not.toContain('tg_med_students')
+    expect(beforeConsent).not.toContain('private')
+    expect(beforeConsent).not.toContain('secret')
+    expect(consentedAnalyticsEntryParams()).toEqual({})
+    expect(analyticsAcquisitionHeaders()).toEqual({})
+    initMetrika()
+    expect(ym).not.toHaveBeenCalled()
+
+    // The visitor can navigate before responding to the consent banner.
+    window.location.href = 'https://shoditsa.ru/sessions/private-session'
+    window.location.pathname = '/sessions/private-session'
+    setAnalyticsConsent('accepted')
+
+    expect(consentedAnalyticsEntryParams()).toMatchObject({
+      entry_path: '/games/diagnosis', entry_source: 'direct',
+      utm_source: 'tg_med_students', utm_medium: 'paid_social', utm_campaign: 'diagnosis_pilot_202609',
+    })
+    expect(JSON.parse(analyticsAcquisitionHeaders()['X-Shoditsa-Acquisition'])).toMatchObject({
+      utm_source: 'tg_med_students', utm_medium: 'paid_social', utm_campaign: 'diagnosis_pilot_202609',
+    })
+    expect(ym).toHaveBeenCalledWith(110517987, 'init', expect.objectContaining({
+      url: 'https://shoditsa.ru/games/diagnosis?utm_source=tg_med_students&utm_medium=paid_social&utm_campaign=diagnosis_pilot_202609',
+    }))
+    expect(JSON.parse(window.sessionStorage.getItem('shoditsa:analytics-entry:v1')!)).toMatchObject({
+      url: 'https://shoditsa.ru/games/diagnosis', path: '/games/diagnosis',
+    })
+    expect(JSON.stringify(ym.mock.calls)).not.toContain('private')
+    expect(JSON.stringify(ym.mock.calls)).not.toContain('discard_me')
+  })
+
+  it('validates every campaign slug and ignores ambiguous duplicates or unrelated query data', () => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
+    window.location.href = `https://shoditsa.ru/games/character?utm_source=one&utm_source=two&utm_medium=person%40example.test&utm_campaign=${'x'.repeat(81)}&name=private`
+    captureAnalyticsEntry()
+    expect(analyticsEntryParams()).not.toHaveProperty('utm_source')
+    expect(analyticsEntryParams()).not.toHaveProperty('utm_medium')
+    expect(analyticsEntryParams()).not.toHaveProperty('utm_campaign')
+
+    window.location.href = 'https://shoditsa.ru/games/character?utm_source=tg-Med_2026&utm_medium=paid_social&utm_campaign=pilot_01'
+    captureAnalyticsEntry()
+    expect(analyticsEntryParams()).toMatchObject({ utm_source: 'tg-Med_2026', utm_medium: 'paid_social', utm_campaign: 'pilot_01' })
+    // UTM is a separate campaign dimension; existing source classification is preserved.
+    expect(analyticsEntryParams().entry_source).toBe('organic_search')
+  })
+
+  it('retains consented campaign through OAuth and does not replace it with callback query parameters', () => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
+    window.location.href = 'https://shoditsa.ru/games/character?utm_source=tg_med&utm_medium=paid_social&utm_campaign=pilot'
+    captureAnalyticsEntry()
+    const acquisition = analyticsEntryParams().acquisition_id
+    markAnalyticsOAuthReturnPending()
+    Object.defineProperty(document, 'referrer', { configurable: true, value: '' })
+    window.location.href = 'https://shoditsa.ru/login?code=private&utm_campaign=replacement'
+    window.location.pathname = '/login'
+    captureAnalyticsEntry()
+
+    expect(analyticsEntryParams()).toMatchObject({ acquisition_id: acquisition, utm_campaign: 'pilot', entry_path: '/games/character' })
+    expect(window.sessionStorage.getItem('shoditsa:analytics-entry:v1')).not.toContain('private')
+    expect(window.sessionStorage.getItem('shoditsa:analytics-entry:v1')).not.toContain('replacement')
+  })
+
+  it.each(['', 'https://t.me/medical_channel'])('keeps accepted campaign on a SPA reload with referrer %s', (referrer) => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
+    Object.defineProperty(document, 'referrer', { configurable: true, value: referrer })
+    window.location.href = 'https://shoditsa.ru/games/diagnosis?utm_source=tg_med&utm_medium=paid_social&utm_campaign=diagnosis_pilot_reload'
+    window.location.pathname = '/games/diagnosis'
+    captureAnalyticsEntry()
+    const acquisition = analyticsEntryParams().acquisition_id
+    window.location.href = 'https://shoditsa.ru/sessions/27e0927b-9720-4e72-b831-15fa9c8f38eb'
+    window.location.pathname = '/sessions/27e0927b-9720-4e72-b831-15fa9c8f38eb'
+    Object.defineProperty(window, 'performance', { configurable: true, value: { getEntriesByType: () => [{ type: 'reload' }] } })
+    captureAnalyticsEntry()
+    expect(analyticsEntryParams()).toMatchObject({ acquisition_id: acquisition, entry_path: '/games/diagnosis', utm_source: 'tg_med', utm_medium: 'paid_social', utm_campaign: 'diagnosis_pilot_reload' })
+    expect(JSON.parse(analyticsAcquisitionHeaders()['X-Shoditsa-Acquisition'])).toMatchObject({ acquisition_id: acquisition, utm_campaign: 'diagnosis_pilot_reload' })
+    // A genuinely new external navigation remains a new acquisition.
+    Object.defineProperty(window, 'performance', { configurable: true, value: { getEntriesByType: () => [{ type: 'navigate' }] } })
+    window.location.href = 'https://shoditsa.ru/games/animal'
+    window.location.pathname = '/games/animal'
+    captureAnalyticsEntry()
+    expect(analyticsEntryParams().acquisition_id).not.toBe(acquisition)
+    expect(analyticsEntryParams()).not.toHaveProperty('utm_campaign')
+  })
+
+  it('falls back to the clean current page if optional stored navigation data is malformed', () => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted')
+    window.sessionStorage.setItem('shoditsa:analytics-entry:v1', JSON.stringify({
+      acquisitionId: '10000000-0000-4000-8000-000000000003', url: 'javascript:private-data',
+      path: '/games/character', source: 'direct', referrer: '',
+    }))
+    const ym = vi.fn()
+    window.ym = ym
+    expect(() => initMetrika()).not.toThrow()
+    expect(ym).toHaveBeenCalledWith(110517987, 'init', expect.objectContaining({ url: 'https://shoditsa.ru/games/character' }))
+    expect(JSON.stringify(ym.mock.calls)).not.toContain('private-data')
+  })
+
+  it.each(['accepted', null] as const)('clears %s campaign state on rejection and cannot revive it on a later clean page', (initialConsent) => {
+    if (initialConsent) window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, initialConsent)
+    window.location.href = 'https://shoditsa.ru/games/character?utm_source=tg_med&utm_medium=paid_social&utm_campaign=old_campaign'
+    captureAnalyticsEntry()
+    setAnalyticsConsent('rejected')
+    expect(window.sessionStorage.getItem('shoditsa:analytics-entry:v1')).toBeNull()
+    expect(analyticsAcquisitionHeaders()).toEqual({})
+
+    window.location.href = 'https://shoditsa.ru/games/character'
+    Object.defineProperty(document, 'referrer', { configurable: true, value: '' })
+    setAnalyticsConsent('accepted')
+    expect(consentedAnalyticsEntryParams()).not.toHaveProperty('utm_source')
+    expect(consentedAnalyticsEntryParams()).not.toHaveProperty('utm_campaign')
   })
 })

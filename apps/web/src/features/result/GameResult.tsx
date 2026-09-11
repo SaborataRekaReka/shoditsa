@@ -25,6 +25,7 @@ import { ResultActionBar } from './ResultActionBar'
 import { ControlButton } from '../../components/ui'
 import './GameResult.css'
 import { DiagnosisClubOffer, DiagnosisRegistrationOffer, trackGrowthAction, useGrowthImpression } from './DiagnosisGrowth'
+import { useResultRegistrationTracking } from './use-result-registration-tracking'
 
 const TipCheckoutTrigger = lazy(() => import('../commerce/TipCheckout').then((module) => ({ default: module.TipCheckoutTrigger })))
 const diagnosisSystemRewardIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
@@ -82,7 +83,7 @@ type Props = {
   replayCost?: number
   replayShortage?: number
   replayPending?: boolean
-  replayAccessSource?: 'tickets' | 'club' | 'registration_bonus'
+  replayAccessSource?: 'tickets' | 'club' | 'registration_bonus' | 'free_archive'
   onReport?: (reason: ContentReportReason, comment: string) => void
   autoScroll?: boolean
   accountState?: AccountState
@@ -199,6 +200,12 @@ export function GameResult(props: Props) {
         ? 'guest'
         : 'authenticated'
   const positiveStreak = typeof props.streak === 'number' && props.streak > 0 ? props.streak : null
+  const registrationTracking = useResultRegistrationTracking({
+    sessionId: props.sessionId,
+    mode: props.mode,
+    enabled: accountState === 'guest' && !(props.mode === 'diagnosis' && props.growth?.registration),
+    properties: { completedToday: props.completedToday ?? 0, tickets: props.award?.total ?? 0 },
+  })
   const routeProgress = Math.max(0, Math.min(props.completedToday ?? 0, FULL_HOUSE_MODE_IDS.length))
   const progressItems = [
     props.packProgress
@@ -216,7 +223,7 @@ export function GameResult(props: Props) {
   const persistence = accountState === 'guest' && props.mode === 'diagnosis' && props.growth?.registration
     ? <DiagnosisRegistrationOffer growth={props.growth} sessionId={props.sessionId} href={`${currentRegistrationHref()}&bonus=diagnosis`} />
     : accountState === 'guest'
-    ? <section className="result-persistence result-card__wide" aria-label="Сохранить прогресс">
+    ? <section ref={registrationTracking.ref} className="result-persistence result-card__wide" aria-label="Сохранить прогресс">
         <span className="result-persistence__icon" aria-hidden="true"><Save /></span>
         <div className="result-persistence__copy">
           <strong>{props.won ? 'Сохраните победу и прогресс' : 'Сохраните результат и прогресс'}</strong>
@@ -225,6 +232,7 @@ export function GameResult(props: Props) {
             : 'Результат будет доступен в аккаунте — продолжите завтра с любого устройства.'}</p>
         </div>
         <a href={currentRegistrationHref()} onClick={() => {
+          registrationTracking.trackClick()
           const payload = { mode: props.mode, completedToday: props.completedToday ?? 0, tickets: props.award?.total ?? 0 }
           trackMetrikaGoal('result_save_progress', payload)
           if (props.mode === 'diagnosis') trackDiagnosisGoal('save', { placement: 'result' })
@@ -292,7 +300,7 @@ export function GameResult(props: Props) {
         {!!visibleTags.length && <div className="result-tags">{visibleTags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
         <strong>{resultLine}</strong>
         {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
-          <span>Вы — {props.completionType === 'final_choice_win' ? 'Ф/10' : `${props.attempts}/10`} · Друг — {challengeResultLabel(props.opponentAttempts)}</span>
+          <span>Вы — {!props.won ? 'X/10' : props.completionType === 'final_choice_win' ? 'Ф/10' : `${props.attempts}/10`} · Друг — {challengeResultLabel(props.opponentAttempts)}</span>
           <strong>{outcomeText}</strong>
         </div>}
       </div>
@@ -374,7 +382,7 @@ export function GameResult(props: Props) {
     </details>}
 
     <div className="result-utility result-card__wide">
-      {props.mode === 'diagnosis' && <a href="/club" onClick={() => trackDiagnosisGoal('archive', { placement: 'result' })}><CalendarDays /> Архив диагнозов</a>}
+      {props.mode === 'diagnosis' && <a href="/archive?mode=diagnosis" onClick={() => trackDiagnosisGoal('archive', { placement: 'result' })}><CalendarDays /> Архив диагнозов</a>}
       {props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Отправить результат в Telegram</a>}
       {showContextualTip && <Suspense fallback={null}><TipCheckoutTrigger className="result-support" label="Поддержать проект" hint="Жетон кассиру" /></Suspense>}
       {props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}

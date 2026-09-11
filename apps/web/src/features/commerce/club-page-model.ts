@@ -34,7 +34,6 @@ export type ClubPageViewModel = {
     guestFreePlayCost: number
     guestDanetkiPerDay: number
     danetkiPerDay: number
-    guestFriendRoomRoundLimit: number
     friendRoomRoundLimit: number
   }
   currentSpecial?: ContentPack
@@ -121,7 +120,6 @@ export function buildClubPageViewModel(input: {
       guestFreePlayCost: rules.freePlay.ladder[0] ?? rules.freePlay.max,
       guestDanetkiPerDay: rules.danetki.dailyFreeRooms,
       danetkiPerDay: rules.danetki.dailyFreeRooms + rules.danetki.clubExtraRooms,
-      guestFriendRoomRoundLimit: rules.friendsRoom.freeBlocksPerDay * rules.friendsRoom.roundsPerBlock,
       friendRoomRoundLimit: rules.friendsRoom.maxRoundsPerRoom,
     },
     ...(input.currentSpecial ? { currentSpecial: input.currentSpecial } : {}),

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { pathnameForPlayerRoute, playerRouteFromLocation, playerRouteFromPathname } from './routes'
 
+it('opens only a known archive section from a public deep link', () => {
+  expect(playerRouteFromLocation('/archive', '?mode=diagnosis')).toEqual({ screen: 'rewatch', mode: 'diagnosis' })
+  expect(playerRouteFromLocation('/archive', '?mode=private-pack')).toEqual({ screen: 'rewatch' })
+})
+
 describe('typed player routes', () => {
   it('round-trips every canonical mode through title and local-play routes', async () => {
     const { PLAYABLE_MODE_IDS } = await import('@shoditsa/contracts')

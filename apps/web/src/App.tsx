@@ -51,7 +51,10 @@ import { buildDailyHubState, isMainRouteGame, savedGameAttemptCount } from './fe
 import { useAuthSession } from './features/auth/use-auth-session'
 import { resetPasswordTokenFromLocation } from './features/auth/auth-helpers'
 import { ChallengeInvite } from './features/challenge/ChallengeInvite'
-import { buildChallengeUrl, challengeOutcome, getInstallationId, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
+import { buildChallengeUrl, challengeOutcome, parseChallengeUrl, type ChallengePayload } from './features/challenge/challenge'
+import { trackChallengeOpened, trackChallengeAccepted, confirmServerChallengeStart } from './features/challenge/challenge-analytics'
+import { useServerChallenge } from './features/challenge/useServerChallenge'
+import { canShareExactChallenge, serverChallengeResult } from './features/challenge/server-challenge'
 import { nextResultMode, resultRecommendedModes } from './features/daily-route/daily-route'
 import { advanceAttendanceStreak, crossedDailyMilestones, shouldRecordCompletion } from './features/economy/completion'
 import { formatArtists, formatTickets, freePlayCost, nextStreakMilestoneAt, nextStreakMilestoneReward } from './features/economy/economy-rules'
@@ -113,6 +116,8 @@ import { ensureServerSession, SERVER_RUNTIME, useServerRuntime } from './hooks/u
 import { addTicketLedgerEntry, allGames, claimDailyMilestones, consumeFreePlayUsage, gameKey, isPeriodUnlocked, loadAttendanceStats, loadDailyAttendance, loadDailyMilestoneClaims, loadFreePlayUsage, loadGame, loadMusicReviewApprovals, loadMusicReviewConflictChoices, loadPeriodUnlocks, loadStats, loadWallet, saveAttendanceStats, saveDailyAttendance, saveGame, saveStats, saveWallet, setMusicReviewApproval, setMusicReviewConflictChoice, unlockPeriod, unlockedPeriodsFor, type MusicReviewConflictChoices, type MusicReviewConflictOption } from './storage'
 import type { AttendanceStats, AssistHintKey, Attempt, CaseVignetteMap, DailyAttendance, DifficultyKey, GameStatus, HintCheckpoint, HintChoice, HintPerson, LibrarySearchIndex, PeriodKey, Person, SavedGame, Stats, TitleItem, TitleMode, Wallet } from './types'
 import { pathnameForPlayerRoute, playerRouteFromLocation, playerRouteFromPathname, type PlayerRouteState, type PlayerScreen } from './app/routes'
+import { diagnosisArchiveRange, nextFreeDiagnosisDate } from './features/result/diagnosis-continuation'
+import { CharacterFirstMove } from './features/game-session/CharacterFirstMove'
 import { MODE_PRESENTATION } from './app/mode-presentation'
 import { ModeVariantControl } from './components/mode-variant/ModeVariantControl'
 import { GameLaunchControls, GameOption, GameOptionSelect } from './components/game-launch-controls/GameLaunchControls'
@@ -3289,7 +3294,6 @@ function Game({
     ...(mode === 'music' ? { difficulty } : {}),
     ...(variantKey ? { variantKey } : {}),
     opponentAttempts: Math.max(1, attempts.length),
-    from: getInstallationId(),
   })
   const resultShareText = resultTextForSession(mode, date, effectivePeriod, attempts.map((attempt) => attempt.hints), status === 'won', 10, isFreePlaySession)
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(resultShareText)}`
@@ -3572,7 +3576,7 @@ const withRevealedServerHint = (current: GameResponse | undefined, response: Hin
   }
 }
 
-function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, replayCost, replayShortage, replayPending, replayAccessSource, onConfigureMode, onSessionLoaded, onPackSession }: {
+function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, onReview, onPlayNext, onReplay, onFreeDiagnosis, replayCost, replayShortage, replayPending, replayAccessSource, onConfigureMode, onSessionLoaded, onPackSession }: {
   sessionId: string
   onHome: () => void
   onBack: () => void
@@ -3586,6 +3590,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   replayShortage: number
   replayPending: boolean
   replayAccessSource: 'tickets' | 'club' | 'registration_bonus'
+  onFreeDiagnosis: (archiveDate: string, sourceSessionId: string) => void
   onConfigureMode: () => void
   onSessionLoaded: (session: GameSessionSnapshot) => void
   onPackSession: (session: GameSessionSnapshot) => void
@@ -3612,6 +3617,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const finalChoiceTimeoutSubmittedRef = useRef(false)
   const hintKeyRef = useRef<string | null>(null)
   const game = useQuery({ queryKey: queryKeys.game(sessionId), queryFn: () => api.game(sessionId), refetchOnWindowFocus: true })
+  const inviteComparison = useServerChallenge(game.data?.session)
+  const characterSearchInputRef = useRef<HTMLInputElement>(null)
   const session = game.data?.session
   const sessionOwnsLifecycle = session?.engine !== 'danetki_chat'
     || Boolean(session.danetki.members.some((member) => member.userId === session.danetki.currentUserId && member.role === 'owner'))
@@ -3628,6 +3635,16 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   })
   const dashboard = useQuery({ queryKey: queryKeys.dashboard, queryFn: api.dashboard })
   const growthMeta = useQuery({ queryKey: ['meta'], queryFn: api.meta })
+  const diagnosisContinuationEnabled = session?.mode === 'diagnosis' && session.kind !== 'pack'
+    && ['won', 'lost', 'expired'].includes(session.status) && Boolean(growthMeta.data?.growth?.replay)
+  const diagnosisFreeRange = diagnosisArchiveRange(growthMeta.data?.moscowDate ?? getMoscowDate(), growthMeta.data?.commerce.freeArchiveDays ?? 7)
+  const diagnosisCalendar = useQuery({
+    queryKey: queryKeys.archiveCalendar({ mode: 'diagnosis', period: 'all', ...diagnosisFreeRange, continuationSession: sessionId }),
+    queryFn: () => api.archiveCalendar({ mode: 'diagnosis', period: 'all', ...diagnosisFreeRange }),
+    enabled: diagnosisContinuationEnabled,
+    staleTime: 0,
+  })
+  const nextDiagnosisDate = diagnosisContinuationEnabled ? nextFreeDiagnosisDate(diagnosisCalendar.data, session!.puzzleDate) : null
   const growthCatalog = useQuery({ queryKey: queryKeys.commerceCatalog, queryFn: api.commerceCatalog, enabled: session?.mode === 'diagnosis' && Boolean(growthMeta.data?.growth?.club) })
   const searchParams = useMemo(() => {
     if (!session || !debouncedQuery || selected) return null
@@ -4008,6 +4025,14 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setQuery(item.titleRu)
     setMessage('')
   }
+  const useCharacterExample = (value: string) => {
+    setQuery(value)
+    setSelected(null)
+    setActiveSuggestionIndex(0)
+    attemptKeyRef.current = null
+    setMessage('')
+    window.requestAnimationFrame(() => characterSearchInputRef.current?.focus())
+  }
   const revealHint = (hintKey: AssistHintKey) => {
     if (!hintModalRound || hint.isPending || revealedHint) return
     const key = hintKeyRef.current ?? crypto.randomUUID()
@@ -4092,7 +4117,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const shareText = isDtfCommentSession
     ? dtfShareText(attempts.length, maxAttempts, session.status === 'won')
     : resultTextForSession(session.mode, session.puzzleDate, session.period, attempts.map((entry) => entry.hints), session.status === 'won', maxAttempts, isFreePlaySession, session.completionType ?? undefined)
-  const challengeLink = buildChallengeUrl(location.href, {
+  const canInviteToThisCase = canShareExactChallenge(session) && serverChallengeResult(session) !== null
+  const challengeLink = canInviteToThisCase ? buildChallengeUrl(location.href, {
     mode: session.mode,
     date: session.puzzleDate,
     period: session.period,
@@ -4103,9 +4129,8 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       : session.status === 'lost' || session.status === 'expired'
         ? 'x'
         : Math.max(1, attempts.length),
-    from: getInstallationId(),
-  })
-  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
+  }) : new URL(`/games/${session.mode}`, location.origin).href
+  const telegramUrl = isSpecialSession ? undefined : `https://t.me/share/url?url=${encodeURIComponent(challengeLink)}&text=${encodeURIComponent(shareText)}`
   const shareChallenge = async () => {
     const outcome = await shareTextWithFallback('Сходится! — вызов', shareText, challengeLink)
     if (outcome === 'copied') {
@@ -4185,7 +4210,19 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           }} onRecommendedMode={(recommendedMode) => {
             trackNextGameClick(session.mode, recommendedMode, { outcome: session.status, placement: 'diagnosis-result-recommendations' }, sessionId)
             onPlayNext(recommendedMode)
-          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode} onChallenge={() => void shareChallenge()} onReplay={canReplayCatalogSession(session) ? onReplay : undefined} replayCost={replayCost} replayShortage={replayShortage} replayPending={replayPending} replayAccessSource={replayAccessSource} onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+          }} onConfigure={isKpopSession ? onHome : isPackSession ? nextPackPosition ? onBack : onHome : onConfigureMode}
+          onChallenge={canInviteToThisCase ? () => void shareChallenge() : undefined}
+          challengeOutcome={inviteComparison?.challengeOutcome}
+          opponentAttempts={inviteComparison?.opponentAttempts}
+          onReplay={canReplayCatalogSession(session) ? nextDiagnosisDate ? () => onFreeDiagnosis(nextDiagnosisDate, session.id) : onReplay : undefined}
+          replayCost={nextDiagnosisDate ? 0 : replayCost}
+          replayShortage={nextDiagnosisDate ? 0 : replayShortage}
+          replayPending={replayPending || Boolean(diagnosisContinuationEnabled && (diagnosisCalendar.isPending || diagnosisCalendar.isError))}
+          replayAccessSource={nextDiagnosisDate ? 'free_archive' : replayAccessSource}
+          onReport={async (reason: ContentReportReason, comment: string) => { await api.contentReport({ sessionId, reason, comment: comment || undefined }) }} />}
+      {diagnosisContinuationEnabled && diagnosisCalendar.isError && <InlineAlert tone="danger">
+        Не удалось проверить бесплатные случаи. <ControlButton onClick={() => void diagnosisCalendar.refetch()}>Проверить ещё раз</ControlButton>
+      </InlineAlert>}
       {session.status === 'lost' && session.mode === 'character' && answer && <section className="answer-reveal" aria-label="Правильный ответ и все его признаки">
         <div className="section-title"><span>Правильный ответ</span><strong>10/10</strong></div>
         <CharacterAttemptCard
@@ -4201,11 +4238,13 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       </div>}
       {['won', 'lost', 'expired'].includes(session.status) && message && <InlineAlert tone="danger" className="specials-error">{message}</InlineAlert>}
       {session.status === 'playing' && <section className="search-area search-area--sticky">
+        {session.mode === 'character' && !attempts.length && !query.trim() && <CharacterFirstMove onExample={useCharacterExample} disabled={attempt.isPending} />}
         <div className="sticky-composer__status" role="status" aria-live="polite">
           <span>{attempt.isPending ? 'Проверяем ответ…' : `Попытка ${Math.min(session.attemptsCount + 1, maxAttempts)} из ${maxAttempts}`}</span>
         </div>
         <SearchCombobox
           inputProps={{
+            ref: characterSearchInputRef,
             id: 'movie-search',
             value: query,
             autoComplete: 'off',
@@ -4239,7 +4278,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           loadingLabel="Ищем в текущем пуле…"
           suggestions={suggestions}
           activeIndex={activeSuggestionIndex}
-          emptyMessage={alreadyUsedQuery ? 'Вы уже использовали этот вариант в текущей партии.' : searchEmptyMessage(session.mode, isDtfCommentSession)}
+          emptyMessage={search.isError ? 'Не удалось загрузить поиск. Попробуйте ещё раз.' : alreadyUsedQuery ? 'Вы уже использовали этот вариант в текущей партии.' : session.mode === 'character' ? 'Этого имени пока не нашли в библиотеке.' : searchEmptyMessage(session.mode, isDtfCommentSession)}
           submitDisabled={attempt.isPending || !selected}
           onSubmit={() => {
             if (selected) submit(selected)
@@ -4257,8 +4296,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
           setGameMatchStripOpen((current) => !current)
         }} />
         {message && <div className="search-meta"><strong>{message}</strong></div>}
+        {session.mode === 'character' && isSuggestionsOpen && !searchPending && !search.isError && !alreadyUsedQuery && !suggestions.length && <CharacterFirstMove variant="empty-search" onExample={useCharacterExample} disabled={attempt.isPending} />}
       </section>}
-      {!attempts.length && session.status === 'playing' && <section className={`empty-card${isKpopSession ? ' empty-card--kpop' : ''}`}><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>{isKpopSession ? 'Назовите первого K-pop артиста' : 'Начните с первой попытки'}</h2><p>{isKpopSession ? 'После ответа появится отдельная карточка с годом дебюта, поколением, типом, полом, лейблом, составом и статусом активности.' : 'После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.'}</p></div></section>}
+      {!attempts.length && session.status === 'playing' && session.mode !== 'character' && <section className={`empty-card${isKpopSession ? ' empty-card--kpop' : ''}`}><div className="empty-card__icon">{modeIcon(session.mode)}</div><div><h2>{isKpopSession ? 'Назовите первого K-pop артиста' : 'Начните с первой попытки'}</h2><p>{isKpopSession ? 'После ответа появится отдельная карточка с годом дебюта, поколением, типом, полом, лейблом, составом и статусом активности.' : 'После ответа сервер покажет сравнение признаков, не раскрывая правильный ответ до завершения сеанса.'}</p></div></section>}
       {!!session.attempts.length && <section className="attempt-list"><div className="section-title"><span>Ваши попытки</span><strong>{session.attempts.length}/{maxAttempts}</strong></div>{[...session.attempts].reverse().map((entry) => {
         const item = publicItemToTitle(entry.item)
         const attemptValue = serverAttemptToLegacy(entry)
@@ -4455,7 +4495,7 @@ function GameApp() {
   }, [])
 
   const startServerSession = useMutation({
-    mutationFn: async ({ body, key }: { body: GameStartBody; key: string; backTarget: 'title' | 'rewatch' | 'hub'; previewAnamnesis?: boolean }) => {
+    mutationFn: async ({ body, key }: { body: GameStartBody; key: string; backTarget: 'title' | 'rewatch' | 'hub'; previewAnamnesis?: boolean; challenge?: ChallengePayload }) => {
       await ensureServerSession()
       return api.start(body, key)
     },
@@ -4465,6 +4505,10 @@ function GameApp() {
         setModal('anamnesis')
         await queryClient.invalidateQueries({ queryKey: queryKeys.dashboard })
         return
+      }
+      if (variables.challenge) {
+        confirmServerChallengeStart(variables.challenge, response.session)
+        setChallengeAccepted(true)
       }
       activateServerSession(response.session, variables.backTarget)
       if (response.session.status === 'playing' || response.session.status === 'final_choice') {
@@ -4693,7 +4737,7 @@ function GameApp() {
   }, [])
 
   useEffect(() => {
-    if (challenge) trackMetrikaGoal('challenge_opened', { mode: challenge.mode, date: challenge.date, from: challenge.from })
+    if (challenge) trackChallengeOpened(challenge)
   }, [])
 
   const archiveFirstDate = serverRuntime.meta?.commerce.archiveFirstDate ?? getMoscowDate()
@@ -5247,8 +5291,9 @@ function GameApp() {
   }
 
   const acceptChallenge = () => {
-    if (!challenge) return
-    trackMetrikaGoal('challenge_accepted', { mode: challenge.mode, date: challenge.date, from: challenge.from })
+    if (!challenge || startServerSession.isPending) return
+    setServerActionError('')
+    trackChallengeAccepted(challenge)
     clearTransitionTimer()
     setTransition('idle')
     setFreePlayLaunch(null)
@@ -5259,7 +5304,6 @@ function GameApp() {
     if (challenge.difficulty) setDifficulty(challenge.difficulty)
     setDate(challenge.date)
     setGameExperience(catalogGameExperience(challenge.date === getMoscowDate() ? 'hub' : 'rewatch'))
-    setChallengeAccepted(true)
     if (SERVER_RUNTIME) {
       if (!isPlayableModeId(challenge.mode)) {
         setServerActionError('Этот игровой режим ещё не опубликован')
@@ -5268,6 +5312,7 @@ function GameApp() {
       const today = serverRuntime.meta?.moscowDate ?? getMoscowDate()
       startServerSession.mutate({
         key: crypto.randomUUID(),
+        challenge,
         body: {
           kind: challenge.date === today ? 'daily' : 'archive',
           mode: challenge.mode,
@@ -5280,15 +5325,22 @@ function GameApp() {
       })
       return
     }
+    setChallengeAccepted(true)
     setScreen('game')
     setModal(null)
     window.scrollTo({ top: 0 })
   }
 
   const dismissChallenge = () => {
+    if (startServerSession.isPending) return
+    const destinationMode = challenge?.mode ?? mode
     setChallenge(null)
     setChallengeAccepted(false)
-    window.history.replaceState({ seansScreen: screen }, '', window.location.pathname)
+    setServerActionError('')
+    setServerSessionId(null)
+    setScreen('title')
+    setModeSafe(destinationMode)
+    void navigateToPlayerRoute({ screen: 'title', mode: destinationMode }, true)
   }
 
   const playNextDaily = (nextMode: TitleMode | null) => {
@@ -5606,7 +5658,7 @@ function GameApp() {
 
     {screen === 'legal' && <LegalScreen document={playerRouteFromPathname(routeLocation.pathname).legalDocument ?? 'terms'} onHome={goHome} onArchive={() => moveToScreen('rewatch')} onStats={() => setModal('stats')} onRules={() => setModal('rules')} onReview={openMusicReview} />}
 
-    {screen === 'game' && (SERVER_RUNTIME
+    {screen === 'game' && !(challenge && !challengeAccepted) && (SERVER_RUNTIME
       ? serverSessionId
         ? <ServerGame
             sessionId={serverSessionId}
@@ -5618,6 +5670,15 @@ function GameApp() {
             onReview={openMusicReview}
             onPlayNext={playNextDaily}
             onReplay={launchFreePlay}
+            onFreeDiagnosis={(archiveDate, sourceSessionId) => {
+              if (startServerSession.isPending) return
+              setChallenge(null)
+              setChallengeAccepted(false)
+              startServerSession.mutate({
+                key: crypto.randomUUID(), backTarget: 'rewatch',
+                body: { kind: 'archive', mode: 'diagnosis', period: 'all', archiveDate, sourceSessionId },
+              })
+            }}
             replayCost={freePlayCostValue}
             replayShortage={freePlayShortage}
             replayPending={titleActionPending}
@@ -5677,7 +5738,7 @@ function GameApp() {
       setModal(null)
       playToday()
     }} />}
-    {challenge && !challengeAccepted && <ChallengeInvite challenge={challenge} onAccept={acceptChallenge} onDismiss={dismissChallenge} />}
+    {challenge && !challengeAccepted && <ChallengeInvite challenge={challenge} onAccept={acceptChallenge} onDismiss={dismissChallenge} isPending={startServerSession.isPending} errorMessage={serverActionError} />}
   </div>
 }
 

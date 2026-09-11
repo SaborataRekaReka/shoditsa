@@ -75,9 +75,8 @@ describe('club page model', () => {
     expect(model.stats.danetkiPerDay).toBe(
       ECONOMY_RULE_SET_V4.danetki.dailyFreeRooms + ECONOMY_RULE_SET_V4.danetki.clubExtraRooms,
     )
-    expect(model.stats.guestFriendRoomRoundLimit).toBe(
-      ECONOMY_RULE_SET_V4.friendsRoom.freeBlocksPerDay * ECONOMY_RULE_SET_V4.friendsRoom.roundsPerBlock,
-    )
+    // Legacy free-block settings describe billing, not permission to create a room.
+    expect(model.stats).not.toHaveProperty('guestFriendRoomRoundLimit')
     expect(model.stats.friendRoomRoundLimit).toBe(ECONOMY_RULE_SET_V4.friendsRoom.maxRoundsPerRoom)
   })
 

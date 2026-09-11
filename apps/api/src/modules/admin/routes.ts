@@ -53,6 +53,7 @@ import { normalizeMusicProxyUrl } from './music-proxy.js'
 import { normalizeMovieTitle } from './movie-search.js'
 import { inspectReleaseContent } from './release-content-service.js'
 import { loadAdminAcquisitionFunnel } from './acquisition-funnel-service.js'
+import { loadAdminCampaignFunnel } from './campaign-funnel-service.js'
 import { getOpenAiPortraitTest, openAiPortraitBatchIds, startOpenAiPortraitTest, type OpenAiPortraitBatch } from './openai-portrait-test.js'
 import { createCloudPaymentsProvider } from '../commerce/providers/cloudpayments.js'
 import {
@@ -2128,6 +2129,13 @@ const registerSystemRoutes = (app: FastifyInstance, deps: Deps) => {
     await admin(request, reply, deps)
     const days = (request.query as { days?: 7 | 14 | 31 }).days ?? 14
     return loadAdminAcquisitionFunnel(deps.db, days)
+  })
+  app.get('/api/v1/admin/campaign-funnel', {
+    schema: { querystring: Type.Object({ days: Type.Optional(Type.Union([Type.Literal(7), Type.Literal(14), Type.Literal(31)])) }, { additionalProperties: false }) },
+  }, async (request, reply) => {
+    await admin(request, reply, deps)
+    const days = (request.query as { days?: 7 | 14 | 31 }).days ?? 14
+    return loadAdminCampaignFunnel(deps.db, days)
   })
   app.get('/api/v1/admin/events', { schema: { querystring: AdminEventsQuerySchema } }, async (request, reply) => {
     await admin(request, reply, deps); const query = request.query as AdminEventsQuery; const items = await loadAdminTimeline(deps.db, query); const limit = query.limit ?? 50

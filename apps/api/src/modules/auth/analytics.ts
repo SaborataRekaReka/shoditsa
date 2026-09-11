@@ -13,7 +13,12 @@ export type AuthAcquisition = {
   searchEngine: string | null
   entryPath: string
   referrerHost: string | null
+  utmSource: string | null
+  utmMedium: string | null
+  utmCampaign: string | null
 }
+
+const safeCampaignSlug = (value: unknown) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,80}$/.test(value) ? value : null
 
 const canonicalEntryPath = (value: unknown) => {
   if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.length > 160 || !/^\/[a-zA-Z0-9_~%./:@-]*$/.test(value)) return null
@@ -35,7 +40,12 @@ export const parseAuthAcquisition = (value: string | string[] | null | undefined
     if (!acquisitionId || !entrySource || !entryPath) return null
     const searchEngine = typeof raw.entry_search_engine === 'string' && /^[a-z0-9-]{1,32}$/i.test(raw.entry_search_engine) ? raw.entry_search_engine.toLowerCase() : null
     const referrerHost = typeof raw.entry_referrer_host === 'string' && /^[a-z0-9.-]{1,253}$/i.test(raw.entry_referrer_host) ? raw.entry_referrer_host.toLowerCase() : null
-    return { acquisitionId, entrySource, searchEngine, entryPath, referrerHost }
+    return {
+      acquisitionId, entrySource, searchEngine, entryPath, referrerHost,
+      utmSource: safeCampaignSlug(raw.utm_source),
+      utmMedium: safeCampaignSlug(raw.utm_medium),
+      utmCampaign: safeCampaignSlug(raw.utm_campaign),
+    }
   } catch { return null }
 }
 
@@ -53,6 +63,8 @@ export const withOAuthAcquisition = (body: Record<string, unknown>, header: stri
         acquisition_id: acquisition.acquisitionId, entry_source: acquisition.entrySource,
         entry_path: acquisition.entryPath, entry_search_engine: acquisition.searchEngine,
         entry_referrer_host: acquisition.referrerHost,
+        utm_source: acquisition.utmSource, utm_medium: acquisition.utmMedium,
+        utm_campaign: acquisition.utmCampaign,
       }) : null,
     },
   }

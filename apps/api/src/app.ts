@@ -356,6 +356,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.post('/api/v1/games/start', { schema: { body: GameStartBodySchema }, config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
     const body = request.body as GameStartBody
+    if (body.sourceSessionId && (body.mode !== 'diagnosis' || body.kind !== 'archive')) {
+      throw new ApiError(422, 'INVALID_REPLAY_SOURCE', 'Продолжение доступно для архивного случая «Диагнозов»')
+    }
     if (body.mode === 'danetki') {
       if (body.kind === 'pack') throw new ApiError(422, 'DANETKI_PACK_UNSUPPORTED', 'Данетки пока нельзя запускать как спецпоказ')
       return { session: await startDanetkiSession(db, user!, {
@@ -396,6 +399,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       difficulty: body.difficulty,
       archiveDate: body.archiveDate,
       variantKey: body.variantKey,
+      sourceSessionId: body.sourceSessionId,
     }, user!.authSessionId, user!.role, config) }
   })
   app.get('/api/v1/games/:sessionId', { schema: { params: paramsId } }, async (request) => {

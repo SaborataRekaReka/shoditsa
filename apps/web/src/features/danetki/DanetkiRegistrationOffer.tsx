@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react'
 import { CheckCircle2, Save } from 'lucide-react'
-import { trackClientEvent } from '../../app/client-events'
+import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
+import { offerObservationScope, useVisibleImpression } from '../../app/visible-impression'
 import { useAuthSession } from '../auth/use-auth-session'
 import {
   currentDanetkiReturnUrl,
@@ -39,17 +39,15 @@ const COPY: Record<DanetkiRegistrationPlacement, { title: string; description: s
 
 export function DanetkiRegistrationOffer({ placement, sessionId, questionCount = 0, story }: Props) {
   const { session: authSession, loading } = useAuthSession()
-  const viewTracked = useRef(false)
   const guest = !authSession || authSession.isAnonymous
   const returnUrl = currentDanetkiReturnUrl()
   const href = danetkiRegistrationHref(placement, returnUrl, story)
   const traffic = readDanetkiTrafficContext()
   const copy = COPY[placement]
   const trackingContext = sessionId ? { gameSessionId: sessionId } : undefined
-
-  useEffect(() => {
-    if (loading || !guest || viewTracked.current) return
-    viewTracked.current = true
+  const scope = offerObservationScope(`danetki-registration:${placement}`, sessionId, returnUrl.split(/[?#]/)[0])
+  const viewId = deterministicClientEventId(scope, 'danetki_registration_offer_view')
+  const offerRef = useVisibleImpression(!loading && guest ? viewId : null, () => {
     const payload = {
       placement,
       mode: 'danetki',
@@ -57,10 +55,11 @@ export function DanetkiRegistrationOffer({ placement, sessionId, questionCount =
       story: story ?? null,
       entrySource: traffic?.entrySource ?? null,
       collection: traffic?.collection ?? null,
+      measurement_version: 'visible-v2',
     }
-    trackClientEvent('danetki_registration_offer_view', payload, trackingContext)
+    trackClientEvent('danetki_registration_offer_view', payload, { ...trackingContext, eventId: viewId })
     trackMetrikaGoal('danetki_registration_offer_view', payload)
-  }, [guest, loading, placement, questionCount, story, traffic?.collection, traffic?.entrySource, trackingContext])
+  })
 
   if (loading) return null
   if (!guest) return placement === 'result'
@@ -80,12 +79,16 @@ export function DanetkiRegistrationOffer({ placement, sessionId, questionCount =
       story: story ?? null,
       entrySource: traffic?.entrySource ?? null,
       collection: traffic?.collection ?? null,
+      measurement_version: 'visible-v2',
     }
-    trackClientEvent('danetki_registration_offer_clicked', payload, trackingContext)
+    trackClientEvent('danetki_registration_offer_clicked', payload, {
+      ...trackingContext,
+      eventId: deterministicClientEventId(scope, 'danetki_registration_offer_clicked'),
+    })
     trackMetrikaGoal('danetki_registration_offer_clicked', payload)
   }
 
-  return <section className={`danetki-registration-offer danetki-registration-offer--${placement}`} aria-label="Сохранить прогресс">
+  return <section ref={offerRef} className={`danetki-registration-offer danetki-registration-offer--${placement}`} aria-label="Сохранить прогресс">
     <span><Save aria-hidden="true" /></span>
     <div><strong>{copy.title}</strong><p>{copy.description}</p></div>
     <a href={href} onClick={click}>{copy.action}</a>

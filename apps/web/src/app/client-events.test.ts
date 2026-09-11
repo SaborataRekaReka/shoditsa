@@ -97,10 +97,23 @@ describe('first-party client event identities', () => {
       mode: 'character',
       acquisition_id: '8c4f102e-317b-4a07-b8d6-80bdc99624ef',
       entry_source: 'organic_search',
+      utm_source: 'spoofed',
+      utm_medium: 'spoofed',
+      utm_campaign: 'spoofed',
     })
 
     const queue = JSON.parse(values.get('shoditsa:client-events:v1') ?? '[]') as Array<{ properties: Record<string, unknown> }>
     expect(queue[0]?.properties).toEqual({ mode: 'character', analytics_consent: 'pending' })
+  })
+
+  it('purges campaign attribution from queued events when consent is rejected', () => {
+    storage.setItem('shoditsa:client-events:v1', JSON.stringify([{
+      eventId: crypto.randomUUID(), eventName: 'challenge_started', occurredAt: new Date().toISOString(),
+      properties: { mode: 'diagnosis', analytics_consent: 'accepted', utm_source: 'telegram', utm_medium: 'paid', utm_campaign: 'pilot' },
+    }]))
+    purgeQueuedClientEventAttribution()
+    const queue = JSON.parse(values.get('shoditsa:client-events:v1') ?? '[]')
+    expect(queue[0].properties).toEqual({ mode: 'diagnosis', analytics_consent: 'rejected' })
   })
 
   it('keeps pre-consent lifecycle events local and attributes them after acceptance', async () => {

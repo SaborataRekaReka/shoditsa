@@ -1,6 +1,6 @@
 import { eq, sql } from 'drizzle-orm'
 import { appSettings, registrationPlayCredits, type Database } from '@shoditsa/database'
-import { GROWTH_MEASUREMENT_FROM, GROWTH_NOT_BEFORE, GROWTH_STAGES, growthFeatures, type GrowthPolicy, type GrowthStage } from '@shoditsa/contracts'
+import { GROWTH_DEFINITIONS_VERSION, GROWTH_MEASUREMENT_FROM, GROWTH_NOT_BEFORE, GROWTH_OFFER_VISIBILITY_VERSION, GROWTH_STAGES, growthFeatures, type GrowthPolicy, type GrowthStage } from '@shoditsa/contracts'
 import { ApiError } from '../../lib/errors.js'
 
 export const GROWTH_SETTING = 'growth.diagnosisContinuation'
@@ -60,7 +60,7 @@ export const growthReport = async (db: Database, days: number) => {
   const to = new Date(new Date().toISOString().slice(0, 10)).toISOString()
   const from = new Date(Date.parse(to) - days * 86_400_000).toISOString()
   const measurement = growthMeasurementWindow(from, to)
-  const [sessions, accounts, commerce, events] = await Promise.all([
+  const [sessions, accounts, commerce, events, firstFreeArchive] = await Promise.all([
     db.execute(sql`
       with completed as (
         select g.id, g.user_id, g.completed_at from game_sessions g left join player_profiles p on p.user_id=g.user_id
@@ -83,6 +83,12 @@ export const growthReport = async (db: Database, days: number) => {
         (select count(*)::int from repeats) as "repeatStarts",
         (select count(*)::int from repeats where completed_at < ${to}) as "repeatCompletions",
         (select count(distinct source_session_id)::int from repeats) as "repeatingCompleters",
+        (select coalesce(jsonb_agg(to_jsonb(b) order by b."accessSource"),'[]'::jsonb) from (
+          select coalesce(access_source,'unknown') as "accessSource", count(*)::int as "repeatStarts",
+            count(*) filter(where completed_at < ${to})::int as "repeatCompletions",
+            count(distinct source_session_id)::int as "repeatingCompleters"
+          from repeats group by 1
+        ) b) as "repeatByAccessSource",
         (select count(*)::int from activity where access_source='registration_bonus') as "bonusStarts",
         (select count(*)::int from activity where access_source='registration_bonus' and completed_at < ${to}) as "bonusCompletions",
         (select count(*)::int from activity where access_source='club' and "startedAt">=${measurement.from}) as "clubStarts"`),
@@ -105,9 +111,16 @@ export const growthReport = async (db: Database, days: number) => {
       and e.event_name in ('diagnosis_replay_offer_view','diagnosis_replay_clicked','registration_bonus_offer_view','registration_bonus_offer_clicked','club_context_offer_view','club_context_offer_clicked','commerce_plan_selected','checkout_started')
       and (e.event_name not in ('commerce_plan_selected','checkout_started') or e.properties->>'productId' in ('club_30d','club_365d'))
       group by 1,2,3 order by 1,2,3`),
+    db.execute(sql`select min(g."startedAt") as "firstObservedAt"
+      from game_sessions g left join player_profiles p on p.user_id=g.user_id
+      where g.mode='diagnosis' and g.access_source='free_archive'
+        and g."startedAt"<${to} and coalesce(p.role,'player')<>'admin'`),
   ])
   const noMeasurement = measurement.coverage === 'not_started'
-  return { policy, effective: growthFeatures(policy), notBefore: GROWTH_NOT_BEFORE, nextStageAvailableAt: nextGrowthStageAt(policy), period: { from, toExclusive: to, days }, measurement,
-    sessions: { ...sessions[0], ...(noMeasurement ? { measuredCompleters: null, repeatStarts: null, repeatCompletions: null, repeatingCompleters: null, clubStarts: null } : {}) },
+  const firstObservedAt = firstFreeArchive[0]?.firstObservedAt
+  return { policy, effective: growthFeatures(policy), notBefore: GROWTH_NOT_BEFORE, nextStageAvailableAt: nextGrowthStageAt(policy), period: { from, toExclusive: to, days },
+    measurement: { ...measurement, definitionsVersion: GROWTH_DEFINITIONS_VERSION, offerVisibilityVersion: GROWTH_OFFER_VISIBILITY_VERSION,
+      freeArchiveFirstObservedAt: firstObservedAt ? new Date(String(firstObservedAt)).toISOString() : null },
+    sessions: { ...sessions[0], ...(noMeasurement ? { measuredCompleters: null, repeatStarts: null, repeatCompletions: null, repeatingCompleters: null, repeatByAccessSource: null, clubStarts: null } : {}) },
     accounts: accounts[0], commerce: { ...commerce[0], ...(noMeasurement ? { paidUsersUsedClub: null } : {}) }, events: [...events] }
 }

@@ -17,6 +17,7 @@ import { parseAnimeList, parseArtistList, parseMovieList } from './pipeline-manu
 import { GameBuilderPage } from './GameBuilderPage'
 import { ConnectionsAdminPage } from './connections/ConnectionsAdminPage'
 import { GrowthPanel } from './GrowthPanel'
+import { AdminCampaignFunnel } from './AdminCampaignFunnel'
 import './admin.css'
 
 type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'connections' | 'integrations' | 'system' | 'audit'
@@ -5654,6 +5655,7 @@ function EconomyPage({ notify }: { notify: (tone: Notice['tone'], text: string) 
   return <>
     <PageHead eyebrow="Билеты и промокоды" title="Экономика" description="Метрики economy v4 по версиям правил, append-only ledger и безопасное управление промокодами." actions={<><button className="admin-btn admin-btn--secondary" onClick={() => void metrics.refetch()}><RefreshCw />Обновить</button><button className="admin-btn admin-btn--primary" onClick={() => setCreating(true)}><Plus />Создать промокод</button></>} />
     <GrowthPanel />
+    <AdminCampaignFunnel />
     <div className="admin-toolbar"><div className="admin-periods">{([7, 14, 30] as const).map((value) => <button key={value} className={days === value ? 'is-active' : ''} onClick={() => setDays(value)}>{value} дней</button>)}</div></div>
     {metrics.isLoading ? <Loading /> : metrics.error ? <ErrorState error={metrics.error} /> : summary && overview && <>
       <div className="admin-economy-metrics">

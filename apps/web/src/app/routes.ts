@@ -70,8 +70,12 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
 
 export const playerRouteFromLocation = (pathname: string, search = ''): PlayerRouteState => {
   const route = playerRouteFromPathname(pathname)
-  if (route.screen !== 'friends-intro') return route
   const params = new URLSearchParams(search)
+  if (route.screen === 'rewatch') {
+    const mode = params.get('mode')
+    return mode && isPlayableModeId(mode) ? { ...route, mode } : route
+  }
+  if (route.screen !== 'friends-intro') return route
   return params.has('room') || params.get('new') === '1' || params.get('mode') === 'danetki' || params.get('mode') === 'territory'
     ? { screen: 'friends-room' }
     : route

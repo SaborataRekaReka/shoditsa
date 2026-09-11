@@ -13,8 +13,8 @@ for (const days of [7, 14, 31] as const) {
   const data: GrowthReport = {
     policy, effective: growthFeatures(policy), notBefore: GROWTH_NOT_BEFORE, nextStageAvailableAt: GROWTH_NOT_BEFORE,
     period: { from: new Date(Date.parse('2026-09-07T00:00:00Z') - days * 86400000).toISOString(), toExclusive: '2026-09-07T00:00:00Z', days },
-    measurement: { from: GROWTH_MEASUREMENT_FROM, coverage: 'not_started' },
-    sessions: { completions: values[0], firstCompleters: values[1], measuredCompleters: null, repeatStarts: null, repeatCompletions: null, repeatingCompleters: null, bonusStarts: 0, bonusCompletions: 0, clubStarts: null },
+    measurement: { from: GROWTH_MEASUREMENT_FROM, coverage: 'not_started', definitionsVersion: 'linked-repeat-v2-free-archive', offerVisibilityVersion: 'visible-v2', freeArchiveFirstObservedAt: null },
+    sessions: { completions: values[0], firstCompleters: values[1], measuredCompleters: null, repeatStarts: null, repeatCompletions: null, repeatingCompleters: null, repeatByAccessSource: null, bonusStarts: 0, bonusCompletions: 0, clubStarts: null },
     accounts: { created: values[2], signUps: values[3], bonusGranted: 0, bonusPlayers: 0 },
     commerce: { orders: values[4], paidOrders: values[4], payingUsers: values[4], paidUsersUsedClub: null, revenueMinor: values[4] * 19900 },
     events: [],
