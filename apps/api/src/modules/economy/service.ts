@@ -16,7 +16,7 @@ import {
 } from '@shoditsa/contracts'
 import {
   attendanceStats, connectionsSessionState, contentItemVersions, dailyAttendance, dailyChallenges, danetkiDailyUsage, freePlayUsage, gameSessions, periodEntitlements, playerProfiles,
-  promoCodes, promoRedemptions, registrationPlayCredits, type Database, userModeStats, walletAccounts, walletLedger,
+  promoCodes, promoRedemptions, type Database, userModeStats, walletAccounts, walletLedger,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
@@ -24,7 +24,7 @@ import { activeRevision, answerPool, buildSessionSnapshot } from '../games/servi
 import { getMembershipSummary, hasEntitlement } from '../commerce/entitlements.js'
 import { loadAssignedEconomyRules } from './rules.js'
 import { settlePositiveWalletCredit, walletCreditMetadata } from './wallet-credit.js'
-import { loadGrowthPolicy, registrationBonusSummary } from '../growth/service.js'
+import { loadGrowthPolicy, registrationBonusSummary, lockRegistrationCredit, consumeRegistrationCredit } from '../growth/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 const UNLOCKABLE: PlayableMode[] = [...PERIOD_UNLOCKABLE_MODE_IDS]
@@ -173,9 +173,7 @@ export const startFreePlay = async (
     }
   }
   const clubActive = await hasEntitlement(tx, userId, 'club', undefined, new Date())
-  const credit = mode === 'diagnosis' && !clubActive
-    ? (await tx.select().from(registrationPlayCredits).where(eq(registrationPlayCredits.userId, userId)).for('update').limit(1))[0]
-    : null
+  const credit = !clubActive ? await lockRegistrationCredit(tx, userId, mode) : null
   // Already-promised credits remain usable if the experiment is paused.
   const bonusActive = Boolean(credit && credit.remaining > 0)
   const accessSource = clubActive ? 'club' as const : bonusActive ? 'registration_bonus' as const : 'tickets' as const
@@ -215,7 +213,7 @@ export const startFreePlay = async (
     accessSource, sourceSessionId: sourceSessionId ?? null, growthStage: growth.stage,
     puzzleDate: date, revisionId, answerItemVersionId: pool.byItemId.get(answer.id)!, rulesVersion: rules.version, startIdempotencyKey: idempotencyKey,
   }).returning()
-  if (bonusActive) await tx.update(registrationPlayCredits).set({ remaining: sql`${registrationPlayCredits.remaining} - 1` }).where(eq(registrationPlayCredits.userId, userId))
+  if (bonusActive) await consumeRegistrationCredit(tx, userId, mode)
   if (cost > 0) await tx.update(walletAccounts).set({ balance: balanceAfter, version: sql`${walletAccounts.version} + 1`, updatedAt: new Date() }).where(eq(walletAccounts.userId, userId))
   if (!clubActive && !bonusActive) {
     await tx.update(freePlayUsage).set({ launches: usage.launches + 1 }).where(and(eq(freePlayUsage.userId, userId), eq(freePlayUsage.activityDate, date)))
@@ -310,6 +308,8 @@ export const dashboard = async (db: Database, userId: string, role: ApiRole = 'p
   const clubRoomsRemaining = membership.active
     ? Math.max(0, rules.danetki.clubExtraRooms - danetki.clubRooms)
     : 0
+  const danetkiBonus = (registrationBonus.byMode?.danetki?.remaining ?? 0) > 0
+  const includedDanetki = clubRoomsRemaining > 0 || danetkiBonus
   return {
     wallet: wallet[0] ?? { balance: 0, lifetimeEarned: 0 },
     registrationBonus,
@@ -346,21 +346,21 @@ export const dashboard = async (db: Database, userId: string, role: ApiRole = 'p
       },
       danetkiSolo: {
         sink: 'danetki-room',
-        allowed: clubRoomsRemaining > 0 || balance >= economyDanetkiCost('solo', danetki.paidRooms, rules),
-        accessSource: clubRoomsRemaining > 0 ? 'club' : 'tickets',
-        cost: clubRoomsRemaining > 0 ? 0 : economyDanetkiCost('solo', danetki.paidRooms, rules),
+        allowed: includedDanetki || balance >= economyDanetkiCost('solo', danetki.paidRooms, rules),
+        accessSource: clubRoomsRemaining > 0 ? 'club' : danetkiBonus ? 'free' : 'tickets',
+        cost: includedDanetki ? 0 : economyDanetkiCost('solo', danetki.paidRooms, rules),
         balance,
-        shortage: clubRoomsRemaining > 0 ? 0 : Math.max(0, economyDanetkiCost('solo', danetki.paidRooms, rules) - balance),
+        shortage: includedDanetki ? 0 : Math.max(0, economyDanetkiCost('solo', danetki.paidRooms, rules) - balance),
         paidUsesToday: danetki.paidRooms,
         rulesVersion: rules.version,
       },
       danetkiGroup: {
         sink: 'danetki-room',
-        allowed: clubRoomsRemaining > 0 || balance >= economyDanetkiCost('group', danetki.paidRooms, rules),
-        accessSource: clubRoomsRemaining > 0 ? 'club' : 'tickets',
-        cost: clubRoomsRemaining > 0 ? 0 : economyDanetkiCost('group', danetki.paidRooms, rules),
+        allowed: includedDanetki || balance >= economyDanetkiCost('group', danetki.paidRooms, rules),
+        accessSource: clubRoomsRemaining > 0 ? 'club' : danetkiBonus ? 'free' : 'tickets',
+        cost: includedDanetki ? 0 : economyDanetkiCost('group', danetki.paidRooms, rules),
         balance,
-        shortage: clubRoomsRemaining > 0 ? 0 : Math.max(0, economyDanetkiCost('group', danetki.paidRooms, rules) - balance),
+        shortage: includedDanetki ? 0 : Math.max(0, economyDanetkiCost('group', danetki.paidRooms, rules) - balance),
         paidUsesToday: danetki.paidRooms,
         rulesVersion: rules.version,
       },
@@ -369,8 +369,8 @@ export const dashboard = async (db: Database, userId: string, role: ApiRole = 'p
       dailyRoomsStarted: danetki.dailyRooms,
       extraRoomsStarted: danetki.extraRooms,
       clubRoomsRemaining,
-      nextSoloCost: clubRoomsRemaining > 0 ? 0 : economyDanetkiCost('solo', danetki.paidRooms, rules),
-      nextGroupCost: clubRoomsRemaining > 0 ? 0 : economyDanetkiCost('group', danetki.paidRooms, rules),
+      nextSoloCost: includedDanetki ? 0 : economyDanetkiCost('solo', danetki.paidRooms, rules),
+      nextGroupCost: includedDanetki ? 0 : economyDanetkiCost('group', danetki.paidRooms, rules),
     },
     membership: { active: membership.active, endsAt: membership.endsAt },
   }

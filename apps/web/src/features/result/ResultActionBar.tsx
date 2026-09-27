@@ -32,6 +32,8 @@ export function ResultActionBar({
   primaryReplay = false,
   primaryRef,
   onReplayOfferClick,
+  replayTitle = 'Следующий случай',
+  replayModeLabel = 'Диагнозы',
 }: {
   nextLabel: string
   nextDestination: string
@@ -53,6 +55,8 @@ export function ResultActionBar({
   primaryReplay?: boolean
   primaryRef?: Ref<HTMLDivElement>
   onReplayOfferClick?: () => void
+  replayTitle?: string
+  replayModeLabel?: string
   compactNext?: boolean
   persistence?: ReactNode
   afterMeta?: ReactNode
@@ -84,11 +88,11 @@ export function ResultActionBar({
 
   return <>
     <div ref={primaryRef} className={`result-primary-actions result-card__wide${compactNext ? ' is-compact' : ''}${primaryReplay ? ' is-replay' : ''}`}>
-      <ControlButton className="result-next" disabled={primaryReplay && replayPending} onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} aria-label={primaryReplay ? freeArchiveReplay ? 'Следующий диагноз — бесплатно' : `Следующий случай · ${replayShortageValue > 0 ? 'недостаточно билетов' : replayAccessSource === 'club' ? 'по клубному билету' : replayAccessSource === 'registration_bonus' ? 'за регистрационный бонус' : formatTickets(replayCostValue)}` : nextLabel}>
+      <ControlButton className="result-next" disabled={primaryReplay && replayPending} onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} aria-label={primaryReplay ? freeArchiveReplay ? 'Следующий диагноз — бесплатно' : `${replayTitle} · ${replayShortageValue > 0 ? 'недостаточно билетов' : replayAccessSource === 'club' ? 'по клубному билету' : replayAccessSource === 'registration_bonus' ? 'за регистрационный бонус' : formatTickets(replayCostValue)}` : nextLabel}>
         <img className="result-next__art" src={nextArtworkUrl} alt="" aria-hidden="true" loading="lazy" />
         <span className="result-next__copy">
-          <small>{primaryReplay ? freeArchiveReplay ? 'Бесплатно · из архива' : 'Продолжить «Диагнозы»' : nextKicker}</small>
-          <strong>{primaryReplay ? freeArchiveReplay ? 'Следующий диагноз' : 'Следующий случай' : nextDestination}</strong>
+          <small>{primaryReplay ? freeArchiveReplay ? 'Бесплатно · из архива' : `Продолжить «${replayModeLabel}»` : nextKicker}</small>
+          <strong>{primaryReplay ? freeArchiveReplay ? 'Следующий диагноз' : replayTitle : nextDestination}</strong>
           {primaryReplay ? <em>{freeArchiveReplay ? 'Непройденный случай из последних семи дней' : replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия · без списания билетов' : `${formatTickets(replayCostValue)} · новая загадка`}</em> : nextTicketNumber !== 'СЕАНС' && <em>{nextTicketNumber} · по маршруту</em>}
         </span>
         <span className="result-next__arrow" aria-hidden="true"><span>{primaryReplay ? replayPending ? 'Запускаем…' : replayShortageValue > 0 ? 'Дальше' : replayCostValue > 0 ? `За ${replayCostValue}` : 'Играть' : nextActionLabel}</span><ArrowRight /></span>
@@ -137,7 +141,7 @@ export function ResultActionBar({
               : replayAccessSource === 'club'
                 ? 'Новая игра по клубному абонементу'
                 : replayAccessSource === 'registration_bonus'
-                  ? 'Новый случай за регистрационный бонус'
+                  ? 'Новая партия за регистрационный бонус'
                 : `Новая игра за ${formatTickets(replayCostValue)}`}</strong>
             <p>{replayShortageValue > 0
               ? `Нужно ${formatTickets(replayCostValue)}, на балансе ${formatTickets(replayBalance)}.`

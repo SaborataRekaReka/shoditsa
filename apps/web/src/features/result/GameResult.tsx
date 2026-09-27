@@ -114,8 +114,8 @@ export function GameResult(props: Props) {
   const resultViewKeyRef = useRef('')
   const rewardDetailsId = useId()
   const { session: authSession, loading: authLoading } = useAuthSession()
-  const primaryReplay = Boolean(props.mode === 'diagnosis' && props.onReplay && (props.growth?.replay || (props.registrationBonusRemaining ?? 0) > 0))
-  const replayRef = useGrowthImpression('diagnosis_replay_offer_view', primaryReplay ? props.growth : undefined, props.sessionId)
+  const primaryReplay = Boolean(props.onReplay && ((props.mode === 'diagnosis' && props.growth?.replay) || (props.registrationBonusRemaining ?? 0) > 0))
+  const replayRef = useGrowthImpression('diagnosis_replay_offer_view', primaryReplay && props.mode === 'diagnosis' ? props.growth : undefined, props.sessionId)
 
   useEffect(() => {
     if (props.autoScroll === false) return
@@ -203,7 +203,7 @@ export function GameResult(props: Props) {
   const registrationTracking = useResultRegistrationTracking({
     sessionId: props.sessionId,
     mode: props.mode,
-    enabled: accountState === 'guest' && !(props.mode === 'diagnosis' && props.growth?.registration),
+    enabled: accountState === 'guest' && !props.growth?.registration,
     properties: { completedToday: props.completedToday ?? 0, tickets: props.award?.total ?? 0 },
   })
   const routeProgress = Math.max(0, Math.min(props.completedToday ?? 0, FULL_HOUSE_MODE_IDS.length))
@@ -219,9 +219,9 @@ export function GameResult(props: Props) {
       : '',
   ].filter(Boolean)
   const progressSummary = joinList(progressItems)
-  const recommendations: TitleMode[] = primaryReplay ? ['animal', 'character', 'book'] : props.recommendedModes ?? []
-  const persistence = accountState === 'guest' && props.mode === 'diagnosis' && props.growth?.registration
-    ? <DiagnosisRegistrationOffer growth={props.growth} sessionId={props.sessionId} href={`${currentRegistrationHref()}&bonus=diagnosis`} />
+  const recommendations: TitleMode[] = primaryReplay && props.mode === 'diagnosis' ? ['animal', 'character', 'book'] : props.recommendedModes ?? []
+  const persistence = accountState === 'guest' && props.growth?.registration
+    ? <DiagnosisRegistrationOffer growth={props.growth} sessionId={props.sessionId} mode={props.mode} href={`${currentRegistrationHref()}&bonus=all-games`} />
     : accountState === 'guest'
     ? <section ref={registrationTracking.ref} className="result-persistence result-card__wide" aria-label="Сохранить прогресс">
         <span className="result-persistence__icon" aria-hidden="true"><Save /></span>
@@ -243,7 +243,7 @@ export function GameResult(props: Props) {
           <span className="result-persistence__icon" aria-hidden="true"><CheckCircle2 /></span>
           <div className="result-persistence__copy">
             <strong>Прогресс сохранён в профиле</strong>
-            <p>{props.mode === 'diagnosis' && (props.registrationBonusRemaining ?? 0) > 0 ? `Этот результат уже сохранён. Дополнительных случаев без списания билетов: ${props.registrationBonusRemaining}. Нажмите «Следующий случай».` : 'Этот результат уже доступен на всех ваших устройствах.'}</p>
+            <p>{(props.registrationBonusRemaining ?? 0) > 0 ? `Результат сохранён. Бонусных партий в этой игре: ${props.registrationBonusRemaining}. В других играх — отдельные бонусы.` : 'Этот результат уже доступен на всех ваших устройствах.'}</p>
           </div>
         </section>
       : null
@@ -323,11 +323,13 @@ export function GameResult(props: Props) {
     </section>}
 
     <ResultActionBar
+      replayTitle={props.mode === 'diagnosis' ? 'Следующий случай' : 'Ещё одна партия'}
+      replayModeLabel={MODE_CONFIG[props.mode].title}
       primaryReplay={primaryReplay}
       primaryRef={replayRef}
       nextLabel={props.nextLabel}
       nextDestination={nextDestination}
-      nextArtworkUrl={primaryReplay ? MODE_PRESENTATION.diagnosis.watermarkUrl : nextPresentation.watermarkUrl}
+      nextArtworkUrl={primaryReplay ? MODE_PRESENTATION[props.mode].watermarkUrl : nextPresentation.watermarkUrl}
       nextTicketNumber={nextTicketNumber}
       nextActionLabel={props.nextActionLabel}
       configureLabel={props.configureLabel}
@@ -337,7 +339,7 @@ export function GameResult(props: Props) {
       onConfigure={props.onConfigure}
       onChallenge={props.onChallenge}
       onReplayOfferClick={() => {
-        if (primaryReplay && props.growth) trackGrowthAction('diagnosis_replay_clicked', props.growth, props.sessionId, { source: props.replayAccessSource ?? 'tickets', amount: props.replayCost ?? 0 })
+        if (primaryReplay && props.mode === 'diagnosis' && props.growth) trackGrowthAction('diagnosis_replay_clicked', props.growth, props.sessionId, { source: props.replayAccessSource ?? 'tickets', amount: props.replayCost ?? 0 })
       }}
       onReplay={props.onReplay}
       replayCost={props.replayCost}

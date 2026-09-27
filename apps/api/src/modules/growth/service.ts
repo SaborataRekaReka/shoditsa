@@ -1,6 +1,6 @@
-import { eq, sql } from 'drizzle-orm'
-import { appSettings, registrationPlayCredits, type Database } from '@shoditsa/database'
-import { GROWTH_DEFINITIONS_VERSION, GROWTH_MEASUREMENT_FROM, GROWTH_NOT_BEFORE, GROWTH_OFFER_VISIBILITY_VERSION, GROWTH_STAGES, growthFeatures, type GrowthPolicy, type GrowthStage } from '@shoditsa/contracts'
+import { and, eq, sql } from 'drizzle-orm'
+import { appSettings, registrationPlayCredits, registrationModePlayCredits, type Database } from '@shoditsa/database'
+import { REGISTRATION_BONUS_MODE_IDS, REGISTRATION_BONUS_ROUNDS, GROWTH_DEFINITIONS_VERSION, GROWTH_MEASUREMENT_FROM, GROWTH_NOT_BEFORE, GROWTH_OFFER_VISIBILITY_VERSION, GROWTH_STAGES, growthFeatures, type GrowthPolicy, type GrowthStage, type PlayableModeId, type RegistrationBonusSummary } from '@shoditsa/contracts'
 import { ApiError } from '../../lib/errors.js'
 
 export const GROWTH_SETTING = 'growth.diagnosisContinuation'
@@ -41,12 +41,30 @@ export const grantRegistrationPlays = async (db: Database, createdUser: { id: st
   if (createdUser.isAnonymous) return
   const policy = await loadGrowthPolicy(db)
   if (!growthFeatures(policy).registration) return
-  await db.insert(registrationPlayCredits).values({ userId: createdUser.id }).onConflictDoNothing()
+  await db.transaction(async (tx) => {
+    await tx.insert(registrationPlayCredits).values({ userId: createdUser.id }).onConflictDoNothing()
+    await tx.insert(registrationModePlayCredits).values(REGISTRATION_BONUS_MODE_IDS.filter((mode) => mode !== 'diagnosis').map((mode) => ({ userId: createdUser.id, mode }))).onConflictDoNothing()
+  })
 }
 
-export const registrationBonusSummary = async (db: Database, userId: string) => {
-  const row = (await db.select({ remaining: registrationPlayCredits.remaining }).from(registrationPlayCredits).where(eq(registrationPlayCredits.userId, userId)).limit(1))[0]
-  return { mode: 'diagnosis' as const, granted: row ? 3 : 0, remaining: row?.remaining ?? 0 }
+type CreditTransaction = Parameters<Parameters<Database['transaction']>[0]>[0]
+export const lockRegistrationCredit = async (tx: CreditTransaction, userId: string, mode: PlayableModeId) => mode === 'diagnosis'
+  ? (await tx.select().from(registrationPlayCredits).where(eq(registrationPlayCredits.userId, userId)).for('update').limit(1))[0]
+  : (await tx.select().from(registrationModePlayCredits).where(and(eq(registrationModePlayCredits.userId, userId), eq(registrationModePlayCredits.mode, mode))).for('update').limit(1))[0]
+
+export const consumeRegistrationCredit = async (tx: CreditTransaction, userId: string, mode: PlayableModeId) => {
+  // Call only after locking and checking the entitlement, inside the session transaction.
+  if (mode === 'diagnosis') await tx.update(registrationPlayCredits).set({ remaining: sql`${registrationPlayCredits.remaining} - 1` }).where(eq(registrationPlayCredits.userId, userId))
+  else await tx.update(registrationModePlayCredits).set({ remaining: sql`${registrationModePlayCredits.remaining} - 1` }).where(and(eq(registrationModePlayCredits.userId, userId), eq(registrationModePlayCredits.mode, mode)))
+}
+
+export const registrationBonusSummary = async (db: Database | CreditTransaction, userId: string): Promise<RegistrationBonusSummary> => {
+  const [diagnosis, other] = await Promise.all([
+    db.select({ remaining: registrationPlayCredits.remaining }).from(registrationPlayCredits).where(eq(registrationPlayCredits.userId, userId)).limit(1),
+    db.select({ mode: registrationModePlayCredits.mode, remaining: registrationModePlayCredits.remaining }).from(registrationModePlayCredits).where(eq(registrationModePlayCredits.userId, userId)),
+  ])
+  const bonus = { granted: diagnosis[0] ? REGISTRATION_BONUS_ROUNDS : 0, remaining: diagnosis[0]?.remaining ?? 0 }
+  return { mode: 'diagnosis', ...bonus, byMode: { diagnosis: bonus, ...Object.fromEntries(other.map((row) => [row.mode, { granted: REGISTRATION_BONUS_ROUNDS, remaining: row.remaining }])) } }
 }
 
 export const growthMeasurementWindow = (from: string, to: string) => ({
@@ -73,7 +91,7 @@ export const growthReport = async (db: Database, days: number) => {
   const to = new Date(new Date().toISOString().slice(0, 10)).toISOString()
   const from = new Date(Date.parse(to) - days * 86_400_000).toISOString()
   const measurement = growthMeasurementWindow(from, to)
-  const [sessions, accounts, commerce, events, firstFreeArchive, factsSetting] = await Promise.all([
+  const [sessions, accounts, commerce, events, firstFreeArchive, factsSetting, registrationBonusByMode] = await Promise.all([
     db.execute(sql`
       with completed as (
         select g.id, g.user_id, g.completed_at from game_session_facts g left join player_profiles p on p.user_id=g.user_id
@@ -130,6 +148,19 @@ export const growthReport = async (db: Database, days: number) => {
       where g.mode='diagnosis' and g.access_source='free_archive'
         and g."startedAt"<${to} and coalesce(p.role,'player')<>'admin'`),
     db.select({ value: appSettings.value }).from(appSettings).where(eq(appSettings.key, EPISODE_FACTS_SETTING)).limit(1),
+    db.execute(sql`with grants as (
+      select user_id, 'diagnosis'::text as mode, granted_at from registration_play_credits
+      union all select user_id, mode::text, granted_at from registration_mode_play_credits
+    ), grant_counts as (
+      select b.mode, count(*)::int as n from grants b left join player_profiles p on p.user_id=b.user_id
+      where b.granted_at>=${from} and b.granted_at<${to} and coalesce(p.role,'player')<>'admin' group by b.mode
+    ), usage_counts as (
+      select g.mode::text as mode, count(*)::int as starts,
+        count(*) filter(where g.completed_at>=g."startedAt" and g.completed_at<${to} and g.completion_status in ('won','lost'))::int as completions
+      from game_session_facts g left join player_profiles p on p.user_id=g.user_id
+      where g.access_source='registration_bonus' and g."startedAt">=${from} and g."startedAt"<${to} and coalesce(p.role,'player')<>'admin' group by g.mode
+    ) select coalesce(g.mode,u.mode) as mode, coalesce(g.n,0)::int as "grantedAccounts", coalesce(u.starts,0)::int as starts, coalesce(u.completions,0)::int as completions
+    from grant_counts g full join usage_counts u on u.mode=g.mode order by 1`),
   ])
   const noMeasurement = measurement.coverage === 'not_started'
   const firstObservedAt = firstFreeArchive[0]?.firstObservedAt
@@ -138,5 +169,5 @@ export const growthReport = async (db: Database, days: number) => {
       freeArchiveFirstObservedAt: firstObservedAt ? new Date(String(firstObservedAt)).toISOString() : null,
       episodeFacts: episodeFactsWindow(from, to, factsSetting[0]?.value) },
     sessions: { ...sessions[0], ...(noMeasurement ? { measuredCompleters: null, repeatStarts: null, repeatCompletions: null, repeatingCompleters: null, repeatByAccessSource: null, clubStarts: null } : {}) },
-    accounts: accounts[0], commerce: { ...commerce[0], ...(noMeasurement ? { paidUsersUsedClub: null } : {}) }, events: [...events] }
+    accounts: accounts[0], commerce: { ...commerce[0], ...(noMeasurement ? { paidUsersUsedClub: null } : {}) }, events: [...events], registrationBonusByMode: [...registrationBonusByMode] }
 }

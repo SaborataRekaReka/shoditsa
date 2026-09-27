@@ -4,7 +4,7 @@ import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
 import type { CatalogGuessModeId } from './game-modes.js'
 import type { EconomyQuote, EconomyRuleSet } from './economy.js'
 import type { ConnectionsGameState, ConnectionsHintSnapshot } from './connections.js'
-import type { GrowthFeatures } from './growth.js'
+import type { GrowthFeatures, RegistrationBonusSummary } from './growth.js'
 
 export type ApiRole = 'player' | 'admin'
 export type ApiGameStatus = 'playing' | 'final_choice' | 'won' | 'lost' | 'expired'
@@ -157,7 +157,7 @@ export type ActiveSessionSummary = {
 }
 
 export type DashboardResponse = {
-  registrationBonus?: { mode: 'diagnosis'; granted: number; remaining: number }
+  registrationBonus?: RegistrationBonusSummary
   wallet: WalletAccount
   attendance: AttendanceSummary | null
   today: TodayAttendance | null

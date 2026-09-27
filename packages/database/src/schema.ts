@@ -1095,12 +1095,24 @@ export const freePlayUsage = pgTable('free_play_usage', {
 }, (table) => [primaryKey({ columns: [table.userId, table.activityDate] })])
 
 // A finite non-monetary entitlement, not wallet currency. One grant per account;
-// consumed atomically with a Diagnosis session, never with AI-powered rooms.
+// Legacy Diagnosis entitlement retained for compatibility and historical reporting.
 export const registrationPlayCredits = pgTable('registration_play_credits', {
   userId: uuid('user_id').primaryKey().references(() => user.id, { onDelete: 'cascade' }),
   remaining: smallint().notNull().default(3),
   grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [check('registration_play_credits_remaining_check', sql`${table.remaining} between 0 and 3`)])
+
+// Each other playable mode has an independent finite entitlement.
+export const registrationModePlayCredits = pgTable('registration_mode_play_credits', {
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  mode: contentMode('mode').notNull(),
+  remaining: smallint().notNull().default(3),
+  grantedAt: timestamp('granted_at', { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.mode] }),
+  check('registration_mode_play_credits_remaining_check', sql`${table.remaining} between 0 and 3`),
+  check('registration_mode_play_credits_mode_check', sql`${table.mode} not in ('diagnosis','territory')`),
+])
 
 export const promoCodes = pgTable('promo_codes', {
   id: uuid().primaryKey().defaultRandom(), codeHash: text('code_hash').notNull().unique(), title: text().notNull(), rewardType: text('reward_type').notNull(),

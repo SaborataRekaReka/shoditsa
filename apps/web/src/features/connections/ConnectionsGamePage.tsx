@@ -38,6 +38,9 @@ import { dayNumber } from '../../game/day-number'
 import type { TitleMode } from '../../types'
 import { connectionsShareText } from './connections-sharing'
 import { ConnectionsSelectionLinks } from './ConnectionsSelectionLinks'
+import { DiagnosisRegistrationOffer } from '../result/DiagnosisGrowth'
+import { useAuthSession } from '../auth/use-auth-session'
+import '../result/GameResult.css'
 import './ConnectionsGamePage.css'
 
 export type ConnectionsSession = Extract<GameSessionSnapshot, { engine: 'connections_grid' }>
@@ -541,6 +544,14 @@ export function ConnectionsResult({
   autoScroll?: boolean
 }) {
   const state = session.connections
+  const runtime = useServerRuntime()
+  const { session: authSession, loading: authLoading } = useAuthSession()
+  const bonusRemaining = runtime.dashboard?.registrationBonus?.byMode?.connections?.remaining ?? 0
+  const bonusKey = useRef<string | null>(null)
+  const bonus = useMutation({
+    mutationFn: () => api.connectionsBonus(bonusKey.current ?? (bonusKey.current = crypto.randomUUID())),
+    onSuccess: (response) => { window.location.assign(`/sessions/${response.session.id}`) },
+  })
   const won = state.status === 'won'
   const resultRef = useRef<HTMLElement>(null)
   const rewardId = useId()
@@ -581,6 +592,9 @@ export function ConnectionsResult({
     </div>
 
     <ResultActionBar
+      persistence={!authLoading && (!authSession || authSession.isAnonymous) && runtime.meta?.growth?.registration
+        ? <DiagnosisRegistrationOffer growth={runtime.meta.growth} mode="connections" sessionId={session.id} href={`/register?returnUrl=${encodeURIComponent(`/sessions/${session.id}`)}&bonus=all-games`} />
+        : undefined}
       nextLabel={nextMode ? `Играть дальше: ${nextDestination}` : 'К другим играм дня'}
       nextDestination={nextDestination}
       nextArtworkUrl={nextArtworkUrl}
@@ -597,6 +611,12 @@ export function ConnectionsResult({
       afterLabel={null}
       showCopy={false}
     />
+
+    {bonusRemaining > 0 && <div className="result-persistence result-card__wide">
+      <div className="result-persistence__copy"><strong>Бонусных партий «Связей»: {bonusRemaining}</strong><p>Дополнительный раунд без списания билетов. В остальных играх — отдельные бонусы.</p></div>
+      <ControlButton disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : 'Сыграть бонусную партию'}</ControlButton>
+    </div>}
+    {bonus.error && <InlineAlert tone="danger">{errorText(bonus.error)}</InlineAlert>}
 
     <section className="connections-result__groups" aria-label="Категории этого раунда">
       <header>

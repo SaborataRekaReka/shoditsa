@@ -1,14 +1,14 @@
 import { useState, type ReactNode } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowRight, Check, ChevronDown, CircleDollarSign, Clock3, Crown, Eye, Gift, Info, LockKeyhole, Pause, RotateCcw, UsersRound } from 'lucide-react'
-import { GROWTH_STAGES, type GrowthStage } from '@shoditsa/contracts'
+import { GROWTH_STAGES, GAME_MODE_MANIFEST, type ContentModeId, type GrowthStage } from '@shoditsa/contracts'
 import { adminApi } from './api'
 import './GrowthPanel.css'
 
 const labels: Record<GrowthStage, string> = { baseline: 'Наблюдение', replay: 'Следующий случай', registration: 'Бонус за регистрацию', club: 'Предложение клуба' }
 const steps = [
   { stage: 'replay', Icon: RotateCcw, title: 'Ещё одна партия', description: 'Сначала непройденный случай из бесплатного недельного архива. Если он исчерпан — другие способы с явной стоимостью.' },
-  { stage: 'registration', Icon: Gift, title: 'Причина зарегистрироваться', description: 'Новому аккаунту — 3 дополнительные партии «Диагнозов», один раз.' },
+  { stage: 'registration', Icon: Gift, title: 'Причина зарегистрироваться', description: 'Новому аккаунту — по 3 дополнительные партии в каждой из 12 игр, один раз.' },
   { stage: 'club', Icon: Crown, title: 'Предложение клуба', description: 'Когда игроку хочется продолжить или не хватает билетов — предложить клуб.' },
 ] as const
 const eventLabels: Record<string, string> = {
@@ -43,7 +43,7 @@ export function GrowthPanel() {
   return <section className="admin-panel admin-growth" id="growth" aria-labelledby="growth-title">
     <header className="admin-growth__header">
       <div>
-        <span>Рост · эксперимент в «Диагнозах»</span>
+        <span>Рост · повторы «Диагнозов» и бонусы во всех играх</span>
         <h2 id="growth-title">Игра → регистрация → клуб</h2>
         <p>Что включено и что делают игроки</p>
       </div>
@@ -97,9 +97,9 @@ export function GrowthPanel() {
             <p className="admin-growth__metric-caption">Создано на сайте · все источники</p>
             <dl>
               <MetricRow label="Регистрации, отмеченные событием">{numberLabel(data.accounts.signUps)}</MetricRow>
-              <MetricRow label="Получили бонус из 3 партий">{numberLabel(data.accounts.bonusGranted)}</MetricRow>
+              <MetricRow label="Получили бонусы во всех играх">{numberLabel(data.accounts.bonusGranted)}</MetricRow>
               <MetricRow label="Воспользовались бонусом">{numberLabel(data.accounts.bonusPlayers)}</MetricRow>
-              <MetricRow label="Бонусные старты / завершения">{numberLabel(data.sessions.bonusStarts)} / {numberLabel(data.sessions.bonusCompletions)}</MetricRow>
+              <MetricRow label="Бонусные старты / завершения, все игры">{numberLabel(data.registrationBonusByMode?.reduce((sum, row) => sum + row.starts, 0) ?? data.sessions.bonusStarts)} / {numberLabel(data.registrationBonusByMode?.reduce((sum, row) => sum + row.completions, 0) ?? data.sessions.bonusCompletions)}</MetricRow>
             </dl>
           </article>
           <article className="admin-growth__metric">
@@ -154,6 +154,11 @@ export function GrowthPanel() {
           </details>
         </div>
 
+        {!!data.registrationBonusByMode?.length && <div className="admin-growth__details-body">
+          <h3>Бонусы регистрации по играм</h3>
+          <p>Каждый новый аккаунт получает по 3 партии в каждой игре. Старты и завершения ниже относятся только к бонусам.</p>
+          <div className="admin-growth__table-scroll"><table className="admin-table"><thead><tr><th>Игра</th><th>Получили бонус</th><th>Начали</th><th>Завершили</th></tr></thead><tbody>{data.registrationBonusByMode.map((row) => <tr key={row.mode}><td>{GAME_MODE_MANIFEST[row.mode as ContentModeId]?.label ?? row.mode}</td><td>{numberLabel(row.grantedAccounts)}</td><td>{numberLabel(row.starts)}</td><td>{numberLabel(row.completions)}</td></tr>)}</tbody></table></div>
+        </div>}
         {next && <div className="admin-growth__activation">
           <div className="admin-growth__activation-heading"><span className="admin-growth__icon">{available ? <ArrowRight aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}</span><div><h3>Следующий этап: {labels[next]}</h3><p>{available ? 'Доступен для ручного включения после оценки результатов.' : `Можно включить не раньше ${dateLabel(data.nextStageAvailableAt)} (UTC). Сам не включится.`}</p></div></div>
           <div className="admin-growth__activation-controls">

@@ -32,6 +32,7 @@ import { canStartArchiveSession } from '../archive/access.js'
 import { hasEntitlement } from '../commerce/entitlements.js'
 import { completeDanetkiDaily } from '../stats/rewards.js'
 import { loadActiveEconomyRules, loadAssignedEconomyRules, loadEconomyRulesByVersion } from '../economy/rules.js'
+import { consumeRegistrationCredit, lockRegistrationCredit, registrationBonusSummary } from '../growth/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 type SessionRow = typeof gameSessions.$inferSelect
@@ -163,7 +164,8 @@ export const getNextDanetkiRoomCost = async (
   const clubRoomsRemaining = clubActive
     ? Math.max(0, rules.danetki.clubExtraRooms - usage.clubRooms)
     : 0
-  return clubRoomsRemaining > 0 ? 0 : economyDanetkiCost(roomMode, usage.paidRooms, rules)
+  const bonus = await registrationBonusSummary(db, userId)
+  return clubRoomsRemaining > 0 || (bonus.byMode?.danetki?.remaining ?? 0) > 0 ? 0 : economyDanetkiCost(roomMode, usage.paidRooms, rules)
 }
 
 export const finishLinkedDanetkiFriendsRoom = async (
@@ -427,7 +429,7 @@ export const startDanetkiSession = async (db: Database, user: {
 
     let usage: typeof danetkiDailyUsage.$inferSelect | null = null
     let roomCost = 0
-    let accessSource: 'daily' | 'club' | 'tickets' = 'daily'
+    let accessSource: 'daily' | 'club' | 'tickets' | 'registration_bonus' = 'daily'
     let wallet: typeof walletAccounts.$inferSelect | null = null
     const extraRoom = input.kind === 'free_play' || input.kind === 'archive'
     if (extraRoom) {
@@ -446,8 +448,10 @@ export const startDanetkiSession = async (db: Database, user: {
       }
       const clubActive = await hasEntitlement(tx, user.id, 'club', undefined, new Date())
       const clubIncluded = clubActive && usage.clubRooms < rules.danetki.clubExtraRooms
-      accessSource = clubIncluded ? 'club' : 'tickets'
-      roomCost = clubIncluded ? 0 : economyDanetkiCost(input.roomMode, usage.paidRooms, rules)
+      const credit = !clubIncluded ? await lockRegistrationCredit(tx, user.id, 'danetki') : null
+      const bonusActive = Boolean(credit && credit.remaining > 0)
+      accessSource = clubIncluded ? 'club' : bonusActive ? 'registration_bonus' : 'tickets'
+      roomCost = clubIncluded || bonusActive ? 0 : economyDanetkiCost(input.roomMode, usage.paidRooms, rules)
       wallet = await lockedWallet(tx, user.id)
       if (wallet.balance < roomCost) throw new ApiError(409, 'INSUFFICIENT_TICKETS', 'Недостаточно билетов', {
         required: roomCost,
@@ -478,6 +482,7 @@ export const startDanetkiSession = async (db: Database, user: {
       answerItemVersionId: challenge?.answerItemVersionId ?? freePlayPuzzle!.answerItemVersionId,
       rulesVersion: rules.version,
       startIdempotencyKey: input.idempotencyKey,
+      accessSource: accessSource === 'daily' ? null : accessSource,
     }).onConflictDoNothing().returning()
     const session = inserted[0] ?? (await tx.select().from(gameSessions).where(input.kind === 'free_play' || input.roomInstance || selectedPuzzle
       ? and(eq(gameSessions.userId, user.id), eq(gameSessions.startIdempotencyKey, input.idempotencyKey!))
@@ -491,6 +496,7 @@ export const startDanetkiSession = async (db: Database, user: {
       })
     }
     if (inserted[0] && extraRoom && usage && wallet) {
+      if (accessSource === 'registration_bonus') await consumeRegistrationCredit(tx, user.id, 'danetki')
       const balanceAfter = wallet.balance - roomCost
       if (roomCost > 0) {
         await tx.insert(walletLedger).values({

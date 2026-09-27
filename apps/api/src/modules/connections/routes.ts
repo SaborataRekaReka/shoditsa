@@ -12,7 +12,7 @@ import type { FastifyInstance } from 'fastify'
 import type { Auth } from '../auth/auth.js'
 import { getRequestUser } from '../auth/session.js'
 import { requireIdempotencyKey } from '../../lib/errors.js'
-import { chooseConnectionsHint, submitConnectionsGuess } from './service.js'
+import { chooseConnectionsHint, submitConnectionsGuess, startConnectionsBonus } from './service.js'
 
 export const registerConnectionsRoutes = (
   app: FastifyInstance,
@@ -21,6 +21,14 @@ export const registerConnectionsRoutes = (
   const { db, auth, config } = dependencies
   const params = Type.Object({ sessionId: UuidSchema }, { additionalProperties: false })
   const headers = Type.Object({ 'idempotency-key': UuidSchema }, { additionalProperties: true })
+
+  app.post('/api/v1/connections/bonus/start', {
+    schema: { headers },
+    config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
+  }, async (request) => {
+    const user = await getRequestUser(request, auth, db, true, config)
+    return startConnectionsBonus(db, user!.id, user!.role, user!.authSessionId, requireIdempotencyKey(request), config)
+  })
 
   app.post('/api/v1/connections/sessions/:sessionId/guesses', {
     schema: { params, headers, body: ConnectionsGuessBodySchema },

@@ -1,3 +1,5 @@
+import { PLAYABLE_MODE_IDS, type PlayableModeId } from './game-modes.js'
+
 /** Sequential, server-controlled experiment. Never change SEO as part of this rollout. */
 export const GROWTH_STAGES = ['baseline', 'replay', 'registration', 'club'] as const
 export type GrowthStage = typeof GROWTH_STAGES[number]
@@ -8,6 +10,14 @@ export const GROWTH_MEASUREMENT_FROM = '2026-09-08T00:00:00.000Z'
 export const GROWTH_DEFINITIONS_VERSION = 'linked-repeat-v3-episode-facts'
 export const GROWTH_OFFER_VISIBILITY_VERSION = 'visible-v2'
 export const REGISTRATION_BONUS_ROUNDS = 3
+export const REGISTRATION_BONUS_MODE_IDS = PLAYABLE_MODE_IDS
+export type RegistrationBonusSummary = {
+  /** Legacy Diagnosis fields retained for older clients. */
+  mode: 'diagnosis'; granted: number; remaining: number
+  byMode?: Partial<Record<PlayableModeId, { granted: number; remaining: number }>>
+}
+export const registrationBonusRemaining = (bonus: RegistrationBonusSummary | undefined, mode: string): number =>
+  bonus?.byMode?.[mode as PlayableModeId]?.remaining ?? (mode === 'diagnosis' ? bonus?.remaining ?? 0 : 0)
 export type GrowthPolicy = {
   stage: GrowthStage
   changedAt: string | null
@@ -26,6 +36,7 @@ export const growthFeatures = (policy: GrowthPolicy, now = new Date()): GrowthFe
   return { stage, campaign: GROWTH_CAMPAIGN, replay: index >= 1, registration: index >= 2, club: index >= 3 }
 }
 export type GrowthReport = {
+  registrationBonusByMode?: Array<{ mode: string; grantedAccounts: number; starts: number; completions: number }>
   policy: GrowthPolicy
   effective: GrowthFeatures
   notBefore: string

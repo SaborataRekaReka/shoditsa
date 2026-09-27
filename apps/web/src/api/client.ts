@@ -159,6 +159,7 @@ export const api = {
     maxRateLimitRetryMs: 10_000,
   }),
   game: (id: string) => request<GameResponse>(`${API_BASE}/games/${id}`, { retries: 1 }),
+  connectionsBonus: (key: string) => request<GameResponse>(`${API_BASE}/connections/bonus/start`, { method: 'POST', headers: { 'Idempotency-Key': key }, retries: 1 }),
   connectionsGuess: (
     id: string,
     tileIds: [string, string, string, string],

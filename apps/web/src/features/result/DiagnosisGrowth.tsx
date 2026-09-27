@@ -11,22 +11,22 @@ export const trackGrowthAction = (event: EventName, growth: GrowthFeatures, sess
 }
 
 // Count exposure only after the CTA actually enters the viewport, once per result/stage.
-export function useGrowthImpression(event: EventName, growth?: GrowthFeatures, sessionId?: string) {
-  const namespace = `${sessionId ?? offerObservationScope('growth')}:${growth?.stage ?? 'baseline'}`
+export function useGrowthImpression(event: EventName, growth?: GrowthFeatures, sessionId?: string, mode = 'diagnosis') {
+  const namespace = `${sessionId ?? offerObservationScope(`growth:${mode}`)}:${growth?.stage ?? 'baseline'}`
   return useVisibleImpression<HTMLDivElement>(growth ? deterministicClientEventId(namespace, event) : null, () => {
-    if (growth) trackGrowthAction(event, growth, sessionId)
+    if (growth) trackGrowthAction(event, growth, sessionId, { mode })
   })
 }
 
-export function DiagnosisRegistrationOffer({ growth, sessionId, href }: { growth: GrowthFeatures; sessionId?: string; href: string }) {
-  const ref = useGrowthImpression('registration_bonus_offer_view', growth, sessionId)
-  return <div ref={ref} className="result-persistence result-card__wide" aria-label="Три дополнительных случая за регистрацию">
+export function DiagnosisRegistrationOffer({ growth, sessionId, href, mode = 'diagnosis' }: { growth: GrowthFeatures; sessionId?: string; href: string; mode?: string }) {
+  const ref = useGrowthImpression('registration_bonus_offer_view', growth, sessionId, mode)
+  return <div ref={ref} className="result-persistence result-card__wide" aria-label="По три бонусные партии в каждой игре">
     <span className="result-persistence__icon" aria-hidden="true"><Save /></span>
     <div className="result-persistence__copy">
-      <strong>Хотите ещё? Три дополнительных случая — бесплатно</strong>
-      <p>Создайте аккаунт: сохраните результат и получите 3 свободные партии «Диагнозов» без списания билетов. Это дополнение к бесплатному недельному архиву, один раз на новый аккаунт.</p>
+      <strong>По 3 бонусные партии в каждой игре</strong>
+      <p>Создайте аккаунт: сохраните результат и получите по 3 дополнительные партии во всех 12 играх. У каждой игры свой запас, без списания билетов. Один раз на новый аккаунт.</p>
     </div>
-    <a href={href} onClick={() => trackGrowthAction('registration_bonus_offer_clicked', growth, sessionId)}>Получить 3 случая</a>
+    <a href={href} onClick={() => trackGrowthAction('registration_bonus_offer_clicked', growth, sessionId, { mode })}>Получить бонусы</a>
   </div>
 }
 

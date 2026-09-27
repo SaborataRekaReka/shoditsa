@@ -11,6 +11,8 @@ import {
   type DanetkiRegistrationPlacement,
 } from './danetki-registration-attribution'
 import './DanetkiRegistrationOffer.css'
+import { useServerRuntime } from '../../hooks/use-server-runtime'
+import { trackGrowthAction } from '../result/DiagnosisGrowth'
 
 type Props = {
   placement: DanetkiRegistrationPlacement
@@ -39,11 +41,14 @@ const COPY: Record<DanetkiRegistrationPlacement, { title: string; description: s
 
 export function DanetkiRegistrationOffer({ placement, sessionId, questionCount = 0, story }: Props) {
   const { session: authSession, loading } = useAuthSession()
+  const runtime = useServerRuntime()
+  const growth = runtime.meta?.growth
+  const bonusEnabled = Boolean(growth?.registration)
   const guest = !authSession || authSession.isAnonymous
   const returnUrl = currentDanetkiReturnUrl()
   const href = danetkiRegistrationHref(placement, returnUrl, story)
   const traffic = readDanetkiTrafficContext()
-  const copy = COPY[placement]
+  const copy = bonusEnabled ? { title: 'По 3 бонусные партии в каждой игре', description: 'Создайте аккаунт и получите 3 дополнительные комнаты «Данеток» и по 3 партии в остальных играх. Отдельный запас для каждой игры, один раз на новый аккаунт.', action: 'Получить бонусы' } : COPY[placement]
   const trackingContext = sessionId ? { gameSessionId: sessionId } : undefined
   const scope = offerObservationScope(`danetki-registration:${placement}`, sessionId, returnUrl.split(/[?#]/)[0])
   const viewId = deterministicClientEventId(scope, 'danetki_registration_offer_view')
@@ -59,13 +64,14 @@ export function DanetkiRegistrationOffer({ placement, sessionId, questionCount =
     }
     trackClientEvent('danetki_registration_offer_view', payload, { ...trackingContext, eventId: viewId })
     trackMetrikaGoal('danetki_registration_offer_view', payload)
+    if (bonusEnabled && growth) trackGrowthAction('registration_bonus_offer_view', growth, sessionId, { mode: 'danetki', placement })
   })
 
   if (loading) return null
   if (!guest) return placement === 'result'
     ? <section className="danetki-registration-offer is-saved" aria-label="Прогресс сохранён">
         <span><CheckCircle2 aria-hidden="true" /></span>
-        <div><strong>Расследование сохранено</strong><p>Результат, серия дней и статистика доступны в вашем профиле.</p></div>
+        <div><strong>Расследование сохранено</strong><p>{(runtime.dashboard?.registrationBonus?.byMode?.danetki?.remaining ?? 0) > 0 ? `Бонусных комнат «Данеток» осталось: ${runtime.dashboard?.registrationBonus?.byMode?.danetki?.remaining}. В других играх — отдельные бонусы.` : 'Результат, серия дней и статистика доступны в вашем профиле.'}</p></div>
       </section>
     : null
 
@@ -86,6 +92,7 @@ export function DanetkiRegistrationOffer({ placement, sessionId, questionCount =
       eventId: deterministicClientEventId(scope, 'danetki_registration_offer_clicked'),
     })
     trackMetrikaGoal('danetki_registration_offer_clicked', payload)
+    if (bonusEnabled && growth) trackGrowthAction('registration_bonus_offer_clicked', growth, sessionId, { mode: 'danetki', placement })
   }
 
   return <section ref={offerRef} className={`danetki-registration-offer danetki-registration-offer--${placement}`} aria-label="Сохранить прогресс">

@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from 'drizzle-orm'
+import { and, asc, eq, isNull, lte, sql } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
 import {
   CONNECTIONS_COLORS,
@@ -34,8 +34,38 @@ import { getMoscowDate } from '../../lib/time.js'
 import { canStartArchiveSession } from '../archive/access.js'
 import { loadAssignedEconomyRules } from '../economy/rules.js'
 import { completeGame } from '../stats/rewards.js'
+import { consumeRegistrationCredit, lockRegistrationCredit, loadGrowthPolicy } from '../growth/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
+
+/** A finite extra round; never exposes a future scheduled puzzle or spends tickets. */
+export const startConnectionsBonus = async (db: Database, userId: string, role: 'player' | 'admin', authSessionId: string | null, key: string, config: AppConfig) => {
+  if (!config.connectionsEnabled && role !== 'admin') throw new ApiError(404, 'CONNECTIONS_DISABLED', 'Режим пока недоступен')
+  const rules = await loadAssignedEconomyRules(db, userId, role, config.economy.v4RolloutPercent)
+  const policy = await loadGrowthPolicy(db)
+  return db.transaction(async (tx) => {
+    const credit = await lockRegistrationCredit(tx, userId, 'connections')
+    const replay = (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, key))).limit(1))[0]
+    if (replay) {
+      if (replay.mode !== 'connections' || replay.accessSource !== 'registration_bonus') throw new ApiError(409, 'IDEMPOTENCY_CONFLICT', 'Ключ уже использован для другой игры')
+      return { session: await buildConnectionsSessionSnapshot(tx, replay, config.connectionsHintsEnabled) }
+    }
+    if (!credit || credit.remaining <= 0) throw new ApiError(409, 'REGISTRATION_BONUS_EXHAUSTED', 'Бонусные партии «Связей» закончились. Можно продолжить в архиве.')
+    const today = getMoscowDate()
+    const released = await tx.select({ itemVersionId: connectionsSchedule.itemVersionId, revisionId: contentItemVersions.revisionId, payload: contentItemVersions.payload })
+      .from(connectionsSchedule).innerJoin(contentItemVersions, eq(contentItemVersions.id, connectionsSchedule.itemVersionId))
+      .where(and(lte(connectionsSchedule.puzzleDate, today), isNull(connectionsSchedule.cancelledAt), eq(contentItemVersions.mode, 'connections')))
+      .orderBy(sql`random()`)
+    if (!released.length) throw new ApiError(503, 'CONNECTIONS_CONTENT_UNAVAILABLE', 'Нет опубликованных раундов. Бонус сохранён.')
+    const seen = new Set((await tx.select({ item: gameSessions.answerItemVersionId }).from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.mode, 'connections')))).map((row) => row.item))
+    const puzzle = released.find((row) => !seen.has(row.itemVersionId)) ?? released[0]
+    const runtime = buildConnectionsRuntimeRound(puzzle.payload as ConnectionsRoundPayload)
+    const session = (await tx.insert(gameSessions).values({ userId, authSessionId, kind: 'free_play', mode: 'connections', period: 'all', difficulty: runtime.difficulty, puzzleDate: today, revisionId: puzzle.revisionId, answerItemVersionId: puzzle.itemVersionId, rulesVersion: rules.version, accessSource: 'registration_bonus', growthStage: policy.stage, startIdempotencyKey: key }).returning())[0]
+    await tx.insert(connectionsSessionState).values({ sessionId: session.id })
+    await consumeRegistrationCredit(tx, userId, 'connections')
+    return { session: await buildConnectionsSessionSnapshot(tx, session, config.connectionsHintsEnabled) }
+  })
+}
 type ReadDatabase = Transaction | Database
 type SessionRow = typeof gameSessions.$inferSelect
 

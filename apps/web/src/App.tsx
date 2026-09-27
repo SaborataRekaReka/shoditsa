@@ -1,3 +1,4 @@
+import { registrationBonusRemaining } from '@shoditsa/contracts'
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
@@ -4184,7 +4185,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         onRevealDialogCancel={() => trackClientEvent('final_choice_reveal_cancelled', { sessionId, mode: session.mode, kind: session.kind, packId: session.packId, attemptsCount: session.attemptsCount }, { gameSessionId: sessionId })}
       />}
       {session.status === 'final_choice' && <GameMatchStrip attempts={attempts} mode={session.mode} open={gameMatchStripOpen} onToggle={() => setGameMatchStripOpen((current) => !current)} />}
-      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult sessionId={session.id} growth={!isSpecialSession ? growthMeta.data?.growth : undefined} registrationBonusRemaining={dashboard.data?.registrationBonus?.remaining} monthlyClubProduct={growthCatalog.data?.enabled ? growthCatalog.data.products.find((product) => product.id === 'club_30d') : undefined} clubOfferEligible={!dashboard.data?.membership.active && (replayShortage > 0 || (dashboard.data?.stats.find((entry) => entry.mode === 'diagnosis')?.played ?? 0) + (dashboard.data?.freePlayLaunchesToday ?? 0) >= 3)} mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} packProgress={isDtfCommentSession && packDetail.data?.pack ? {
+      {['won', 'lost', 'expired'].includes(session.status) && answer && <GameResult sessionId={session.id} growth={!isSpecialSession ? growthMeta.data?.growth : undefined} registrationBonusRemaining={registrationBonusRemaining(dashboard.data?.registrationBonus, session.mode)} monthlyClubProduct={growthCatalog.data?.enabled ? growthCatalog.data.products.find((product) => product.id === 'club_30d') : undefined} clubOfferEligible={!dashboard.data?.membership.active && (replayShortage > 0 || (dashboard.data?.stats.find((entry) => entry.mode === 'diagnosis')?.played ?? 0) + (dashboard.data?.freePlayLaunchesToday ?? 0) >= 3)} mode={session.mode} won={session.status === 'won'} completionType={session.completionType} attempts={attempts.length} maxAttempts={maxAttempts} poster={<Poster item={answer} />} title={answer.titleRu} meta={answerMeta} tags={answerTags} completedToday={isSpecialSession ? undefined : completedToday} nextRewardText={isSpecialSession ? undefined : completedToday >= FULL_HOUSE_MODE_IDS.length ? 'Маршрут дня завершён' : `До полного маршрута: ещё ${Math.max(0, FULL_HOUSE_MODE_IDS.length - completedToday)}`} packProgress={isDtfCommentSession && packDetail.data?.pack ? {
         played: packDetail.data.pack.completedItems,
         won: packDetail.data.pack.wonItems ?? 0,
         lost: packDetail.data.pack.lostItems ?? 0,
@@ -4417,7 +4418,7 @@ function GameApp() {
     ? serverRuntime.dashboard?.freePlayLaunchesToday ?? 0
     : loadFreePlayUsage(getMoscowDate()), [economyVersion, serverRuntime.dashboard])
   const clubFreePlay = hasActiveClub
-  const bonusFreePlay = mode === 'diagnosis' && (serverRuntime.dashboard?.registrationBonus?.remaining ?? 0) > 0
+  const bonusFreePlay = registrationBonusRemaining(serverRuntime.dashboard?.registrationBonus, mode) > 0
   const freePlayCostValue = useMemo(() => clubFreePlay || bonusFreePlay
     ? 0
     : SERVER_RUNTIME

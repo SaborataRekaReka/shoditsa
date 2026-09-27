@@ -364,7 +364,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
             <h1 id="login-title">{title}</h1>
             <p className="login-description">{description}</p>
             {register && serverRuntime.meta?.growth?.registration && <aside className="login-referral-invite">
-              <span><strong>Три дополнительных случая в «Диагнозах»</strong><small>Один раз за создание нового аккаунта. Без оплаты. После входа вернём вас к игре и сохраним гостевой результат.</small></span>
+              <span><strong>По 3 бонусные партии в каждой игре</strong><small>Во всех 12 играх — отдельный запас по 3 партии, один раз на новый аккаунт. Без оплаты. После регистрации вернём вас к игре и сохраним гостевой результат.</small></span>
             </aside>}
             {register && registrationInvite && <aside className="login-referral-invite" aria-label={registrationInvite.title}>
               <span className="login-referral-invite__badge" aria-hidden="true">{registrationInvite.label}</span>

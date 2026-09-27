@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { eq, sql } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
-import type { FreePlayResponse } from '@shoditsa/contracts'
+import { PLAYABLE_MODE_IDS, type FreePlayResponse } from '@shoditsa/contracts'
 import { appSettings, createDatabase, gameSessions, playerProfiles, registrationPlayCredits, user, walletAccounts, walletLedger } from '@shoditsa/database'
 import { grantRegistrationPlays, growthReport, GROWTH_SETTING, registrationBonusSummary } from '../src/modules/growth/service.js'
 import { startFreePlay as startFreePlayService } from '../src/modules/economy/service.js'
@@ -14,7 +14,9 @@ describe('finite registration rounds (real isolated database)', () => {
   const userId = crypto.randomUUID()
   const guestId = crypto.randomUUID()
   beforeAll(async () => {
-    database = createDatabase(loadConfig())
+    const config = loadConfig()
+    if (config.production || !['localhost', '127.0.0.1', '[::1]'].includes(new URL(config.databaseUrl).hostname)) throw new Error('Registration bonus tests require an isolated local database')
+    database = createDatabase(config)
     saved = (await database.db.select().from(appSettings).where(eq(appSettings.key, GROWTH_SETTING)))[0]?.value
     await database.db.insert(user).values([
       { id: userId, name: 'Growth QA', email: `${userId}@example.test`, emailVerified: true },
@@ -36,6 +38,9 @@ describe('finite registration rounds (real isolated database)', () => {
     await Promise.all([grantRegistrationPlays(database.db, { id: userId }), grantRegistrationPlays(database.db, { id: userId }), grantRegistrationPlays(database.db, { id: guestId, isAnonymous: true })])
     expect(await registrationBonusSummary(database.db, userId)).toMatchObject({ granted: 3, remaining: 3 })
     expect(await registrationBonusSummary(database.db, guestId)).toMatchObject({ granted: 0, remaining: 0 })
+    const bonus = await registrationBonusSummary(database.db, userId)
+    expect(Object.keys(bonus.byMode ?? {})).toHaveLength(PLAYABLE_MODE_IDS.length)
+    for (const mode of PLAYABLE_MODE_IDS) expect(bonus.byMode?.[mode]).toEqual({ granted: 3, remaining: 3 })
   })
   it('merges the actual guest session and result without duplicating bonus', async () => {
     const guestGame = await startFreePlay(database.db, guestId, 'player', 100, 'diagnosis', null, crypto.randomUUID())
@@ -56,10 +61,16 @@ describe('finite registration rounds (real isolated database)', () => {
     expect((await database.db.select().from(gameSessions).where(eq(gameSessions.id, results[0].id)))[0].sourceSessionId).toBe(source.id)
     expect(await database.db.select().from(walletLedger).where(eq(walletLedger.operationKey, `free-play:${userId}:${key}`))).toHaveLength(0)
   })
-  it('cannot spend the bonus in another mode; honors remaining credits after pause', async () => {
-    const other = await startFreePlay(database.db, userId, 'player', 100, 'movie', null, crypto.randomUUID())
-    expect(other.accessSource).toBe('tickets')
+  it('spends a separate finite allowance per mode; honors remaining credits after pause', async () => {
+    const other = await Promise.all([1, 2, 3].map(() => startFreePlay(database.db, userId, 'player', 100, 'movie', null, crypto.randomUUID())))
+    expect(other.every((result) => result.accessSource === 'registration_bonus' && result.cost === 0)).toBe(true)
     expect((await registrationBonusSummary(database.db, userId)).remaining).toBe(2)
+    expect((await registrationBonusSummary(database.db, userId)).byMode?.movie?.remaining).toBe(0)
+    expect((await registrationBonusSummary(database.db, userId)).byMode?.animal?.remaining).toBe(3)
+    await grantRegistrationPlays(database.db, { id: userId })
+    expect((await registrationBonusSummary(database.db, userId)).byMode?.movie?.remaining).toBe(0)
+    const paidMovie = await startFreePlay(database.db, userId, 'player', 100, 'movie', null, crypto.randomUUID())
+    expect(paidMovie.accessSource).toBe('tickets')
     await database.db.update(appSettings).set({ value: { stage: 'baseline' } }).where(eq(appSettings.key, GROWTH_SETTING))
     const results = await Promise.all([1, 2].map(() => startFreePlay(database.db, userId, 'player', 100, 'diagnosis', null, crypto.randomUUID())))
     expect(results.every((result) => result.accessSource === 'registration_bonus')).toBe(true)
@@ -76,6 +87,7 @@ describe('finite registration rounds (real isolated database)', () => {
     const report = await growthReport(database.db, 7)
     expect(report.period.toExclusive).toBe('2026-09-21T00:00:00.000Z')
     expect(report.sessions).toHaveProperty('firstCompleters')
+    expect(report).toHaveProperty('registrationBonusByMode')
     expect(JSON.stringify(report)).not.toMatch(/example\.test|Growth QA/)
     expect((await database.db.execute(sql`select remaining from registration_play_credits where user_id=${userId}`))[0].remaining).toBe(0)
   })
