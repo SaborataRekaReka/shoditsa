@@ -547,6 +547,7 @@ export function ConnectionsResult({
   const runtime = useServerRuntime()
   const { session: authSession, loading: authLoading } = useAuthSession()
   const bonusRemaining = runtime.dashboard?.registrationBonus?.byMode?.connections?.remaining ?? 0
+  const hasClub = runtime.dashboard?.membership.active ?? false
   const bonusKey = useRef<string | null>(null)
   const bonus = useMutation({
     mutationFn: () => api.connectionsBonus(bonusKey.current ?? (bonusKey.current = crypto.randomUUID())),
@@ -612,9 +613,9 @@ export function ConnectionsResult({
       showCopy={false}
     />
 
-    {bonusRemaining > 0 && <div className="result-persistence result-card__wide">
-      <div className="result-persistence__copy"><strong>Бонусных партий «Связей»: {bonusRemaining}</strong><p>Дополнительный раунд без списания билетов. В остальных играх — отдельные бонусы.</p></div>
-      <ControlButton disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : 'Сыграть бонусную партию'}</ControlButton>
+    {(hasClub || bonusRemaining > 0) && <div className="result-persistence result-card__wide">
+      <div className="result-persistence__copy"><strong>{hasClub ? 'Дополнительные раунды по клубу' : `Бонусных партий «Связей»: ${bonusRemaining}`}</strong><p>{hasClub ? 'Играйте без списания билетов и регистрационных бонусов.' : 'Дополнительный раунд без списания билетов. В остальных играх — отдельные бонусы.'}</p></div>
+      <ControlButton disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : hasClub ? 'Сыграть ещё по клубу' : 'Сыграть бонусную партию'}</ControlButton>
     </div>}
     {bonus.error && <InlineAlert tone="danger">{errorText(bonus.error)}</InlineAlert>}
 

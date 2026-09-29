@@ -32,25 +32,29 @@ import {
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { canStartArchiveSession } from '../archive/access.js'
+import { hasEntitlement } from '../commerce/entitlements.js'
 import { loadAssignedEconomyRules } from '../economy/rules.js'
 import { completeGame } from '../stats/rewards.js'
 import { consumeRegistrationCredit, lockRegistrationCredit, loadGrowthPolicy } from '../growth/service.js'
 
 type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0]
 
-/** A finite extra round; never exposes a future scheduled puzzle or spends tickets. */
+/** Club access takes priority over finite registration rounds; never spends tickets. */
 export const startConnectionsBonus = async (db: Database, userId: string, role: 'player' | 'admin', authSessionId: string | null, key: string, config: AppConfig) => {
   if (!config.connectionsEnabled && role !== 'admin') throw new ApiError(404, 'CONNECTIONS_DISABLED', 'Режим пока недоступен')
   const rules = await loadAssignedEconomyRules(db, userId, role, config.economy.v4RolloutPercent)
   const policy = await loadGrowthPolicy(db)
   return db.transaction(async (tx) => {
+    // Older club members may have no credit row to lock. Serialize their retries too.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${'connections-extra:' + userId}))`)
     const credit = await lockRegistrationCredit(tx, userId, 'connections')
     const replay = (await tx.select().from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.startIdempotencyKey, key))).limit(1))[0]
     if (replay) {
-      if (replay.mode !== 'connections' || replay.accessSource !== 'registration_bonus') throw new ApiError(409, 'IDEMPOTENCY_CONFLICT', 'Ключ уже использован для другой игры')
+      if (replay.mode !== 'connections' || replay.kind !== 'free_play' || !['registration_bonus', 'club'].includes(replay.accessSource ?? '')) throw new ApiError(409, 'IDEMPOTENCY_CONFLICT', 'Ключ уже использован для другой игры')
       return { session: await buildConnectionsSessionSnapshot(tx, replay, config.connectionsHintsEnabled) }
     }
-    if (!credit || credit.remaining <= 0) throw new ApiError(409, 'REGISTRATION_BONUS_EXHAUSTED', 'Бонусные партии «Связей» закончились. Можно продолжить в архиве.')
+    const hasClub = await hasEntitlement(tx, userId, 'club')
+    if (!hasClub && (!credit || credit.remaining <= 0)) throw new ApiError(409, 'REGISTRATION_BONUS_EXHAUSTED', 'Бонусные партии «Связей» закончились. Можно продолжить в архиве.')
     const today = getMoscowDate()
     const released = await tx.select({ itemVersionId: connectionsSchedule.itemVersionId, revisionId: contentItemVersions.revisionId, payload: contentItemVersions.payload })
       .from(connectionsSchedule).innerJoin(contentItemVersions, eq(contentItemVersions.id, connectionsSchedule.itemVersionId))
@@ -60,9 +64,9 @@ export const startConnectionsBonus = async (db: Database, userId: string, role: 
     const seen = new Set((await tx.select({ item: gameSessions.answerItemVersionId }).from(gameSessions).where(and(eq(gameSessions.userId, userId), eq(gameSessions.mode, 'connections')))).map((row) => row.item))
     const puzzle = released.find((row) => !seen.has(row.itemVersionId)) ?? released[0]
     const runtime = buildConnectionsRuntimeRound(puzzle.payload as ConnectionsRoundPayload)
-    const session = (await tx.insert(gameSessions).values({ userId, authSessionId, kind: 'free_play', mode: 'connections', period: 'all', difficulty: runtime.difficulty, puzzleDate: today, revisionId: puzzle.revisionId, answerItemVersionId: puzzle.itemVersionId, rulesVersion: rules.version, accessSource: 'registration_bonus', growthStage: policy.stage, startIdempotencyKey: key }).returning())[0]
+    const session = (await tx.insert(gameSessions).values({ userId, authSessionId, kind: 'free_play', mode: 'connections', period: 'all', difficulty: runtime.difficulty, puzzleDate: today, revisionId: puzzle.revisionId, answerItemVersionId: puzzle.itemVersionId, rulesVersion: rules.version, accessSource: hasClub ? 'club' : 'registration_bonus', growthStage: policy.stage, startIdempotencyKey: key }).returning())[0]
     await tx.insert(connectionsSessionState).values({ sessionId: session.id })
-    await consumeRegistrationCredit(tx, userId, 'connections')
+    if (!hasClub) await consumeRegistrationCredit(tx, userId, 'connections')
     return { session: await buildConnectionsSessionSnapshot(tx, session, config.connectionsHintsEnabled) }
   })
 }
