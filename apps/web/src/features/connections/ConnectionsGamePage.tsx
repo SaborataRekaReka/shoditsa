@@ -28,7 +28,7 @@ import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
-import { ControlButton, InlineAlert } from '../../components/ui'
+import { ActionButton as UiActionButton, ControlButton, InlineAlert } from '../../components/ui'
 import { ResultActionBar } from '../result/ResultActionBar'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
@@ -615,7 +615,7 @@ export function ConnectionsResult({
 
     {(hasClub || bonusRemaining > 0) && <div className="result-persistence result-card__wide">
       <div className="result-persistence__copy"><strong>{hasClub ? 'Дополнительные раунды по клубу' : `Бонусных партий «Связей»: ${bonusRemaining}`}</strong><p>{hasClub ? 'Играйте без списания билетов и регистрационных бонусов.' : 'Дополнительный раунд без списания билетов. В остальных играх — отдельные бонусы.'}</p></div>
-      <ControlButton disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : hasClub ? 'Сыграть ещё по клубу' : 'Сыграть бонусную партию'}</ControlButton>
+      <UiActionButton variant="secondary" disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : hasClub ? 'Сыграть ещё по клубу' : 'Сыграть бонусную партию'}</UiActionButton>
     </div>}
     {bonus.error && <InlineAlert tone="danger">{errorText(bonus.error)}</InlineAlert>}
 

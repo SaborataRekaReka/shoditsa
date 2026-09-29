@@ -1064,7 +1064,13 @@
   .connections-grid button { height: clamp(82px, 16vw, 112px); }
 }
 
+.connections-result > .result-persistence {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 @media (max-width: 719px) {
+  .connections-result > .result-persistence { grid-template-columns: minmax(0, 1fr); }
+  .connections-result > .result-persistence > .ui-button { width: 100%; }
   .connections-game { padding: 14px 10px 58px; }
   .connections-game .game-screen-shell__nav { margin-bottom: 8px; }
   .connections-sidebar { padding-inline: 6px; }
