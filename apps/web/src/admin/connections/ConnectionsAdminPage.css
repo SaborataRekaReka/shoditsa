@@ -1,5 +1,10 @@
 .connections-admin { display: grid; gap: 20px; }
 
+.connections-admin__reserve-warning { display: flex; gap: 12px; padding: 16px; border: 1px solid #bd852e; border-radius: 14px; background: color-mix(in srgb, #e4ac4c 12%, var(--a-paper)); color: var(--a-ink); }
+.connections-admin__reserve-warning > svg { flex-shrink: 0; color: #bd852e; }
+.connections-admin__reserve-warning strong { display: block; font-size: 14px; }
+.connections-admin__reserve-warning p { margin: 5px 0 0; font-size: 12px; line-height: 1.5; }
+
 .connections-admin__head {
   display: flex;
   align-items: flex-end;

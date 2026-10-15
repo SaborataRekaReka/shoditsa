@@ -22,6 +22,7 @@ import { useAuthSession } from '../auth/use-auth-session'
 import { formatDays } from '../../game'
 import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
+import { DiagnosisNextGameRecommendation } from './DiagnosisNextGameRecommendation'
 import { ControlButton } from '../../components/ui'
 import './GameResult.css'
 import { DiagnosisClubOffer, DiagnosisRegistrationOffer, trackGrowthAction, useGrowthImpression } from './DiagnosisGrowth'
@@ -219,7 +220,8 @@ export function GameResult(props: Props) {
       : '',
   ].filter(Boolean)
   const progressSummary = joinList(progressItems)
-  const recommendations: TitleMode[] = primaryReplay && props.mode === 'diagnosis' ? ['animal', 'character', 'book'] : props.recommendedModes ?? []
+  const focusedDiagnosisRecommendation = primaryReplay && props.mode === 'diagnosis'
+  const recommendations: TitleMode[] = focusedDiagnosisRecommendation ? [] : props.recommendedModes ?? []
   const persistence = accountState === 'guest' && props.growth?.registration
     ? <DiagnosisRegistrationOffer growth={props.growth} sessionId={props.sessionId} mode={props.mode} href={`${currentRegistrationHref()}&bonus=all-games`} />
     : accountState === 'guest'
@@ -351,6 +353,11 @@ export function GameResult(props: Props) {
     />
 
     {props.mode === 'diagnosis' && props.growth?.club && props.clubOfferEligible && props.monthlyClubProduct && <DiagnosisClubOffer growth={props.growth} sessionId={props.sessionId} product={props.monthlyClubProduct} />}
+
+    {focusedDiagnosisRecommendation && props.onRecommendedMode && <DiagnosisNextGameRecommendation
+      mode={props.nextActionLabel === 'Играть' ? props.nextMode ?? inferredNextMode : undefined}
+      onSelect={props.onRecommendedMode}
+    />}
 
     {!!recommendations.length && props.onRecommendedMode && <section className="result-recommendations result-card__wide" aria-label="Другие игры после результата">
       <header><div><span>Продолжить</span><strong>Выберите следующую игру</strong></div><small>Животные, персонажи или книги</small></header>

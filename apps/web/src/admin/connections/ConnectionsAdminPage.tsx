@@ -62,6 +62,7 @@ export function ConnectionsAdminPage({
     () => (rounds.data?.items ?? []).filter((round) => (
       round.allowedInGame
       && round.contentStatus === 'ready'
+      && !round.scheduledEver
       && !round.issues.some((issue) => issue.severity === 'error')
       && !scheduledVersions.has(round.itemVersionId)
     )),
@@ -101,6 +102,7 @@ export function ConnectionsAdminPage({
       await Promise.all([
         client.invalidateQueries({ queryKey: ['admin', 'connections', 'schedule'] }),
         client.invalidateQueries({ queryKey: ['admin', 'connections', 'analytics'] }),
+        client.invalidateQueries({ queryKey: ['admin', 'connections', 'rounds'] }),
       ])
     },
     onError: (error) => notify('error', errorText(error)),
@@ -164,12 +166,18 @@ export function ConnectionsAdminPage({
 
     <section className="connections-admin__metrics" aria-label="Сводка режима">
       <article><small>Раундов active</small><strong>{rounds.data?.items.length ?? '—'}</strong><span>готовый контент</span></article>
-      <article><small>Расписано вперёд</small><strong>{analytics.data?.scheduledAhead ?? '—'}</strong><span>дней, включая сегодня</span></article>
+      <article><small>Запас без пропусков</small><strong>{analytics.data?.contiguousScheduledDays ?? '—'}</strong><span>дней с сегодня · цель {analytics.data?.reserveTarget ?? 14}</span></article>
       <article><small>Сыграно</small><strong>{analytics.data?.played ?? '—'}</strong><span>сеансов</span></article>
       <article><small>Средние ошибки</small><strong>{analytics.data ? analytics.data.averageMistakes.toFixed(1) : '—'}</strong><span>на сеанс</span></article>
       <article><small>Подсказки</small><strong>{analytics.data ? analytics.data.averageHints.toFixed(1) : '—'}</strong><span>на сеанс</span></article>
       <article><small>Открытые репорты</small><strong>{analytics.data?.openReports ?? '—'}</strong><span>нужна проверка</span></article>
     </section>
+
+    {analytics.data?.reserveWarning && <section className="connections-admin__reserve-warning" role="alert">
+      <CircleAlert aria-hidden="true" />
+      <div><strong>{analytics.data.contiguousScheduledDays === 0 ? 'Сегодня нет готового раунда' : 'Запас раундов меньше недели'}</strong>
+        <p>Ближайший пропуск: {analytics.data.nearestGap}. Добавьте новые готовые раунды и заполните минимум {analytics.data.reserveTarget} дней подряд. Уже назначенные раунды, в том числе отменённые, повторно не используются.</p></div>
+    </section>}
 
     <div className="connections-admin__columns">
       <section className="admin-panel connections-admin__import">
@@ -202,14 +210,14 @@ export function ConnectionsAdminPage({
         <header><div><span>Шаг 2</span><h2>Массовое расписание</h2></div><CalendarDays /></header>
         <label><span>Дата начала</span><input type="date" min={today()} value={startDate} onChange={(event) => setStartDate(event.target.value)} /></label>
         <div className="connections-admin__ready-head">
-          <span>Нерасписанные ready-раунды: <strong>{readyRounds.length}</strong></span>
+          <span>Новые готовые раунды: <strong>{readyRounds.length}</strong></span>
           <button onClick={selectAllReady}>Выбрать все</button>
         </div>
         <div className="connections-admin__ready">
           {readyRounds.length ? readyRounds.map((round, index) => <label key={round.itemVersionId}>
             <input type="checkbox" checked={selected.has(round.itemVersionId)} onChange={() => toggle(round.itemVersionId)} />
             <span><strong>{round.titleRu}</strong><small>{addDays(startDate, index)} · {String(round.payload.difficulty ?? '—')}</small></span>
-          </label>) : <p>Все готовые раунды уже стоят в расписании.</p>}
+          </label>) : <p>Новых готовых раундов нет. Ранее назначенные раунды не показываются повторно — даже после отмены или обновления версии.</p>}
         </div>
         <button className="admin-btn admin-btn--primary" disabled={!selected.size || bulkSchedule.isPending} onClick={() => bulkSchedule.mutate()}>
           {bulkSchedule.isPending ? <LoaderCircle /> : <CalendarDays />} Поставить подряд ({selected.size})

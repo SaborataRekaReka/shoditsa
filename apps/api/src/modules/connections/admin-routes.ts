@@ -23,6 +23,7 @@ import { requireAdmin } from '../auth/session.js'
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
 import { getOrCreateWorkspace, saveWorkspaceItem } from '../admin/content-service.js'
+import { assertSchedulableVersions, connectionScheduleHealth } from './schedule-admin.js'
 
 type Deps = { db: Database; auth: Auth; config: AppConfig }
 type SourceDocument = { version?: unknown; locale?: unknown; rounds?: unknown }
@@ -96,27 +97,6 @@ const previewImport = (input: unknown) => {
   }
 }
 
-const assertSchedulableVersions = async (db: Database, itemVersionIds: string[]) => {
-  const uniqueIds = [...new Set(itemVersionIds)]
-  const versions = await db.select({
-    id: contentItemVersions.id,
-    itemId: contentItemVersions.itemId,
-    titleRu: contentItemVersions.titleRu,
-  }).from(contentItemVersions)
-    .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
-    .where(and(
-      inArray(contentItemVersions.id, uniqueIds),
-      eq(contentItemVersions.mode, 'connections'),
-      eq(contentItemVersions.allowedInGame, true),
-      eq(contentItemVersions.contentStatus, 'ready'),
-      eq(contentRevisions.status, 'active'),
-    ))
-  if (versions.length !== uniqueIds.length) {
-    throw new ApiError(422, 'CONNECTIONS_SCHEDULE_VERSION_INVALID', 'Расписание принимает только готовые версии из active revision')
-  }
-  return versions
-}
-
 export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps) => {
   app.get('/api/v1/admin/connections/rounds', async (request, reply) => {
     await admin(request, reply, deps)
@@ -126,6 +106,11 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
       titleRu: contentItemVersions.titleRu,
       contentStatus: contentItemVersions.contentStatus,
       allowedInGame: contentItemVersions.allowedInGame,
+      scheduledEver: sql<boolean>`exists (
+        select 1 from connections_schedule history
+        inner join content_item_versions used on used.id=history.item_version_id
+        where used.item_id=${contentItemVersions.itemId}
+      )`,
       payload: contentItemVersions.payload,
     }).from(contentItemVersions)
       .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
@@ -230,35 +215,40 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
     const { date } = request.params as { date: string }
     const body = request.body as { itemVersionId: string; reason?: string }
     if (date < getMoscowDate()) throw new ApiError(409, 'CONNECTIONS_SCHEDULE_PUBLISHED', 'Прошедший день нельзя изменить')
-    await assertSchedulableVersions(deps.db, [body.itemVersionId])
-    const before = (await deps.db.select().from(connectionsSchedule)
-      .where(eq(connectionsSchedule.puzzleDate, date)).limit(1))[0] ?? null
-    if (before && date <= getMoscowDate()) {
-      throw new ApiError(409, 'CONNECTIONS_SCHEDULE_PUBLISHED', 'Опубликованный день нельзя изменить')
-    }
-    const after = before
-      ? (await deps.db.update(connectionsSchedule).set({
+    return deps.db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext('connections.schedule.admin'))`)
+      const before = (await tx.select().from(connectionsSchedule)
+        .where(eq(connectionsSchedule.puzzleDate, date)).limit(1))[0] ?? null
+      // Repeating an unchanged assignment is a no-op, not permission to revive a cancelled puzzle.
+      if (before?.itemVersionId === body.itemVersionId && !before.cancelledAt) return before
+      if (before && date <= getMoscowDate()) {
+        throw new ApiError(409, 'CONNECTIONS_SCHEDULE_PUBLISHED', 'Опубликованный день нельзя изменить')
+      }
+      await assertSchedulableVersions(tx, [body.itemVersionId])
+      const after = before
+        ? (await tx.update(connectionsSchedule).set({
           itemVersionId: body.itemVersionId,
           scheduledBy: actor.id,
           cancelledAt: null,
           updatedAt: new Date(),
         }).where(eq(connectionsSchedule.puzzleDate, date)).returning())[0]
-      : (await deps.db.insert(connectionsSchedule).values({
+        : (await tx.insert(connectionsSchedule).values({
           puzzleDate: date,
           itemVersionId: body.itemVersionId,
           scheduledBy: actor.id,
         }).returning())[0]
-    await deps.db.insert(auditLog).values({
-      actorUserId: actor.id,
-      action: 'connections.schedule.put',
-      entityType: 'connections_schedule',
-      entityId: date,
-      before,
-      after,
-      reason: body.reason,
-      requestId: request.id,
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id,
+        action: 'connections.schedule.put',
+        entityType: 'connections_schedule',
+        entityId: date,
+        before,
+        after,
+        reason: body.reason,
+        requestId: request.id,
+      })
+      return after
     })
-    return after
   })
 
   app.delete('/api/v1/admin/connections/schedule/:date', {
@@ -272,24 +262,27 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
     const actor = await admin(request, reply, deps)
     const { date } = request.params as { date: string }
     if (date <= getMoscowDate()) throw new ApiError(409, 'CONNECTIONS_SCHEDULE_PUBLISHED', 'Опубликованный день нельзя отменить')
-    const before = (await deps.db.select().from(connectionsSchedule)
-      .where(eq(connectionsSchedule.puzzleDate, date)).limit(1))[0]
-    if (!before) throw new ApiError(404, 'CONNECTIONS_SCHEDULE_NOT_FOUND', 'День не найден в расписании')
-    const after = (await deps.db.update(connectionsSchedule).set({
-      cancelledAt: new Date(),
-      updatedAt: new Date(),
-    }).where(eq(connectionsSchedule.puzzleDate, date)).returning())[0]
-    await deps.db.insert(auditLog).values({
-      actorUserId: actor.id,
-      action: 'connections.schedule.cancel',
-      entityType: 'connections_schedule',
-      entityId: date,
-      before,
-      after,
-      reason: (request.body as { reason?: string } | undefined)?.reason,
-      requestId: request.id,
+    return deps.db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext('connections.schedule.admin'))`)
+      const before = (await tx.select().from(connectionsSchedule)
+        .where(eq(connectionsSchedule.puzzleDate, date)).limit(1))[0]
+      if (!before) throw new ApiError(404, 'CONNECTIONS_SCHEDULE_NOT_FOUND', 'День не найден в расписании')
+      const after = (await tx.update(connectionsSchedule).set({
+        cancelledAt: new Date(),
+        updatedAt: new Date(),
+      }).where(eq(connectionsSchedule.puzzleDate, date)).returning())[0]
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id,
+        action: 'connections.schedule.cancel',
+        entityType: 'connections_schedule',
+        entityId: date,
+        before,
+        after,
+        reason: (request.body as { reason?: string } | undefined)?.reason,
+        requestId: request.id,
+      })
+      return after
     })
-    return after
   })
 
   app.post('/api/v1/admin/connections/schedule/bulk', {
@@ -307,28 +300,27 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
     if (new Set(body.itemVersionIds).size !== body.itemVersionIds.length) {
       throw new ApiError(422, 'CONNECTIONS_SCHEDULE_DUPLICATE_VERSION', 'Один раунд нельзя поставить на несколько дней')
     }
-    await assertSchedulableVersions(deps.db, body.itemVersionIds)
     const dates = body.itemVersionIds.map((_, index) => addDays(body.startDate, index))
-    const conflicts = await deps.db.select().from(connectionsSchedule).where(inArray(connectionsSchedule.puzzleDate, dates))
-    if (conflicts.length) throw new ApiError(409, 'CONNECTIONS_SCHEDULE_CONFLICT', 'Часть дней уже занята', { dates: conflicts.map((entry) => entry.puzzleDate) })
-    const items = await deps.db.transaction(async (tx) => tx.insert(connectionsSchedule).values(
-      body.itemVersionIds.map((itemVersionId, index) => ({
-        puzzleDate: dates[index],
-        itemVersionId,
-        scheduledBy: actor.id,
-      })),
-    ).returning())
-    await deps.db.insert(auditLog).values({
-      actorUserId: actor.id,
-      action: 'connections.schedule.bulk',
-      entityType: 'connections_schedule',
-      entityId: `${dates[0]}:${dates.at(-1)}`,
-      before: null,
-      after: { dates, itemVersionIds: body.itemVersionIds },
-      reason: body.reason,
-      requestId: request.id,
+    return deps.db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext('connections.schedule.admin'))`)
+      await assertSchedulableVersions(tx, body.itemVersionIds)
+      const conflicts = await tx.select().from(connectionsSchedule).where(inArray(connectionsSchedule.puzzleDate, dates))
+      if (conflicts.length) throw new ApiError(409, 'CONNECTIONS_SCHEDULE_CONFLICT', 'Часть дней уже занята', { dates: conflicts.map((entry) => entry.puzzleDate) })
+      const items = await tx.insert(connectionsSchedule).values(
+        body.itemVersionIds.map((itemVersionId, index) => ({ puzzleDate: dates[index], itemVersionId, scheduledBy: actor.id })),
+      ).returning()
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id,
+        action: 'connections.schedule.bulk',
+        entityType: 'connections_schedule',
+        entityId: `${dates[0]}:${dates.at(-1)}`,
+        before: null,
+        after: { dates, itemVersionIds: body.itemVersionIds },
+        reason: body.reason,
+        requestId: request.id,
+      })
+      return { items }
     })
-    return { items }
   })
 
   app.post('/api/v1/admin/connections/schedule/swap', {
@@ -343,11 +335,12 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
     if (body.firstDate <= getMoscowDate() || body.secondDate <= getMoscowDate()) {
       throw new ApiError(409, 'CONNECTIONS_SCHEDULE_PUBLISHED', 'Можно менять местами только будущие дни')
     }
-    const before = await deps.db.select().from(connectionsSchedule)
-      .where(and(inArray(connectionsSchedule.puzzleDate, [body.firstDate, body.secondDate]), isNull(connectionsSchedule.cancelledAt)))
-    if (before.length !== 2) throw new ApiError(404, 'CONNECTIONS_SCHEDULE_NOT_FOUND', 'Оба дня должны быть активны в расписании')
-    const byDate = new Map(before.map((entry) => [entry.puzzleDate, entry]))
-    await deps.db.transaction(async (tx) => {
+    return deps.db.transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext('connections.schedule.admin'))`)
+      const before = await tx.select().from(connectionsSchedule)
+        .where(and(inArray(connectionsSchedule.puzzleDate, [body.firstDate, body.secondDate]), isNull(connectionsSchedule.cancelledAt)))
+      if (before.length !== 2) throw new ApiError(404, 'CONNECTIONS_SCHEDULE_NOT_FOUND', 'Оба дня должны быть активны в расписании')
+      const byDate = new Map(before.map((entry) => [entry.puzzleDate, entry]))
       await tx.delete(connectionsSchedule).where(inArray(connectionsSchedule.puzzleDate, [body.firstDate, body.secondDate]))
       await tx.insert(connectionsSchedule).values([
         {
@@ -361,21 +354,21 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
           scheduledBy: actor.id,
         },
       ])
+      const after = await tx.select().from(connectionsSchedule)
+        .where(inArray(connectionsSchedule.puzzleDate, [body.firstDate, body.secondDate]))
+        .orderBy(asc(connectionsSchedule.puzzleDate))
+      await tx.insert(auditLog).values({
+        actorUserId: actor.id,
+        action: 'connections.schedule.swap',
+        entityType: 'connections_schedule',
+        entityId: `${body.firstDate}:${body.secondDate}`,
+        before,
+        after,
+        reason: body.reason,
+        requestId: request.id,
+      })
+      return { items: after }
     })
-    const after = await deps.db.select().from(connectionsSchedule)
-      .where(inArray(connectionsSchedule.puzzleDate, [body.firstDate, body.secondDate]))
-      .orderBy(asc(connectionsSchedule.puzzleDate))
-    await deps.db.insert(auditLog).values({
-      actorUserId: actor.id,
-      action: 'connections.schedule.swap',
-      entityType: 'connections_schedule',
-      entityId: `${body.firstDate}:${body.secondDate}`,
-      before,
-      after,
-      reason: body.reason,
-      requestId: request.id,
-    })
-    return { items: after }
   })
 
   app.get('/api/v1/admin/connections/analytics', async (request, reply) => {
@@ -396,8 +389,10 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
         checkpoint: connectionsHintChoices.checkpoint,
         count: sql<number>`count(*)::int`,
       }).from(connectionsHintChoices).groupBy(connectionsHintChoices.checkpoint),
-      deps.db.select({ puzzleDate: connectionsSchedule.puzzleDate }).from(connectionsSchedule)
-        .where(and(gte(connectionsSchedule.puzzleDate, today), isNull(connectionsSchedule.cancelledAt))),
+      deps.db.select({ puzzleDate: connectionsSchedule.puzzleDate, payload: contentItemVersions.payload }).from(connectionsSchedule)
+        .innerJoin(contentItemVersions, eq(contentItemVersions.id, connectionsSchedule.itemVersionId))
+        .where(and(gte(connectionsSchedule.puzzleDate, today), isNull(connectionsSchedule.cancelledAt),
+          eq(contentItemVersions.mode, 'connections'), eq(contentItemVersions.allowedInGame, true), eq(contentItemVersions.contentStatus, 'ready'))),
       deps.db.select({ count: sql<number>`count(*)::int` }).from(contentReports)
         .where(and(
           eq(contentReports.mode, 'connections'),
@@ -410,18 +405,15 @@ export const registerConnectionsAdminRoutes = (app: FastifyInstance, deps: Deps)
     }).from(connectionsGuesses).groupBy(connectionsGuesses.result)
     const launchSetting = (await deps.db.select({ value: appSettings.value }).from(appSettings)
       .where(eq(appSettings.key, 'connections_launch_date')).limit(1))[0]?.value ?? null
-    const scheduledDates = new Set(future.map((row) => row.puzzleDate))
-    let nearestGap = today
-    for (let offset = 0; offset < 366 && scheduledDates.has(nearestGap); offset += 1) {
-      nearestGap = addDays(today, 1 + offset)
-    }
+    const scheduleHealth = connectionScheduleHealth(today, future
+      .filter((row) => !validateConnectionsRound(row.payload).some((issue) => issue.severity === 'error'))
+      .map((row) => row.puzzleDate))
     return {
       ...summary[0],
       outcomes,
       hints,
       guesses,
-      scheduledAhead: future.length,
-      nearestGap,
+      ...scheduleHealth,
       openReports: reports[0]?.count ?? 0,
       launchDate: launchSetting,
     }

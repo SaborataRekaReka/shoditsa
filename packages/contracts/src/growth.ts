@@ -7,7 +7,7 @@ export const GROWTH_CAMPAIGN = 'diagnosis-continuation-v1'
 export const GROWTH_NOT_BEFORE = '2026-09-12T00:00:00.000Z'
 // First complete UTC day after the production instrumentation release.
 export const GROWTH_MEASUREMENT_FROM = '2026-09-08T00:00:00.000Z'
-export const GROWTH_DEFINITIONS_VERSION = 'linked-repeat-v3-episode-facts'
+export const GROWTH_DEFINITIONS_VERSION = 'linked-repeat-v4-played-outcomes'
 export const GROWTH_OFFER_VISIBILITY_VERSION = 'visible-v2'
 export const REGISTRATION_BONUS_ROUNDS = 3
 export const REGISTRATION_BONUS_MODE_IDS = PLAYABLE_MODE_IDS
@@ -59,7 +59,9 @@ export type GrowthReport = {
     }
   }
   sessions: {
+    /** Completed in the selected UTC window with won/lost; automatic expiry is separate. */
     completions: number; firstCompleters: number; measuredCompleters: number | null
+    expired: number
     repeatStarts: number | null; repeatCompletions: number | null; repeatingCompleters: number | null
     /** Same linked cohort as the totals. Unique completers overlap between access sources; do not sum them. */
     repeatByAccessSource: Array<{
