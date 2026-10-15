@@ -1,0 +1,4 @@
+interface:
+  display_name: "Сходится — трафик и рост"
+  short_description: "Динамика поиска, игр, регистраций и роста"
+  default_prompt: "Используй $shoditsa-traffic-audit: оцени текущую динамику shoditsa.ru, объясни причины и предложи приоритеты роста."

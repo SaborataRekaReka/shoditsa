@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "site": "https://shoditsa.ru",
+  "auditDate": "2026-10-15",
+  "application": {
+    "sha": "fb6c6160b46fca2cf0a385f256c78f505d6b13b0",
+    "previousSha": "245be7c5cfeb61d323e44bef3508d603f6cfef58",
+    "activatedAt": "2026-10-15T08:43:02Z",
+    "activationTimestampSource": "coordinator readback of remote activated-at.txt; matches saved activation log time",
+    "status": "deployed_server_verified",
+    "changedFiles": 15,
+    "publicSmokePassed": true,
+    "webApiShaMatch": true,
+    "apiHealthy": true,
+    "workerRunning": true,
+    "postgresHealthy": true,
+    "nginxConfigurationPassed": true,
+    "unchangedDependencies": true,
+    "unchangedMigrations": true,
+    "migrationLedgerUnchanged": true,
+    "migrationTree": "9e8e65780254b7205ab6f1581cab2062627b946b",
+    "databaseMigrationsExecuted": false,
+    "applicationReleaseContentImportsExecuted": false,
+    "staticFilesVerified": 1866,
+    "staticHardlinksVerified": true,
+    "staticDigest": "075acda10c6c516aa17945f50ace1775e2672730ab2acabd642ca5c440b39f36",
+    "newWebFilesPackaged": 138,
+    "backupArchiveReadableAndChecksumVerified": true,
+    "backupRestoreExercisePerformed": false,
+    "backupSha256": "53c6fbccd10eb637fdbd8160f5b4ffa65153a8707f951e82d16b95b479613f58",
+    "financialAggregatesUnchangedDuringStoppedInterval": true,
+    "growthConfigurationUnchanged": true,
+    "seoChanges": false,
+    "economicConfigurationChanges": false,
+    "rollbackExecuted": false,
+    "businessImpact": "not_measured"
+  },
+  "separateContentPublish": {
+    "capturedAt": "2026-10-15T08:37:21.668Z",
+    "verifiedAt": "2026-10-15T08:39:57.075Z",
+    "revisionId": "f2834905-c32e-4988-8d77-c824bcc06b5f",
+    "version": "admin-20261015T083705129Z-2ead3267",
+    "newConnectionsRounds": 14,
+    "scheduledFrom": "2026-10-15",
+    "scheduledThrough": "2026-10-28",
+    "allReadyAllowedUncancelled": true,
+    "existingCardsVerified": 8692,
+    "existingCardDifferences": 0,
+    "totalCardsAfter": 8706,
+    "diagnosisVignettesUnchanged": true,
+    "baselineCapturedAfterPublish": true,
+    "transactionalQa": {
+      "tiles": 16,
+      "startState": "playing",
+      "firstCorrectGroupAccepted": true,
+      "rolledBack": true,
+      "fullFourGroupPlaythrough": false,
+      "browserPlaythrough": false
+    }
+  },
+  "validation": {
+    "browser": {
+      "status": "blocked",
+      "reason": "browser_runtime_node_process_import_disallowed",
+      "desktopPassed": null,
+      "mobilePassed": null,
+      "consoleNetworkPassed": null
+    },
+    "tests": {
+      "evidenceType": "executor_reports_not_archived_stdout",
+      "uiRouteAttributionTestsReportedPassed": 22,
+      "apiUnitTestsReportedPassed": 20,
+      "apiIntegrationTestsReportedPassed": 17,
+      "syntheticLocalPostgresStopped": true,
+      "typecheckReportedPassed": true,
+      "cleanWorktreeWebBuildReportedPassed": true,
+      "cleanWorktreeApiBuildReportedPassed": true
+    }
+  },
+  "measurement": {
+    "definitionsVersion": "linked-repeat-v4-played-outcomes",
+    "completionStatuses": ["won", "lost"],
+    "expiredIncludedInCompletions": false,
+    "mixedDayExcluded": "2026-10-15",
+    "baseline": { "from": "2026-10-01", "to": "2026-10-14" },
+    "postRelease": { "from": "2026-10-16", "to": "2026-10-29" },
+    "firstEvaluationNoEarlierThan": "2026-10-30",
+    "sourceSpecificLagMustBeRespected": true,
+    "characterDiagnostic": {
+      "status": "read_only_server_analysis_complete_browser_not_done",
+      "capturedAt": "2026-10-15T08:49:31.640604Z",
+      "report": "character-diagnostic.md",
+      "isWebvisorOrInterview": false
+    }
+  },
+  "skill": {
+    "canonicalPath": "tools/skills/shoditsa-traffic-audit",
+    "installedFilesHashMatched": 9,
+    "offlineTestsPassedAndCoordinatorReran": 8,
+    "compatibilityWrapper": "scripts/collect-yandex-history.mjs",
+    "compatibilityWrapperExecutesCollector": true,
+    "liveCollectorCapturedAt": "2026-10-15T08:48:33.274Z",
+    "webmaster": { "status": "unavailable", "reason": "credentials_unavailable", "metrics": null },
+    "metrika": { "status": "unavailable", "reason": "credentials_unavailable", "metrics": null }
+  },
+  "connectionsReserveWithoutRefill": {
+    "warningBelowDays": 7,
+    "warningDate": "2026-10-23",
+    "daysRemainingOnWarningDateIncludingToday": 6,
+    "nearestGap": "2026-10-29",
+    "isForecastNotCompletedFutureCheck": true
+  },
+  "medach": {
+    "status": "NOT_SENT_TELEGRAM_ACCESS_UNAVAILABLE",
+    "sentCount": 0,
+    "financialCommitment": false,
+    "receipt": "medach-inquiry.md"
+  },
+  "sourceControl": {
+    "runtimeCommitOnLocalMain": true,
+    "originPushPerformed": false,
+    "reason": "main push triggers legacy deployment/content bootstrap outside this scoped release",
+    "toolingDocsCommitChangesDeployedRuntime": false
+  },
+  "evidenceSha256": {
+    ".tmp/growth-release-20261015/activate.log": "a981da0f9908d17d2db049a5ac0d6e9aa361db39d10c0ad23c0fd106c7d29d1a",
+    ".tmp/growth-release-20261015/verify.log": "76f0ecfb23340e46eec3887d506f3d74dc4e534b4cecd46bbef2841bde521c02",
+    ".tmp/growth-release-20261015/publish-receipt.json": "2c145ded7a4f9804f71077cb2528dc54dacedda5bb6c2fba668aa789b6a6697b",
+    ".tmp/growth-release-20261015/verify-receipt.json": "d8ed43e550d057a5b6d2cf53b5bcb3848c86a9c889b1dcc350d3b85149cab740",
+    ".tmp/growth-release-20261015/qa-receipt.json": "ddaa65bad32ce952fff85be118baba54314fe59165d8f29b3de220f99a2540f4"
+  }
+}
