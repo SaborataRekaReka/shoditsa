@@ -193,7 +193,7 @@ function LegacyGameArtifactSeoDetails({ mode, preserveLiveLinks = false }: { mod
     <div className="ticket-dossier__drawer" id={`ticket-dossier-drawer-${mode}`}>
       <header className="ticket-dossier__intro">
         <div>
-          <span className="ticket-dossier__eyebrow">{presentation.introLabel}</span>
+          {mode !== 'diagnosis' && <span className="ticket-dossier__eyebrow">{presentation.introLabel}</span>}
           <h3 id={`about-${mode}`}>{content.heading}</h3>
           <p className="ticket-dossier__lead">{content.lead}</p>
         </div>

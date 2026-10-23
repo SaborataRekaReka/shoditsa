@@ -1709,7 +1709,9 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
       ? <ModeVariantControl mode={mode} value={variantKey} disabled={isBusy} onChange={setVariantKey} />
       : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
         ? <PeriodControl mode={mode} value={period} freePlayArmed={freePlayArmed} onChange={setPeriod} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
-        : undefined
+        : mode === 'diagnosis' && hasAnamnesis && referencePreview
+          ? <ActionButton variant="secondary" className="play-button" onClick={onReadAnamnesis}><ClipboardList />Прочитать анамнез</ActionButton>
+          : undefined
   const launchControls = <GameLaunchControls
     mode={mode}
     option={launchOption}
@@ -1743,7 +1745,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
     <GameScreenShell variant="title" presentation="landing" onBack={onBack} backLabel="Все игры" className={`title-screen reference-title-screen ${isLeaving ? 'is-leaving' : ''}`} onTransitionEnd={(event) => {
       if (isLeaving && event.target === event.currentTarget && event.propertyName === 'opacity') onLeaveComplete?.()
     }}>
-      <ReferenceTitle mode={mode} date={date} dayNumber={dayNumber(date)} launchControls={launchControls} details={<GameArtifactSeoDetails mode={mode} />} onRules={onRules} extra={mode === 'diagnosis' && hasAnamnesis ? <ActionButton variant="secondary" onClick={onReadAnamnesis}><ClipboardList />Прочитать анамнез</ActionButton> : undefined} />
+      <ReferenceTitle mode={mode} date={date} dayNumber={dayNumber(date)} launchControls={launchControls} details={<GameArtifactSeoDetails mode={mode} />} onRules={onRules} />
     </GameScreenShell>
   </>
 

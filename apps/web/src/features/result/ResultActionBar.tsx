@@ -110,7 +110,7 @@ export function ResultActionBar({
         {onShare && <ActionButton variant="secondary" className="result-celebration-actions__share" onClick={onShare} aria-label={copied ? 'Результат скопирован' : 'Поделиться победой'}>{copied && <Check aria-hidden="true" />}<span>{copied ? 'Скопировано' : 'Поделиться'}</span></ActionButton>}
         {standaloneSettings && settingsAction}
       </div>
-      {primaryReplay && <p className="result-celebration-actions__hint">{freeArchiveReplay ? 'Бесплатная игра из архива' : replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия без списания билетов' : 'Новая загадка, новая победа'}</p>}
+      {primaryReplay && !freeArchiveReplay && <p className="result-celebration-actions__hint">{replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия без списания билетов' : 'Новая загадка, новая победа'}</p>}
       {hasCelebrationOptions && <div className="result-celebration-options" role="group" aria-label="Продолжить игру или пригласить друга">
         {primaryReplay && <ActionButton variant="secondary" className="result-celebration-options__action" onClick={onNext} aria-label={nextLabel}><ArrowRight aria-hidden="true" /><span>Другие игры</span></ActionButton>}
         {showReplayGate && !primaryReplay && <ActionButton variant="secondary" className="result-celebration-options__action" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending} aria-label="Сыграть ещё раз">

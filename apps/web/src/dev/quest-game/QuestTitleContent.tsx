@@ -20,7 +20,7 @@ export function QuestTitleContent({ mode = 'anime' }: { mode?: SeoGameMode }) {
   return <div className="qt-content">
     <section className="qt-guide" aria-labelledby={`about-${mode}`}>
       <header className="qt-guide-intro">
-        <span>{presentation.introLabel.replace(/\s*[\u00b7\u2022]\s*/g, ' ')}</span>
+        {mode !== 'diagnosis' && <span>{presentation.introLabel.replace(/\s*[\u00b7\u2022]\s*/g, ' ')}</span>}
         <h3 id={`about-${mode}`}>{content.heading}</h3>
         <p>{content.lead}</p>
       </header>

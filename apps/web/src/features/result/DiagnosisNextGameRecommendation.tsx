@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { ControlButton } from '../../components/ui'
+import { GameArtwork } from '../../components/ui/GameArtwork'
 import type { TitleMode } from '../../types'
 import './DiagnosisNextGameRecommendation.css'
 
@@ -31,7 +32,7 @@ export function DiagnosisNextGameRecommendation({ mode, onSelect }: {
   const copy = recommendationCopy[mode]
   const title = copy?.title ?? MODE_CONFIG[mode].title
   return <section className="result-recommendations result-recommendations--focused result-card__wide" aria-label="Следующая игра после Диагнозов" data-recommendation-variant="single-v1">
-    <header><div><span>Сменить тему</span><strong>Знакомая логика, новая загадка</strong></div></header>
+    <header><div><strong>Знакомая логика, новая загадка</strong></div></header>
     <div>
       <ControlButton
         type="button"
@@ -39,7 +40,7 @@ export function DiagnosisNextGameRecommendation({ mode, onSelect }: {
         aria-label={`Попробовать «${title}»`}
         onClick={() => onSelect(mode)}
       >
-        <span className="result-recommendations__art" aria-hidden="true"><img src={presentation.watermarkUrl} alt="" width="112" height="112" loading="lazy" /></span>
+        <span className="result-recommendations__art" aria-hidden="true"><GameArtwork mode={mode} alt="" width="112" height="112" loading="lazy" /></span>
         <span className="result-recommendations__copy"><strong>{title}</strong><small>{copy?.reason ?? presentation.description}</small></span>
         <span className="result-recommendations__action" aria-hidden="true"><span>Попробовать</span><ArrowRight /></span>
       </ControlButton>
