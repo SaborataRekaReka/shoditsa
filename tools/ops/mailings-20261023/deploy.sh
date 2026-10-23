@@ -56,6 +56,7 @@ case "${1:-}" in
     cp -a compose.before.yml "$COMPOSE"
     cp -a environment.before "$ENVIRONMENT"
     compose up -d --no-deps --force-recreate shoditsa-api shoditsa-worker
+    docker exec repeto-nginx-1 nginx -s reload
     printf 'Mailing release failed, previous API and worker restored. Additive migration retained.\n' >&2
     exit "$code"
   }
@@ -87,6 +88,8 @@ case "${1:-}" in
   test "$(readlink -f "$ROOT/current")" = "$ROOT/releases/$BASE"
   docker exec "$API" node apps/api/dist/mailing.js verify
   docker exec "$API" node apps/api/dist/mailing.js status > mailing.after.json
+  docker exec repeto-nginx-1 nginx -t
+  docker exec repeto-nginx-1 nginx -s reload
   test "$(curl -s -o /dev/null -w '%{http_code}' https://shoditsa.ru/api/v1/admin/mailings/console)" = 401
   trap - ERR
   date -u +%FT%TZ > activated-at.txt

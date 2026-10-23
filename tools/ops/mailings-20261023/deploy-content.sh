@@ -32,6 +32,7 @@ rollback() {
   cp -a content-compose.before.yml "$COMPOSE"
   cp -a content-environment.before "$ENVIRONMENT"
   compose up -d --no-deps --force-recreate shoditsa-api shoditsa-worker
+  docker exec repeto-nginx-1 nginx -s reload
   exit "$code"
 }
 trap rollback ERR
@@ -61,5 +62,7 @@ done
 test "$ready" = true
 docker exec "$API" node apps/api/dist/mailing.js verify
 docker exec "$API" node apps/api/dist/mailing.js status > content-status.json
+docker exec repeto-nginx-1 nginx -t
+docker exec repeto-nginx-1 nginx -s reload
 trap - ERR
 printf 'MAILING_CONTENT_ACTIVE %s\n' "$REV"
