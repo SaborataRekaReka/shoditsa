@@ -5,6 +5,8 @@ import { ThemedArtwork } from '../ui/ThemedArtwork'
 import { canUseAsArtistPortrait } from '../../game'
 import { searchMediaAlt } from '../../game/search-presentation'
 import type { TitleItem } from '../../types'
+import { diagnosisArtworkUrl } from './diagnosis-artwork'
+import './TitlePoster.css'
 import {
   defaultDiagnosisSystemIcon,
   diagnosisSystemIconByKey,
@@ -20,23 +22,24 @@ const artistInitials = (name: string) => name
   .toUpperCase()
 
 export function TitlePoster({ item, className = '' }: { item: TitleItem; className?: string }) {
-  const [failed, setFailed] = useState(false)
+  const [failedSource, setFailedSource] = useState<string | null>(null)
+  const diagnosisArtwork = diagnosisArtworkUrl(item)
   const kpopPortraitUrl = item.cardType === 'kpop_artist' && item.id.startsWith('kpop:')
     ? `/images/kpop/artists/${encodeURIComponent(item.id.slice('kpop:'.length))}.webp`
     : null
-  const portraitSource = item.mode === 'city'
+  const portraitSource = diagnosisArtwork ?? (item.mode === 'city'
     ? [item.coatOfArmsUrl, item.cityFlagUrl, item.posterUrl, item.countryFlagUrl].find(Boolean) ?? null
     : item.mode === 'music'
       ? [kpopPortraitUrl, item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find((url) => canUseAsArtistPortrait(url ?? null)) ?? null
-      : [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find(Boolean) ?? null
+      : [item.posterUrl, item.headerUrl, item.backdropUrl, ...(item.screenshots ?? [])].find(Boolean) ?? null)
   const diagnosisIcon = item.mode === 'diagnosis'
     ? diagnosisSystemIconByKey.get(normalizeDiagnosisSystemKey(item.bodySystems?.[0] ?? '')) ?? defaultDiagnosisSystemIcon
     : ''
   const initials = artistInitials(item.titleRu || item.titleOriginal || '')
   const ModeIcon = MODE_PRESENTATION[item.mode].icon
 
-  return portraitSource && !failed
-    ? <ThemedArtwork className={className} src={portraitSource} alt={searchMediaAlt(item)} onError={() => setFailed(true)} />
+  return portraitSource && failedSource !== portraitSource
+    ? <ThemedArtwork className={`${className}${diagnosisArtwork ? ' diagnosis-artwork' : ''}`} src={portraitSource} alt={searchMediaAlt(item)} onError={() => setFailedSource(portraitSource)} />
     : <div className={`${className} poster-fallback${item.mode === 'diagnosis' ? ' poster-fallback--diagnosis' : ''}`} role="img" aria-label={searchMediaAlt(item)}>
       {item.mode === 'music'
         ? <><Music2 /><span>{initials || '♪'}</span></>

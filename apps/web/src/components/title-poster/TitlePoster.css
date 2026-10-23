@@ -1,0 +1,33 @@
+.diagnosis-artwork { object-fit: contain; }
+
+/* Transparent square scenes should remain whole inside the existing poster slots. */
+html .result-card--diagnosis .result-card__hero:has(.diagnosis-artwork) {
+  grid-template-columns: 128px minmax(0, 1fr);
+}
+html .result-card--diagnosis .result-card__poster:has(.diagnosis-artwork) {
+  width: 128px;
+  height: 128px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html .result-card--diagnosis .result-card__poster > .diagnosis-artwork,
+html .result-card--diagnosis .quiz-victory__poster > .diagnosis-artwork,
+html .rewatch-poster > .diagnosis-artwork,
+html .final-choice-card__poster > .diagnosis-artwork {
+  object-fit: contain;
+}
+html .result-card--diagnosis .quiz-victory__poster:has(.diagnosis-artwork) {
+  width: 96px;
+  height: 96px;
+  background: transparent;
+}
+@media (max-width: 480px) {
+  html .result-card--diagnosis .result-card__hero:has(.diagnosis-artwork) {
+    grid-template-columns: 80px minmax(0, 1fr);
+  }
+  html .result-card--diagnosis :is(.result-card__poster, .quiz-victory__poster):has(.diagnosis-artwork) {
+    width: 80px;
+    height: 80px;
+  }
+}
