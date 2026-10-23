@@ -11,7 +11,7 @@ const room = (overrides: Partial<FriendsRoomSummary> = {}): FriendsRoomSummary =
   joinedAt: '2026-10-20T12:00:00Z', updatedAt: '2026-10-20T12:00:00Z', leftAt: null, closedAt: null, ...overrides,
 })
 const render = (rooms: FriendsRoomSummary[], hasCurrentRoom = false) => renderToStaticMarkup(createElement(RoomDirectory, {
-  rooms, hasCurrentRoom, busy: false, copiedId: null, onCopy: vi.fn(), onLeave: vi.fn(), onCreate: vi.fn(),
+  rooms, hasCurrentRoom, busy: false, copiedId: null, onCopy: vi.fn(), onLeave: vi.fn(),
 }))
 
 describe('personal room directory', () => {

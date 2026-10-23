@@ -159,7 +159,7 @@ export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, on
         </div>
         <dl className="danetki-catalog-facts">
           <div><dt>{collectionDefinition?.countLabel ?? 'Историй сейчас'}</dt><dd>{scopeItems.length}</dd></div>
-          <div><dt>{collectionDefinition?.factLabel ?? 'Формат'}</dt><dd>{collectionDefinition?.factValue ?? 'Да · Нет'}</dd></div>
+          <div><dt>{collectionDefinition?.factLabel ?? 'Формат'}</dt><dd>{collectionDefinition?.factValue ?? 'Да / Нет'}</dd></div>
           <div><dt>Ответы</dt><dd>Под спойлером</dd></div>
         </dl>
       </header>
@@ -172,7 +172,7 @@ export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, on
       <section className="danetki-catalog-list" id="stories" aria-labelledby="danetki-stories-title">
         <div className="danetki-catalog-section-head">
           <div><span>Подборка редакции</span><h2 id="danetki-stories-title">{collectionDefinition?.sectionHeading ?? (filter === 'all' ? 'Все данетки' : filters.find((entry) => entry.id === filter)?.label)}</h2></div>
-          <p>{collectionDefinition?.sectionLead(scopeItems.length) ?? `${filteredItems.length} историй · выбирайте по сложности и настроению.`}</p>
+          <p>{collectionDefinition?.sectionLead(scopeItems.length) ?? `${filteredItems.length} историй, выбирайте по сложности и настроению.`}</p>
         </div>
         {!collectionDefinition && <div className="danetki-catalog-filters" role="group" aria-label="Фильтр данеток">
           {filters.map((entry) => <ControlButton key={entry.id} type="button" aria-pressed={filter === entry.id} onClick={() => setFilter(entry.id)}><span>{entry.label}</span><strong>{entry.count}</strong></ControlButton>)}

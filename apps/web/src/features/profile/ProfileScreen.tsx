@@ -279,7 +279,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
             className="profile-cashier-support__action"
             placement="profile_support"
             label={supporterTotal ? 'Добавить жетон' : 'Подарить первый жетон'}
-            hint="99 · 299 · 699 ₽"
+            hint="99, 299, 699 ₽"
           />
         </section>}
 
@@ -304,7 +304,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
             <section className="profile-section profile-week">
               <div className="profile-week__main">
                 <div className="profile-section__head"><div><span>Серия</span><h2>Неделя в игре</h2></div></div>
-                <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? FULL_HOUSE_MODE_IDS.length : day.hasActivity ? '•' : ''}</i></div>)}</div>
+                <div className="profile-week__days">{weeklyAttendance.map((day) => <div className={`${day.hasActivity ? 'is-active' : ''}${day.isFullHouse ? ' is-full-house' : ''}${day.isToday ? ' is-today' : ''}`} key={day.label}><span>{day.label}</span><i>{day.isFullHouse ? FULL_HOUSE_MODE_IDS.length : day.hasActivity ? '✓' : ''}</i></div>)}</div>
               </div>
               <aside className="profile-week__streak"><Trophy /><strong>{attendance.currentDailyStreak}</strong><span>{formatDays(attendance.currentDailyStreak)} подряд</span><p>{attendance.currentDailyStreak ? 'Серия продолжается' : 'Сыграйте сегодня, чтобы начать серию'}</p></aside>
             </section>
@@ -326,7 +326,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
             ? <p className="profile-empty" role="status">Загружаем последние сеансы…</p>
             : SERVER_RUNTIME && serverArchive.isError
               ? <InlineAlert tone="danger">{apiErrorMessage(serverArchive.error)}</InlineAlert>
-              : recentGames.length ? <div className="profile-history__list">{recentGames.map((game) => <article key={game.key}><i>{modeIcon(game.mode)}</i><div><strong>{modeMeta(game.mode).title}</strong><small>{prettyDate(game.date)} · {game.attempts.length}/10 попыток</small></div><span className={game.status === 'won' ? 'is-won' : ''}>{game.status === 'won' ? 'Сошлось' : 'Не сошлось'}</span></article>)}</div> : <p className="profile-empty">Здесь появятся завершённые игры. Откройте первую карточку из афиши.</p>}
+              : recentGames.length ? <div className="profile-history__list">{recentGames.map((game) => <article key={game.key}><i>{modeIcon(game.mode)}</i><div><strong>{modeMeta(game.mode).title}</strong><small>{prettyDate(game.date)}, {game.attempts.length}/10 попыток</small></div><span className={game.status === 'won' ? 'is-won' : ''}>{game.status === 'won' ? 'Сошлось' : 'Не сошлось'}</span></article>)}</div> : <p className="profile-empty">Здесь появятся завершённые игры. Откройте первую карточку из афиши.</p>}
         </section>
       </>}
 
@@ -386,7 +386,7 @@ export function ProfileScreen({ onHome, onArchive, onStats, onRules, onReview, o
                           ? 'Остановлено после ошибок оплаты'
                           : 'Завершено'
                 return <article key={subscription.id}>
-                  <div><strong>{subscription.productId === 'club_365d' ? 'Годовой клуб' : 'Клуб на 30 дней'}</strong><small>{status}{subscription.nextPaymentAt ? ` · следующее списание ${prettyDate(subscription.nextPaymentAt.slice(0, 10))}` : ''}</small></div>
+                  <div><strong>{subscription.productId === 'club_365d' ? 'Годовой клуб' : 'Клуб на 30 дней'}</strong><small>{status}{subscription.nextPaymentAt ? `, следующее списание ${prettyDate(subscription.nextPaymentAt.slice(0, 10))}` : ''}</small></div>
                   {active && <ActionButton
                     type="button"
                     disabled={cancelSubscription.isPending}

@@ -34,7 +34,7 @@ export function AfishaTitleTicket({ mode, date, posterUrl, dayNumber, launchCont
   const dateLabel = new Date(`${date}T12:00:00+03:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
 
   return <div className="afisha-title" style={style}>
-    <div className="afisha-title__edition"><span><Icon size={16} aria-hidden="true" /> {meta.plural} · сеанс № {dayNumber}</span><time dateTime={date}><CalendarDays size={15} aria-hidden="true" /> {dateLabel}</time></div>
+    <div className="afisha-title__edition"><span><Icon size={16} aria-hidden="true" /> {meta.plural}, сеанс № {dayNumber}</span><time dateTime={date}><CalendarDays size={15} aria-hidden="true" /> {dateLabel}</time></div>
     <AdmissionTitleTicket
       id={`afisha-ticket-${mode}`}
       mode={mode}
@@ -52,7 +52,7 @@ export function AfishaTitleTicket({ mode, date, posterUrl, dayNumber, launchCont
       <div className="afisha-title__criteria"><span>Каждый ответ сравнит</span><div>{criteria[mode].map((label) => <span key={label}>{label}</span>)}</div></div>
       {extra}
       {launchControls}
-      <div className="afisha-title__footnote"><Check size={14} aria-hidden="true" /><span>Новая загадка каждый день · прогресс сохраняется</span></div>
+      <div className="afisha-title__footnote"><Check size={14} aria-hidden="true" /><span>Новая загадка каждый день, прогресс сохраняется</span></div>
     </AdmissionTitleTicket>
     <div className="afisha-title__guide" aria-label="Краткие правила">
       <article><Search aria-hidden="true" /><div><strong>Начните с любого ответа</strong><span>Знакомое название — хорошая первая догадка.</span></div></article>

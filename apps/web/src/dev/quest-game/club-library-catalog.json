@@ -5,7 +5,7 @@
     {
       "id": "dtf-game-comments-25-v1",
       "title": "Что за игра?",
-      "subtitle": "Спецпоказ DTF · 20 игр",
+      "subtitle": "Спецпоказ DTF, 20 игр",
       "description": "Специальная подборка для DTF: угадайте игру по настоящим комментариям пользователей.",
       "mode": "game",
       "coverUrl": null,
@@ -15,7 +15,7 @@
     {
       "id": "kpop-artists-admin-v1",
       "title": "K-pop: угадай артиста",
-      "subtitle": "Один артист в день · 340 артистов",
+      "subtitle": "Один артист в день, 340 артистов",
       "description": "Ежедневный закрытый спецпоказ: один K-pop артист в день по правилам обычного режима «Угадай музыку».",
       "mode": "music",
       "coverUrl": "/images/specials/kpop-special-card.webp",

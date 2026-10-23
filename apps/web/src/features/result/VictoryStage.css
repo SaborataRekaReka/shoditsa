@@ -1,0 +1,92 @@
+.victory-stage {
+  --stage-paper: #f3eafb; --stage-paper-mid: #e3d1f7; --stage-paper-front: #cbb4eb;
+  --stage-paper-line: #bca1d9; --stage-paper-shine: #fff7ff;
+  --stage-podium: #d7c5ee; --stage-podium-top: #f9f3ff; --stage-podium-line: #c5b0de;
+  --stage-floor: #ebe1f4; --stage-light: #fff6d5; --stage-shadow: #9b80b447;
+  position: absolute; inset: 0; pointer-events: none;
+}
+.victory-stage__art { position: absolute; inset: 0; overflow: hidden; }
+.victory-stage__spotlight { position: absolute; width: 280px; height: 242px; left: calc(50% - 140px); bottom: -14px; border-radius: 50% 50% 0 0; background: radial-gradient(ellipse at 50% 64%, var(--stage-light) 0 44%, transparent 72%); opacity: .9; }
+.victory-stage__floor { position: absolute; width: 130%; height: 69px; left: -15%; bottom: -28px; border-radius: 50% 50% 0 0; background: var(--stage-floor); }
+.victory-stage__wing { position: absolute; bottom: 5px; width: 36%; max-width: 270px; height: 171px; transform-origin: 100% 100%; }
+.victory-stage__wing svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.victory-stage__wing--left { left: -4%; }
+.victory-stage__wing--right { right: -4%; transform: scaleX(-1); transform-origin: 50% 100%; --stage-paper: #e1f3e9; --stage-paper-mid: #c5e7d6; --stage-paper-front: #aad5c2; --stage-paper-line: #91c2ac; --stage-paper-shine: #f2fff5; }
+.victory-stage__paper-back { fill: var(--stage-paper); stroke: var(--stage-paper-line); stroke-width: 1.4; }
+.victory-stage__paper-middle { fill: var(--stage-paper-mid); stroke: var(--stage-paper-line); stroke-width: 1.4; }
+.victory-stage__paper-front { fill: var(--stage-paper-front); stroke: var(--stage-paper-line); stroke-width: 1.4; }
+.victory-stage__paper-fold { stroke: var(--stage-paper-line); stroke-width: 1.3; opacity: .65; stroke-linecap: round; }
+.victory-stage__paper-highlight { stroke: var(--stage-paper-shine); stroke-width: 2; stroke-linecap: round; }
+.victory-stage__podium { position: absolute; left: calc(50% - 97px); bottom: 17px; width: 194px; height: 30px; border-radius: 0 0 50% 50%; background: var(--stage-podium); border: 1px solid var(--stage-podium-line); box-shadow: 0 7px 13px #7f6c9512; }
+.victory-stage__podium > span { position: absolute; width: calc(100% + 2px); height: 29px; left: -1px; top: -14px; border-radius: 50%; background: var(--stage-podium-top); border: 1px solid var(--stage-podium-line); }
+.victory-stage__shadow { position: absolute; width: 108px; height: 14px; bottom: 33px; left: calc(50% - 54px); border-radius: 50%; background: var(--stage-shadow); }
+.victory-stage__arrival { position: absolute; bottom: 28px; width: 174px; height: 174px; left: calc(50% - 87px); z-index: 2; transform-origin: 50% 94%; }
+.victory-stage__breathing { width: 100%; height: 100%; transform-origin: 50% 95%; }
+.victory-stage .quiz-victory__mascot { display: block; width: 100%; height: 100%; object-fit: contain; }
+.victory-stage__ribbon { --ribbon-color: #c6adee; --ribbon-line: #ac8cd1; --ribbon-light: #f7eeff; position: absolute; width: 29px; height: 43px; left: calc(50% - 154px); bottom: 99px; }
+.victory-stage__ribbon > div { width: 100%; height: 100%; }
+.victory-stage__ribbon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.victory-stage__ribbon-edge { fill: var(--ribbon-color); stroke: var(--ribbon-line); stroke-width: 1; stroke-linejoin: round; }
+.victory-stage__ribbon-light { stroke: var(--ribbon-light); stroke-width: 2; stroke-linecap: round; opacity: .8; }
+.victory-stage__ribbon--1 { rotate: -21deg; }
+.victory-stage__ribbon--2 { left: calc(50% + 119px); bottom: 124px; width: 25px; height: 38px; rotate: 18deg; --ribbon-color: #ecc5bb; --ribbon-line: #d6a89d; --ribbon-light: #fff1e8; }
+.victory-stage__ribbon--3 { left: calc(50% - 226px); bottom: 56px; width: 24px; height: 25px; rotate: 27deg; --ribbon-color: #edd991; --ribbon-line: #d3bd74; --ribbon-light: #fff6d7; }
+.victory-stage__ribbon--4 { left: calc(50% + 192px); bottom: 57px; width: 20px; height: 31px; rotate: -24deg; }
+.victory-stage__ribbon--5 { left: calc(50% - 105px); bottom: 156px; width: 16px; height: 23px; rotate: 34deg; --ribbon-color: #b7d8c6; --ribbon-line: #8fb9a4; --ribbon-light: #edfff5; }
+.victory-stage__ribbon--6 { left: calc(50% + 79px); bottom: 77px; width: 21px; height: 22px; rotate: -29deg; --ribbon-color: #edd991; --ribbon-line: #d3bd74; --ribbon-light: #fff6d7; }
+.victory-stage__dot { position: absolute; width: 5px; height: 9px; border-radius: 2px; background: #b0d2bf; left: calc(50% - 187px); bottom: 123px; rotate: 35deg; }
+.victory-stage__dot--2 { background: #debdad; left: calc(50% + 176px); bottom: 117px; rotate: -24deg; width: 6px; height: 6px; border-radius: 50%; }
+.victory-stage__dot--3 { background: #c8b6df; left: calc(50% - 120px); bottom: 59px; rotate: -40deg; width: 4px; height: 7px; }
+.victory-stage__controls { position: absolute; right: 12px; bottom: 20px; z-index: 4; display: flex; gap: 2px; pointer-events: auto; }
+.victory-stage .victory-stage__control { min-width: 28px; width: 28px; min-height: 28px; height: 28px; padding: 6px; border: 0; border-radius: 50%; background: #ffffff5c; color: #806b9b; box-shadow: none; opacity: .8; }
+.victory-stage .victory-stage__control:hover { background: #ffffffa6; opacity: 1; }
+.victory-stage .victory-stage__control:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .victory-stage[data-ready] .victory-stage__wing--left { animation: victory-paper-left 1.1s cubic-bezier(.16,.9,.28,1) both; }
+  .victory-stage[data-ready] .victory-stage__wing--right { animation: victory-paper-right 1.1s .08s cubic-bezier(.16,.9,.28,1) both; }
+  .victory-stage[data-ready] .victory-stage__arrival { animation: victory-entrance 1.05s .18s cubic-bezier(.22,.8,.3,1) both; }
+  .victory-stage[data-ready] .victory-stage__breathing { animation: victory-breath 4.8s 1.3s ease-in-out infinite; }
+  .victory-stage[data-ready] .victory-stage__spotlight { animation: victory-light 1.7s .1s ease-out both; }
+  .victory-stage[data-ready] .victory-stage__shadow { animation: victory-shadow 1.05s .18s ease-out both; }
+  .victory-stage[data-ready] .victory-stage__ribbon { animation: victory-ribbon-arrive 1.35s .38s cubic-bezier(.15,.8,.25,1) both; }
+  .victory-stage[data-ready] .victory-stage__ribbon > div { animation: victory-ribbon-float 5.6s 1.7s ease-in-out infinite alternate; }
+  .victory-stage[data-ready] .victory-stage__ribbon--2 { animation-delay: .5s; }
+  .victory-stage[data-ready] .victory-stage__ribbon--3 { animation-delay: .27s; }
+  .victory-stage[data-ready] .victory-stage__ribbon--4 { animation-delay: .6s; }
+  .victory-stage[data-ready] .victory-stage__ribbon--5 { animation-delay: .65s; }
+  .victory-stage[data-ready] .victory-stage__ribbon--6 { animation-delay: .45s; }
+  .victory-stage[data-ready] .victory-stage__ribbon:nth-of-type(even) > div { animation-duration: 4.3s; animation-delay: 1.3s; animation-direction: alternate-reverse; }
+  .victory-stage[data-ready] .victory-stage__dot { animation: victory-dot-arrive 1.6s .6s ease-out both; }
+  .victory-stage[data-ready][data-paused] .victory-stage__art, .victory-stage[data-ready][data-paused] .victory-stage__art * { animation-play-state: paused; }
+  @keyframes victory-paper-left { from { opacity: 0; transform: translate(58%, 18px) rotate(14deg) scale(.95); } to { opacity: 1; transform: none; } }
+  @keyframes victory-paper-right { from { opacity: 0; transform: scaleX(-1) translate(58%, 18px) rotate(14deg) scale(.95); } to { opacity: 1; transform: scaleX(-1); } }
+  @keyframes victory-entrance { 0% { opacity: 0; transform: translateY(19px) scale(.9); } 45% { opacity: 1; transform: translateY(-7px) scale(1.025); } 70% { transform: translateY(2px) scale(.995); } 100% { opacity: 1; transform: none; } }
+  @keyframes victory-breath { 0%,100% { transform: none; } 50% { transform: translateY(-1.5px) scaleY(1.012); } }
+  @keyframes victory-light { from { opacity: 0; transform: scale(.75); } to { opacity: .9; transform: none; } }
+  @keyframes victory-shadow { 0% { opacity: 0; transform: scaleX(.65); } 45% { opacity: .5; transform: scaleX(.85); } 100% { opacity: 1; transform: none; } }
+  @keyframes victory-ribbon-arrive { from { opacity: 0; transform: translateY(35px) rotate(-22deg) scale(.65); } 68% { opacity: 1; } to { opacity: 1; transform: none; } }
+  @keyframes victory-ribbon-float { from { transform: translateY(4px) rotate(-7deg); } to { transform: translateY(-7px) rotate(8deg); } }
+  @keyframes victory-dot-arrive { from { opacity: 0; transform: translateY(38px) scale(.5); } to { opacity: .8; transform: none; } }
+}
+@media (prefers-reduced-motion: reduce) { .victory-stage__controls { display: none; } }
+html[data-quest-tone='dark'] .victory-stage {
+  --stage-paper: #423953; --stage-paper-mid: #574465; --stage-paper-front: #705685;
+  --stage-paper-line: #806690; --stage-paper-shine: #aa90bd;
+  --stage-podium: #5e4b78; --stage-podium-top: #817096; --stage-podium-line: #9a81b0;
+  --stage-floor: #332e44; --stage-light: #a9956340; --stage-shadow: #2a1d495c;
+}
+html[data-quest-tone='dark'] .victory-stage__wing--right { --stage-paper: #304944; --stage-paper-mid: #3f6153; --stage-paper-front: #507766; --stage-paper-line: #678c7c; --stage-paper-shine: #91b7a4; }
+html[data-quest-tone='dark'] .victory-stage .victory-stage__control { background: #ffffff0d; color: #c9b6e0; }
+@media (max-width: 600px) {
+  .victory-stage__wing { width: 41%; height: 139px; bottom: 7px; }
+  .victory-stage__wing--left { left: -14%; }
+  .victory-stage__wing--right { right: -14%; }
+  .victory-stage__ribbon--1 { left: calc(50% - 128px); width: 23px; height: 35px; bottom: 102px; }
+  .victory-stage__ribbon--2 { left: calc(50% + 99px); width: 20px; height: 31px; bottom: 115px; }
+  .victory-stage__ribbon--3, .victory-stage__ribbon--4, .victory-stage__dot--1, .victory-stage__dot--2 { display: none; }
+  .victory-stage__ribbon--5 { left: calc(50% - 100px); width: 14px; height: 20px; bottom: 159px; }
+  .victory-stage__ribbon--6 { left: calc(50% + 79px); width: 17px; height: 20px; bottom: 66px; }
+  .victory-stage__dot--3 { left: calc(50% - 105px); bottom: 67px; }
+  .victory-stage__controls { right: 7px; bottom: 15px; gap: 0; }
+  .victory-stage .victory-stage__control { width: 25px; min-width: 25px; height: 28px; }
+}

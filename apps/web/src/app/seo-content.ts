@@ -72,7 +72,7 @@ export const GAME_GUIDE_PRESENTATION = {
   movie: {
     closedLabel: 'Развернуть билет',
     openLabel: 'Обратная сторона билета',
-    introLabel: 'Кинокарточка · без спойлеров',
+    introLabel: 'Кинокарточка, без спойлеров',
     evidenceLabel: 'В кадре',
     evidenceTitle: 'Что сверяем',
     routeLabel: 'Три действия',
@@ -84,7 +84,7 @@ export const GAME_GUIDE_PRESENTATION = {
   series: {
     closedLabel: 'Открыть телепрограмму',
     openLabel: 'Телепрограмма игры',
-    introLabel: 'Карточка сериала · без спойлеров',
+    introLabel: 'Карточка сериала, без спойлеров',
     evidenceLabel: 'В титрах',
     evidenceTitle: 'Что сверяем',
     routeLabel: 'Три действия',
@@ -96,7 +96,7 @@ export const GAME_GUIDE_PRESENTATION = {
   anime: {
     closedLabel: 'Развернуть вкладыш',
     openLabel: 'Вкладыш тайтла',
-    introLabel: 'Карточка тайтла · без спойлеров',
+    introLabel: 'Карточка тайтла, без спойлеров',
     evidenceLabel: 'Профиль тайтла',
     evidenceTitle: 'Что сверяем',
     routeLabel: 'Три действия',
@@ -108,7 +108,7 @@ export const GAME_GUIDE_PRESENTATION = {
   game: {
     closedLabel: 'Открыть буклет',
     openLabel: 'Буклет из коробки',
-    introLabel: 'Руководство игрока · без спойлеров',
+    introLabel: 'Руководство игрока, без спойлеров',
     evidenceLabel: 'Характеристики',
     evidenceTitle: 'Что сверяем',
     routeLabel: 'Три шага',
@@ -120,7 +120,7 @@ export const GAME_GUIDE_PRESENTATION = {
   city: {
     closedLabel: 'Развернуть маршрут',
     openLabel: 'Путевой лист игры',
-    introLabel: 'Путевой лист · без спойлеров',
+    introLabel: 'Путевой лист, без спойлеров',
     evidenceLabel: 'Ориентиры',
     evidenceTitle: 'Что сверяем',
     routeLabel: 'Три координаты',
@@ -132,7 +132,7 @@ export const GAME_GUIDE_PRESENTATION = {
   music: {
     closedLabel: 'Открыть программу',
     openLabel: 'Программа концерта',
-    introLabel: 'Лайнап · без спойлеров',
+    introLabel: 'Лайнап, без спойлеров',
     evidenceLabel: 'Звучание',
     evidenceTitle: 'Что сверяем',
     routeLabel: 'Три действия',
@@ -144,7 +144,7 @@ export const GAME_GUIDE_PRESENTATION = {
   diagnosis: {
     closedLabel: 'Открыть карту',
     openLabel: 'Развёрнутая медкарта',
-    introLabel: 'Учебная карта · не диагноз',
+    introLabel: 'Учебная карта, не диагноз',
     evidenceLabel: 'Признаки',
     evidenceTitle: 'Что сравниваем',
     routeLabel: 'Ход осмотра',
@@ -156,7 +156,7 @@ export const GAME_GUIDE_PRESENTATION = {
   animal: {
     closedLabel: 'Открыть полевой дневник',
     openLabel: 'Полевой дневник игры',
-    introLabel: 'Карточка вида · без ответа',
+    introLabel: 'Карточка вида, без ответа',
     evidenceLabel: 'Признаки',
     evidenceTitle: 'Что сравниваем',
     routeLabel: 'Три наблюдения',
@@ -168,7 +168,7 @@ export const GAME_GUIDE_PRESENTATION = {
   book: {
     closedLabel: 'Открыть читательский билет',
     openLabel: 'Читательский билет игры',
-    introLabel: 'Книжная карточка · без ответа',
+    introLabel: 'Книжная карточка, без ответа',
     evidenceLabel: 'На полях',
     evidenceTitle: 'Что сравниваем',
     routeLabel: 'Три главы',
@@ -180,7 +180,7 @@ export const GAME_GUIDE_PRESENTATION = {
   character: {
     closedLabel: 'Открыть досье персонажа',
     openLabel: 'Досье игры',
-    introLabel: 'Карточка персонажа · без ответа',
+    introLabel: 'Карточка персонажа, без ответа',
     evidenceLabel: 'Признаки',
     evidenceTitle: 'Что сравниваем',
     routeLabel: 'Три шага',
@@ -192,7 +192,7 @@ export const GAME_GUIDE_PRESENTATION = {
   connections: {
     closedLabel: 'Открыть правила',
     openLabel: 'Памятка по связям',
-    introLabel: 'Сетка слов · без ответов',
+    introLabel: 'Сетка слов, без ответов',
     evidenceLabel: 'Принцип',
     evidenceTitle: 'Что искать',
     routeLabel: 'Три шага',
@@ -204,7 +204,7 @@ export const GAME_GUIDE_PRESENTATION = {
   danetki: {
     closedLabel: 'Открыть дело',
     openLabel: 'Материалы дела',
-    introLabel: 'Детективная игра · без спойлеров',
+    introLabel: 'Детективная игра, без спойлеров',
     evidenceLabel: 'Улики',
     evidenceTitle: 'Что выяснять',
     routeLabel: 'Ход расследования',

@@ -127,22 +127,40 @@ html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ref
 
 /* A single celebration, shared by all ten quizzes and their special packs. */
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration {
-  gap: 16px;
-  padding: 28px clamp(16px, 3vw, 40px) 20px;
+  --victory-gutter: 24px;
+  overflow: hidden;
+  gap: 0;
+  padding: 0 0 12px;
   background: var(--color-surface);
 }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration > * { width: 100%; max-width: 560px; justify-self: center; min-width: 0; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 0; overflow: visible; border: 0; background: transparent; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { min-height: 66px; padding: 4px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 0; background: transparent; text-align: center; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > span { display: none; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > div { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 5px; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article strong { font-size: 24px; font-weight: 850; line-height: 1.15; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article small { font-size: 12px; line-height: 1.3; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards :is(.result-reward--tickets, .result-reward--score) { background: transparent; border: 0; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards :is(.result-reward--tickets, .result-reward--score) strong { color: var(--color-accent); }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-route-track { width: 86px; max-width: 100%; margin-top: 4px; }
-@media (max-width: 480px) {
-  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration { padding: 20px 14px 14px; gap: 14px; }
-  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { padding: 6px; min-height: 60px; }
-  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article strong { font-size: 21px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration > * { min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration > :not(.quiz-victory) { margin-inline: var(--victory-gutter); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration > :is(.result-persistence, .reward-breakdown, .result-replay-notice, .diagnosis-club-offer, .diagnosis-next-recommendation) { margin-top: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-utility { justify-content: center; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 0; padding: 18px 0; overflow: visible; border: 0; border-top: 1px solid var(--color-line); border-radius: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { min-height: 48px; padding: 0 16px; display: flex; align-items: center; gap: 12px; border: 0; border-radius: 0; background: transparent; text-align: left; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article:first-child { padding-left: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article + article { border-left: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > span { flex: none; display: grid; margin: 0; width: 38px; height: 42px; background: transparent; color: #181725; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > span svg { width: 34px; height: 34px; stroke-width: 1.7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article strong { font-size: 22px; font-weight: 800; line-height: 1.2; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article small { font-size: 13px; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-reward--streak { order: -1; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-reward--streak > span svg { fill: #ffb3a8; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration :is(.result-reward--route, .result-reward--pack) > span svg { fill: #c0f0df; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration :is(.result-reward--tickets, .result-reward--score) > span svg { fill: #e0d3ff; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study'])[data-quest-tone='dark'] .result-card--celebration .result-rewards article > span { filter: brightness(.85); }
+@media (max-width: 600px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration { --victory-gutter: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { padding-inline: 12px; gap: 8px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article strong { font-size: 19px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article small { font-size: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > span { width: 30px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > span svg { width: 28px; height: 28px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards--3 article { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration { --victory-gutter: 14px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { padding-inline: 8px; gap: 6px; }
 }

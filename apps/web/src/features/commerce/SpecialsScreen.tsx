@@ -74,7 +74,7 @@ function SpecialDetailKicker({ title, detail }: ComponentProps<typeof TicketKick
 }
 
 const packSubject = (packId: string, totalItems: number) => (
-  packId === KPOP_ARTISTS_PACK_ID ? `Ежедневная игра · ${totalItems} артистов` : `${totalItems} игр`
+  packId === KPOP_ARTISTS_PACK_ID ? `Ежедневная игра, ${totalItems} артистов` : `${totalItems} игр`
 )
 
 export function SpecialsScreen({
@@ -153,7 +153,7 @@ export function SpecialsScreen({
               <div className="special-card__copy">
                 <span>
                   <Clapperboard /> {packSubject(pack.id, pack.totalItems)}
-                  {pack.id !== KPOP_ARTISTS_PACK_ID && pack.access !== 'locked' && <> · {pack.completedItems} сыграно</>}
+                  {pack.id !== KPOP_ARTISTS_PACK_ID && pack.access !== 'locked' && <>, {pack.completedItems} сыграно</>}
                 </span>
                 <h2>{pack.title}</h2>
                 <p>{pack.subtitle || pack.description}</p>
@@ -305,7 +305,7 @@ export function SpecialDetailScreen({
         <section className="title-stage special-title-stage">
           <div className="title-game-mark special-title-heading">
             <span>{isKpopPack ? <Music2 /> : <Gamepad2 />}</span>
-            <i>{isKpopPack ? 'K-pop · клубный спецпоказ' : 'DTF · клубный спецпоказ'} · {packSubject(pack.id, pack.totalItems)}</i>
+            <i>{isKpopPack ? 'K-pop, клубный спецпоказ' : 'DTF, клубный спецпоказ'}, {packSubject(pack.id, pack.totalItems)}</i>
             <h1>{pack.title}</h1>
           </div>
           <time>{pack.subtitle || (isKpopPack ? 'Пять поколений корейской поп-сцены' : 'Специальная подборка DTF')}</time>

@@ -78,7 +78,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
     : launchShortage > 0
       ? `Не хватает ${launchShortage} билетов`
       : launchCost > 0
-        ? `Начать игру · ${launchCost} билетов`
+        ? `Начать игру за ${launchCost} билетов`
         : 'Начать игру'
   const displayDate = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${date}T12:00:00+03:00`))
   useEffect(() => {
@@ -109,7 +109,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
         action={<GameLaunchButton className="play-button game-launch-controls__play" disabled={!canLaunch} onClick={launch}>{busy ? <LoaderCircle className="danetki-spinner" aria-hidden="true" /> : <Play aria-hidden="true" />}{launchLabel}</GameLaunchButton>}
         option={<GameOptionSelect label="Формат игры" labelIcon={<Users />} value={roomMode === 'solo' ? 'Одному' : 'Вместе'} menuLabel="Формат игры" disabled={busy} resetKey={roomMode}>{(close) => <>
           <GameOption title="Одному" description="Собственное расследование" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
-          <GameOption title="Вместе" description={canCreateGroupRoom ? `До 4 игроков · запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}` : 'До 4 игроков · нужен клубный билет'} icon={canCreateGroupRoom ? <Users /> : <LockKeyhole />} status={canCreateGroupRoom ? undefined : { label: 'Только клуб', tone: 'locked', icon: <LockKeyhole /> }} selected={roomMode === 'group'} disabled={!canCreateGroupRoom} onSelect={() => { setRoomMode('group'); close() }} />
+          <GameOption title="Вместе" description={canCreateGroupRoom ? `До 4 игроков, запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}` : 'До 4 игроков, нужен клубный билет'} icon={canCreateGroupRoom ? <Users /> : <LockKeyhole />} status={canCreateGroupRoom ? undefined : { label: 'Только клуб', tone: 'locked', icon: <LockKeyhole /> }} selected={roomMode === 'group'} disabled={!canCreateGroupRoom} onSelect={() => { setRoomMode('group'); close() }} />
         </>}</GameOptionSelect>} />}
         extra={<>{onContinue && <ActionButton variant="secondary" disabled={busy || !SERVER_RUNTIME} onClick={onContinue}><Clock3 aria-hidden="true" />Продолжить историю</ActionButton>}{selectedStory && <p className="reference-online-note">Выбрана история: {selectedStory.titleRu}{roomMode === 'group' && <><br />Для совместной комнаты будет выбрана случайная история.</>}</p>}{!SERVER_RUNTIME && <p className="reference-online-note">В этом локальном просмотре доступно оформление. Расследовать истории можно <a href="https://shoditsa.ru/games/danetki" target="_blank" rel="noreferrer">на основном сайте ↗</a>.</p>}{error && <InlineAlert tone="danger">{error}</InlineAlert>}</>} />
     </GameScreenShell>
@@ -120,7 +120,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
       <section className="title-stage danetki-title-stage">
         <div className="title-game-mark">
           <span><Search aria-hidden="true" /></span>
-          <i>Игра дня · совместное расследование</i>
+          <i>Игра дня, совместное расследование</i>
           <h1>Данетки онлайн</h1>
         </div>
         <time dateTime={date}>{displayDate}</time>
@@ -143,7 +143,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
           {selectedStory && <aside className="danetki-selected-story" aria-label="Выбранная данетка">
             <span>Выбрано из каталога</span>
             <strong>{selectedStory.titleRu}</strong>
-            <small>{danetkiDifficultyLabel(selectedStory.difficulty)} · около {selectedStory.estimatedMinutes} минут</small>
+            <small>{danetkiDifficultyLabel(selectedStory.difficulty)}, около {selectedStory.estimatedMinutes} минут</small>
             <a href={danetkiStoryPath(selectedStory)}>Вернуться к условию</a>
             {roomMode === 'group' && <em>Для совместной комнаты будет выбрана случайная история.</em>}
           </aside>}
@@ -167,8 +167,8 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
               <GameOption
                 title="Вместе"
                 description={canCreateGroupRoom
-                  ? `До 4 игроков · запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}`
-                  : 'До 4 игроков · нужен клубный билет'}
+                  ? `До 4 игроков, запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}`
+                  : 'До 4 игроков, нужен клубный билет'}
                 icon={canCreateGroupRoom ? <Users /> : <LockKeyhole />}
                 status={canCreateGroupRoom ? undefined : { label: 'Только клуб', tone: 'locked', icon: <LockKeyhole /> }}
                 selected={roomMode === 'group'}

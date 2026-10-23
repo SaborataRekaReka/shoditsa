@@ -4,7 +4,7 @@ export function dtfShareText(attempts: number, maxAttempts: number, won: boolean
   const attemptRow = `${'⬛'.repeat(misses)}${won ? '🟩' : ''}` || '⬜'
 
   return [
-    'Сходится! · Спецпоказ DTF',
+    'Сходится!, Спецпоказ DTF',
     'Угадайте игру по комментариям игроков',
     `🎮 ${won ? usedAttempts : 'X'}/${maxAttempts}`,
     attemptRow,

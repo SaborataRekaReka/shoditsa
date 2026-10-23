@@ -70,7 +70,7 @@ function LocalEconomyView() {
       amount: TICKET_PROMO_AWARD,
       balanceAfter: nextWallet.tickets,
       title: 'Кассирский шёпот',
-      detail: `Промокод ${TICKET_PROMO_CODE} · ${used + 1}/${TICKET_PROMO_LIMIT}`,
+      detail: `Промокод ${TICKET_PROMO_CODE}, ${used + 1}/${TICKET_PROMO_LIMIT}`,
     })
     setWallet(nextWallet)
     setLedger(loadTicketLedger())
@@ -100,7 +100,7 @@ function LocalEconomyView() {
     <p className="modal-lead">Серия растёт за первую завершённую игру дня и больше не умножает награды. Следующий одноразовый бонус: +{nextBonus} на {nextAt}-й день серии.</p>
     <h3 className="subheading">История билетов</h3>
     {ledger.length
-      ? <div className="ticket-ledger">{ledger.slice(0, 14).map((entry) => <article className={`ticket-ledger__item ${entry.type}`} key={entry.id}><span>{entry.type === 'earn' ? <Ticket /> : <Lock />}</span><div><strong>{entry.title}</strong><small>{entry.detail} · {new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(entry.at))}</small></div><em>{entry.type === 'earn' ? '+' : '-'}{entry.amount}</em></article>)}</div>
+      ? <div className="ticket-ledger">{ledger.slice(0, 14).map((entry) => <article className={`ticket-ledger__item ${entry.type}`} key={entry.id}><span>{entry.type === 'earn' ? <Ticket /> : <Lock />}</span><div><strong>{entry.title}</strong><small>{entry.detail}, {new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(entry.at))}</small></div><em>{entry.type === 'earn' ? '+' : '-'}{entry.amount}</em></article>)}</div>
       : <p className="modal-lead">История появится после первого завершённого сеанса или открытия периода.</p>}
   </div>
 }

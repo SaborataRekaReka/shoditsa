@@ -1,4 +1,4 @@
-import { QuestButton, QuestProgress } from '../../components/ui/QuestPrimitives'
+import { QuestProgress } from '../../components/ui/QuestPrimitives'
 import { GeneratedShoditsaGlyph as Glyph } from './GeneratedShoditsaArt'
 import { studyAccountHref } from './account-routing'
 import { studyProfileAsset } from './StudyProfileArt'
@@ -11,6 +11,7 @@ import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { publicAssetUrl } from '../../app/public-asset'
 import { LOBBY_HREF } from '../../features/rooms/room-navigation'
 import { SVOYAK_ENABLED } from '../../features/svoyak/SvoyakHomeCard'
+import { ApplicationContinueLink } from '../../features/application/ApplicationContinueLink'
 export { StudyTodayWidget } from './StudyTodayWidget'
 
 export function StudyRoomsWidget() {
@@ -51,12 +52,12 @@ export function StudyStreakWidget({ homeHref }: { homeHref: string }) {
   </section>
 }
 
-export function StudyTasksWidget({ goalsDone, onContinue }: { goalsDone: number; onContinue: () => void }) {
+export function StudyTasksWidget({ goalsDone }: { goalsDone: number }) {
   return <section className="qg-card study-section-widget" data-study-widget="tasks">
     <div className="qg-side-head"><h2>Твой прогресс</h2><Glyph name="quests" size={50} /></div>
     <p>Выполнено {goalsDone} из 3 заданий.</p>
     <QuestProgress value={goalsDone} max={3} label="Прогресс заданий дня" tone="green" />
-    <QuestButton kind="outline" className="study-widget-action" onClick={onContinue}>Продолжить игру</QuestButton>
+    <ApplicationContinueLink className="quest-button--outline study-widget-action" />
   </section>
 }
 

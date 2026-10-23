@@ -1,7 +1,7 @@
 import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { GameArtwork } from '../../components/ui/GameArtwork'
 import type { ReactNode } from 'react'
-import { ArrowDown, ArrowRight, Check, ChevronLeft, LockKeyhole, Settings, Ticket } from 'lucide-react'
+import { ArrowDown, ArrowRight, Check, ChevronLeft, Settings, Ticket } from 'lucide-react'
 import { ActionButton, InlineAlert, TextButton } from '../../components/ui'
 import { ReferenceIcon } from '../../components/ui/ReferenceIcon'
 import { mascotAsset } from '../../components/mascot/Mascot'
@@ -55,14 +55,14 @@ export function ReferenceClubPage({
     {
       title: 'Весь архив',
       description: active
-        ? `${countLabel(view.stats.archiveGames, ['игра', 'игры', 'игр'])} · ${countLabel(view.stats.archiveDays, ['день', 'дня', 'дней'])}`
-        : `${view.stats.freeArchiveDays} дней доступны бесплатно · весь архив — в клубе`,
+        ? `${countLabel(view.stats.archiveGames, ['игра', 'игры', 'игр'])}, ${countLabel(view.stats.archiveDays, ['день', 'дня', 'дней'])}`
+        : `${view.stats.freeArchiveDays} дней доступны бесплатно, весь архив — в клубе`,
       image: 'movie', tone: 'lilac', action: onArchive,
       actionLabel: active ? 'Открыть архив' : 'Посмотреть архив',
     },
     {
       title: 'Свободная игра',
-      description: `${view.stats.freePlayModes} режимов · без списания билетиков с Клубом`,
+      description: `${view.stats.freePlayModes} режимов, без списания билетиков с Клубом`,
       image: 'game', tone: 'mint', action: onFreePlay,
       actionLabel: 'Выбрать игру',
     },
@@ -111,7 +111,7 @@ export function ReferenceClubPage({
               {active ? 'Управление билетом' : 'Что входит в Клуб'}
             </TextButton>
           </div>
-          {!active && <small className="reference-club__terms">От {money(monthly.priceMinor, monthly.currency)} за {monthly.durationDays ?? 30} дней · автопродление по выбору</small>}
+          {!active && <small className="reference-club__terms">От {money(monthly.priceMinor, monthly.currency)} за {monthly.durationDays ?? 30} дней, автопродление по выбору</small>}
         </div>
         <figure className="reference-club__hero-art">
           <ThemedArtwork src={mascotAsset('club')} alt="Зелёный пушистый персонаж с клубным билетом" width="1254" height="1254" fetchPriority="high" />
@@ -152,9 +152,7 @@ export function ReferenceClubPage({
         <section className="reference-club__pricing" id="club-offers" aria-labelledby="club-pricing-title">
           <header className="reference-club__section-heading">
             <h2 id="club-pricing-title">Выберите свой билет</h2>
-            <p>{contextualOffer
-              ? 'Продолжайте «Диагнозы»: новые случаи и весь архив без списания билетиков. Для начала — билет на 30 дней.'
-              : 'Все возможности Клуба. Разница только в сроке.'}</p>
+            {contextualOffer && <p>Продолжайте «Диагнозы»: новые случаи и весь архив без списания билетиков. Для начала — билет на 30 дней.</p>}
           </header>
           {notice && <InlineAlert tone="warning" className="reference-club__notice">{notice}</InlineAlert>}
           <div className="reference-club__plans">
@@ -176,7 +174,6 @@ export function ReferenceClubPage({
               <div className="reference-club__checkout">{action}</div>
             </article>)}
           </div>
-          <p className="reference-club__renewal"><LockKeyhole aria-hidden="true" /> Автопродление — только по вашему выбору. Управление билетом — в профиле.</p>
         </section>
 
         <section className="reference-club__comparison" aria-labelledby="club-comparison-title">
@@ -201,7 +198,7 @@ export function ReferenceClubPage({
               </dd>
             </div>)}
           </dl>
-          <div className="reference-club__guest-action"><TextButton onClick={onHome}>Продолжить бесплатно<ArrowRight aria-hidden="true" /></TextButton><span>Ваши билетики сохраняются в любом режиме.</span></div>
+          <div className="reference-club__guest-action"><TextButton onClick={onHome}>Продолжить бесплатно<ArrowRight aria-hidden="true" /></TextButton></div>
         </section>
       </>}
     </main>

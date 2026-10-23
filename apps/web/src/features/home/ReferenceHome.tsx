@@ -126,7 +126,7 @@ export function ReferenceHome({ header, state, onSelect, onStart, onStats, onRul
           <article className="reference-streak">
             <h3><ReferenceIcon name="flame" className="reference-fire" />Твои открытия сегодня</h3>
             <div className="reference-streak__days" aria-label={`Сегодня завершено ${state.completedCount} игр`}>
-              {state.dailyModes.map((mode) => <span key={mode} className={state.completedModes.includes(mode) ? 'is-complete' : ''} title={mode in MODE_CONFIG ? MODE_CONFIG[mode as TitleMode].plural : 'Связи'}>{state.completedModes.includes(mode) ? <ReferenceIcon name="check" size={16} aria-label="Готово" aria-hidden={false} role="img" /> : <span aria-hidden="true">·</span>}</span>)}
+              {state.dailyModes.map((mode) => <span key={mode} className={state.completedModes.includes(mode) ? 'is-complete' : ''} title={mode in MODE_CONFIG ? MODE_CONFIG[mode as TitleMode].plural : 'Связи'}>{state.completedModes.includes(mode) ? <ReferenceIcon name="check" size={16} aria-label="Готово" aria-hidden={false} role="img" /> : <span aria-hidden="true">—</span>}</span>)}
             </div>
             <p><strong>{state.completedCount > 0 ? `Сегодня разгадано: ${state.completedCount}` : 'Всё начинается с первой загадки'}</strong><br />{state.completedCount > 0 ? 'Продолжай в том же духе!' : 'Пять минут для твоего любопытства.'}</p>
           </article>

@@ -67,7 +67,7 @@ export function MusicTitleTicket({
       <span className="concert-ticket__stub-kicker">Концерт дня</span>
       <strong>Артист дня</strong>
       <small>Главная сцена</small>
-      <em>{dateLabel} · 21:45</em>
+      <em>{dateLabel}, 21:45</em>
       <span className="concert-ticket__stub-no">№ {dayNumber}</span>
       <div className="concert-ticket__barcode concert-ticket__barcode--v" />
     </div>
@@ -76,7 +76,7 @@ export function MusicTitleTicket({
         <div className="concert-ticket__brand">
           <span className="concert-ticket__kicker"><Music2 /> Концерт дня</span>
           <h2 id={id}>Игра «Угадай исполнителя»</h2>
-          <p className="concert-ticket__venue">Главная сцена · сеанс №{dayNumber}</p>
+          <p className="concert-ticket__venue">Главная сцена, сеанс №{dayNumber}</p>
         </div>
         <div className="concert-ticket__when"><strong>{dateLabel}</strong><small>21:45</small></div>
       </div>

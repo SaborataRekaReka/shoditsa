@@ -9,11 +9,12 @@ export const ResultPersistence = forwardRef<HTMLDivElement, {
   icon?: ReactNode
   action?: ReactNode
   saved?: boolean
+  compact?: boolean
   'aria-label'?: string
-}>(function ResultPersistence({ title, children, icon = <Save />, action, saved = false, 'aria-label': label }, ref) {
-  return <div ref={ref} className={`result-persistence result-card__wide${saved ? ' result-persistence--saved' : ''}`} aria-label={label}>
+}>(function ResultPersistence({ title, children, icon = <Save />, action, saved = false, compact = false, 'aria-label': label }, ref) {
+  return <div ref={ref} className={`result-persistence result-card__wide${saved ? ' result-persistence--saved' : ''}${compact ? ' result-persistence--compact' : ''}`} aria-label={label}>
     <span className="result-persistence__icon" aria-hidden="true">{icon}</span>
-    <div className="result-persistence__copy"><strong>{title}</strong><p>{children}</p></div>
+    <div className="result-persistence__copy"><strong>{title}</strong>{!compact && <p>{children}</p>}</div>
     {action && <div className="result-persistence__action">{action}</div>}
   </div>
 })

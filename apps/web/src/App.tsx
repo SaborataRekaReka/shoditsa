@@ -6,7 +6,41 @@ import { navigateApplication } from './app/application-navigation'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import type { ApiDifficultyKey, AttemptResponse, GameAttemptSnapshot, GameResponse, GameSessionSnapshot, GameStartBody, HintResponse, PublicContentItem } from '@shoditsa/contracts'
-import { AlertTriangle, ArrowDown, ArrowUp, BarChart3, CalendarDays, Check, ChevronLeft, ChevronRight, CircleHelp, ClipboardList, Copy, Crown, Film, Gamepad2, HeartPulse, LogIn, Lock, LockOpen, NotebookText, Play, RotateCcw, Share2, ShieldCheck, Lightbulb, Stethoscope, Ticket, Target, Trophy, Waypoints, Tv, UserRound, Users, X } from 'lucide-react'
+import {
+  AlertTriangle,
+  ArrowDown,
+  ArrowUp,
+  BarChart3,
+  CalendarDays,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  CircleHelp,
+  ClipboardList,
+  Copy,
+  Crown,
+  Film,
+  Gamepad2,
+  HeartPulse,
+  LogIn,
+  Lock,
+  LockOpen,
+  NotebookText,
+  Play,
+  RotateCcw,
+  Share2,
+  ShieldCheck,
+  Lightbulb,
+  Stethoscope,
+  Ticket,
+  Target,
+  Trophy,
+  Waypoints,
+  Tv,
+  UserRound,
+  Users,
+  X,
+} from 'lucide-react'
 import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { trackDiagnosisGoal } from './app/diagnosis-analytics'
@@ -121,7 +155,7 @@ import { ReferenceTitle } from './features/title/ReferenceTitle'
 import { LOCAL_PRESENTATION, REFERENCE_PRESENTATION, PUBLIC_PRESENTATION, isReferencePresentationPath } from './app/local-presentation'
 import { APPLICATION_DESIGN } from './app/application-design'
 import { RoutePending } from './app/RoutePending'
-import { ReferenceSessionArt } from './features/game/ReferenceSessionArt'
+import { QuizSessionHeading } from './features/game-session/QuizSessionHeading'
 import { ReferenceClueState } from './features/game/ReferenceClueIcon'
 import './features/game/reference-game-styles.css'
 import { AfishaTitleTicket } from './components/title-ticket/AfishaTitleTicket'
@@ -168,7 +202,7 @@ const resultTextForSession = (
 ) => {
   const text = resultText(mode, date, period, hints, won, maxAttempts, completionType)
   return freePlay
-    ? text.replace(/^Сеанс — .*$/m, `Сеанс — ${modeMeta(mode).daily} · свободная игра`)
+    ? text.replace(/^Сеанс — .*$/m, `Сеанс — ${modeMeta(mode).daily}, свободная игра`)
     : text
 }
 const TITLE_POSTER_ASSETS: Record<TitleMode, string> = {
@@ -338,7 +372,7 @@ function AssistHintValue({ value }: { value: unknown }) {
     const text = Array.isArray(value) ? value.join(', ') : String(value ?? '—')
     return <p>{text}</p>
   }
-  const attribution = [media.attribution?.author, media.attribution?.license].map((part) => String(part ?? '').trim()).filter(Boolean).join(' · ')
+  const attribution = [media.attribution?.author, media.attribution?.license].map((part) => String(part ?? '').trim()).filter(Boolean).join(', ')
   return <div className={`animal-media-hint animal-media-hint--${media.kind}`}>
     {media.kind === 'silhouette'
       ? <div className="animal-media-hint__silhouette"><img src={hintMediaUrl(media.url)} alt="Силуэт загаданного животного" draggable={false} /></div>
@@ -1042,7 +1076,7 @@ const recordDailyCompletion = (mode: TitleMode, period: PeriodKey, date: string,
     amount: total,
     balanceAfter: nextWallet.tickets,
     title: 'Сеанс завершён',
-    detail: `${modeMeta(mode).daily}${variant && DIFFICULTIES[variant as DifficultyKey] ? ` · ${DIFFICULTIES[variant as DifficultyKey].label}` : ''} · ${won ? 'угадан' : 'ответ открыт'} · ${attemptsCount}/10`,
+    detail: `${modeMeta(mode).daily}${variant && DIFFICULTIES[variant as DifficultyKey] ? `, ${DIFFICULTIES[variant as DifficultyKey].label}` : ''}, ${won ? 'угадан' : 'ответ открыт'}, ${attemptsCount}/10`,
     date,
     mode,
     period,
@@ -1135,7 +1169,7 @@ function PeriodControl({
         const isUnlockable = !isUnlocked && cost > 0 && wallet.tickets >= cost
         const missingTickets = Math.max(0, cost - wallet.tickets)
         const optionDescription = isMainSession
-          ? 'Главный сеанс · доступен всегда'
+          ? 'Главный сеанс, доступен всегда'
           : isCompleted
             ? 'Можно пройти снова'
             : includedWithClub
@@ -1152,7 +1186,7 @@ function PeriodControl({
           : isMainSession || isUnlocked
             ? { label: 'Доступно', tone: 'available' as const, icon: isActive ? <Check /> : <Play /> }
             : isUnlockable
-              ? { label: <>Открыть · {cost}</>, tone: 'unlockable' as const, icon: <Ticket /> }
+              ? { label: <>Открыть за {cost}</>, tone: 'unlockable' as const, icon: <Ticket /> }
               : { label: 'Закрыто', tone: 'locked' as const, icon: <Lock /> }
         return <GameOption
           key={periodKey}
@@ -1178,7 +1212,7 @@ function PeriodControl({
       {(mode === 'movie' || mode === 'series' || mode === 'anime' || mode === 'music') && <GameOption
         className={`period-option period-option--free-play ${freePlayArmed ? 'active ' : ''}${hasActiveFreePlay || freePlayShortage === 0 ? 'unlocked' : 'locked'}`}
         title="Свободная игра"
-        description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
+        description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу, запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)}, запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Lightbulb />}
         status={freePlayArmed
           ? { label: 'Активна', tone: 'available', icon: <Check /> }
@@ -1188,7 +1222,7 @@ function PeriodControl({
               ? { label: 'Закрыто', tone: 'locked', icon: <Lock /> }
               : clubFreePlay
                 ? { label: 'Запустить', tone: 'available', icon: <Play /> }
-                : { label: <>Открыть · {freePlayCostValue}</>, tone: 'unlockable', icon: <Ticket /> }}
+                : { label: <>Открыть за {freePlayCostValue}</>, tone: 'unlockable', icon: <Ticket /> }}
         selected={freePlayArmed}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'positive' : 'muted'}
         onSelect={() => {
@@ -1252,7 +1286,7 @@ function DifficultyControl({
           key={key}
           className={`difficulty-option ${isActive ? 'active' : ''}`}
           title={meta.label}
-          description={`${counts ? `${formatArtists(counts[key])} · ` : ''}${meta.hint}${completedDifficulties.includes(key) ? ' · сыграно сегодня' : ''}`}
+          description={`${counts ? `${formatArtists(counts[key])}, ` : ''}${meta.hint}${completedDifficulties.includes(key) ? ', сыграно сегодня' : ''}`}
           icon={<span className={`difficulty-bars difficulty-bars--${key}`}><i /><i /><i /></span>}
           selected={isActive}
           tone={isActive ? 'positive' : 'default'}
@@ -1266,7 +1300,7 @@ function DifficultyControl({
       <GameOption
         className={`difficulty-option difficulty-option--free-play ${freePlayArmed ? 'active ' : ''}${hasActiveFreePlay || freePlayShortage === 0 ? '' : 'locked'}`}
         title="Свободная игра"
-        description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу · запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)} · запусков сегодня: ${freePlayLaunchesToday}`}
+        description={hasActiveFreePlay ? 'Игра уже идет' : clubFreePlay ? `По клубному абонементу, запусков сегодня: ${freePlayLaunchesToday}` : freePlayShortage > 0 ? `Не хватает ${formatTickets(freePlayShortage)}` : `${formatTickets(freePlayCostValue)}, запусков сегодня: ${freePlayLaunchesToday}`}
         icon={<Lightbulb />}
         status={freePlayArmed
           ? { label: 'Активна', tone: 'available', icon: <Check /> }
@@ -1276,7 +1310,7 @@ function DifficultyControl({
               ? { label: 'Закрыто', tone: 'locked', icon: <Lock /> }
               : clubFreePlay
                 ? { label: 'Запустить', tone: 'available', icon: <Play /> }
-                : { label: <>Открыть · {freePlayCostValue}</>, tone: 'unlockable', icon: <Ticket /> }}
+                : { label: <>Открыть за {freePlayCostValue}</>, tone: 'unlockable', icon: <Ticket /> }}
         selected={freePlayArmed}
         tone={hasActiveFreePlay || freePlayShortage === 0 ? 'special' : 'muted'}
         onSelect={() => {
@@ -1447,7 +1481,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
         </div>
         {codapressPreview && <>
           <p className="codapress-preview__manifesto"><strong>Сходится!</strong> — ежедневная игровая афиша для тех, кто любит кино, игры, музыку и неожиданные связи. Мы превращаем каталоги и факты в короткие расследования: без спешки, без бесконечной ленты, по одной премьере каждого жанра в день.</p>
-          <div className="codapress-preview__ticker" aria-hidden="true"><span>КИНО · СЕРИАЛЫ · АНИМЕ · ИГРЫ · ГОРОДА · МУЗЫКА · ДИАГНОЗЫ ·</span><span>КИНО · СЕРИАЛЫ · АНИМЕ · ИГРЫ · ГОРОДА · МУЗЫКА · ДИАГНОЗЫ ·</span></div>
+          <div className="codapress-preview__ticker" aria-hidden="true"><span>КИНО, СЕРИАЛЫ, АНИМЕ, ИГРЫ, ГОРОДА, МУЗЫКА, ДИАГНОЗЫ</span><span>КИНО, СЕРИАЛЫ, АНИМЕ, ИГРЫ, ГОРОДА, МУЗЫКА, ДИАГНОЗЫ</span></div>
         </>}
         <DailyProgressStub state={dailyState} />
         <HomeSeoContent />
@@ -1561,7 +1595,7 @@ function HubScreen({ onSelect, onSelectDtfSpecial, onSelectKpopSpecial, onSelect
             watermarkUrl={publicAssetUrl('images/specials/kpop-special-card.webp')}
             poolCount={kpopPoolCount}
             poolLabel="АРТИСТОВ"
-            kicker="СПЕЦПОКАЗ · 1 В ДЕНЬ"
+            kicker="СПЕЦПОКАЗ, 1 В ДЕНЬ"
             newActionLabel="ИГРАТЬ"
             status="new"
             attempts={null}
@@ -1632,13 +1666,13 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
       : !periodLocked || periodShortage === 0
   const canTriggerStart = canStart && !isBusy
   const playButtonLabel = isMusicResult
-    ? `Посмотреть результат · ${DIFFICULTIES[difficulty].label}`
+    ? `Посмотреть результат, ${DIFFICULTIES[difficulty].label}`
     : isDiagnosisReplay
     ? hasActiveFreePlay
       ? 'Продолжить'
       : freePlayShortage > 0
         ? `Не хватает ${formatTickets(freePlayShortage)}`
-        : `Сыграть ещё раз · ${formatTickets(freePlayCostValue)}`
+        : `Сыграть ещё раз за ${formatTickets(freePlayCostValue)}`
     : freePlayArmed
     ? hasActiveFreePlay
       ? 'Продолжить'
@@ -1682,7 +1716,6 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
     action={<GameLaunchButton className={`play-button game-launch-controls__play ${!canTriggerStart ? 'is-disabled' : ''}`} onClick={startSelectedPeriod} disabled={!canTriggerStart}>
       {isDiagnosisReplay ? <RotateCcw className="play-button__replay-icon" /> : <Play />}
       {playButtonText}
-      {canTriggerStart && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
     </GameLaunchButton>}
   />
 
@@ -1694,16 +1727,10 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
         onBack()
         return
       }
-      if (event.key === 'Enter') {
-        if (event.target instanceof HTMLElement && event.target.closest('button, a, input, select, textarea, summary, [role="option"]')) return
-        event.preventDefault()
-        if (!canTriggerStart) return
-        startSelectedPeriod()
-      }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [onBack, startSelectedPeriod])
+  }, [onBack])
 
   useEffect(() => {
     if (!isLeaving || !onLeaveComplete || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -1740,10 +1767,10 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
       <section className="title-stage">
         <div className="title-game-mark">
           <span>{modeIcon(mode)}</span>
-          <i>Игра дня · №{dayNumber(date)}</i>
+          <i>Игра дня, №{dayNumber(date)}</i>
           <h1>{mode === 'book' ? 'Угадай книгу' : modeMeta(mode).title}</h1>
         </div>
-        <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
+        <time>{prettyDate(date)}, {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
         <p>Угадайте {modeMeta(mode).subject} дня за десять попыток</p>
         {mode === 'diagnosis'
           ? <DiagnosisTitleCard
@@ -1839,8 +1866,8 @@ function ServerMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, 
       {queue.isError && <section className="review-empty review-empty--error">{apiErrorMessage(queue.error)}</section>}
       {!queue.isLoading && !queue.isError && !current && <section className="review-empty">Очередь проверки пуста.</section>}
       {current && <section className={`review-card ${current.reviewReasons.length ? 'has-conflict' : ''}`}>
-        <div className="review-card__head"><span className="review-card__number">{String(activeIndex + 1).padStart(3, '0')}</span><Poster item={publicItemToTitle({ id: current.id, mode: current.mode as TitleMode, titleRu: current.titleRu, titleOriginal: current.titleOriginal, year, posterUrl })} className="review-card__poster" /><div className="review-card__identity"><span className="attempt-label">{current.mode}</span><h2>{current.titleRu}</h2><p className="gm-head__sub"><span className="gm-head__orig">{current.titleOriginal || 'Оригинальное название не указано'}</span>{year != null && <><i className="gm-head__dot">·</i><span className="gm-year">{year}</span></>}</p></div><div className="review-approval-badge"><small>Статус</small><strong>На проверке</strong></div></div>
-        {!!current.reviewReasons.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Требует внимания</strong><span>{current.reviewReasons.join(' • ')}</span></div>}
+        <div className="review-card__head"><span className="review-card__number">{String(activeIndex + 1).padStart(3, '0')}</span><Poster item={publicItemToTitle({ id: current.id, mode: current.mode as TitleMode, titleRu: current.titleRu, titleOriginal: current.titleOriginal, year, posterUrl })} className="review-card__poster" /><div className="review-card__identity"><span className="attempt-label">{current.mode}</span><h2>{current.titleRu}</h2><p className="gm-head__sub"><span className="gm-head__orig">{current.titleOriginal || 'Оригинальное название не указано'}</span>{year != null && <><span className="gm-year">{year}</span></>}</p></div><div className="review-approval-badge"><small>Статус</small><strong>На проверке</strong></div></div>
+        {!!current.reviewReasons.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Требует внимания</strong><span>{current.reviewReasons.join(', ')}</span></div>}
         <details className="review-details"><summary>Сырые данные карточки (JSON)</summary><pre>{JSON.stringify(payload, null, 2)}</pre></details>
         {approve.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(approve.error)}</InlineAlert>}
         <div className="review-card__actions"><ControlButton onClick={() => setActiveIndex((value) => Math.max(0, value - 1))} disabled={activeIndex === 0}><ChevronLeft /> Предыдущая</ControlButton><ControlButton className="approve" disabled={approve.isPending} onClick={() => { const key = decisionKeyRef.current ?? crypto.randomUUID(); decisionKeyRef.current = key; approve.mutate({ itemId: current.id, key }) }}><Check /> {approve.isPending ? 'Сохраняем…' : 'Одобрить'}</ControlButton><ControlButton onClick={() => setActiveIndex((value) => Math.min(items.length - 1, value + 1))} disabled={activeIndex >= items.length - 1}>Следующая <ChevronRight /></ControlButton></div>
@@ -2071,8 +2098,8 @@ function LocalMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, o
             <h2>{current.item.titleRu}</h2>
             <p className="gm-head__sub">
               <span className="gm-head__orig">{current.item.titleOriginal || 'Оригинальное название не указано'}</span>
-              {current.item.year != null && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{current.item.year}</span></>}
-              {current.item.countries?.[0] && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{current.item.countries[0]}</span></>}
+              {current.item.year != null && <><span className="gm-year">{current.item.year}</span></>}
+              {current.item.countries?.[0] && <><span className="gm-year">{current.item.countries[0]}</span></>}
             </p>
             {!!current.item.genres?.length && <div className="gm-genres">{current.item.genres.slice(0, 6).map((genre) => <span key={genre} className="gm-genre">{genre}</span>)}</div>}
           </div>
@@ -2084,7 +2111,7 @@ function LocalMusicReviewScreen({ onHome, onBack, onRewatch, onStats, onRules, o
 
         {!!current.conflictReasons.length && <div className="review-conflict-banner" role="status" aria-live="polite">
           <strong><AlertTriangle /> Конфликт данных</strong>
-          <span>{current.conflictReasons.map(reviewReasonLabel).join(' • ')}</span>
+          <span>{current.conflictReasons.map(reviewReasonLabel).join(', ')}</span>
         </div>}
 
         <div className="review-reasons">
@@ -2283,14 +2310,14 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
         <p className="gm-head__sub">
           <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
           {yearHint && yearText && <>
-            <i className="gm-head__dot" aria-hidden="true">·</i>
+            
             <span className={`gm-year ${yearHint?.status ?? ''}`}>
               {yearText}
               {yearHint?.direction === 'up' ? <ArrowUp /> : yearHint?.direction === 'down' ? <ArrowDown /> : yearHint?.status === 'match' ? <Check /> : null}
             </span>
           </>}
           {ageText && <>
-            <i className="gm-head__dot" aria-hidden="true">·</i>
+            
             <span className={`gm-year gm-year--age ${ageHint?.status ?? ''}`}>
               {ageText}
               {ageHint?.direction === 'up' ? <ArrowUp /> : ageHint?.direction === 'down' ? <ArrowDown /> : ageHint?.status === 'match' ? <Check /> : null}
@@ -2361,7 +2388,7 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
         <p className="gm-head__sub">
           <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
           {yearHint && item.year != null && <>
-            <i className="gm-head__dot" aria-hidden="true">·</i>
+            
             <span className={`gm-year ${yearHint?.status ?? ''}`}>
               {item.year}
               {yearHint?.direction === 'up' ? <ArrowUp /> : yearHint?.direction === 'down' ? <ArrowDown /> : yearHint?.status === 'match' ? <Check /> : null}
@@ -2426,7 +2453,7 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
         <p className="gm-head__sub">
           {hasDistinctOriginalName && <span className="gm-head__orig">{item.titleOriginal}</span>}
           {activityStartHint && activityStartYear != null && <>
-            {hasDistinctOriginalName && <i className="gm-head__dot" aria-hidden="true">·</i>}
+            
             <span className={`gm-year ${activityStartHint.status}`}>
               {activityStartYear}
               {activityStartHint.direction === 'up' ? <ArrowUp /> : activityStartHint.direction === 'down' ? <ArrowDown /> : activityStartHint.status === 'match' ? <Check /> : null}
@@ -2498,7 +2525,7 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
       <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
       <Poster item={item} className="kpop-card__portrait" />
       <div className="kpop-card__identity">
-        <span className="attempt-label">K-pop · попытка {index + 1}</span>
+        <span className="attempt-label">K-pop, попытка {index + 1}</span>
         <h2>{englishName}</h2>
         <p>
           {russianName && <span>{russianName}</span>}
@@ -2612,8 +2639,8 @@ const cityRankStrength = (rank: number | null) => rank == null
 const cityRankComparisonLabel = (hint: Attempt['hints'][number] | undefined) => {
   if (!hint || hint.status === 'unknown') return 'Нет данных'
   if (hint.status === 'match') return 'Совпало'
-  if (hint.direction === 'up') return hint.status === 'close' ? 'Искомый выше · близко' : 'Искомый выше'
-  if (hint.direction === 'down') return hint.status === 'close' ? 'Искомый ниже · близко' : 'Искомый ниже'
+  if (hint.direction === 'up') return hint.status === 'close' ? 'Искомый выше, близко' : 'Искомый выше'
+  if (hint.direction === 'down') return hint.status === 'close' ? 'Искомый ниже, близко' : 'Искомый ниже'
   return 'Сравните место'
 }
 
@@ -3102,10 +3129,12 @@ function Game({
   const closeSearchDropdown = useCallback(() => setIsSearchDropdownOpen(false), [])
   const headingPeriodBadge = mode === 'music'
     ? DIFFICULTIES[difficulty].label
+    : mode === 'city'
+      ? GAME_MODE_MANIFEST.city.variants.find((entry) => entry.id === variantKey)?.label ?? 'Столицы'
     : mode === 'movie' || mode === 'series' || mode === 'anime'
       ? effectivePeriod === 'all'
-        ? 'Главная премьера'
-        : PERIODS[effectivePeriod].label.replace(' года', '')
+        ? null
+        : PERIODS[effectivePeriod].label
       : null
   useDismissOnOutside(isSuggestionsOpen, searchPickerRef, closeSearchDropdown)
 
@@ -3331,21 +3360,14 @@ function Game({
       trackMetrikaGoal('game_back_click', { mode, period: effectivePeriod })
       onBack()
     }}>
-      <section className={`game-heading${mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}`}>
-        <div>
-          <div className="game-heading__kicker">
-            <span>
-              {isFreePlaySession ? `Свободная игра, партия №${freePlayLaunch}` : `${date === getMoscowDate() ? 'Сегодня' : 'Архив'}, сеанс №${dayNumber(date)}`}
-              {headingPeriodBadge ? `, ${headingPeriodBadge}` : ''}
-            </span>
-          </div>
-          <h1>{isFreePlaySession ? `Угадай ${modeMeta(mode).subjectGenitive}` : `${modeMeta(mode).daily} дня`}</h1>
-          <p>{isFreePlaySession ? 'Случайная загадка, можно играть снова сразу' : `${prettyDate(date)}, обновление в 00:00 МСК`}</p>
-        </div>
-        {REFERENCE_PRESENTATION
-          ? <ReferenceSessionArt mode={mode} />
-          : <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{date.slice(8, 10)}<small>/{date.slice(5, 7)}</small></span></div>}
-      </section>
+      <QuizSessionHeading
+        mode={mode}
+        title={isFreePlaySession ? `Угадай ${modeMeta(mode).subjectGenitive}` : `${modeMeta(mode).daily} дня`}
+        date={date}
+        kind={isFreePlaySession ? 'free_play' : date === getMoscowDate() ? 'daily' : 'archive'}
+        variantLabel={headingPeriodBadge}
+        compact={status === 'won'}
+      />
 
       {(showTodayLink || (mode === 'diagnosis' && !!anamnesisText)) && <section className="game-toolbar" aria-label="Настройки игры">
         {mode === 'diagnosis' && !!anamnesisText && <ActionButton variant="secondary" className="anamnesis-link" onClick={() => {
@@ -3510,7 +3532,7 @@ function Game({
                     const score = titlePrimaryScore(item)
                     const scoreText = score != null ? score.toFixed(2) : '—'
                     const rankText = item.topRank != null ? `#${item.topRank}` : null
-                    return rankText ? `${scoreText} · ${rankText}` : scoreText
+                    return rankText ? `${scoreText}, ${rankText}` : scoreText
                   })()
                 : item.mode === 'music'
                   ? (() => {
@@ -3553,7 +3575,7 @@ function Game({
 
     {hintModalRound && <DialogSurface backdropClassName="hint-modal-backdrop" className="hint-modal" onClose={dismissHintModal} ariaLabelledBy="hint-modal-title">
         <div className="hint-modal__head">
-          <span><Lightbulb /> Возможность · попытка {hintModalRound}</span>
+          <span><Lightbulb /> Возможность, попытка {hintModalRound}</span>
           <ControlButton onClick={dismissHintModal} aria-label="Закрыть"><X /></ControlButton>
         </div>
         <DialogTitle id="hint-modal-title">{CATALOG_HINT_COPY[mode].modalTitle}</DialogTitle>
@@ -4018,7 +4040,6 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   const promoHeading = isPromptSession ? session.promoPrompt?.title?.trim() || 'Игра по комментариям' : null
   const promoSubtitle = isPromptSession ? session.promoPrompt?.subtitle?.trim() || '' : ''
   const promoDisclaimer = isPromptSession ? session.promoPrompt?.disclaimer?.trim() || '' : ''
-  const promptSourceLabel = 'Спецпоказ DTF'
 
   const attempts = session.attempts.map(serverAttemptToLegacy)
   const answer = session.answer ? publicItemToTitle(session.answer) : null
@@ -4103,7 +4124,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     ? nextPackPosition
       ? nextPackSession.isPending
         ? 'Запускаем следующую…'
-        : `Следующая игра · ${nextPackPosition} из ${packTotalItems}`
+        : `Следующая игра, ${nextPackPosition} из ${packTotalItems}`
       : 'К подборке'
     : nextMode
       ? `Играть дальше: ${modeMeta(nextMode).title}`
@@ -4118,15 +4139,15 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       ? 'Выбрать другой режим'
       : resultConfigureLabel(session.mode)
   const headingPeriodBadge = isKpopSession
-    ? 'K-pop'
+    ? null
     : session.mode === 'music' && session.difficulty
     ? DIFFICULTIES[session.difficulty].label
     : session.mode === 'city'
       ? GAME_MODE_MANIFEST.city.variants.find((entry) => entry.id === session.variantKey)?.label ?? 'Столицы'
     : session.mode === 'movie' || session.mode === 'series' || session.mode === 'anime'
       ? session.period === 'all'
-        ? 'Главная премьера'
-        : PERIODS[session.period].label.replace(' года', '')
+        ? null
+        : PERIODS[session.period].label
       : null
   const shareText = isDtfCommentSession
     ? dtfShareText(attempts.length, maxAttempts, session.status === 'won')
@@ -4193,16 +4214,30 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
 
   return <>
     <GamePageFrame controller={{ source: 'server', mode: session.mode, puzzleDate: session.puzzleDate, status: session.status, attemptsCount: session.attemptsCount, attempts, variantKey: session.variantKey }} navigation={{ onHome, onArchive, onStats, onRules, onReview }} onBack={onBack}>
-      <section className={`game-heading${session.mode === 'diagnosis' ? ' game-heading--diagnosis' : ''}${isKpopSession ? ' game-heading--kpop' : ''}`}><div><div className="game-heading__kicker"><span>{session.kind === 'archive' ? 'Архив' : isFreePlaySession ? 'Свободная игра' : session.kind === 'pack' ? 'Спецпоказ' : 'Сегодня'}, {isKpopSession && session.kind === 'pack' ? `Карточка ${session.packPosition ?? 1}` : `Сеанс №${dayNumber(session.puzzleDate)}`}{headingPeriodBadge ? `, ${headingPeriodBadge}` : ''}</span></div><h1>{isKpopSession ? 'K-pop артист дня' : isPromptSession ? promoHeading : isFreePlaySession ? `Угадай ${modeMeta(session.mode).subjectGenitive}` : `${modeMeta(session.mode).daily} дня`}</h1><p>{isKpopSession ? `${prettyDate(session.puzzleDate)}, новый артист в 00:00 МСК` : isFreePlaySession ? 'Случайная загадка, можно играть снова сразу' : `${prettyDate(session.puzzleDate)}, ${isPromptSession ? promptSourceLabel : 'обновление в 00:00 МСК'}`}</p></div>{REFERENCE_PRESENTATION ? <ReferenceSessionArt mode={session.mode} /> : <div className="mini-ticket" aria-hidden="true"><Ticket /><span>{isKpopSession ? 'K' : isFreePlaySession ? '∞' : session.puzzleDate.slice(8, 10)}<small>{isKpopSession ? 'POP' : isFreePlaySession ? 'FREE' : `/${session.puzzleDate.slice(5, 7)}`}</small></span></div>}</section>
+      <QuizSessionHeading
+        mode={session.mode}
+        title={isPackSession ? packDetail.data?.pack.title || promoHeading || modeMeta(session.mode).title
+          : isKpopSession ? 'K-pop артист дня'
+          : isPromptSession ? promoHeading || 'Игра по комментариям'
+          : isFreePlaySession ? `Угадай ${modeMeta(session.mode).subjectGenitive}`
+          : `${modeMeta(session.mode).daily} дня`}
+        date={session.puzzleDate}
+        kind={session.kind}
+        variantLabel={headingPeriodBadge}
+        specialLabel={isDtfCommentSession ? 'Спецпоказ DTF' : isKpopSession ? 'Спецпоказ' : undefined}
+        packPosition={session.packPosition}
+        packTotal={packTotalItems}
+        compact={session.status === 'won'}
+      />
       {isPromptSession && (isDtfCommentSession
         ? <DtfCommentIntro subtitle={promoSubtitle} />
         : <section className="assist-revealed"><article className="assist-reveal-card"><span><Lightbulb /> {promoHeading}</span>{promoSubtitle && <p>{promoSubtitle}</p>}{promoDisclaimer && <p>{promoDisclaimer}</p>}</article></section>)}
       {!!promoHints.length && (isDtfCommentSession
         ? <DtfCommentFeed comments={promoHints} attemptsCount={session.attemptsCount} />
-        : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Lightbulb /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? ` · ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
+        : <section className="assist-revealed">{promoHints.map((hint) => <article key={hint.key} className="assist-reveal-card"><span><Lightbulb /> {hint.unlockAfterAttempts && hint.unlockAfterAttempts > 0 ? `Подсказка после ${hint.unlockAfterAttempts} попыток` : 'Стартовая реплика'}{hint.authorArchetype ? `, ${hint.authorArchetype}` : ''}</span><p>{hint.text}</p></article>)}</section>)}
       {session.diagnosisVignette && <section className="assist-revealed"><article className="assist-reveal-card"><span><ClipboardList /> Анамнез</span><p>{session.diagnosisVignette.text}</p></article></section>}
       {((session.status === 'playing' && !APPLICATION_DESIGN) || session.status === 'final_choice') && <div className="progress-row"><SegmentedProgress value={session.status === 'final_choice' ? maxAttempts : session.attemptsCount} max={maxAttempts} />{canUseHint && availableHintRound && <ActionButton variant="hint" className="hint-trigger" onClick={() => { setRevealedHint(null); setHintModalRound(availableHintRound) }}><Lightbulb /> Подсказка</ActionButton>}</div>}
-      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Lightbulb /> {assistHintTitle(choice.hintKey, session.mode)} · после {choice.checkpoint} попыток</span><AssistHintValue value={choice.response.value} /></article>)}</section>}
+      {!!session.hintChoices.length && <section className="assist-revealed">{session.hintChoices.map((choice) => <article key={choice.checkpoint} className="assist-reveal-card"><span><Lightbulb /> {assistHintTitle(choice.hintKey, session.mode)}, после {choice.checkpoint} попыток</span><AssistHintValue value={choice.response.value} /></article>)}</section>}
       {session.status === 'final_choice' && session.finalChoice && <FinalChoicePanel
         mode={session.mode}
         snapshot={session.finalChoice}
@@ -4351,7 +4386,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     </Modal>}
     {hintModalRound && (hintOptions.length > 0 || revealedHint) && <DialogSurface backdropClassName="hint-modal-backdrop" className="hint-modal" onClose={dismissHintModal} ariaLabel="Подсказка">
         <div className="hint-modal__head">
-          <span><Lightbulb /> Возможность · попытка {hintModalRound}</span>
+          <span><Lightbulb /> Возможность, попытка {hintModalRound}</span>
           <ControlButton onClick={dismissHintModal} aria-label="Закрыть" disabled={hint.isPending}><X /></ControlButton>
         </div>
         {hint.isPending ? <div className="hint-modal__state" role="status" aria-live="polite">
@@ -4361,7 +4396,7 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         </div> : revealedHint ? <>
           <DialogTitle>Подсказка открыта</DialogTitle>
           <article className="hint-modal__reveal">
-            <span><Lightbulb /> {assistHintTitle(revealedHint.hintKey, session.mode)} · после {revealedHint.checkpoint} попыток</span>
+            <span><Lightbulb /> {assistHintTitle(revealedHint.hintKey, session.mode)}, после {revealedHint.checkpoint} попыток</span>
             <AssistHintValue value={revealedHint.value} />
           </article>
           <ActionButton className="hint-modal__confirm" onClick={dismissHintModal}>Понятно</ActionButton>
@@ -5479,7 +5514,7 @@ function GameApp() {
       amount: cost,
       balanceAfter: nextWallet.tickets,
       title: 'Открыт период',
-      detail: `${modeMeta(mode).plural} · ${PERIODS[periodKey].label}`,
+      detail: `${modeMeta(mode).plural}, ${PERIODS[periodKey].label}`,
       mode,
       period: periodKey,
     })
@@ -5547,7 +5582,7 @@ function GameApp() {
       amount: launchCost,
       balanceAfter: nextWallet.tickets,
       title: 'Свободная игра',
-      detail: `${modeMeta(mode).plural} · запуск #${nextLaunchNumber}`,
+      detail: `${modeMeta(mode).plural}, запуск #${nextLaunchNumber}`,
       date: today,
       mode,
       period: 'all',

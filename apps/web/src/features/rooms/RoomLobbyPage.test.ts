@@ -61,11 +61,13 @@ describe('room configuration workspace', () => {
     const html = render([], [{ id: 'past', code: 'OLD23', gameType: 'territory', mode: 'movie', packs: [], phase: 'finished', players: 0, participantCount: 2, capacity: 2, isHost: false, joinedAt: '2026-10-20T10:00:00Z', updatedAt: '2026-10-20T11:00:00Z', leftAt: '2026-10-20T11:00:00Z', closedAt: '2026-10-20T11:00:00Z' }])
     expect(html).toContain('Недавние комнаты')
     expect(html).toContain('Ты игрок')
-    expect(html).toContain('Новая комната')
+    expect(html).toContain('История комнат')
+    expect(html).toContain('<details class="room-lobby-history">')
+    expect(html).toContain('aria-label="Настройка игры"')
+    expect(html.indexOf('room-lobby-create')).toBeLessThan(html.indexOf('room-lobby-history'))
     expect(html).toContain('Участников: 2')
     expect(html).not.toContain('href="/games/together?room=OLD23"')
     expect(html).not.toContain('Скопировать приглашение')
-    expect(html).not.toContain('aria-label="Настройка игры"')
   })
   it('resumes Svoyak from the same directory and blocks creating another game', () => {
     access.allowed = true

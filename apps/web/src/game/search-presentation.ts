@@ -56,24 +56,24 @@ const originalTitle = (item: SearchItem) => {
 }
 
 export const searchResultMeta = (item: SearchItem) => {
-  if (item.mode === 'city') return meaningful([originalTitle(item), item.country, item.continent]).join(' · ')
-  if (item.mode === 'diagnosis') return meaningful([originalTitle(item), ...(item.icd10 ?? []), item.icdGroup]).join(' · ')
-  if (item.mode === 'animal') return meaningful([item.scientificName || originalTitle(item), item.taxonomicClass, item.animalOrder]).join(' · ')
-  if (item.mode === 'book') return meaningful([originalTitle(item), ...(item.bookAuthors ?? []).slice(0, 2), item.bookPublicationYear]).join(' · ')
-  if (item.mode === 'character') return meaningful([originalTitle(item), item.characterSourceWork, item.characterEra]).join(' · ')
+  if (item.mode === 'city') return meaningful([originalTitle(item), item.country, item.continent]).join(', ')
+  if (item.mode === 'diagnosis') return meaningful([originalTitle(item), ...(item.icd10 ?? []), item.icdGroup]).join(', ')
+  if (item.mode === 'animal') return meaningful([item.scientificName || originalTitle(item), item.taxonomicClass, item.animalOrder]).join(', ')
+  if (item.mode === 'book') return meaningful([originalTitle(item), ...(item.bookAuthors ?? []).slice(0, 2), item.bookPublicationYear]).join(', ')
+  if (item.mode === 'character') return meaningful([originalTitle(item), item.characterSourceWork, item.characterEra]).join(', ')
   if (item.mode === 'game') {
     const edition = item.editionType && item.editionType !== 'original' ? item.editionType : null
     const release = item.releaseScope === 'release' ? item.releaseLabel : null
-    return meaningful([originalTitle(item), item.year, edition, release, ...(item.platforms ?? []).slice(0, 2)]).join(' · ')
+    return meaningful([originalTitle(item), item.year, edition, release, ...(item.platforms ?? []).slice(0, 2)]).join(', ')
   }
   if (item.mode === 'music') {
     return meaningful([
       originalTitle(item),
       musicYearMeta(item),
       item.musicType ? musicTypeLabel(item.musicType) : null,
-    ]).join(' · ')
+    ]).join(', ')
   }
-  return meaningful([originalTitle(item), item.year]).join(' · ')
+  return meaningful([originalTitle(item), item.year]).join(', ')
 }
 
 export const searchMediaAlt = (item: Pick<SearchItem, 'mode' | 'titleRu'>) => {

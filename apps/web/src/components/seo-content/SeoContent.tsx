@@ -41,7 +41,7 @@ const GameSearchSummary = ({ mode, landing = false, preserveLiveLinks = false }:
   const summary = content.searchSummary
   if (!summary) return null
   return <section className={landing ? 'game-landing__search' : `ticket-search-summary ticket-search-summary--${mode}`} aria-labelledby={`search-summary-${mode}`}>
-    {!landing && <span>Играть онлайн · без спойлеров</span>}
+    {!landing && <span>Играть онлайн, без спойлеров</span>}
     <h2 id={`search-summary-${mode}`}>{summary.heading}</h2>
     <div>{summary.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
     {summary.action && <a
@@ -184,7 +184,7 @@ function LegacyGameArtifactSeoDetails({ mode, preserveLiveLinks = false }: { mod
         <span>
           <strong className="ticket-dossier__closed-label">{presentation.closedLabel}</strong>
           <strong className="ticket-dossier__open-label">{presentation.openLabel}</strong>
-          <small>как играть · подсказки · вопросы</small>
+          <small>как играть, подсказки, вопросы</small>
         </span>
       </span>
       <ChevronDown className="ticket-dossier__chevron" aria-hidden="true" />
@@ -273,7 +273,7 @@ function LegacyGameArtifactSeoDetails({ mode, preserveLiveLinks = false }: { mod
 export function HomeSeoContent({ variant = 'default' }: { variant?: 'default' | 'reference' } = {}) {
   const [open, setOpen] = useState(false)
   if (variant === 'reference') return <details className="hub-guide hub-guide--reference" open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
-    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат · подсказки · все режимы" expanded={open} controls="home-guide-drawer" />
+    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат, подсказки, все режимы" expanded={open} controls="home-guide-drawer" />
     <div className="hub-guide__drawer" id="home-guide-drawer">
       <div className="home-guide-overview">
         <header className="hub-guide__intro">
@@ -297,10 +297,10 @@ export function HomeSeoContent({ variant = 'default' }: { variant?: 'default' | 
     </div>
   </details>
   return <details className="hub-guide" open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
-    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат · подсказки · все режимы" expanded={open} controls="home-guide-drawer" />
+    <GuideSummary title="Как устроены ежедневные игры" openTitle="Путеводитель по «Сходится!»" note="формат, подсказки, все режимы" expanded={open} controls="home-guide-drawer" />
     <div className="hub-guide__drawer" id="home-guide-drawer">
       <header className="hub-guide__intro">
-        <span>Путеводитель · без спойлеров</span>
+        <span>Путеводитель, без спойлеров</span>
         <h2 id="home-about-title">{HOME_SEO.heading}</h2>
         <p>{HOME_SEO.lead}</p>
       </header>

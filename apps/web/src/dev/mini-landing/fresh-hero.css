@@ -1,5 +1,5 @@
 .fresh-hero { padding: 20px 0 38px; }
-.fresh-hero__stage { --scene-x: 0px; --scene-y: 0px; --scene-counter-x: 0px; --scene-counter-y: 0px; --think-opacity: 1; --celebrate-opacity: 0; --pose-lift: 0px; --pose-turn: -3deg; --spark-scale: 1; position: relative; width: min(100% - 64px, 1100px); margin: 0 auto 26px; }
+.fresh-hero__stage { --scene-x: 0px; --scene-y: 0px; --scene-counter-x: 0px; --scene-counter-y: 0px; --think-opacity: 1; --celebrate-opacity: 0; --pose-lift: 0px; --pose-turn: -3deg; position: relative; width: min(100% - 64px, 1100px); margin: 0 auto 26px; }
 .fresh-hero__intro { position: relative; z-index: 1; width: min(100%, 560px); margin: 0 auto; text-align: center; }
 .mini-landing .fresh-hero h1 { font: 550 46px/1.15 'Hero Study Manrope', sans-serif; letter-spacing: -1.65px; color: var(--mini-ink); }
 .mini-landing .fresh-hero__intro p { margin-top: 12px; font: 400 15px/1.6 'Hero Study Manrope', sans-serif; letter-spacing: -.15px; color: #6a6373; }
@@ -26,12 +26,9 @@
 .fresh-scene__cinema { position: absolute; top: 45px; right: 22px; width: clamp(110px, 12vw, 138px); height: 142px; transform: translate(var(--scene-counter-x), var(--scene-counter-y)); transition: transform 320ms ease-out; }
 .fresh-scene__lilac { position: absolute; inset: 11px -4px -4px 1px; border-radius: 25px 37px 27px 40px; background: var(--color-lilac); transform: rotate(9deg); }
 .fresh-scene__cinema > img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain; transform: rotate(7deg); transition: transform 340ms ease; }
-.fresh-scene__spark { position: absolute; color: var(--color-yellow); transform: scale(var(--spark-scale)) rotate(8deg); transition: transform 340ms cubic-bezier(.2, .8, .25, 1); }
-.fresh-scene__spark--mascot { top: 8px; right: -9px; }
-.fresh-scene__spark--cinema { width: 18px; height: 22px; left: -18px; bottom: 0; transform: scale(var(--spark-scale)) rotate(-13deg); }
-.fresh-hero__stage:has(.fresh-hero__start:focus-visible) { --think-opacity: 0; --celebrate-opacity: 1; --pose-lift: -6px; --pose-turn: 2deg; --spark-scale: 1.2; }
+.fresh-hero__stage:has(.fresh-hero__start:focus-visible) { --think-opacity: 0; --celebrate-opacity: 1; --pose-lift: -6px; --pose-turn: 2deg; }
 @media (hover: hover) and (pointer: fine) {
-  .fresh-hero__stage:has(.fresh-hero__start:hover) { --think-opacity: 0; --celebrate-opacity: 1; --pose-lift: -6px; --pose-turn: 2deg; --spark-scale: 1.2; }
+  .fresh-hero__stage:has(.fresh-hero__start:hover) { --think-opacity: 0; --celebrate-opacity: 1; --pose-lift: -6px; --pose-turn: 2deg; }
   .fresh-hero__start:hover > svg { transform: translateX(3px); }
 }
 .fresh-period { position: relative; min-width: 0; height: 46px; display: grid; align-content: center; grid-template-columns: minmax(0, 1fr) auto; gap: 0 7px; padding: 6px 11px; background: #fff; border: 1px solid #e7e0f0; border-radius: 11px; }
@@ -50,8 +47,6 @@
   .fresh-scene__mint { height: 75%; bottom: 0; }
   .fresh-scene__cinema { right: 9px; top: 14px; width: 90px; height: 90px; }
   .fresh-scene__lilac { border-radius: 19px 27px 20px 29px; }
-  .fresh-scene__spark--mascot { width: 20px; height: 24px; top: 6px; right: -7px; }
-  .fresh-scene__spark--cinema { width: 14px; height: 18px; left: -15px; bottom: 2px; }
 }
 @media (max-width: 650px) {
   .fresh-hero { padding: 21px 0 28px; }
@@ -78,5 +73,5 @@
   .fresh-hero__actions { grid-template-columns: minmax(0, 1fr); gap: 7px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fresh-scene__mascot, .fresh-scene__cinema, .fresh-scene__pose, .fresh-scene__spark { transform: none; }
+  .fresh-scene__mascot, .fresh-scene__cinema, .fresh-scene__pose { transform: none; }
 }

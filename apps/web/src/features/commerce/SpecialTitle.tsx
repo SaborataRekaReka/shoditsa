@@ -27,7 +27,7 @@ export function SpecialTitle({ pack, starting, canStart, error, onStart, onLeade
   const finished = !kpop && pack.completedItems >= pack.totalItems
   const action = starting ? 'Запускаем…' : kpop ? 'Играть сегодня' : finished ? 'Подборка пройдена' : pack.completedItems > 0 ? 'Продолжить' : 'Начать игру'
   return <div className={`qt-title qt-title--${mode} special-game-title`}>
-    <QuestTitleHero mode={mode} kicker={kpop ? 'Клубный спецпоказ · K-pop' : `Клубный спецпоказ · DTF · ${pack.totalItems} игр`} title={pack.title} lead={kpop ? 'Угадайте K-pop артиста дня за десять попыток' : 'Узнайте видеоигру по комментариям за шесть попыток'}>
+    <QuestTitleHero mode={mode} kicker={kpop ? 'Клубный спецпоказ, K-pop' : `Клубный спецпоказ, DTF, ${pack.totalItems} игр`} title={pack.title} lead={kpop ? 'Угадайте K-pop артиста дня за десять попыток' : 'Узнайте видеоигру по комментариям за шесть попыток'}>
       <div className="qt-connected-launch"><GameLaunchControls mode={mode}
         action={<GameLaunchButton disabled={!canStart || starting} onClick={onStart}>{action}</GameLaunchButton>}
         option={onLeaderboard ? <GameOptionAction label="Общий зачёт" labelIcon={<Trophy />} value="Рейтинг игроков" onClick={onLeaderboard} /> : undefined}

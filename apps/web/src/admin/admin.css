@@ -898,7 +898,6 @@ html:has(.admin-root)::-webkit-scrollbar-thumb, body:has(.admin-root)::-webkit-s
 .admin-attempt-card h2 { margin: 0 0 8px; font: 500 27px/1.08 Oswald, sans-serif; text-transform: uppercase; overflow-wrap: anywhere; }
 .admin-attempt-card .gm-head__sub { margin: 0; color: var(--color-muted); display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 12px; line-height: 1.35; }
 .admin-attempt-card .gm-head__orig { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.admin-attempt-card .gm-head__dot { color: var(--color-muted-2); font-style: normal; }
 .admin-attempt-card .gm-year { padding: 2px 8px; border: 1px solid var(--color-line-strong); border-radius: 999px; color: var(--color-muted); background: var(--color-surface-2); display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; line-height: 1; white-space: nowrap; }
 .admin-attempt-card .gm-genres { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 5px; }
 .admin-attempt-card .gm-genre { padding: 5px 9px; border: 1px solid var(--color-line-strong); border-radius: 999px; color: var(--color-muted); background: var(--color-surface-2); display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; }

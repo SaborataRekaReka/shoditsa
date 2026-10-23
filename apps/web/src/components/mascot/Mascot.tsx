@@ -9,9 +9,9 @@ const mascotFiles = {
   welcome: 'welcome-v1.webp',
   peek: 'peek-v1.webp',
   sleep: 'sleep-v1.webp',
-  club: 'club-v1.webp',
+  club: 'club-invitation-v1.webp',
   celebrate: 'celebrate-v1.webp',
-  victory: 'victory-puzzle-v1.webp',
+  victory: 'victory-seated-v3.webp',
 } as const
 
 export type MascotPose = keyof typeof mascotFiles

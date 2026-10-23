@@ -15,7 +15,7 @@ const outcomes = [
 
 function SearchScene() {
   return <div className="sw-scene sw-search-scene" role="img" aria-label="Поле поиска и карточка выбранного фильма">
-    <div className="sw-search-back"><Clapperboard size={15} strokeWidth={1.5} /><span>Кино</span><span className="sw-window-dots">•••</span></div>
+    <div className="sw-search-back"><Clapperboard size={15} strokeWidth={1.5} /><span>Кино</span><span className="sw-window-dots">…</span></div>
     <div className="sw-search-field"><Search size={16} strokeWidth={1.6} /><span>Название фильма</span><span className="sw-search-caret" /></div>
     <div className="sw-search-result"><span className="sw-film-square"><Clapperboard size={19} strokeWidth={1.5} /></span><div>Твоя версия<small>Фильм из каталога</small></div><span className="sw-check-circle"><Check size={13} strokeWidth={2} /></span></div>
   </div>

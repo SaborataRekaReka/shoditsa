@@ -107,7 +107,7 @@ export function FriendsRoomIntroScreen({
       <div className="reference-friends-intro">
         <section className="reference-friends-intro__hero" aria-labelledby="friends-room-title">
           <div className="reference-friends-intro__copy">
-            <p className="reference-friends-intro__eyebrow"><Users size={17} aria-hidden="true" />Клубная игра · до 8 участников</p>
+            <p className="reference-friends-intro__eyebrow"><Users size={17} aria-hidden="true" />Клубная игра, до 8 участников</p>
             <h1 id="friends-room-title">Игра с друзьями</h1>
             <p className="reference-friends-intro__description">Создайте приватную комнату, отправьте друзьям код и проходите любимые категории одновременно, расследуйте Данетки{territoryEnabled ? ' или сражайтесь за территории вдвоём' : ''}.</p>
             {benefits}
@@ -120,7 +120,7 @@ export function FriendsRoomIntroScreen({
         </section>
         <section className="reference-friends-intro__about" aria-labelledby="friends-room-about">
           <div>
-            <p className="reference-friends-intro__eyebrow">Совместная игра · {canCreate ? 'клубный билет активен' : 'только в Клубе'}</p>
+            <p className="reference-friends-intro__eyebrow">Совместная игра, {canCreate ? 'клубный билет активен' : 'только в Клубе'}</p>
             <h2 id="friends-room-about">Соберите всех за одним столом</h2>
           </div>
           <p>Хозяин выбирает категории и темп. Все отвечают со своих устройств, а результаты сходятся в общем зачёте.</p>
@@ -135,7 +135,7 @@ export function FriendsRoomIntroScreen({
       <section className="title-stage">
         <div className="title-game-mark">
           <span><Users /></span>
-          <i>Клубная игра · до 8 участников</i>
+          <i>Клубная игра, до 8 участников</i>
           <h1>Игра с друзьями</h1>
         </div>
         <time>Одна комната — вся компания</time>

@@ -1,9 +1,9 @@
 import { useLayoutEffect, useState } from 'react'
-import { Check, LockKeyhole } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { QuestButton } from '../../components/ui/QuestPrimitives'
 import { InlineAlert } from '../../components/ui'
 import type { ReferenceClubPageProps } from '../../features/commerce/ReferenceClubPage'
-import { StudyClubPlans } from './StudyClubPlans'
+import { StudyClubOffer } from './StudyClubOffer'
 import { GeneratedShoditsaGlyph as Glyph } from './GeneratedShoditsaArt'
 import { StudySidebar } from './StudySidebar'
 import { StudyHeader } from './StudyHeader'
@@ -54,13 +54,12 @@ export default function StudyClubPage({ view, heroStatus, notice, contextualOffe
         <StudyClubHero active={active} expired={expired} archiveHref={archive} onSelectPlan={() => onSelectPlan(selectedPlan)} />
         <StudyClubBenefits stats={view.stats} active={active} homeHref={home} archiveHref={archive} onLockedFeature={onLockedFeature} />
 
-        {!active && <section className="study-club-section" id="club-offers" aria-labelledby="club-pricing-title">
-          <header><h2 id="club-pricing-title">Выберите свой билет</h2><p>{contextualOffer ? 'Продолжайте «Диагнозы»: новые случаи и весь архив без списания билетиков. Для начала — билет на 30 дней.' : 'Все возможности Клуба. Разница только в сроке.'}</p></header>
+        {!active && <StudyClubOffer pricing={view.pricing} selectedPlan={selectedPlan} onSelect={setSelectedPlan} notice={<>
+          {contextualOffer && <p className="club-paywall__context">Продолжайте «Диагнозы»: новые случаи и весь архив без списания билетиков.</p>}
           {notice && <InlineAlert tone="warning" className="study-club-notice">{notice}</InlineAlert>}
-          <StudyClubPlans pricing={view.pricing} selectedPlan={selectedPlan} onSelect={setSelectedPlan} />
-          <div className="study-club-selected-checkout">{onPlanUnavailable ? <QuestButton onClick={onPlanUnavailable}>Выбрать {selectedPlan === annual.id ? annual.durationDays ?? 365 : monthly.durationDays ?? 30} дней</QuestButton> : selectedPlan === annual.id ? annualAction : monthlyAction}</div>
-          <p className="study-club-renewal"><LockKeyhole size={17} />Автопродление — только по вашему выбору. Управление билетом — в профиле.</p>
-        </section>}
+        </>}>
+          {onPlanUnavailable ? <QuestButton onClick={onPlanUnavailable}>Вступить в Клуб</QuestButton> : selectedPlan === annual.id ? annualAction : monthlyAction}
+        </StudyClubOffer>}
 
         <HomeSpecials />
 
@@ -71,7 +70,6 @@ export default function StudyClubPage({ view, heroStatus, notice, contextualOffe
           <div className="study-club-comparison-frame"><table><thead><tr><th scope="col">Возможности</th><th scope="col">Без билета</th><th scope="col"><Glyph name="medal" size={25} />С Клубом</th></tr></thead><tbody>{clubFeatures.map((feature, index) => <tr key={feature.label}><th scope="row">{feature.label}</th><td>{guestFeatures[index]?.value}</td><td><span className="study-club-included"><Check size={14} strokeWidth={3} aria-hidden="true" /></span><strong>{feature.value}</strong></td></tr>)}</tbody></table></div>
           <dl className="study-club-mobile-comparison">{clubFeatures.map((feature, index) => <div key={feature.label}><dt>{feature.label}</dt><dd><div><span>Без билета</span><strong>{guestFeatures[index]?.value}</strong></div><div><span>С Клубом</span><strong><Check size={14} strokeWidth={3} aria-hidden="true" />{feature.value}</strong></div></dd></div>)}</dl>
           <a className="quest-button quest-button--outline study-club-free-action" href={home}>Продолжить бесплатно</a>
-          <p className="study-club-quiet">Ваши билетики сохраняются в любом режиме.</p>
         </section>
       </main>
 

@@ -16,7 +16,7 @@ const connected = SERVER_RUNTIME
 const client = new QueryClient({ defaultOptions: { queries: { staleTime: 60_000, retry: 1 } } })
 const count = (value: number) => `${value} ${new Intl.PluralRules('ru').select(value) === 'one' ? 'загадка' : new Intl.PluralRules('ru').select(value) === 'few' ? 'загадки' : 'загадок'}`
 const cover = (pack: ClubLibraryItem) => pack.coverUrl?.startsWith('https://') ? pack.coverUrl : clubLibraryCover(pack)
-const description = (pack: ClubLibraryItem) => pack.id === 'dtf-game-comments-25-v1' ? 'Узнай игру по настоящим комментариям с DTF.' : pack.cadence === 'daily' ? 'Один артист в день. Угадывай по подсказкам.' : (pack.subtitle || pack.description).replace(/\s*[·•]\s*/g, ', ')
+const description = (pack: ClubLibraryItem) => pack.id === 'dtf-game-comments-25-v1' ? 'Узнай игру по настоящим комментариям с DTF.' : pack.cadence === 'daily' ? 'Один артист в день. Угадывай по подсказкам.' : (pack.subtitle || pack.description).replace(/\s*[\u00b7\u2022]\s*/g, ', ')
 
 function SpecialsContent() {
   const packs = useQuery({ queryKey: queryKeys.packs, queryFn: api.packs, enabled: connected })

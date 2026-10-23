@@ -95,7 +95,7 @@ export function HeroConceptStudy({ onStart, startRef }: { onStart: () => void; s
   return <>
     <nav className="direction-nav" aria-label="Варианты подачи хиро">
       <a className="direction-nav__home" href="/mini-landing.html?preview=reference&layout=sections">Текущий макет ↗</a>
-      <div><a href="#direction-a">A · Афиша</a><a href="#direction-b">B · Пульт</a><a href="#direction-c">C · Билет</a></div>
+      <div><a href="#direction-a">A, Афиша</a><a href="#direction-b">B, Пульт</a><a href="#direction-c">C, Билет</a></div>
     </nav>
     <main className="direction-gallery">
       <header className="direction-gallery__intro"><h1>Три разных способа начать игру</h1><p>Разная типографика, иерархия и форма сведений. Содержание игры одинаковое.</p></header>

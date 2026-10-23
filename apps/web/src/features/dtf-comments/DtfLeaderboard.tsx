@@ -1,118 +1,47 @@
-import { Crown, Medal, Trophy, Users } from 'lucide-react'
+import { useId } from 'react'
 import type { PackLeaderboardEntry, PackLeaderboardResponse } from '@shoditsa/contracts'
-import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { UserAvatar } from '../../components/ui/UserAvatar'
+import { GeneratedShoditsaGlyph as Glyph } from '../../dev/quest-game/GeneratedShoditsaArt'
 import './DtfLeaderboard.css'
 
-type DtfLeaderboardProps = {
-  data?: PackLeaderboardResponse
-  loading?: boolean
-  error?: boolean
-}
+type DtfLeaderboardProps = { data?: PackLeaderboardResponse; loading?: boolean; error?: boolean }
+const number = new Intl.NumberFormat('ru-RU')
+const plural = new Intl.PluralRules('ru-RU')
+const participants = (count: number) => `${number.format(count)} ${plural.select(count) === 'one' ? 'участник' : plural.select(count) === 'few' ? 'участника' : 'участников'}`
+const countLabel = (count: number, forms: [string, string, string]) => `${count} ${forms[plural.select(count) === 'one' ? 0 : plural.select(count) === 'few' ? 1 : 2]}`
 
-const initials = (name: string) => name
-  .split(/\s+/)
-  .filter(Boolean)
-  .slice(0, 2)
-  .map((part) => part[0]?.toLocaleUpperCase('ru-RU') ?? '')
-  .join('') || 'DT'
-
-const formatScore = (score: number) => new Intl.NumberFormat('ru-RU').format(score)
-
-function PlayerAvatar({ entry }: { entry: PackLeaderboardEntry }) {
-  return <span className="dtf-leaderboard__avatar" aria-hidden="true">
-    {entry.avatarUrl
-      ? <img src={entry.avatarUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
-      : initials(entry.displayName)}
-  </span>
-}
-
-function DtfBadge() {
-  return <span className="dtf-leaderboard__badge" title="Участник DTF">DTF</span>
-}
-
-function PodiumCard({ entry }: { entry: PackLeaderboardEntry }) {
-  const Icon = entry.rank === 1 ? Crown : Medal
-  return <article className={`dtf-podium-card dtf-podium-card--${entry.rank}${entry.isCurrentUser ? ' is-current' : ''}`}>
-    <span className="dtf-podium-card__place"><Icon /> {entry.rank}</span>
-    <PlayerAvatar entry={entry} />
-    <div>
-      <strong>{entry.displayName}</strong>
-      <span className="dtf-podium-card__identity"><DtfBadge />{entry.isCurrentUser && <small>Это вы</small>}</span>
+function PlayerRow({ entry, separated = false }: { entry: PackLeaderboardEntry; separated?: boolean }) {
+  return <li value={entry.rank} className={`dtf-board-row${entry.isCurrentUser ? ' is-current' : ''}${separated ? ' is-separated' : ''}`} aria-current={entry.isCurrentUser ? 'true' : undefined}>
+    <span className="dtf-board-place" data-place={Math.min(entry.rank, 4)} aria-label={`${entry.rank} место`}>{entry.rank}</span>
+    <UserAvatar className="dtf-board-avatar" name={entry.displayName} src={entry.avatarUrl} />
+    <div className="dtf-board-person">
+      <div className="dtf-board-name"><strong>{entry.displayName}</strong>{entry.isCurrentUser && <span>Ты</span>}</div>
+      <div className="dtf-board-stats"><span>{entry.completedItems}/{entry.totalItems} игр</span><span>{countLabel(entry.wins, ['победа', 'победы', 'побед'])}</span><span>{countLabel(entry.totalAttempts, ['попытка', 'попытки', 'попыток'])}</span></div>
     </div>
-    <b>{formatScore(entry.score)}<small> баллов</small></b>
-    <span>Прогресс {entry.completedItems}/{entry.totalItems} · {entry.wins} побед · {entry.totalAttempts || '—'} попыток</span>
-  </article>
-}
-
-function PlayerCell({ entry }: { entry: PackLeaderboardEntry }) {
-  return <div className="dtf-leaderboard__player">
-    <PlayerAvatar entry={entry} />
-    <span>
-      <strong>{entry.displayName}</strong>
-      <small><DtfBadge />{entry.isCurrentUser && <em>Вы</em>}</small>
-      {REFERENCE_PRESENTATION && <small className="dtf-leaderboard__mobile-progress">
-        Игры {entry.completedItems}/{entry.totalItems} · победы {entry.wins} · попытки {entry.totalAttempts || '—'}
-      </small>}
-    </span>
-  </div>
-}
-
-function LeaderboardRow({ entry, separated = false }: { entry: PackLeaderboardEntry; separated?: boolean }) {
-  return <tr className={`${entry.isCurrentUser ? 'is-current' : ''}${separated ? ' is-separated' : ''}`.trim() || undefined}>
-    <td><span className={`dtf-leaderboard__rank dtf-leaderboard__rank--${Math.min(entry.rank, 4)}`}>{entry.rank <= 3 ? <Medal /> : !REFERENCE_PRESENTATION && '#'}{entry.rank}</span></td>
-    <td><PlayerCell entry={entry} /></td>
-    <td className="dtf-leaderboard__progress">
-      <b>{entry.completedItems}</b><small> / {entry.totalItems}</small>
-      {REFERENCE_PRESENTATION && <span className="dtf-leaderboard__round-stats">Победы {entry.wins} · попытки {entry.totalAttempts || '—'}</span>}
-    </td>
-    <td className="dtf-leaderboard__score"><b>{formatScore(entry.score)}</b></td>
-  </tr>
+    <div className="dtf-board-points"><strong>{number.format(entry.score)}</strong><span>очков</span></div>
+  </li>
 }
 
 export function DtfLeaderboard({ data, loading = false, error = false }: DtfLeaderboardProps) {
+  const titleId = useId()
   const entries = data?.entries ?? []
-  const top = entries.slice(0, 3)
-  const viewerOutsideTop = data?.viewerEntry ?? null
-
-  return <section className="dtf-leaderboard" aria-labelledby="dtf-leaderboard-title">
-    <header className="dtf-leaderboard__header">
-      <div className="dtf-leaderboard__emblem" aria-hidden="true"><Trophy /></div>
-      <div>
-        <span>{REFERENCE_PRESENTATION ? 'Сообщество DTF · общий зачёт' : 'DTF COMMUNITY · ОБЩИЙ ЗАЧЁТ'}</span>
-        <h2 id="dtf-leaderboard-title">Таблица игроков</h2>
-        <p>+100 за завершённую игру · +50 за победу · +10 за каждую сохранённую попытку</p>
-      </div>
-      <strong><Users /> {data?.participantCount ?? 0}<small>участников</small></strong>
+  const viewer = data?.viewerEntry && !entries.some(entry => entry.rank === data.viewerEntry?.rank) ? data.viewerEntry : null
+  return <section className="dtf-leaderboard" aria-labelledby={titleId} aria-busy={loading}>
+    <header className="dtf-board-intro">
+      <Glyph name="league" size={64} />
+      <div><span className="dtf-board-eyebrow">Спецпоказ DTF</span><h2 id={titleId}>Игры по комментариям</h2><p>{loading ? 'Собираем результаты…' : participants(data?.participantCount ?? 0)}</p></div>
     </header>
-
-    {loading && <div className="dtf-leaderboard__state" role="status">Собираем результаты сообщества…</div>}
-    {error && <div className="dtf-leaderboard__state dtf-leaderboard__state--error" role="alert">Таблица временно недоступна. Игра продолжит работать.</div>}
-
+    <div className="dtf-board-rules" aria-label="Как начисляются очки">
+      <div><strong>+100</strong><span>за игру</span></div><div><strong>+50</strong><span>за победу</span></div><div><strong>+10</strong><span>за попытку</span></div>
+    </div>
+    <p className="dtf-board-rule-note">Учитываются завершённые игры и сохранённые попытки.</p>
+    {loading && <div className="dtf-board-state" role="status">Загружаем общий зачёт…</div>}
+    {error && <div className="dtf-board-state" role="alert">Пока не удалось загрузить рейтинг. Попробуй открыть его чуть позже.</div>}
     {!loading && !error && <>
-      {!REFERENCE_PRESENTATION && top.length > 0 && <div className="dtf-leaderboard__podium">
-        {top.map((entry) => <PodiumCard key={entry.rank} entry={entry} />)}
-      </div>}
-
-      <div className="dtf-leaderboard__table-wrap">
-        <table aria-labelledby="dtf-leaderboard-title">
-          <thead>
-            <tr>
-              <th scope="col" aria-label="Место">
-                <span className="dtf-leaderboard__place-label">Место</span>
-                {REFERENCE_PRESENTATION && <span className="dtf-leaderboard__place-symbol" aria-hidden="true">№</span>}
-              </th>
-              <th scope="col">{REFERENCE_PRESENTATION ? 'Игрок' : 'Ник и бейдж'}</th>
-              <th scope="col">{REFERENCE_PRESENTATION ? 'Игры' : 'Прогресс'}</th>
-              <th scope="col">Баллы</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.map((entry) => <LeaderboardRow key={entry.rank} entry={entry} />)}
-            {viewerOutsideTop && <LeaderboardRow entry={viewerOutsideTop} separated />}
-          </tbody>
-        </table>
-      </div>
-      {!entries.length && <div className="dtf-leaderboard__state">Участники появятся здесь сразу после регистрации по ссылке DTF.</div>}
+      {entries.length > 0 ? <><div className="dtf-board-columns" aria-hidden="true"><span>Игрок</span><span>Очки</span></div><ol className="dtf-board-list" aria-label="Рейтинг игроков">
+        {entries.map(entry => <PlayerRow key={entry.rank} entry={entry} />)}
+        {viewer && <PlayerRow entry={viewer} separated />}
+      </ol></> : <div className="dtf-board-state">Здесь появятся участники спецпоказа. Сыграй первым!</div>}
     </>}
   </section>
 }

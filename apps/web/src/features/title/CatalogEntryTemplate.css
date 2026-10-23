@@ -16,7 +16,7 @@
 .catalog-entry .entry-story-search__result > div { min-width: 0; }
 .catalog-entry .entry-story-search__result strong { overflow: hidden; text-overflow: ellipsis; }
 .entry-story-features { margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 15px; list-style: none; color: var(--color-muted); font-size: 12px; line-height: 1.6; }
-.entry-story-features li::before { content: '·'; margin-right: 6px; color: var(--color-focus); }
+
 .entry-reference { display: grid; grid-template-columns: minmax(0, 1fr) 124px; gap: 28px; align-items: center; scroll-margin-top: 28px; }
 .entry-reference__copy { min-width: 0; }
 .entry-reference__label { display: flex; align-items: center; gap: 7px; color: var(--color-muted); font-size: 12px; margin-bottom: 10px; }

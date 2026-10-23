@@ -17,9 +17,9 @@ const money = (minor: number) => new Intl.NumberFormat('ru-RU', { style: 'curren
 const monthly = view.pricing.monthly
 const annual = view.pricing.annual
 const directions = [
-  { id: 'a', name: 'Рядом с главной', short: 'Три части в первом экране · цветная полка возможностей', description: 'Текст, крупный персонаж и билет рядом. Затем — цельные пастельные карточки, как в каталоге игр на главной.' },
-  { id: 'b', name: 'Крупнее и свободнее', short: 'Свободный первый экран · большие иллюстрированные секции', description: 'Больше воздуха и крупнее рисунки. Возможности раскрываются парами, а билет становится спокойным завершением страницы.' },
-  { id: 'c', name: 'Билет в центре', short: 'Билет и персонаж в первом экране · затем возможности', description: 'Сначала — выбор срока в общей сцене с персонажем. Затем — крупные игровые плитки и спецпоказ. Самая короткая дорога к сравнению билетов.' },
+  { id: 'a', name: 'Рядом с главной', short: 'Три части в первом экране, цветная полка возможностей', description: 'Текст, крупный персонаж и билет рядом. Затем — цельные пастельные карточки, как в каталоге игр на главной.' },
+  { id: 'b', name: 'Крупнее и свободнее', short: 'Свободный первый экран, большие иллюстрированные секции', description: 'Больше воздуха и крупнее рисунки. Возможности раскрываются парами, а билет становится спокойным завершением страницы.' },
+  { id: 'c', name: 'Билет в центре', short: 'Билет и персонаж в первом экране, затем возможности', description: 'Сначала — выбор срока в общей сцене с персонажем. Затем — крупные игровые плитки и спецпоказ. Самая короткая дорога к сравнению билетов.' },
 ] as const
 type Direction = typeof directions[number]['id']
 const isDirection = (value: string): value is Direction => directions.some(direction => direction.id === value)
@@ -30,8 +30,8 @@ const referenceOne = new URL('../../../../../qa/club-directions-2026-10-16/home-
 const referenceTwo = new URL('../../../../../qa/club-directions-2026-10-16/home-screen-2.png', import.meta.url).href
 
 const benefits = [
-  { title: 'Весь архив', description: `${view.stats.freeArchiveDays} дней доступны бесплатно · весь архив — в клубе`, image: 'movie', tone: 'lilac', label: 'Посмотреть архив' },
-  { title: 'Свободная игра', description: `${view.stats.freePlayModes} режимов · без списания билетиков с Клубом`, image: 'game', tone: 'mint', label: 'Выбрать игру' },
+  { title: 'Весь архив', description: `${view.stats.freeArchiveDays} дней доступны бесплатно, весь архив — в клубе`, image: 'movie', tone: 'lilac', label: 'Посмотреть архив' },
+  { title: 'Свободная игра', description: `${view.stats.freePlayModes} режимов, без списания билетиков с Клубом`, image: 'game', tone: 'mint', label: 'Выбрать игру' },
   { title: 'Данетки', description: `${view.stats.danetkiPerDay} истории в сутки с клубным билетом`, image: 'yes-no', tone: 'yellow', label: 'Раскрыть историю' },
   { title: 'Комната друзей', description: `До ${view.stats.friendRoomRoundLimit} раундов. Друзья присоединяются по приглашению бесплатно.`, image: 'associations', tone: 'blue', label: 'Открыть с Клубом' },
 ] as const
@@ -48,7 +48,7 @@ function StudyNav() {
   return <nav className="study-nav" aria-label="Варианты дизайна">
     <a className="study-nav__title" href="/club-directions.html">Клуб / три направления</a>
     <div>{[['compare', 'Сравнить'], ['a', 'A'], ['b', 'B'], ['c', 'C'], ['reference', 'Эталон']].map(([id, label]) => <a key={id} href={`?view=${id}`} aria-current={page === id ? 'page' : undefined}>{label}</a>)}</div>
-    <span>Макеты · выбор направления</span>
+    <span>Макеты, выбор направления</span>
   </nav>
 }
 
@@ -72,7 +72,7 @@ function HeroCopy({ actions = true }: { actions?: boolean }) {
     <h1>Здесь игра продолжается</h1>
     <p className="club-study-lead">Полный архив, свободные партии, все спецпоказы и {view.stats.danetkiPerDay} Данетки в сутки.</p>
     {actions && <><div className="club-study-hero-actions"><Primary /><a className="club-study-quiet" href="#club-content">Что входит в Клуб <ArrowDown size={17} /></a></div>
-    <p className="club-study-terms">От {money(monthly.priceMinor)} за {monthly.durationDays} дней · автопродление по выбору</p></>}
+    <p className="club-study-terms">От {money(monthly.priceMinor)} за {monthly.durationDays} дней, автопродление по выбору</p></>}
   </div>
 }
 function Character() {
@@ -127,7 +127,7 @@ function Comparison() {
   return <section className="club-study-comparison study-container" aria-labelledby="club-study-comparison-heading">
     <div className="club-study-section-head"><h2 id="club-study-comparison-heading">Можно играть и бесплатно</h2><p>Ежедневные загадки доступны всем. Клуб открывает больше.</p></div>
     <div className="club-study-comparison__rows"><div className="club-study-comparison__labels"><span>Возможности</span><span>Без билета</span><strong>С Клубом</strong></div>{comparisons.map(([label, guest, club]) => <div className="club-study-comparison__row" key={label}><h3>{label}</h3><span><small>Без билета</small>{guest}</span><strong><small>С Клубом</small>{club}</strong></div>)}</div>
-    <a href={home} className="club-study-quiet">Продолжить бесплатно<ArrowRight size={18} /></a><p className="club-study-terms">Ваши билетики сохраняются в любом режиме.</p>
+    <a href={home} className="club-study-quiet">Продолжить бесплатно<ArrowRight size={18} /></a>
   </section>
 }
 function Footer() {

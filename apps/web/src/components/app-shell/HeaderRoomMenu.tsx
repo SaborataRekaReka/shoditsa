@@ -89,7 +89,7 @@ export function HeaderRoomMenu({ onCreateRoom, rooms }: { onCreateRoom: () => vo
         <span>
           <strong>{friendsRoomSummaryTitle(room)}</strong>
           <small>{friendsRoomPhaseLabel(room.phase)}</small>
-          <small><Users /> {room.players} из {room.capacity} · {room.isHost ? 'вы ведущий' : 'вы игрок'}</small>
+          <small><Users /> {room.players} из {room.capacity}, {room.isHost ? 'вы ведущий' : 'вы игрок'}</small>
         </span>
       </div>
       {actionError && <p className="header-room-dropdown__error" role="alert">{actionError}</p>}

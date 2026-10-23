@@ -17,6 +17,10 @@
 .result-persistence__copy p { margin: 0; color: var(--color-paper-muted); font: 400 14px/1.55 var(--font-body); }
 .result-persistence__action { align-self: center; }
 .result-persistence--saved { background: transparent; }
+.result-persistence.result-persistence--compact { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 0; }
+.result-persistence--compact .result-persistence__icon { width: 17px; height: 17px; background: transparent; }
+.result-persistence--compact .result-persistence__icon svg { width: 17px; height: 17px; }
+.result-persistence--compact .result-persistence__copy strong { color: var(--color-muted); font-size: 12px; font-weight: 500; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-persistence { border-color: var(--color-line); background: var(--color-paper); }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-persistence--saved { border: 0; padding-inline: 0; background: transparent; }
 @media (max-width: 850px) {

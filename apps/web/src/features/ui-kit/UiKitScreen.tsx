@@ -93,9 +93,9 @@ const sections = [
 const movieTicket = CATEGORY_TICKET_CONFIG.find((item) => item.mode === 'movie')!
 const seriesTicket = CATEGORY_TICKET_CONFIG.find((item) => item.mode === 'series')!
 const searchExamples = [
-  { id: '1', title: 'Ветер крепчает', meta: '2013 · драма' },
-  { id: '2', title: 'Унесённые призраками', meta: '2001 · фэнтези' },
-  { id: '3', title: 'Ходячий замок', meta: '2004 · приключения' },
+  { id: '1', title: 'Ветер крепчает', meta: '2013, драма' },
+  { id: '2', title: 'Унесённые призраками', meta: '2001, фэнтези' },
+  { id: '3', title: 'Ходячий замок', meta: '2004, приключения' },
 ]
 
 const leaderboardFixture: PackLeaderboardResponse = {
@@ -117,17 +117,17 @@ const finalCandidate = (id: string, titleRu: string, titleOriginal: string, year
   primaryMeta: year,
   facts: [
     { key: 'countries', value: countries, ariaLabel: `Страны: ${countries}` },
-    { key: 'genres', value: 'фантастика · драма', ariaLabel: 'Жанры: фантастика, драма' },
+    { key: 'genres', value: 'фантастика, драма', ariaLabel: 'Жанры: фантастика, драма' },
     { key: 'runtime_rating', value: runtime, ariaLabel: `Хронометраж и рейтинг: ${runtime}` },
   ],
 })
 
 const finalChoiceFixture: FinalChoiceSnapshot = {
   candidates: [
-    finalCandidate('arrival', 'Прибытие', 'Arrival', '2016', 'США · Канада', '116 мин · КП 7,6'),
-    finalCandidate('interstellar', 'Интерстеллар', 'Interstellar', '2014', 'США · Великобритания', '169 мин · КП 8,7'),
-    finalCandidate('contact', 'Контакт', 'Contact', '1997', 'США', '150 мин · КП 7,9'),
-    finalCandidate('moon', 'Луна 2112', 'Moon', '2009', 'Великобритания', '97 мин · КП 7,6'),
+    finalCandidate('arrival', 'Прибытие', 'Arrival', '2016', 'США, Канада', '116 мин, КП 7,6'),
+    finalCandidate('interstellar', 'Интерстеллар', 'Interstellar', '2014', 'США, Великобритания', '169 мин, КП 8,7'),
+    finalCandidate('contact', 'Контакт', 'Contact', '1997', 'США', '150 мин, КП 7,9'),
+    finalCandidate('moon', 'Луна 2112', 'Moon', '2009', 'Великобритания', '97 мин, КП 7,6'),
   ],
   displayKeys: ['countries', 'genres', 'runtime_rating'],
   choicesRemaining: 1,
@@ -240,7 +240,7 @@ export default function UiKitScreen() {
     <header className="ui-kit-topbar">
       <a className="ui-kit-topbar__brand" href="/" aria-label="Сходится! — на главную"><BrandLogo /></a>
       <span className="ui-kit-topbar__rule" aria-hidden="true" />
-      <div className="ui-kit-topbar__title"><small>Система интерфейса</small><strong>UI KIT · 1.0</strong></div>
+      <div className="ui-kit-topbar__title"><small>Система интерфейса</small><strong>UI KIT, 1.0</strong></div>
       <a className="ui-kit-topbar__exit" href="/">К проекту <ArrowUpRight /></a>
     </header>
 
@@ -249,7 +249,7 @@ export default function UiKitScreen() {
 
       <section className="ui-kit-hero" aria-labelledby="ui-kit-title">
         <div>
-          <span className="ui-kit-eyebrow">ЖИВАЯ ВИТРИНА · СХОДИТСЯ!</span>
+          <span className="ui-kit-eyebrow">ЖИВАЯ ВИТРИНА, СХОДИТСЯ!</span>
           <h1 id="ui-kit-title">Система<br />интерфейса</h1>
           <p>Канонические токены, компоненты и состояния пользовательской части проекта. Всё на этой странице собрано из рабочего UI-кита.</p>
         </div>
@@ -290,7 +290,7 @@ export default function UiKitScreen() {
               <BrandWordmark variant="compact" effect="iridescent" />
             </div>
             <div className="ui-kit-icon-sample">
-              <h3>Иконки · ReferenceIcon</h3>
+              <h3>Иконки, ReferenceIcon</h3>
               <ul aria-label="Примеры смысловых иконок">
                 {([
                   ['movie', 'Кино'], ['anime', 'Аниме'], ['animal', 'Животные'],
@@ -305,23 +305,23 @@ export default function UiKitScreen() {
             <SectionTitle index="02" title="Типографика" description="Nunito — основной текст и интерфейс. Manrope — заголовки игровых разделов. Caveat — рукописные акценты. PT Mono — загадки и технические значения." />
             <div className="ui-kit-type-grid">
               <article className="ui-kit-type-card ui-kit-type-card--display">
-                <span>Заголовок · Nunito</span>
+                <span>Заголовок, Nunito</span>
                 <strong>Маленькое открытие каждый день</strong>
                 <p>Обычный регистр, выразительный вес</p>
               </article>
               <article className="ui-kit-type-card ui-kit-type-card--body">
-                <span>Интерфейс · Nunito</span>
+                <span>Интерфейс, Nunito</span>
                 <strong>Сверяйте подсказки после каждой попытки</strong>
                 <p>Основной текст остаётся спокойным и функциональным. Выделение строится на весе, размере и контрасте.</p>
               </article>
               <article className="ui-kit-type-card ui-kit-type-card--script">
-                <span>Акцент · Caveat</span>
+                <span>Акцент, Caveat</span>
                 <strong>Любопытство — уже половина разгадки</strong>
                 <p>Только для коротких заметок, не для правил и форм</p>
               </article>
               <article className="ui-kit-type-card ui-kit-type-card--mono">
-                <span>Данные · PT Mono</span>
-                <strong>03 / 10 · 12:45</strong>
+                <span>Данные, PT Mono</span>
+                <strong>03 / 10, 12:45</strong>
                 <p>Числа, счётчики и небольшие значения</p>
               </article>
             </div>
@@ -388,7 +388,7 @@ export default function UiKitScreen() {
                 >
                   {(close) => <>
                     <GameOption title="Период" description="Игра по маршруту из семи дней" icon={<Ticket />} status={{ label: 'Доступно', tone: 'available', icon: <Check /> }} selected={launchMode === 'period'} onSelect={() => { setLaunchMode('period'); close() }} />
-                    <GameOption title="Свободная игра" description="Без дневного ограничения" icon={<Infinity />} status={{ label: <>Открыть · 99</>, tone: 'unlockable', icon: <Ticket /> }} selected={launchMode === 'free'} onSelect={() => { setLaunchMode('free'); close() }} />
+                    <GameOption title="Свободная игра" description="Без дневного ограничения" icon={<Infinity />} status={{ label: <>Открыть за 99</>, tone: 'unlockable', icon: <Ticket /> }} selected={launchMode === 'free'} onSelect={() => { setLaunchMode('free'); close() }} />
                   </>}
                 </GameOptionSelect>}
               />
@@ -398,7 +398,7 @@ export default function UiKitScreen() {
               </div>
             </div>
             <div className="ui-kit-specimen ui-kit-launch">
-              <div className="ui-kit-specimen__label"><span>Компактный запуск на стартовой странице</span><code>46 px · compact</code></div>
+              <div className="ui-kit-specimen__label"><span>Компактный запуск на стартовой странице</span><code>46 px, compact</code></div>
               <GameLaunchControls mode="movie" density="compact"
                 action={<ActionButton size="compact"><Play />Начать игру</ActionButton>}
                 option={<GameOptionAction label="Период" labelIcon={<CalendarDays />} value="Все годы" endLabel={<><Ticket />15</>} onClick={() => setModalOpen(true)} />}
@@ -407,7 +407,7 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="forms">
-            <SectionTitle index="06" title="Поля и поиск" description="Поля, подписи и поиск имеют единые состояния фокуса, ошибок и клавиатурной навигации." component="FormField · SearchCombobox" />
+            <SectionTitle index="06" title="Поля и поиск" description="Поля, подписи и поиск имеют единые состояния фокуса, ошибок и клавиатурной навигации." component="FormField, SearchCombobox" />
             <div className="ui-kit-specimen ui-kit-specimen--dark">
               <div className="search-area ui-kit-search">
                 <label htmlFor="ui-kit-search-input">Найти фильм или сериал</label>
@@ -467,7 +467,7 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="tickets">
-            <SectionTitle index="07" title="Билеты прежнего интерфейса" description="Сохранённые компоненты для совместимости: корешок, перфорация и режимный цвет. Новые публичные экраны используют карточки reference-темы." component="CategoryTicket · AdmissionTitleTicket" />
+            <SectionTitle index="07" title="Билеты прежнего интерфейса" description="Сохранённые компоненты для совместимости: корешок, перфорация и режимный цвет. Новые публичные экраны используют карточки reference-темы." component="CategoryTicket, AdmissionTitleTicket" />
             <details className="ui-kit-legacy-examples"><summary>Показать исторические компоненты</summary>
             <div className="category-grid category-grid--active ui-kit-ticket-grid">
               <CategoryTicket {...movieTicket} poolCount={500} status="new" attempts={null} onClick={() => undefined} />
@@ -529,7 +529,7 @@ export default function UiKitScreen() {
             </div>
             <div className="ui-kit-connections-result">
               <div className="ui-kit-specimen__label">
-                <span>Завершённая игра · восстановленный результат</span>
+                <span>Завершённая игра, восстановленный результат</span>
                 <code>desktop / mobile</code>
               </div>
               <ConnectionsResult
@@ -550,7 +550,7 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="result-actions">
-            <SectionTitle index="10" title="Результат игры" description="Универсальная карточка ведёт от результата к награде, следующей игре и сохранению прогресса. На телефоне вторичные действия сворачиваются в один спокойный уровень." component="GameResult · ResultActionBar" />
+            <SectionTitle index="10" title="Результат игры" description="Универсальная карточка ведёт от результата к награде, следующей игре и сохранению прогресса. На телефоне вторичные действия сворачиваются в один спокойный уровень." component="GameResult, ResultActionBar" />
             <div className="ui-kit-preview-controls">
               <Tabs label="Исход игры" value={resultPreview} onChange={setResultPreview} items={[{ id: 'won', label: 'Победа' }, { id: 'lost', label: 'Ответ открыт' }]} />
               <Tabs label="Состояние аккаунта" value={accountPreview} onChange={setAccountPreview} items={[{ id: 'guest', label: 'Гость' }, { id: 'authenticated', label: 'В аккаунте' }]} />
@@ -562,7 +562,7 @@ export default function UiKitScreen() {
                 attempts={4}
                 poster={<img src={publicAssetUrl('images/category-stubs/movie-stub.webp')} alt="Постер демонстрационного результата" />}
                 title="Джон Ф. Кеннеди: выстрелы в Далласе"
-                meta="JFK · 1991 · триллер"
+                meta="JFK, 1991, триллер"
                 tags={['триллер', 'драма', 'история']}
                 completedToday={4}
                 nextRewardText="До полного маршрута: ещё 6"
@@ -601,7 +601,7 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="feedback">
-            <SectionTitle index="12" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
+            <SectionTitle index="12" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback, Progress, Tabs" />
             {APPLICATION_DESIGN && <BrandLoader inline />}
             <div className="ui-kit-feedback-grid">
               <InlineAlert tone="success"><strong>Подсказка открыта.</strong> Режиссёр также работал над известной научно-фантастической картиной.</InlineAlert>
@@ -630,7 +630,7 @@ export default function UiKitScreen() {
               <ActionButton variant="secondary" onClick={() => setModalOpen(true)}>Открыть пример</ActionButton>
             </div>
             <div className="ui-kit-modal-demo">
-              <div><span>Нижняя панель · BottomSheet</span><p>Короткая задача поверх текущего экрана. Содержимое прокручивается отдельно, действие остаётся снизу. Escape закрывает панель и возвращает фокус.</p></div>
+              <div><span>Нижняя панель, BottomSheet</span><p>Короткая задача поверх текущего экрана. Содержимое прокручивается отдельно, действие остаётся снизу. Escape закрывает панель и возвращает фокус.</p></div>
               <ActionButton variant="secondary" onClick={() => setSheetOpen(true)}>Открыть нижнюю панель</ActionButton>
             </div>
             <div className="ui-kit-modal-demo">
@@ -638,12 +638,12 @@ export default function UiKitScreen() {
               <ActionButton variant="secondary" onClick={() => setClubOfferOpen(true)}>Открыть оффер Клуба</ActionButton>
             </div>
             <div className="ui-kit-feedback-stack" aria-label="Пример строк выбора">
-              <SelectionRow title="Сегодняшняя игра" description="Строка списка · выбранное состояние" selected={selectedRow === 'daily'} aria-pressed={selectedRow === 'daily'} onClick={() => setSelectedRow('daily')} />
-              <SelectionRow title="Прошлая игра с длинным названием, которое переносится на небольшом экране" description="SelectionRow · обычное состояние" selected={selectedRow === 'archive'} aria-pressed={selectedRow === 'archive'} onClick={() => setSelectedRow('archive')} />
+              <SelectionRow title="Сегодняшняя игра" description="Строка списка, выбранное состояние" selected={selectedRow === 'daily'} aria-pressed={selectedRow === 'daily'} onClick={() => setSelectedRow('daily')} />
+              <SelectionRow title="Прошлая игра с длинным названием, которое переносится на небольшом экране" description="SelectionRow, обычное состояние" selected={selectedRow === 'archive'} aria-pressed={selectedRow === 'archive'} onClick={() => setSelectedRow('archive')} />
             </div>
           </section>
           <section className="ui-kit-section" id="poster-tickets" aria-label="Билеты-афиши">
-            <SectionTitle index="—" title="Билеты-афиши" description="Локальное направление «Афиша»: крупная иллюстрация, читаемое описание и три состояния игры." component="CategoryTicket · layout=poster" />
+            <SectionTitle index="—" title="Билеты-афиши" description="Локальное направление «Афиша»: крупная иллюстрация, читаемое описание и три состояния игры." component="CategoryTicket, layout=poster" />
             <details className="ui-kit-legacy-examples"><summary>Показать предыдущий вариант</summary>
             <div className="ui-kit-poster-grid">
               <CategoryTicket {...movieTicket} watermarkUrl={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')} layout="poster" poolCount={500} status="new" attempts={null} onClick={() => undefined} />
@@ -656,7 +656,7 @@ export default function UiKitScreen() {
       </div>
     </main>
 
-    <footer className="ui-kit-footer"><span>СХОДИТСЯ! · UI KIT</span><small>Живая система · 2026</small></footer>
+    <footer className="ui-kit-footer"><span>СХОДИТСЯ!, UI KIT</span><small>Живая система, 2026</small></footer>
 
     {clubOfferOpen && <StudyClubJoinDialog onClose={() => setClubOfferOpen(false)} />}
     {modalOpen && <Modal title="Общий зачёт" onClose={() => setModalOpen(false)}>

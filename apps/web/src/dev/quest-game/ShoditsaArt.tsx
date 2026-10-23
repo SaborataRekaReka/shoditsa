@@ -28,7 +28,7 @@ const art: Record<GlyphName, ReactNode> = {
     <path d="M12 11 5.4 11.5l.5 7.7c.4 4.6 4 7.1 9.7 6.3m20.5-14.7 6.4.8-.5 7.5c-.4 4.7-4.2 7.3-9.5 6.4" fill={color.peach} />
     <path d="m13 6 22.2.6-.8 13c-.5 8-4.6 12-10.2 12-6.2 0-10.3-4.6-10.7-12.4Z" fill={color.yellow} />
     <path d="m24 31 .1 8M16 42l16-.2" strokeWidth="4" />
-    <path d="m24 12 2.1 4.1 4.6.7-3.3 3.2.7 4.5-4.1-2.1-4 2.1.8-4.5-3.3-3.2 4.5-.7Z" fill={color.cream} strokeWidth="1.7" />
+    <path d="m20 19 3 3 6-7" fill="none" strokeWidth="2.5" />
     <path d="m7 3 1.7 2.1m32-2-1.7 2.1" />
   </>,
   quests: <>

@@ -10,5 +10,5 @@ export function getDailyReset(now = Date.now()) {
   const label = remainingMs < 60_000 ? '< 1 мин' : hours
     ? `${hours} ч${minutes % 60 ? ` ${minutes % 60} мин` : ''}`
     : `${minutes} мин`
-  return { date, resetAt, label }
+  return { date, resetAt, label, minutes, remainingFraction: remainingMs / 86_400_000 }
 }

@@ -6,10 +6,6 @@ import type { TitleMode } from '../../types'
 import { CATALOG_ENTRY_PRESENTATION } from './catalog-entry-presentation'
 import './CatalogEntryHero.css'
 
-function SceneSpark({ className = '' }: { className?: string }) {
-  return <svg className={`entry-scene__spark ${className}`} width="26" height="30" viewBox="0 0 26 30" fill="none"><path d="m13 2 2.8 9.2L24 15l-8.2 3.8L13 28l-2.8-9.2L2 15l8.2-3.8L13 2Z" fill="currentColor" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
-}
-
 function HeroScene({ mode }: { mode: TitleMode }) {
   return <div className="entry-scene" aria-hidden="true">
     <div className="entry-scene__mascot">
@@ -18,12 +14,10 @@ function HeroScene({ mode }: { mode: TitleMode }) {
         <Mascot className="entry-scene__think" pose="think" width={1254} height={1254} draggable={false} />
         <Mascot className="entry-scene__celebrate" pose="celebrate" width={1254} height={1254} draggable={false} />
       </div>
-      <SceneSpark className="entry-scene__spark--mascot" />
     </div>
     <div className="entry-scene__cinema">
       <span className="entry-scene__lilac" />
       <GameArtwork mode={mode} alt="" width="250" height="250" draggable={false} />
-      <SceneSpark className="entry-scene__spark--cinema" />
     </div>
   </div>
 }

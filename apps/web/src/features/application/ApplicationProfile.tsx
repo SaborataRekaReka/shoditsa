@@ -2,7 +2,7 @@ import { PageHeading } from '../../components/ui/PageHeading'
 import { InlineAlert } from '../../components/ui'
 import { QuestButton } from '../../components/ui/QuestPrimitives'
 import { useApplicationGames } from './useApplicationGames'
-import { StudyProfileIllustration } from '../../dev/quest-game/StudyProfileArt'
+import { UserAvatar } from '../../components/ui/UserAvatar'
 import { GeneratedShoditsaGlyph as Glyph } from '../../dev/quest-game/GeneratedShoditsaArt'
 import { useStudyPlayer } from '../../dev/quest-game/study-player'
 import { studyAccountHref } from '../../dev/quest-game/account-routing'
@@ -16,7 +16,7 @@ export function ApplicationProfile() {
   const signedIn = !!user && !user.isAnonymous
   const completed = games.filter(game => ['won', 'lost'].includes(game.status))
   return <section className="application-profile" aria-labelledby="application-profile-title">
-    <PageHeading id="application-profile-title" title={signedIn ? user.name || 'Игрок' : 'Гость'} description={signedIn ? 'Твой профиль и результаты игр.' : 'Прогресс сохраняется в этом браузере.'} illustration={<StudyProfileIllustration />} />
+    <PageHeading id="application-profile-title" title={signedIn ? user.name || 'Игрок' : 'Гость'} description={signedIn ? 'Твой профиль и результаты игр.' : 'Прогресс сохраняется в этом браузере.'} illustration={<UserAvatar size="large" name={signedIn ? user.name : null} src={signedIn ? user.avatarUrl : null} />} />
     {error && <InlineAlert tone="danger"><span>Не удалось обновить статистику.</span><QuestButton kind="text" onClick={retry}>Повторить загрузку</QuestButton></InlineAlert>}
     <div className="application-stat-grid">{[
       { icon: 'flame', value: player.streak, label: 'Дней подряд' },

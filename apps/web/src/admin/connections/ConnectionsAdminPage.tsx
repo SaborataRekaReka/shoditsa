@@ -150,7 +150,7 @@ export function ConnectionsAdminPage({
   return <div className="connections-admin">
     <header className="connections-admin__head">
       <div>
-        <span>Ежедневная игра · hosted</span>
+        <span>Ежедневная игра, hosted</span>
         <h1><Grid2X2 /> Связи</h1>
         <p>Импортируйте раунды, проверьте четыре группы и управляйте immutable-расписанием.</p>
       </div>
@@ -166,7 +166,7 @@ export function ConnectionsAdminPage({
 
     <section className="connections-admin__metrics" aria-label="Сводка режима">
       <article><small>Раундов active</small><strong>{rounds.data?.items.length ?? '—'}</strong><span>готовый контент</span></article>
-      <article><small>Запас без пропусков</small><strong>{analytics.data?.contiguousScheduledDays ?? '—'}</strong><span>дней с сегодня · цель {analytics.data?.reserveTarget ?? 14}</span></article>
+      <article><small>Запас без пропусков</small><strong>{analytics.data?.contiguousScheduledDays ?? '—'}</strong><span>дней с сегодня, цель {analytics.data?.reserveTarget ?? 14}</span></article>
       <article><small>Сыграно</small><strong>{analytics.data?.played ?? '—'}</strong><span>сеансов</span></article>
       <article><small>Средние ошибки</small><strong>{analytics.data ? analytics.data.averageMistakes.toFixed(1) : '—'}</strong><span>на сеанс</span></article>
       <article><small>Подсказки</small><strong>{analytics.data ? analytics.data.averageHints.toFixed(1) : '—'}</strong><span>на сеанс</span></article>
@@ -185,7 +185,7 @@ export function ConnectionsAdminPage({
         <button className="connections-admin__drop" onClick={() => input.current?.click()}>
           {previewImport.isPending ? <LoaderCircle className="is-spinning" /> : <Upload />}
           <strong>{fileName || 'Выбрать connections JSON'}</strong>
-          <small>Формат version 1 · исходный файл преобразуется автоматически</small>
+          <small>Формат version 1, исходный файл преобразуется автоматически</small>
         </button>
         <input ref={input} type="file" accept="application/json,.json" hidden onChange={(event) => {
           void loadFile(event.currentTarget.files?.[0])
@@ -194,11 +194,11 @@ export function ConnectionsAdminPage({
         {preview && <div className="connections-admin__preview">
           <div className={preview.summary.invalid ? 'is-error' : 'is-valid'}>
             {preview.summary.invalid ? <CircleAlert /> : <BadgeCheck />}
-            <span><strong>{preview.summary.valid}/{preview.summary.total} готовы</strong><small>{preview.summary.warnings} предупреждений · {preview.summary.invalid} ошибок</small></span>
+            <span><strong>{preview.summary.valid}/{preview.summary.total} готовы</strong><small>{preview.summary.warnings} предупреждений, {preview.summary.invalid} ошибок</small></span>
           </div>
           <div>{preview.items.map((item) => <article key={item.id}>
             <span className={item.valid ? 'is-valid' : 'is-error'}>{item.valid ? <BadgeCheck /> : <CircleAlert />}</span>
-            <div><strong>{item.title}</strong><small>{item.id}</small>{item.issues.length > 0 && <p>{item.issues.map((issue) => issue.message).join(' · ')}</p>}</div>
+            <div><strong>{item.title}</strong><small>{item.id}</small>{item.issues.length > 0 && <p>{item.issues.map((issue) => issue.message).join(', ')}</p>}</div>
           </article>)}</div>
           <button className="admin-btn admin-btn--primary" disabled={preview.summary.invalid > 0 || applyImport.isPending} onClick={() => applyImport.mutate()}>
             {applyImport.isPending ? <LoaderCircle /> : <Upload />} В рабочую версию
@@ -216,7 +216,7 @@ export function ConnectionsAdminPage({
         <div className="connections-admin__ready">
           {readyRounds.length ? readyRounds.map((round, index) => <label key={round.itemVersionId}>
             <input type="checkbox" checked={selected.has(round.itemVersionId)} onChange={() => toggle(round.itemVersionId)} />
-            <span><strong>{round.titleRu}</strong><small>{addDays(startDate, index)} · {String(round.payload.difficulty ?? '—')}</small></span>
+            <span><strong>{round.titleRu}</strong><small>{addDays(startDate, index)}, {String(round.payload.difficulty ?? '—')}</small></span>
           </label>) : <p>Новых готовых раундов нет. Ранее назначенные раунды не показываются повторно — даже после отмены или обновления версии.</p>}
         </div>
         <button className="admin-btn admin-btn--primary" disabled={!selected.size || bulkSchedule.isPending} onClick={() => bulkSchedule.mutate()}>
@@ -226,7 +226,7 @@ export function ConnectionsAdminPage({
     </div>
 
     <section className="admin-panel connections-admin__calendar">
-      <header><div><span>Следующие 60 дней · ближайший пропуск {analytics.data?.nearestGap ?? '—'}</span><h2>Расписание</h2></div><CalendarDays /></header>
+      <header><div><span>Следующие 60 дней, ближайший пропуск {analytics.data?.nearestGap ?? '—'}</span><h2>Расписание</h2></div><CalendarDays /></header>
       <div>{schedule.data?.items.length ? schedule.data.items.map((item) => <article key={item.puzzleDate} className={item.cancelledAt ? 'is-cancelled' : ''}>
         <time>{new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short', weekday: 'short' }).format(new Date(`${item.puzzleDate}T12:00:00Z`))}</time>
         <span><strong>{item.titleRu}</strong><small>{item.itemId}</small></span>
@@ -241,7 +241,7 @@ export function ConnectionsAdminPage({
         const warnings = round.issues.filter((issue) => issue.severity === 'warning')
         return <button key={round.itemId} onClick={() => onEdit(round.itemId)}>
           <span className={errors.length ? 'is-error' : 'is-valid'}>{errors.length ? <CircleAlert /> : <BadgeCheck />}</span>
-          <span><strong>{round.titleRu}</strong><small>{round.itemId} · {String(round.payload.difficulty ?? '—')}</small>{warnings.length > 0 && <p>{warnings.map((issue) => issue.message).join(' · ')}</p>}</span>
+          <span><strong>{round.titleRu}</strong><small>{round.itemId}, {String(round.payload.difficulty ?? '—')}</small>{warnings.length > 0 && <p>{warnings.map((issue) => issue.message).join(', ')}</p>}</span>
           <b>{errors.length ? `${errors.length} ошибок` : round.contentStatus}</b>
         </button>
       })}</div>

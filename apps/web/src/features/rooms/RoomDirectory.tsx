@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowRight, Check, Copy, Crown, DoorOpen, History, LogOut, Plus, UsersRound, X } from 'lucide-react'
+import { ArrowRight, Check, Copy, Crown, DoorOpen, History, LogOut, UsersRound, X } from 'lucide-react'
 import { QuestButton, QuestOptionGroup } from '../../components/ui/QuestPrimitives'
 import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { publicAssetUrl } from '../../app/public-asset'
@@ -15,14 +15,13 @@ type Props = {
   copiedId: string | null
   onCopy: (room: DirectoryRoom) => void
   onLeave: (room: DirectoryRoom) => void
-  onCreate: () => void
 }
 const dateLabel = (value: string) => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? '' : new Intl.DateTimeFormat('ru', { day: 'numeric', month: 'short', timeZone: 'Europe/Moscow' }).format(date)
 }
 
-function RoomDirectoryRow({ room, busy, hasCurrentRoom, copiedId, onCopy, onLeave }: Omit<Props, 'rooms' | 'onCreate'> & { room: DirectoryRoom }) {
+function RoomDirectoryRow({ room, busy, hasCurrentRoom, copiedId, onCopy, onLeave }: Omit<Props, 'rooms'> & { room: DirectoryRoom }) {
   const current = isCurrentRoom(room)
   const rejoin = canRejoinRoom(room)
   const rejoinHref = room.gameType === 'svoyak' && room.phase === 'lobby' ? `/svoyak/join/${room.code}` : roomDirectoryHref(room)
@@ -52,7 +51,6 @@ export function RoomDirectory(props: Props) {
   const recent = visible.filter(room => !isCurrentRoom(room))
   const row = (room: DirectoryRoom) => <RoomDirectoryRow key={room.id} {...props} room={room} />
   return <section className="room-lobby-directory" aria-label="Комнаты">
-    {!props.hasCurrentRoom && <QuestButton className="room-directory-create" kind="outline" size="compact" onClick={props.onCreate}><Plus size={17} />Новая комната</QuestButton>}
     {props.rooms.length > 1 && <QuestOptionGroup label="Какие комнаты показать" value={filter} options={[{ value: 'all', label: 'Все' }, { value: 'host', label: 'Созданы тобой' }, { value: 'player', label: 'Ты игрок' }]} onChange={setFilter} />}
     {current.length > 0 && <div className="room-directory-group"><ul aria-label="Текущие комнаты">{current.map(row)}</ul></div>}
     {recent.length > 0 && <div className="room-directory-group"><h3><History size={15} aria-hidden="true" />Недавние</h3><ul aria-label="Недавние комнаты">{recent.map(row)}</ul><p className="room-directory-note">Здесь хранятся последние 30 комнат. Доступные комнаты можно открыть снова.</p></div>}

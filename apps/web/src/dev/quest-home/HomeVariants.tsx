@@ -1,7 +1,7 @@
 import { GameArtwork } from '../../components/ui/GameArtwork'
 import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { useState } from 'react'
-import { ArrowDown, ArrowRight, Clock3, ChevronDown } from 'lucide-react'
+import { ArrowDown, ArrowRight, ChevronDown } from 'lucide-react'
 import { CATALOG_GUESS_MODE_IDS } from '@shoditsa/contracts'
 import type { MetaResponse } from '@shoditsa/contracts'
 import { useStudyAccountCache } from '../quest-game/study-account-cache'
@@ -101,10 +101,11 @@ function HomeFooter() {
 
 export function HomeVariants({ variant, onNavigate, onSettings }: { variant: HomeVariant; clubPreview?: boolean; onNavigate?: (view: StudyView) => void; onSettings?: () => void }) {
   const [guideOpen, setGuideOpen] = useState(false)
-  const { date, label: resetLabel } = useDailyReset()
+  const { date, label: resetLabel, minutes: resetMinutes, remainingFraction } = useDailyReset()
   const availability = useGameAvailability(date)
   const meta = useStudyAccountCache<MetaResponse>(['meta'])
   const territoryEnabled = meta?.features.territoryEnabled === true
+  const gameCount = games.length + Number(SVOYAK_ENABLED) + Number(territoryEnabled)
   return <>
     <div className={`qg-app hs-app hs-app--${variant}`}>
       <a className="hs-skip" href="#home-main">Перейти к играм</a>
@@ -113,8 +114,11 @@ export function HomeVariants({ variant, onNavigate, onSettings }: { variant: Hom
           <Hero variant={variant} onAbout={() => setGuideOpen(true)} />
           {variant === 'c' ? <div className="hs-worlds" id="home-games"><nav className="hs-world-jumps" aria-label="Игры по интересам">{worlds.map(world => <a href={`#world-${world.id}`} key={world.id}>{world.title}<ArrowDown size={14} /></a>)}</nav>{worlds.map(world => <section className={`hs-world hs-world--${world.id}`} id={`world-${world.id}`} key={world.id} aria-labelledby={`world-heading-${world.id}`}><header><span>{String(worlds.indexOf(world) + 1).padStart(2, '0')}</span><h2 id={`world-heading-${world.id}`}>{world.title}</h2><p>{world.subtitle}</p><img src={asset(`home-doodle/${world.art}.webp`)} alt="" width="120" height="120" loading="lazy" /></header><div>{world.modes.map(mode => <GameCard key={mode} game={games.find(game => game.mode === mode)!} variant={variant} availability={availability[mode]} />)}</div></section>)}</div> : <section className="hs-catalogue" id="home-games" aria-labelledby="home-games-heading">
             <div className="hs-section-heading">
-              <div className="hs-catalogue-title"><h2 id="home-games-heading">Выбери свою игру</h2><span className="hs-game-count">{games.length + Number(SVOYAK_ENABLED) + Number(territoryEnabled)} игр</span></div>
-              <span className="hs-catalogue-reset" role="timer" aria-live="off" aria-label={`До новых загадок ${resetLabel}`} title="Новые ежедневные загадки в 00:00 МСК"><Clock3 size={18} aria-hidden="true" /><span><small>Новые загадки через</small><strong>{resetLabel}</strong></span></span>
+              <div className="hs-catalogue-title"><h2 id="home-games-heading">Выбери свою игру</h2><sup className="hs-game-count" aria-label={`${gameCount} игр`}>{gameCount}</sup></div>
+              <span className="hs-catalogue-reset" role="timer" aria-live="off" aria-label={`До новых загадок ${resetLabel}`} title={`Новые загадки через ${resetLabel}. Обновление в 00:00 МСК`}>
+                <svg viewBox="0 0 48 48" aria-hidden="true"><circle className="hs-reset-track" cx="24" cy="24" r="21" /><circle className="hs-reset-progress" cx="24" cy="24" r="21" pathLength="100" strokeDasharray={`${remainingFraction * 100} 100`} /></svg>
+                <span aria-hidden="true"><strong>{resetMinutes >= 60 ? Math.ceil(resetMinutes / 60) : resetMinutes}</strong><small>{resetMinutes >= 60 ? 'ч' : 'мин'}</small></span>
+              </span>
             </div>
             <nav className="hs-catalogue-jumps" aria-label="Категории игр">
               {catalogueGroups.map(group => <a key={group.id} href={`#home-${group.id}`}>{group.title}<span>{group.games.length}</span></a>)}

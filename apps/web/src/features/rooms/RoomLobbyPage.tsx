@@ -2,7 +2,7 @@ import { ApplicationDialog } from '../application/ApplicationDialog'
 import { lazy, Suspense, useContext, useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { MeResponse, MetaResponse } from '@shoditsa/contracts'
-import { ArrowRight, KeyRound } from 'lucide-react'
+import { ArrowRight, ChevronDown, History, KeyRound } from 'lucide-react'
 import { ApplicationFrame } from '../application/ApplicationFrame'
 import { PageHeading } from '../../components/ui/PageHeading'
 import { InlineAlert } from '../../components/ui'
@@ -54,11 +54,11 @@ export default function RoomLobbyPage() {
   const [error, setError] = useState('')
   const [joining, setJoining] = useState(false)
   const [leaving, setLeaving] = useState<DirectoryRoom | null>(null)
-  const [creating, setCreating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [copyFallback, setCopyFallback] = useState('')
   const directoryRooms = mergeRoomDirectory([...(rooms.data?.rooms ?? []), ...(SVOYAK_ENABLED ? svoyakRooms.data?.filter(isCurrentRoom) ?? [] : [])], [...(directory.data?.rooms ?? []), ...(SVOYAK_ENABLED ? svoyakRooms.data ?? [] : [])])
   const currentRoom = directoryRooms.find(isCurrentRoom)
+  const recentRooms = directoryRooms.filter(room => !isCurrentRoom(room))
   const leavePresentation = leaving ? roomLeavePresentation(leaving) : null
   const authenticationRequired = identity?.user.isAnonymous === true || access.status === 'auth-required' || rooms.error instanceof ApiClientError && rooms.error.status === 401
   const standardReady = !SERVER_RUNTIME || rooms.isSuccess || authenticationRequired
@@ -75,12 +75,6 @@ export default function RoomLobbyPage() {
   useEffect(() => {
     if (mode === 'territory' && meta && !meta.features.territoryEnabled) { setMode('quiz'); setSetup(current => ({ ...current, gameType: 'quiz' })) }
   }, [meta, mode])
-  useEffect(() => {
-    if (!creating || currentRoom) return
-    const section = document.getElementById('room-lobby-create')
-    section?.focus({ preventScroll: true })
-    section?.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
-  }, [creating, currentRoom])
   const copyInvitation = async (room: DirectoryRoom) => {
     const link = new URL(roomInvitationHref(room), window.location.origin).toString()
     setCopiedId(null); setCopyFallback('')
@@ -128,18 +122,18 @@ export default function RoomLobbyPage() {
     <PageHeading title="Лобби" description="Твои игры с друзьями: создай комнату или вернись к компании." actions={<QuestButton kind="outline" size="compact" onClick={() => setJoining(true)}><KeyRound size={17} />Есть код?</QuestButton>} />
     {error && !leaving && <InlineAlert tone="danger">{error}</InlineAlert>}
     {!currentRoom && access.status === 'error' && <InlineAlert tone="warning">Не удалось проверить клубный билет.<QuestButton kind="text" onClick={access.retry}>Повторить</QuestButton></InlineAlert>}
-    {directoryRooms.length > 0 && <RoomDirectory rooms={directoryRooms} busy={busy} hasCurrentRoom={Boolean(currentRoom)} copiedId={copiedId} onCopy={room => void copyInvitation(room)} onLeave={room => { setError(''); setLeaving(room) }} onCreate={() => setCreating(true)} />}
+    {currentRoom && <RoomDirectory rooms={directoryRooms.filter(isCurrentRoom)} busy={busy} hasCurrentRoom copiedId={copiedId} onCopy={room => void copyInvitation(room)} onLeave={room => { setError(''); setLeaving(room) }} />}
     {copiedId && <p className="room-directory-note room-directory-feedback" role="status">Приглашение скопировано — отправь ссылку друзьям.</p>}
     {copyFallback && <div className="room-directory-feedback"><InlineAlert tone="warning">Не удалось скопировать автоматически. Выдели и скопируй ссылку:<code>{copyFallback}</code></InlineAlert></div>}
     {!authenticationRequired && (currentRoom || rooms.isSuccess) && directory.isError && <div className="room-directory-feedback"><InlineAlert tone="warning">Не удалось загрузить недавние комнаты.<QuestButton kind="text" onClick={() => void directory.refetch()}>Повторить</QuestButton></InlineAlert></div>}
-    {!currentRoom && (!directoryReady ? <section className="room-lobby-config">{rooms.isError || svoyakRooms.isError ? <InlineAlert tone="warning">Не удалось проверить текущую комнату.<QuestButton kind="text" onClick={() => { void rooms.refetch(); if (SVOYAK_ENABLED) void svoyakRooms.refetch() }}>Повторить</QuestButton></InlineAlert> : <p role="status">Проверяем текущую комнату…</p>}</section> : (creating || !directoryRooms.length) && <section className="room-lobby-config" id="room-lobby-create" tabIndex={-1} aria-label="Настройка игры">
-      {directoryRooms.length > 0 && <h2 className="room-lobby-config-heading">Новая комната</h2>}
+    {!currentRoom && (!directoryReady ? <section className="room-lobby-config">{rooms.isError || svoyakRooms.isError ? <InlineAlert tone="warning">Не удалось проверить текущую комнату.<QuestButton kind="text" onClick={() => { void rooms.refetch(); if (SVOYAK_ENABLED) void svoyakRooms.refetch() }}>Повторить</QuestButton></InlineAlert> : <p role="status">Проверяем текущую комнату…</p>}</section> : <section className="room-lobby-config" id="room-lobby-create" tabIndex={-1} aria-label="Настройка игры">
       <RoomModePicker value={mode} territoryEnabled={meta?.features?.territoryEnabled === true} svoyakEnabled={SVOYAK_ENABLED} disabled={busy} onChange={next => { setMode(next); setError(''); if (next !== 'svoyak') setSetup(current => ({ ...current, gameType: next })); void navigateApplication(`${LOBBY_HREF}?mode=${next}`, true) }} />
       {mode === 'svoyak' ? <Suspense fallback={<p role="status">Загружаем настройки…</p>}><SvoyakRoomCreation beforeCreate={canCreateRoom} onBusyChange={setBusy} initialName={identity?.user.name ?? ''} allowed={access.allowed && access.status === 'ready'} unavailableAction={authenticationRequired ? <a className="quest-button quest-button--primary" href="/login?returnUrl=%2Flobby%3Fmode%3Dsvoyak">Войти и создать комнату<ArrowRight size={19} /></a> : access.status !== 'ready' ? <QuestButton disabled>{access.status === 'loading' ? 'Проверяем доступ…' : 'Доступ не проверен'}</QuestButton> : undefined} /></Suspense> : <>
         <RoomSetup value={setup} onChange={setSetup} hideModePicker compact disabled={busy} />
         <RoomCreationFooter summary={mode === 'quiz' ? `${setup.packs.length} ${setup.packs.length === 1 ? 'категория' : setup.packs.length < 5 ? 'категории' : 'категорий'}, ${setup.roundsTotal} раундов` : mode === 'territory' ? 'Дуэль на двоих' : 'Расследование для компании'}>{authenticationRequired ? <a className="quest-button quest-button--primary" href="/login?returnUrl=%2Flobby">Войти и создать комнату<ArrowRight size={19} /></a> : access.status === 'ready' ? access.allowed ? <QuestButton onClick={() => void createRoom()} disabled={busy}>{busy ? 'Создаём комнату…' : 'Создать комнату'}<ArrowRight size={19} /></QuestButton> : <a className="quest-button quest-button--primary" href={STUDY_CLUB_OFFER_HREF}>Открыть с Клубом<ArrowRight size={19} /></a> : <QuestButton disabled>{access.status === 'loading' ? 'Проверяем доступ…' : 'Доступ не проверен'}</QuestButton>}</RoomCreationFooter>
       </>}
     </section>)}
+    {recentRooms.length > 0 && <details className="room-lobby-history"><summary><History size={17} aria-hidden="true" /><span>История комнат</span><small>{recentRooms.length}</small><ChevronDown size={17} aria-hidden="true" /></summary><RoomDirectory rooms={recentRooms} busy={busy} hasCurrentRoom={Boolean(currentRoom)} copiedId={copiedId} onCopy={room => void copyInvitation(room)} onLeave={room => { setError(''); setLeaving(room) }} /></details>}
     {leaving && leavePresentation && <ApplicationDialog variant="confirmation" title={leavePresentation.title} description={leavePresentation.description} onClose={() => { if (!busy) setLeaving(null) }} footer={<><QuestButton kind="outline" disabled={busy} onClick={() => setLeaving(null)}>Остаться</QuestButton><QuestButton disabled={busy} onClick={() => void leaveRoom()}>{busy ? 'Выходим…' : leavePresentation.action}</QuestButton></>}>{error && <InlineAlert tone="danger">{error}</InlineAlert>}</ApplicationDialog>}
     {joining && <ApplicationDialog title="Войти в комнату" description={currentRoom ? 'Сначала выйди из текущей комнаты, чтобы присоединиться к другой компании.' : 'Попроси код у того, кто собирает компанию.'} onClose={() => setJoining(false)}><div className="room-lobby-join-dialog">{currentRoom ? <QuestButton kind="outline" onClick={() => { setJoining(false); setError(''); setLeaving(currentRoom) }}>Выйти из текущей комнаты</QuestButton> : <RoomJoinForm svoyakEnabled={SVOYAK_ENABLED} />}</div></ApplicationDialog>}
   </main></ApplicationFrame>

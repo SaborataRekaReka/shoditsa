@@ -110,9 +110,75 @@ html[data-quest-skin='shoditsa'] .rating-join__art { z-index: 1; }
   from { transform: translate3d(35%, -12%, 0) rotate(12deg); }
   to { transform: translate3d(-35%, 12%, 0) rotate(-14deg); }
 }
+/* Small invitations use a clear paper surface, coloured edges and slow ink.
+ * Background Gradient (Aceternity) and Gradient Text (Animate UI) are motion
+ * references; these layers are native CSS and use the site's violet / mint. */
+html[data-quest-skin='shoditsa'] .rating-join,
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini {
+  --invitation-paper: #f8f5ff;
+  --invitation-violet: #d1b8ff;
+  --invitation-mint: #a1edd5;
+  --invitation-ink-start: #493176;
+  --invitation-ink-end: #216656;
+  --promo-heading: #35274e;
+  --promo-copy: #504263;
+  --promo-link: #57368c;
+  background: var(--invitation-paper);
+  border: 1px solid #ddd0f1;
+}
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] .rating-join,
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] .qg-app .study-club-mini {
+  --invitation-paper: #262132;
+  --invitation-violet: #553a85;
+  --invitation-mint: #255c51;
+  --invitation-ink-start: #dcc3ff;
+  --invitation-ink-end: #a5ead4;
+  --promo-heading: #efe6ff;
+  --promo-copy: #ded3ec;
+  --promo-link: #d8bfff;
+  border-color: #58456f;
+}
+html[data-quest-skin='shoditsa'] .rating-join::before,
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::before {
+  inset: -35% -25%;
+  background: radial-gradient(ellipse 55% 60% at 85% 85%, var(--invitation-mint), transparent 100%), radial-gradient(ellipse 50% 70% at 10% 90%, var(--invitation-violet), transparent 100%);
+  opacity: 1;
+  animation: invitation-colour-drift 18s ease-in-out infinite alternate;
+}
+html[data-quest-skin='shoditsa'] .rating-join::after,
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::after {
+  inset: -25%;
+  background: radial-gradient(ellipse 35% 55% at 88% 35%, var(--invitation-violet), transparent 100%);
+  opacity: .55;
+  animation: invitation-colour-drift 23s ease-in-out -9s infinite alternate-reverse;
+}
+html[data-quest-skin='shoditsa'] .study-club-mini strong {
+  color: var(--quest-text);
+}
+html[data-quest-skin='shoditsa'] .rating-join h3 {
+  color: var(--promo-heading);
+  background: linear-gradient(110deg, var(--invitation-ink-start), var(--invitation-ink-end), var(--invitation-ink-start));
+  background-size: 250% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: invitation-ink-drift 16s ease-in-out infinite alternate;
+}
+@keyframes invitation-colour-drift {
+  from { transform: translate3d(-7%, 4%, 0) rotate(-8deg); }
+  to { transform: translate3d(8%, -6%, 0) rotate(10deg); }
+}
+@keyframes invitation-ink-drift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@media (forced-colors: active) {
+  html[data-quest-skin='shoditsa'] .rating-join h3 { background: none; -webkit-text-fill-color: currentColor; }
+}
 @media (prefers-reduced-motion: reduce) {
   html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero)::before,
   html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero)::after,
   html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::before,
   html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::after { animation: none; transition: none; }
+  html[data-quest-skin='shoditsa'] .rating-join h3 { animation: none; }
 }

@@ -116,7 +116,7 @@ export function TerritoryBoard({ map, ownership, players, currentMemberId, legal
         </g>
         {captured && celebration && <g key={celebration.serial} className="territory-board__celebration" transform={`translate(${captured.center[0]} ${captured.center[1] - captured.elevation})`} aria-hidden="true">
           <ellipse className="territory-board__capture-ring" rx="43" ry="23" />
-          {Array.from({ length: 7 }, (_, i) => <g key={i} transform={`rotate(${i * 51})`}><path className="territory-board__spark" d="M0-42L3-35L10-32L3-29L0-22L-3-29L-10-32L-3-35Z" /></g>)}
+          {Array.from({ length: 7 }, (_, i) => <g key={i} transform={`rotate(${i * 51})`}><circle className="territory-board__spark" cx="0" cy="-32" r="4" /></g>)}
           <text className="territory-board__reward" y="-53">+{captured.cell.value}</text>
         </g>}
       </svg>
@@ -124,7 +124,7 @@ export function TerritoryBoard({ map, ownership, players, currentMemberId, legal
     <footer className="territory-board__legend">
       {players.map((player, index) => <span key={player.userId}><i className={index === 0 ? 'is-mint' : 'is-violet'} />{player.userId === currentMemberId ? 'Твои земли' : player.displayName}</span>)}
       <span><i className="is-neutral" />Свободные</span>
-      <span><Flag size={14} />Столица · 3 башни</span>
+      <span><Flag size={14} />Столица, 3 башни</span>
       {zoomed && <small>Остров можно прокручивать влево и вправо</small>}
     </footer>
     <span className="territory-board__announcement" role="status">{captured ? `${ownership[captured.cell.id] === currentMemberId ? 'Твоя новая территория' : 'Соперник захватил территорию'}: ${captured.cell.value} очков.` : ''}</span>

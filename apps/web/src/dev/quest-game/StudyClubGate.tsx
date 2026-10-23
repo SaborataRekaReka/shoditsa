@@ -24,7 +24,7 @@ export function StudyClubGate({ access, onRetry }: Props) {
       <span className="club-library-gate-button" />
     </div>)}</div>
     <section className="club-library-gate-message" aria-labelledby="club-gate-title" aria-live="polite">
-      <div className="club-library-gate-medal"><img src={publicAssetUrl('images/mascot/club-v1.webp')} width="132" height="132" alt="" />{!waiting && !failed && <span><LockKeyhole size={20} aria-hidden="true" /></span>}</div>
+      <div className="club-library-gate-medal"><img src={publicAssetUrl('images/mascot/club-invitation-v1.webp')} width="132" height="132" alt="" />{!waiting && !failed && <span><LockKeyhole size={20} aria-hidden="true" /></span>}</div>
       <h2 id="club-gate-title">{waiting ? 'Готовим твой клуб' : failed ? 'Не удалось проверить билет' : guest ? 'Твоя клубная библиотека ждёт' : 'Открой больше любимых игр'}</h2>
       <p>{waiting ? 'Проверяем доступ к спецпоказам.' : failed ? 'Попробуй ещё раз — мы проверим твой доступ и покажем библиотеку.' : guest ? 'Войди в аккаунт, чтобы открыть свои спецпоказы. Клубный билет соберёт их все в одном месте.' : 'Тематические спецпоказы входят в клубный билет. Выбирай любимую тему и играй в своём ритме.'}</p>
       {failed ? <QuestButton onClick={onRetry}>Проверить ещё раз</QuestButton> : !waiting && <>

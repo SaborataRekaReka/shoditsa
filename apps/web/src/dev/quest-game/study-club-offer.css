@@ -1,0 +1,176 @@
+/* A Club invitation in the site's paper-and-meadow visual language.
+ * Only the garden moves. Copy, prices, controls and the whole mascot stay still. */
+.club-paywall {
+  --offer-pad: 26px;
+  --offer-sky: color-mix(in srgb, var(--quest-purple) 38%, var(--quest-bg));
+  --offer-hill: color-mix(in srgb, var(--quest-green-wash) 82%, var(--quest-bg));
+  --offer-leaf: color-mix(in srgb, var(--quest-green) 24%, var(--quest-green-wash));
+  --offer-stem: color-mix(in srgb, var(--quest-green) 60%, var(--quest-green-wash));
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  padding: var(--offer-pad);
+  border: 2px solid var(--quest-line);
+  border-bottom-width: 4px;
+  border-radius: 20px;
+  color: var(--quest-text);
+  background: var(--quest-bg);
+}
+.club-paywall > .club-paywall__heading {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 224px);
+  align-items: center;
+  gap: 14px;
+  min-height: 242px;
+  margin: calc(-1 * var(--offer-pad)) calc(-1 * var(--offer-pad)) 24px;
+  padding: 30px var(--offer-pad) 22px;
+  background: linear-gradient(115deg, var(--offer-sky), var(--quest-bg) 58%, color-mix(in srgb, var(--quest-green-wash) 48%, var(--quest-bg)));
+}
+.club-paywall__copy { position: relative; z-index: 1; padding-block: 12px; min-width: 0; }
+.club-paywall__eyebrow { display: block; margin-bottom: 12px; color: var(--quest-blue); font: 700 11px/1.4 var(--quest-font); letter-spacing: .06em; text-transform: uppercase; }
+.club-paywall .club-paywall__heading h2 { margin: 0; color: var(--quest-text); font: 800 32px/1.12 var(--quest-heading); letter-spacing: -.025em; }
+.club-paywall__heading h2 em { display: block; margin-top: 4px; color: var(--quest-blue); font-size: .87em; font-style: normal; }
+.club-paywall .club-paywall__heading p { margin: 16px 0 0; color: var(--quest-muted); font: 400 13px/1.65 var(--quest-font); }
+.club-paywall__mascot { position: relative; z-index: 1; display: block; grid-column: 2; grid-row: 1 / 3; align-self: end; width: 100%; height: auto; max-height: 224px; object-fit: contain; object-position: center bottom; }
+.club-paywall__goal { --goal-fill: linear-gradient(100deg, var(--quest-blue), color-mix(in srgb, var(--quest-blue) 65%, var(--quest-purple)) 52%, color-mix(in srgb, var(--quest-green) 34%, var(--quest-green-wash))); position: relative; z-index: 1; grid-column: 1; width: 100%; max-width: 340px; min-width: 0; }
+.club-paywall__goal-caption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 3px 12px; margin-bottom: 7px; color: var(--quest-muted); font: 500 11px/1.5 var(--quest-font); }
+.club-paywall__goal-amount { color: var(--quest-muted); font-size: 11px; font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.club-paywall__goal-amount strong { margin-right: 2px; color: var(--quest-text); font-size: 14px; font-weight: 700; }
+.club-paywall__goal progress { display: block; width: 100%; height: 6px; appearance: none; overflow: hidden; border: 0; border-radius: 999px; color: var(--quest-blue); background: var(--quest-purple); }
+.club-paywall__goal progress::-webkit-progress-bar { border-radius: inherit; background: var(--quest-purple); }
+.club-paywall__goal progress::-webkit-progress-value { border-radius: inherit; background: var(--goal-fill); }
+.club-paywall__goal progress::-moz-progress-bar { border-radius: inherit; background: var(--goal-fill); }
+.club-paywall__context { margin: 0 0 18px; color: var(--quest-muted); font-size: 13px; }
+
+.club-offer-scene { position: absolute; inset: 0; width: 100%; height: 100%; mask-image: linear-gradient(to right, transparent 20%, #000 70%); pointer-events: none; }
+.club-offer-scene__sun { fill: color-mix(in srgb, var(--color-yellow) 75%, var(--quest-bg)); }
+.club-offer-scene__sunlight { fill: var(--color-yellow); }
+.club-offer-scene__sunlight circle:first-child { opacity: .16; }
+.club-offer-scene__sunlight circle:last-child { opacity: .08; }
+.club-offer-scene__cloud { fill: color-mix(in srgb, var(--quest-bg) 86%, transparent); }
+.club-offer-scene__distant { fill: var(--offer-hill); }
+.club-offer-scene__hill-light { stop-color: color-mix(in srgb, var(--offer-hill) 83%, var(--color-yellow)); }
+.club-offer-scene__hill-shade { stop-color: var(--offer-leaf); }
+.club-offer-scene__near { fill: color-mix(in srgb, var(--offer-leaf) 72%, var(--quest-green-wash)); }
+.club-offer-scene__path { fill: color-mix(in srgb, var(--color-yellow) 43%, var(--offer-hill)); }
+.club-offer-scene__seam { fill: none; stroke: var(--offer-leaf); stroke-width: 2; stroke-linecap: round; }
+.club-offer-scene__leaf { fill: var(--offer-leaf); stroke: var(--offer-stem); stroke-width: 1.5; stroke-linejoin: round; }
+.club-offer-scene__stem { fill: none; stroke: var(--offer-stem); stroke-width: 2; stroke-linecap: round; }
+.club-offer-scene__petals { fill: var(--quest-purple); stroke: color-mix(in srgb, var(--quest-blue) 60%, var(--quest-purple)); stroke-width: 1.2; }
+.club-offer-scene__flower-center { fill: var(--color-yellow); stroke: var(--color-accent-border); stroke-width: 1; }
+.club-offer-scene__sprig { transform-origin: 774px 275px; }
+.club-offer-scene__flower { transform-origin: 470px 273px; }
+
+.club-paywall .study-club-plan-options { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-top: 0; }
+.club-paywall .study-club-plan-option > .quest-button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 86px;
+  padding: 18px;
+  border: 2px solid var(--quest-line);
+  border-bottom-width: 4px;
+  border-radius: 14px;
+  color: var(--quest-text);
+  background: var(--quest-bg);
+  box-shadow: none;
+  text-align: left;
+  text-transform: none;
+  transition: border-color .18s ease, background-color .18s ease;
+}
+.club-paywall .study-club-plan-option > .quest-button.is-selected { border-color: var(--quest-blue); background: var(--quest-purple); }
+.club-paywall .study-club-plan-option > .quest-button:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 4px; }
+.club-paywall .study-club-plan-option > .quest-button:hover { border-color: var(--quest-blue); transform: none; }
+.club-paywall .study-club-radio { width: 24px; height: 24px; }
+.club-paywall .study-club-plan-name strong { font-size: 17px; }
+.club-paywall .study-club-plan-price strong { font-size: 22px; white-space: nowrap; }
+.club-paywall .is-selected :is(.study-club-plan-price, .study-club-plan-name) strong { color: var(--quest-blue); }
+.club-paywall .study-club-plan-name small, .club-paywall .study-club-plan-price small { margin-top: 5px; font-size: 11px; }
+.club-paywall .study-club-discount { top: -9px; right: 14px; padding: 2px 7px; border-width: 1px; border-color: var(--quest-green-edge); background: var(--quest-green-wash); color: var(--quest-green); font-size: 10px; }
+
+.club-paywall .study-club-selected-checkout { gap: 0; margin-top: 16px; }
+.club-paywall .checkout-acceptance { padding-block: 8px; color: var(--quest-muted); font-size: 12px; line-height: 1.55; }
+.club-paywall .checkout-acceptance a { color: var(--quest-text); font-weight: 500; text-decoration: underline; text-decoration-color: var(--quest-line); }
+.club-paywall .checkout-acceptance input { accent-color: var(--quest-blue); border-radius: 4px; }
+.club-paywall .checkout-note { color: var(--quest-muted); font-size: 12px; text-align: center; }
+.club-paywall .study-club-selected-checkout > .ui-button {
+  position: relative;
+  justify-content: center;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 14px;
+  padding: 14px 20px;
+  border: 2px solid var(--color-club-action);
+  border-bottom: 4px solid var(--color-club-action-edge);
+  border-radius: 14px;
+  color: var(--color-on-action);
+  background: var(--color-club-action);
+  box-shadow: none;
+  font: 800 15px/1.4 var(--quest-heading);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.club-paywall .study-club-selected-checkout > .ui-button:not(:disabled):hover { filter: brightness(1.06); }
+.club-paywall .study-club-selected-checkout > .ui-button:disabled { opacity: 1; color: var(--quest-muted); border-color: var(--quest-line); background: var(--quest-surface); box-shadow: none; }
+.club-paywall .study-club-selected-checkout > .ui-button:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 4px; }
+.club-paywall > .club-paywall__motion { position: absolute; z-index: 2; top: 8px; right: 8px; width: 32px; height: 32px; min-height: 32px; padding: 7px; border: 0; border-radius: 50%; color: var(--quest-muted); background: transparent; box-shadow: none; }
+.club-paywall > .club-paywall__motion:hover { color: var(--quest-blue); background: var(--quest-purple); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .club-offer-scene__cloud { animation: club-offer-cloud 18s ease-in-out infinite alternate; }
+  .club-offer-scene__sunlight { animation: club-offer-sunlight 10s ease-in-out infinite alternate; }
+  .club-offer-scene__sprig { animation: club-offer-sprig 7s ease-in-out infinite alternate; }
+  .club-offer-scene__flower { animation: club-offer-sprig 8s ease-in-out -3s infinite alternate-reverse; }
+  .club-paywall[data-motion-paused] .club-offer-scene * { animation-play-state: paused; }
+}
+@keyframes club-offer-cloud { from { transform: translateX(-6px); } to { transform: translateX(12px); } }
+@keyframes club-offer-sunlight { from { opacity: .6; } to { opacity: 1; } }
+@keyframes club-offer-sprig { from { transform: rotate(-2deg); } to { transform: rotate(3deg); } }
+
+@media (max-width: 699px) {
+  .club-paywall { --offer-pad: 22px; }
+  .club-paywall > .club-paywall__heading { grid-template-columns: minmax(0, 1fr) minmax(142px, 184px); gap: 8px; min-height: 218px; }
+  .club-paywall__mascot { grid-row: 1; }
+  .club-paywall__goal { grid-column: 1 / -1; margin-top: 4px; }
+  .club-paywall .club-paywall__heading h2 { font-size: 29px; }
+  .club-paywall .study-club-plan-option > .quest-button { padding: 17px 15px; gap: 12px; }
+}
+@media (max-width: 479px) {
+  .club-paywall { --offer-pad: 16px; padding-top: 22px; padding-bottom: 18px; border-radius: 18px; }
+  .club-paywall > .club-paywall__heading { grid-template-columns: minmax(0, 1fr) 134px; min-height: 228px; margin-top: -22px; margin-bottom: 20px; padding-top: 26px; padding-bottom: 18px; }
+  .club-paywall__eyebrow { margin-bottom: 12px; font-size: 10px; }
+  .club-paywall .club-paywall__heading h2 { font-size: 27px; }
+  .club-paywall__heading h2 em { font-size: .8em; }
+  .club-paywall .club-paywall__heading p { margin-top: 16px; font-size: 11px; line-height: 1.7; }
+  .club-paywall__mascot { align-self: center; margin-top: 25px; }
+  .club-paywall .study-club-plan-option > .quest-button { min-height: 82px; padding: 17px 14px; gap: 12px; }
+  .club-paywall .study-club-plan-name strong { font-size: 16px; }
+  .club-paywall .study-club-plan-price strong { font-size: 21px; }
+  .club-paywall .study-club-plan-name small, .club-paywall .study-club-plan-price small { font-size: 10px; }
+  .club-paywall .study-club-radio { width: 22px; height: 22px; }
+  .club-paywall .study-club-selected-checkout > .ui-button { padding-inline: 12px; font-size: 14px; }
+}
+@media (max-width: 359px) {
+  .club-paywall > .club-paywall__heading { grid-template-columns: minmax(0, 1fr) 112px; gap: 5px; }
+  .club-paywall .club-paywall__heading h2 { font-size: 23px; }
+  .club-paywall__heading h2 em { font-size: .83em; }
+  .club-paywall .club-paywall__heading p { font-size: 10px; }
+  .club-paywall .study-club-plan-option > .quest-button { gap: 8px; padding-inline: 10px; }
+  .club-paywall .study-club-plan-name strong { font-size: 14px; }
+  .club-paywall .study-club-plan-price strong { font-size: 18px; }
+  .club-paywall .study-club-radio { width: 20px; height: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .club-paywall *, .club-paywall *::before, .club-paywall *::after { animation: none !important; transition: none !important; }
+  .club-paywall > .club-paywall__motion { display: none; }
+}
+@media (forced-colors: active) {
+  .club-paywall { border-color: CanvasText; background: Canvas; color: CanvasText; }
+  .club-paywall > .club-paywall__heading { background: Canvas; }
+  .club-offer-scene { display: none; }
+  .club-paywall__goal progress { appearance: auto; }
+  .club-paywall .study-club-plan-option > .quest-button.is-selected { outline: 2px solid Highlight; }
+}

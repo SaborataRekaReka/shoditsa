@@ -34,7 +34,7 @@ export function DiagnosisClubOffer({ growth, sessionId, product }: { growth: Gro
   const price = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: product.currency, maximumFractionDigits: 0 }).format(product.priceMinor / 100)
   return <ResultPersistence ref={ref} aria-label="Продолжить с клубным билетом" icon={<Ticket />}
     title="Больше диагнозов без ожидания до завтра"
-    action={<ActionLink variant="secondary" href="/club?from=diagnosis#club-offers" onClick={() => trackGrowthAction('club_context_offer_clicked', growth, sessionId, { productId: product.id })}>Клуб на {product.durationDays} дней · {price}</ActionLink>}>
+    action={<ActionLink variant="secondary" href="/club?from=diagnosis#club-offers" onClick={() => trackGrowthAction('club_context_offer_clicked', growth, sessionId, { productId: product.id })}>Клуб на {product.durationDays} дней, {price}</ActionLink>}>
     Весь архив и свободные партии «Диагнозов» без списания билетов — {price} на {product.durationDays} дней. Другие игры клуба тоже доступны. Автопродление выключено по умолчанию.
   </ResultPersistence>
 }

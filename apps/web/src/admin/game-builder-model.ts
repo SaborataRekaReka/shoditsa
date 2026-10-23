@@ -370,7 +370,7 @@ export const createExchangeDocument = (items: MappedExchangeItem[]) => {
 
 export const displayValue = (value: unknown, fallback = 'Перетащите поле') => {
   if (value == null || value === '') return fallback
-  if (Array.isArray(value)) return value.map((entry) => scalarText(entry) || JSON.stringify(entry)).filter(Boolean).join(' · ') || fallback
+  if (Array.isArray(value)) return value.map((entry) => scalarText(entry) || JSON.stringify(entry)).filter(Boolean).join(', ') || fallback
   if (isRecord(value)) return scalarText(value) || JSON.stringify(value)
   return String(value)
 }

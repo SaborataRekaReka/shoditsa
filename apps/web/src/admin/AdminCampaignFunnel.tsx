@@ -25,9 +25,9 @@ export function CampaignFunnelData({ report }: { report: AdminCampaignFunnelResp
       <p className="admin-campaign__caption">Каждая колонка считает входы с указанным результатом, не события и не уникальных людей. Регистрация может произойти до первой партии.</p>
       <div className="admin-campaign__table-scroll" tabIndex={0} role="region" aria-label="Результаты каналов продвижения">
         <table>
-          <thead><tr><th scope="col">Источник и кампания</th><th scope="col">Входы</th><th scope="col">Старт</th><th scope="col">Прошли</th><th scope="col">Прошли 2+</th><th scope="col">Регистрация</th><th scope="col">Клуб · новые аккаунты</th></tr></thead>
+          <thead><tr><th scope="col">Источник и кампания</th><th scope="col">Входы</th><th scope="col">Старт</th><th scope="col">Прошли</th><th scope="col">Прошли 2+</th><th scope="col">Регистрация</th><th scope="col">Клуб, новые аккаунты</th></tr></thead>
           <tbody>{report.items.map((item) => <tr key={`${item.source}/${item.medium}/${item.campaign}/${item.landing}`}>
-            <th scope="row"><strong>{item.source}</strong><span>{item.medium === 'paid_social' ? 'Платное размещение' : 'Рекомендация / ссылка'} · {item.campaign}</span><span>{item.landing}</span></th>
+            <th scope="row"><strong>{item.source}</strong><span>{item.medium === 'paid_social' ? 'Платное размещение' : 'Рекомендация / ссылка'}, {item.campaign}</span><span>{item.landing}</span></th>
             <td>{number(item.acquisitions)}</td><td>{number(item.started)}</td><td>{number(item.completed)}</td><td>{number(item.repeatCompleted)}</td><td>{number(item.registered)}</td><td>{number(item.paidClub)}</td>
           </tr>)}</tbody>
         </table>
@@ -51,7 +51,7 @@ export function AdminCampaignFunnel() {
   const [days, setDays] = useState<AdminCampaignPeriod>(14)
   const query = useQuery({ queryKey: ['admin', 'campaign-funnel', days], queryFn: () => adminApi.campaignFunnel(days), staleTime: 60_000 })
   return <section className="admin-panel admin-campaign" id="campaigns" aria-labelledby="admin-campaign-title">
-    <header className="admin-campaign__header"><div><span className="admin-kicker">Привлечение · отдельный пилот</span><h2 id="admin-campaign-title">Продвижение «Диагнозов»</h2><p>От измеренного входа до повторной игры и клуба.</p></div>
+    <header className="admin-campaign__header"><div><span className="admin-kicker">Привлечение, отдельный пилот</span><h2 id="admin-campaign-title">Продвижение «Диагнозов»</h2><p>От измеренного входа до повторной игры и клуба.</p></div>
       <div className="admin-periods" role="group" aria-label="Период продвижения">{([7, 14, 31] as const).map((period) => <button key={period} type="button" className={days === period ? 'is-active' : ''} aria-pressed={days === period} onClick={() => setDays(period)}>{period} {period === 31 ? 'день' : 'дней'}</button>)}</div>
     </header>
     {query.isPending ? <p className="admin-campaign__state" role="status">Собираем измеренные входы…</p> : query.isError ? <div className="admin-campaign__state" role="alert"><p>Не удалось загрузить отчёт. Данные не заменены нулями.</p><button className="admin-btn" type="button" onClick={() => void query.refetch()}>Повторить</button></div> : query.data && <CampaignFunnelData report={query.data} />}

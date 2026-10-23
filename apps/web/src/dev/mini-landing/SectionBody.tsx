@@ -32,7 +32,7 @@ function StorySection({ name, title, children, scene }: { name: string; title: s
 function SearchIllustration() {
   const [run, setRun] = useState(0)
   return <div className="story-search">
-    <div className="story-search__back" aria-hidden="true"><Clapperboard size={18} strokeWidth={1.5} /><span>Твоя версия</span><span>···</span></div>
+    <div className="story-search__back" aria-hidden="true"><Clapperboard size={18} strokeWidth={1.5} /><span>Твоя версия</span><span>…</span></div>
     <div className="story-search__field"><Search size={18} strokeWidth={1.5} aria-hidden="true" /><span>Матрица<span className="story-search__caret" aria-hidden="true" /></span><button type="button" className="story-search__submit" aria-label="Повторить пример выбора фильма" onClick={() => setRun(value => value + 1)}><ArrowRight size={17} /></button></div>
     <div className="story-search__result" key={run}><img src="/data/libraries/movies/img/kp_301/poster.webp" alt="" width="36" height="50" /><div><strong>Матрица</strong><span>Фильм из каталога</span></div><span className="story-search__check"><Check size={17} strokeWidth={1.6} /></span></div>
   </div>

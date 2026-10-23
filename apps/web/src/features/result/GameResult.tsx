@@ -244,7 +244,7 @@ export function GameResult(props: Props) {
           ? `В аккаунте: ${progressSummary}. Продолжите завтра с любого устройства.`
           : 'Результат будет доступен в аккаунте — продолжите завтра с любого устройства.'}
       </ResultPersistence>
-    : accountState === 'authenticated'
+    : accountState === 'authenticated' && !celebrate
       ? <ResultPersistence saved aria-label="Прогресс сохранён" icon={<CheckCircle2 />}
           title="Прогресс сохранён в профиле">
           {(props.registrationBonusRemaining ?? 0) > 0 ? `Результат сохранён. Бонусных партий в этой игре: ${props.registrationBonusRemaining}. В других играх — отдельные бонусы.` : 'Этот результат уже доступен на всех ваших устройствах.'}
@@ -264,13 +264,13 @@ export function GameResult(props: Props) {
           value: props.award.alreadyClaimed && props.award.total <= 0 ? 'Учтено' : `${props.award.alreadyClaimed ? '' : '+'}${props.award.total}`,
           label: props.award.alreadyClaimed
             ? 'билеты уже начислены'
-            : 'получено за раунд',
+            : `${countWord(props.award.total, ['билет', 'билета', 'билетов'])} за раунд`,
         }] : []),
         ...(props.completedToday !== undefined ? [{
           key: 'route',
-          icon: <Route />,
-          value: `${props.completedToday}/${FULL_HOUSE_MODE_IDS.length}`,
-          label: props.completedToday >= FULL_HOUSE_MODE_IDS.length ? 'маршрут завершён' : 'маршрут сегодня',
+          icon: celebrate ? <CheckCircle2 /> : <Route />,
+          value: celebrate ? `${props.completedToday} из ${FULL_HOUSE_MODE_IDS.length}` : `${props.completedToday}/${FULL_HOUSE_MODE_IDS.length}`,
+          label: props.completedToday >= FULL_HOUSE_MODE_IDS.length ? 'маршрут завершён' : celebrate ? 'игр сегодня' : 'маршрут сегодня',
         }] : []),
         ...(positiveStreak !== null ? [{
           key: 'streak',
@@ -283,6 +283,22 @@ export function GameResult(props: Props) {
     && props.completedToday !== undefined
     && props.completedToday >= FULL_HOUSE_MODE_IDS.length
 
+  const rewards = !!rewardMetrics.length && <section className={`result-rewards result-card__wide result-rewards--${Math.min(rewardMetrics.length, 3)}`} aria-label="Награда и прогресс">
+    {(celebrate ? [...rewardMetrics].sort((a, b) => Number(b.key === 'streak') - Number(a.key === 'streak')) : rewardMetrics).map((metric) => <article className={`result-reward result-reward--${metric.key}`} key={metric.key} title={metric.key === 'route' ? props.nextRewardText : undefined}>
+      <span aria-hidden="true">{metric.icon}</span>
+      <div>
+        <strong>{metric.value}</strong>
+        <small>{metric.label}</small>
+        {!celebrate && metric.key === 'route' && props.completedToday !== undefined && <i className="result-route-track" aria-hidden="true">
+          {Array.from({ length: FULL_HOUSE_MODE_IDS.length }, (_, index) => <b
+            className={`${index < routeProgress ? 'is-complete' : ''}${index === routeProgress - 1 ? ' is-current' : ''}`}
+            key={index}
+          />)}
+        </i>}
+      </div>
+    </article>)}
+  </section>
+
   return <section
     ref={resultRef}
     className={`result-card result-card--${props.mode} ${props.won ? 'won' : 'lost'}${celebrate ? ' result-card--celebration' : ''}`}
@@ -291,8 +307,8 @@ export function GameResult(props: Props) {
       '--result-next-color': nextPresentation.color,
     } as CSSProperties}
   >
-    {celebrate ? <QuizVictory key={props.sessionId ?? props.title} attempts={props.attempts} maxAttempts={props.maxAttempts} completionType={props.completionType}
-      context={props.contextLabel ?? MODE_CONFIG[props.mode].title} resultLine={resultLine} poster={props.poster} title={props.title} meta={props.meta} tags={visibleTags}>
+    {celebrate ? <QuizVictory key={props.sessionId ?? props.title} attempts={props.attempts} completionType={props.completionType}
+      context={props.contextLabel ?? MODE_CONFIG[props.mode].title} resultLine={resultLine} poster={<ThemedArtwork src={referenceModeIllustration(props.mode)} alt="" aria-hidden="true" />} title={props.title} meta={props.meta} rewards={rewards}>
       {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
         <span>Вы — {props.completionType === 'final_choice_win' ? 'Ф' : props.attempts}/{props.maxAttempts ?? 10}. Друг — {challengeResultLabel(props.opponentAttempts)}</span>
         <strong>{outcomeText}</strong>
@@ -309,27 +325,13 @@ export function GameResult(props: Props) {
         {!!visibleTags.length && <div className="result-tags">{visibleTags.map((tag) => <i key={tag}>{tag}</i>)}</div>}
         <strong>{resultLine}</strong>
         {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
-          <span>Вы — {!props.won ? 'X/10' : props.completionType === 'final_choice_win' ? 'Ф/10' : `${props.attempts}/10`} · Друг — {challengeResultLabel(props.opponentAttempts)}</span>
+          <span>Вы — {!props.won ? 'X/10' : props.completionType === 'final_choice_win' ? 'Ф/10' : `${props.attempts}/10`}, Друг — {challengeResultLabel(props.opponentAttempts)}</span>
           <strong>{outcomeText}</strong>
         </div>}
       </div>
     </div>}
 
-    {!!rewardMetrics.length && <section className={`result-rewards result-card__wide result-rewards--${Math.min(rewardMetrics.length, 3)}`} aria-label="Награда и прогресс">
-      {rewardMetrics.map((metric) => <article className={`result-reward result-reward--${metric.key}`} key={metric.key} title={metric.key === 'route' ? props.nextRewardText : undefined}>
-        <span aria-hidden="true">{metric.icon}</span>
-        <div>
-          <strong>{metric.value}</strong>
-          <small>{metric.label}</small>
-          {!celebrate && metric.key === 'route' && props.completedToday !== undefined && <i className="result-route-track" aria-hidden="true">
-            {Array.from({ length: FULL_HOUSE_MODE_IDS.length }, (_, index) => <b
-              className={`${index < routeProgress ? 'is-complete' : ''}${index === routeProgress - 1 ? ' is-current' : ''}`}
-              key={index}
-            />)}
-          </i>}
-        </div>
-      </article>)}
-    </section>}
+    {!celebrate && rewards}
 
     <ResultActionBar
       celebration={celebrate}
@@ -399,11 +401,11 @@ export function GameResult(props: Props) {
       </ul>
     </details>}
 
-    <div className="result-utility result-card__wide">
+    {(props.mode === 'diagnosis' || (!celebrate && (props.telegramUrl || props.onReport)) || showContextualTip) && <div className="result-utility result-card__wide">
       {props.mode === 'diagnosis' && <a href="/archive?mode=diagnosis" onClick={() => trackDiagnosisGoal('archive', { placement: 'result' })}><CalendarDays /> Архив диагнозов</a>}
       {!celebrate && props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Отправить результат в Telegram</a>}
       {showContextualTip && <Suspense fallback={null}><TipCheckoutTrigger variant={REFERENCE_PRESENTATION ? 'compact' : 'card'} className="result-support" label="Поддержать проект" hint="Жетон кассиру" /></Suspense>}
-      {props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}
-    </div>
+      {!celebrate && props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}
+    </div>}
   </section>
 }

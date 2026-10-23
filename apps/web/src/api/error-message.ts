@@ -30,10 +30,10 @@ export const apiErrorMessage = (error: unknown) => {
         ? ` Повторите ${formatRetryDelay(retryAfterMs)}.`
         : ' Повторите чуть позже.'
       const base = `Слишком много запросов.${suffix}`
-      return error.requestId ? `${base} · ${error.requestId}` : base
+      return error.requestId ? `${base}, ${error.requestId}` : base
     }
     const base = labels[error.code] ?? error.message
-    return error.requestId ? `${base} · ${error.requestId}` : base
+    return error.requestId ? `${base}, ${error.requestId}` : base
   }
   return error instanceof Error ? error.message : 'Не удалось выполнить запрос.'
 }

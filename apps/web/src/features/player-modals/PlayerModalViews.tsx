@@ -41,7 +41,7 @@ export function AnamnesisModal({ text, dayNo, onClose, onStart }: {
   onClose: () => void
   onStart?: () => void
 }) {
-  if (APPLICATION_DESIGN) return <QuestDialog title={`Приём № ${dayNo}`} description="Амбулаторная карта · Анамнез" onClose={onClose}>
+  if (APPLICATION_DESIGN) return <QuestDialog title={`Приём № ${dayNo}`} description="Амбулаторная карта, Анамнез" onClose={onClose}>
     <div className="study-anamnesis">
       <div className="study-anamnesis__patient">
         <GameArtwork mode="diagnosis" alt="" width="52" height="52" />
@@ -54,7 +54,7 @@ export function AnamnesisModal({ text, dayNo, onClose, onStart }: {
   </QuestDialog>
   return <DialogSurface backdropClassName="anamnesis-backdrop" className="anamnesis-modal" onClose={onClose} ariaLabelledBy="anamnesis-title">
       <div className="anamnesis-modal__head">
-        <span><Stethoscope /> Амбулаторная карта · Анамнез</span>
+        <span><Stethoscope /> Амбулаторная карта, Анамнез</span>
         <IconButton onClick={onClose} label="Закрыть"><X /></IconButton>
       </div>
       <div className="anamnesis-modal__patient">
@@ -160,8 +160,8 @@ export function ResumeSessionsView({ sessions, onOpen }: {
         return <article className="resume-item" key={session.key}>
           <ControlButton className="resume-item__open" onClick={() => onOpen(session)}>
             <span className="resume-item__mode">{modeIcon(session.mode)}<i>{modeMeta(session.mode).title}</i></span>
-            <strong>{prettyDate(session.date)} · {sessionLabel} №{dayNumber(session.date)}</strong>
-            <small>{periodText} · Попытки: {attemptText}</small>
+            <strong>{prettyDate(session.date)}, {sessionLabel} №{dayNumber(session.date)}</strong>
+            <small>{periodText}, Попытки: {attemptText}</small>
           </ControlButton>
         </article>
       })}

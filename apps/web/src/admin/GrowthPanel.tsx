@@ -43,7 +43,7 @@ export function GrowthPanel() {
   return <section className="admin-panel admin-growth" id="growth" aria-labelledby="growth-title">
     <header className="admin-growth__header">
       <div>
-        <span>Рост · повторы «Диагнозов» и бонусы во всех играх</span>
+        <span>Рост, повторы «Диагнозов» и бонусы во всех играх</span>
         <h2 id="growth-title">Игра → регистрация → клуб</h2>
         <p>Что включено и что делают игроки</p>
       </div>
@@ -75,8 +75,8 @@ export function GrowthPanel() {
         </div>
 
         <div className="admin-growth__section-heading">
-          <div><h3>Результаты за {days} {days === 31 ? 'день' : 'дней'}</h3><p>{dateLabel(data.period.from)} — {dateLabel(new Date(Date.parse(data.period.toExclusive) - 1).toISOString())} {new Date(data.period.from).getUTCFullYear()} · UTC</p></div>
-          <p>Сегодня не включено · без администраторов</p>
+          <div><h3>Результаты за {days} {days === 31 ? 'день' : 'дней'}</h3><p>{dateLabel(data.period.from)} — {dateLabel(new Date(Date.parse(data.period.toExclusive) - 1).toISOString())} {new Date(data.period.from).getUTCFullYear()}, UTC</p></div>
+          <p>Сегодня не включено, без администраторов</p>
         </div>
 
         <div className="admin-growth__metrics">
@@ -85,7 +85,7 @@ export function GrowthPanel() {
             <strong className="admin-growth__value">{numberLabel(data.sessions.completions)}</strong>
             <p className="admin-growth__metric-caption">Игроков с завершённой партией: {numberLabel(data.sessions.firstCompleters)}</p>
             <dl>
-              <MetricRow label="Истёк срок · не входят в завершения">{numberLabel(data.sessions.expired ?? null)}</MetricRow>
+              <MetricRow label="Истёк срок, не входят в завершения">{numberLabel(data.sessions.expired ?? null)}</MetricRow>
               <MetricRow label="Игроки в измерении повторов">{numberLabel(data.sessions.measuredCompleters)}</MetricRow>
               <MetricRow label="Продолжили после результата">{numberLabel(data.sessions.repeatingCompleters)}</MetricRow>
               <MetricRow label="Повторные старты">{numberLabel(data.sessions.repeatStarts)}</MetricRow>
@@ -95,7 +95,7 @@ export function GrowthPanel() {
           <article className="admin-growth__metric">
             <div className="admin-growth__metric-heading"><UsersRound aria-hidden="true" /><h4>Новые аккаунты</h4></div>
             <strong className="admin-growth__value">{numberLabel(data.accounts.created)}</strong>
-            <p className="admin-growth__metric-caption">Создано на сайте · все источники</p>
+            <p className="admin-growth__metric-caption">Создано на сайте, все источники</p>
             <dl>
               <MetricRow label="Регистрации, отмеченные событием">{numberLabel(data.accounts.signUps)}</MetricRow>
               <MetricRow label="Получили бонусы во всех играх">{numberLabel(data.accounts.bonusGranted)}</MetricRow>
@@ -106,7 +106,7 @@ export function GrowthPanel() {
           <article className="admin-growth__metric">
             <div className="admin-growth__metric-heading"><CircleDollarSign aria-hidden="true" /><h4>Оплаты клуба</h4></div>
             <strong className="admin-growth__value">{numberLabel(data.commerce.revenueMinor / 100)} <span>₽</span></strong>
-            <p className="admin-growth__metric-caption">По заказам, созданным в этом окне · все источники</p>
+            <p className="admin-growth__metric-caption">По заказам, созданным в этом окне, все источники</p>
             <dl>
               <MetricRow label="Создано заказов">{numberLabel(data.commerce.orders)}</MetricRow>
               <MetricRow label="Оплачено заказов">{numberLabel(data.commerce.paidOrders)}</MetricRow>

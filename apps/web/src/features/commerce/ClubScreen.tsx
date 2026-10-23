@@ -177,7 +177,7 @@ export function ClubScreen({
   const specialTitle = view.currentSpecial?.title ?? 'Кино нулевых'
   const specialDescription = view.currentSpecial?.subtitle ?? view.currentSpecial?.description ?? 'Фильмы, которые смотрели все'
   const specialImage = view.currentSpecial?.coverUrl || publicAssetUrl('images/title-posters/movie-ticket-poster.webp')
-  const archiveDescription = `${number.format(view.stats.archiveGames)} ${plural(view.stats.archiveGames, 'игра', 'игры', 'игр')} · ${view.stats.archiveDays} ${plural(view.stats.archiveDays, 'день', 'дня', 'дней')}`
+  const archiveDescription = `${number.format(view.stats.archiveGames)} ${plural(view.stats.archiveGames, 'игра', 'игры', 'игр')}, ${view.stats.archiveDays} ${plural(view.stats.archiveDays, 'день', 'дня', 'дней')}`
   const clubFeatures: ClubPlanFeature[] = [
     { label: 'Архив', value: 'Весь' },
     { label: 'Свободная игра', value: '∞' },
@@ -273,7 +273,7 @@ export function ClubScreen({
       product={productsById.get(product.id)!}
       authenticated={authenticated}
       hasClub={hasClub}
-      label={`Выбрать ${product.durationDays ?? (product.id === 'club_365d' ? 365 : 30)} дней`}
+      label={`${authenticated ? 'Вступить в Клуб' : 'Войти и вступить'} за ${money(product.priceMinor, product.currency)}`}
       placement={placement}
       growthStage={runtime.meta?.growth?.stage}
     />
@@ -344,7 +344,7 @@ export function ClubScreen({
             <div className="club-entry__service">
               {hasClub
                 ? <ActionButton type="button" variant="ghost" onClick={onProfile}><Settings aria-hidden="true" /> Управление билетом</ActionButton>
-                : <span>{monthly.durationDays ?? 30} дней · автопродление по выбору</span>}
+                : <span>{monthly.durationDays ?? 30} дней, автопродление по выбору</span>}
             </div>
           </div>
           <div className="club-entry__art">
@@ -382,7 +382,7 @@ export function ClubScreen({
                 title={hasClub ? 'Весь архив' : 'Архив'}
                 description={hasClub
                   ? archiveDescription
-                  : `${view.stats.freeArchiveDays} дней доступны бесплатно · весь архив — в клубе`}
+                  : `${view.stats.freeArchiveDays} дней доступны бесплатно, весь архив — в клубе`}
                 image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/movie.webp' : 'images/title-posters/movie-ticket-poster.webp')}
                 artTone="lilac"
                 icon={<Archive aria-hidden="true" />}
@@ -392,8 +392,8 @@ export function ClubScreen({
               <ContentCard
                 title="Свободная игра"
                 description={hasClub
-                  ? `${view.stats.freePlayModes} режимов · без списания билетиков`
-                  : `${view.stats.freePlayModes} режимов · от ${view.stats.guestFreePlayCost} билетиков`}
+                  ? `${view.stats.freePlayModes} режимов, без списания билетиков`
+                  : `${view.stats.freePlayModes} режимов, от ${view.stats.guestFreePlayCost} билетиков`}
                 image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/game.webp' : 'images/title-posters/game-ticket-poster.webp')}
                 artTone="mint"
                 icon={<Gamepad2 aria-hidden="true" />}
@@ -404,17 +404,17 @@ export function ClubScreen({
                 title="Данетки"
                 description={hasClub
                   ? `${view.stats.danetkiPerDay} истории в сутки`
-                  : `${view.stats.guestDanetkiPerDay} история в сутки · в клубе — ${view.stats.danetkiPerDay}`}
+                  : `${view.stats.guestDanetkiPerDay} история в сутки, в клубе — ${view.stats.danetkiPerDay}`}
                 image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/yes-no.webp' : 'images/title-posters/danetki-ticket-poster.webp')}
                 artTone="yellow"
                 icon={<Ticket aria-hidden="true" />}
                 action={() => window.location.assign('/games/danetki')}
-                actionLabel={`Играть · ${hasClub ? view.stats.danetkiPerDay : view.stats.guestDanetkiPerDay} в сутки`}
+                actionLabel={`Играть, ${hasClub ? view.stats.danetkiPerDay : view.stats.guestDanetkiPerDay} в сутки`}
               />
               <ContentCard
                 title="Комната друзей"
                 description={hasClub
-                  ? `До ${view.stats.friendRoomRoundLimit} раундов · включая совместные Данетки`
+                  ? `До ${view.stats.friendRoomRoundLimit} раундов, включая совместные Данетки`
                   : 'Создание комнаты — с клубом. Друзья могут присоединиться по приглашению бесплатно.'}
                 image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/associations.webp' : 'images/friends-room/lobby-collage-lower.webp')}
                 artTone="blue"
@@ -476,7 +476,7 @@ export function ClubScreen({
                 eyebrow="Клубный билет"
                 title={`${annual.durationDays ?? 365} дней`}
                 priceLabel={money(annual.priceMinor, annual.currency)}
-                unitLabel={`${dailyMoney(dailyPriceMinor(annual))} · экономия ${money(view.pricing.annualSavingsMinor, annual.currency)}`}
+                unitLabel={`${dailyMoney(dailyPriceMinor(annual))}, экономия ${money(view.pricing.annualSavingsMinor, annual.currency)}`}
                 features={clubFeatures}
                 badge={<>Выгоднее <strong>{view.pricing.annualDiscountPercent}%</strong></>}
                 action={commerceEnabled && productsById.get(annual.id)

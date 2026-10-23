@@ -1,0 +1,57 @@
+.quiz-session-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 4px 0;
+  color: var(--color-ink);
+}
+
+.quiz-session-heading__art {
+  display: grid;
+  place-items: center;
+  flex: 0 0 68px;
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  background: var(--color-surface-2);
+}
+
+.quiz-session-heading__art img { display: block; width: 56px; height: 56px; object-fit: contain; }
+.quiz-session-heading__copy { min-width: 0; }
+.quiz-session-heading h1 {
+  margin: 0;
+  color: var(--quest-text, var(--color-ink));
+  font: 800 30px/1.2 var(--quest-heading, var(--font-body));
+  letter-spacing: -.025em;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+.quiz-session-heading__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 6px;
+  color: var(--quest-muted, var(--color-muted));
+  font: 400 13px/1.5 var(--quest-font, var(--font-body));
+}
+.quiz-session-heading__variant { color: var(--quest-blue, var(--color-primary)); font-weight: 600; }
+
+/* The result scene becomes the visual focus after a win. */
+.quiz-session-heading--compact { gap: 12px; margin-bottom: 16px; padding: 0; }
+.quiz-session-heading--compact .quiz-session-heading__art { flex-basis: 44px; width: 44px; height: 44px; border-radius: 13px; }
+.quiz-session-heading--compact .quiz-session-heading__art img { width: 36px; height: 36px; }
+.quiz-session-heading--compact h1 { font-size: 18px; line-height: 1.3; }
+.quiz-session-heading--compact .quiz-session-heading__meta { margin-top: 3px; font-size: 12px; }
+
+@media (max-width: 699px) {
+  .quiz-session-heading { gap: 12px; margin-bottom: 20px; }
+  .quiz-session-heading__art { flex-basis: 56px; width: 56px; height: 56px; border-radius: 16px; }
+  .quiz-session-heading__art img { width: 46px; height: 46px; }
+  .quiz-session-heading h1 { font-size: 25px; }
+  .quiz-session-heading__meta { margin-top: 4px; gap: 3px 10px; font-size: 12px; }
+  .quiz-session-heading--compact { margin-bottom: 16px; }
+  .quiz-session-heading--compact h1 { font-size: 18px; }
+}

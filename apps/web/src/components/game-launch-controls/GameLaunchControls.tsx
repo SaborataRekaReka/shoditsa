@@ -1,19 +1,28 @@
-import { useContext, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { useContext, useEffect, useRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { ArrowRight, Check, ChevronDown, ChevronRight } from 'lucide-react'
 import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
 import { EmbeddedApplicationContext } from '../../features/application/EmbeddedApplicationContext'
 import { ActionButton } from '../app-shell/AppShell'
 import { QuestButton } from '../ui/QuestPrimitives'
 import { AnchoredMenu } from '../ui'
+import { bindGameLaunchShortcut } from './launch-shortcut'
 import './GameLaunchControls.css'
 import './GameLaunchControls.application.css'
 
 /** The controller is shared with the platform version; the public control is not. */
 export function GameLaunchButton({ children, className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
   const embedded = useContext(EmbeddedApplicationContext)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const hasAction = Boolean(props.onClick)
+  useEffect(() => {
+    if (hasAction && buttonRef.current) return bindGameLaunchShortcut(buttonRef.current)
+  }, [hasAction])
+  const shortcut = hasAction && !props.disabled && props['aria-disabled'] !== true && props['aria-disabled'] !== 'true'
+    ? <kbd className="game-launch-shortcut" aria-hidden="true">Enter</kbd>
+    : null
   return embedded
-    ? <QuestButton {...props} className="launch-start"><span className="launch-start__label">{children}</span><ArrowRight size={21} aria-hidden="true" /></QuestButton>
-    : <ActionButton {...props} className={className}>{children}</ActionButton>
+    ? <QuestButton {...props} ref={buttonRef} aria-keyshortcuts={shortcut ? 'Enter' : undefined} className={`launch-start${shortcut ? ' has-shortcut' : ''}`}><span className="launch-start__label">{children}</span>{shortcut}<ArrowRight size={21} aria-hidden="true" /></QuestButton>
+    : <ActionButton {...props} ref={buttonRef} aria-keyshortcuts={shortcut ? 'Enter' : undefined} className={className}>{children}{shortcut}</ActionButton>
 }
 
 export function GameLaunchControls({ mode, action, option, density = 'default' }: {

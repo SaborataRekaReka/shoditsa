@@ -12,6 +12,10 @@
 .game-launch-controls__action { min-width: min(220px, 100%); flex: 1 1 220px; }
 .game-launch-controls__option { min-width: min(178px, 100%); flex: 1 1 178px; }
 .game-launch-controls .play-button { width: 100%; min-width: 0; min-height: 56px; margin: 0; }
+.game-launch-shortcut { display: none; }
+@media (min-width: 700px) and (hover: hover) and (pointer: fine) {
+  .game-launch-shortcut { display: inline-flex; align-items: center; justify-content: center; flex: none; min-height: 23px; padding: 3px 6px; border: 1px solid color-mix(in srgb, currentColor 32%, transparent); border-bottom-width: 2px; border-radius: 6px; color: inherit; background: color-mix(in srgb, currentColor 8%, transparent); font-family: inherit; font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: 0; text-transform: none; }
+}
 
 .game-option-select { display: grid; gap: 6px; }
 .game-option-trigger {

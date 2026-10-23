@@ -147,3 +147,10 @@ html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hin
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .animal-media-hint > small { font-size: 13px; line-height: 1.5; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .animal-media-hint__silhouette,
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal .animal-media-hint__silhouette { border-color: var(--color-line); background: var(--color-surface-2); }
+/* Once a quiz is won, the celebration becomes the page's primary heading. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main:has(> .result-card--celebration) > .game-heading { min-height: 0; padding: 0 4px; margin-bottom: 16px; background: transparent; gap: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main:has(> .result-card--celebration) .game-heading h1 { margin: 0 0 4px; font-size: 18px; line-height: 1.3; letter-spacing: -.02em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main:has(> .result-card--celebration) .game-heading p { margin: 0; font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main:has(> .result-card--celebration) :is(.game-heading__kicker, .reference-session-note) { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main:has(> .result-card--celebration) .reference-session-visual { flex: 0 0 44px; width: 44px; height: 44px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main:has(> .result-card--celebration) .reference-session-art { flex: 0 0 44px; width: 44px; height: 44px; margin: 0; transform: none; align-self: center; }

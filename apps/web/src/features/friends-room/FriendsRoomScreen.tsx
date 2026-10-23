@@ -638,7 +638,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, terri
   </>
   if (APPLICATION_DESIGN && room) return <main className="room-play" id="room-play-main" tabIndex={-1}>
     <PageBackline href="/lobby" label="Лобби" trailing={<span className="room-play-code">Комната {room.code}</span>} />
-    <PageHeading title={room.gameType === 'territory' ? 'Захват' : room.phase === 'finished' ? 'Игра завершена' : mode.label} description={room.gameType === 'territory' ? 'Одна карта. Два соперника. Всё решают знания.' : `Раунд ${room.currentRound} из ${room.roundsTotal} · игра с друзьями`} />
+    <PageHeading title={room.gameType === 'territory' ? 'Захват' : room.phase === 'finished' ? 'Игра завершена' : mode.label} description={room.gameType === 'territory' ? 'Одна карта. Два соперника. Всё решают знания.' : `Раунд ${room.currentRound} из ${room.roundsTotal}, игра с друзьями`} />
     <ApplicationAside><RoomCompanyPanel room={room} members={room.members.filter(member => !member.leftAt)} scores={room.gameType !== 'territory'}>
       {room.gameType !== 'territory' && <section className="room-play-progress"><h2>Ход игры</h2><div><span>Раунд</span><strong>{room.currentRound} / {room.roundsTotal}</strong></div><div><span>Ответили</span><strong>{members.filter(member => member.answered).length} / {members.length}</strong></div><p>{connection === 'connected' ? 'Все играют на общем экране' : connection === 'offline' ? 'Нет подключения к сети' : 'Восстанавливаем связь…'}</p></section>}
       <div className="room-play-side"><Chat room={room} message={message} busy={messageSending} onMessage={setMessage} onSend={sendMessage} /></div>
@@ -647,7 +647,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, terri
     {sessionContent}
   </main>
   if (APPLICATION_DESIGN && !room) return <main className="room-play" id="room-play-main"><PageBackline href="/lobby" label="Лобби" />
-    {loading ? <><PageHeading title="Открываем комнату" description="Подключаемся к компании…" /><p role="status">Загружаем игру</p></> : invitePreview ? <section className="room-play-invitation"><ThemedArtwork src={publicAssetUrl('images/home-doodle/together.svg')} width="150" height="120" alt="" /><PageHeading title={`${invitePreview.hostName} зовёт играть`} description={`Комната ${invitePreview.code} · ${invitePreview.players} из ${invitePreview.capacity} игроков`} /><p>{invitePreview.gameType === 'danetki' ? 'Раскройте необычную историю вместе. Задавайте вопросы и обсуждайте версии.' : invitePreview.gameType === 'territory' ? 'Отвечайте на вопросы и сражайтесь за клетки общей карты.' : 'Знакомые категории, общие подсказки и по одному ответу от каждого.'}</p>{roomDirectory?.length ? <InlineAlert tone="warning">Ты уже в другой комнате. Сначала выйди из неё, затем вернись по этому приглашению.<a className="quest-button quest-button--outline" href="/lobby">Открыть текущую комнату</a></InlineAlert> : <QuestButton onClick={() => void joinInvitedRoom()} disabled={busy}>{busy ? 'Подключаемся…' : 'Присоединиться'}</QuestButton>}</section> : <><PageHeading title="Комната не открылась" description="Проверь код приглашения или попробуй ещё раз." /><QuestButton kind="outline" onClick={() => window.location.reload()}>Повторить</QuestButton></>}
+    {loading ? <><PageHeading title="Открываем комнату" description="Подключаемся к компании…" /><p role="status">Загружаем игру</p></> : invitePreview ? <section className="room-play-invitation"><ThemedArtwork src={publicAssetUrl('images/home-doodle/together.svg')} width="150" height="120" alt="" /><PageHeading title={`${invitePreview.hostName} зовёт играть`} description={`Комната ${invitePreview.code}, ${invitePreview.players} из ${invitePreview.capacity} игроков`} /><p>{invitePreview.gameType === 'danetki' ? 'Раскройте необычную историю вместе. Задавайте вопросы и обсуждайте версии.' : invitePreview.gameType === 'territory' ? 'Отвечайте на вопросы и сражайтесь за клетки общей карты.' : 'Знакомые категории, общие подсказки и по одному ответу от каждого.'}</p>{roomDirectory?.length ? <InlineAlert tone="warning">Ты уже в другой комнате. Сначала выйди из неё, затем вернись по этому приглашению.<a className="quest-button quest-button--outline" href="/lobby">Открыть текущую комнату</a></InlineAlert> : <QuestButton onClick={() => void joinInvitedRoom()} disabled={busy}>{busy ? 'Подключаемся…' : 'Присоединиться'}</QuestButton>}</section> : <><PageHeading title="Комната не открылась" description="Проверь код приглашения или попробуй ещё раз." /><QuestButton kind="outline" onClick={() => window.location.reload()}>Повторить</QuestButton></>}
     {error && <InlineAlert tone="danger">{error}</InlineAlert>}
   </main>
 
@@ -665,7 +665,7 @@ export function FriendsRoomScreen({ navigation, onExit, ticketBalance = 0, terri
         ? <span className="room-connection room-connection--connected"><RoomIcon name="users" />Приглашение в комнату</span>
         : roomDirectory
         ? <span className="room-connection room-connection--connected"><RoomIcon name="trophy" />{roomDirectory.length ? 'Текущая комната' : 'Комната не создана'}</span>
-        : <span className={`room-connection room-connection--${connection}`}><RoomIcon name="trophy" />{connection === 'connected' ? 'Онлайн-комната · на связи' : connection === 'offline' ? 'Онлайн-комната · нет сети' : 'Онлайн-комната · подключаемся'}</span>}
+        : <span className={`room-connection room-connection--${connection}`}><RoomIcon name="trophy" />{connection === 'connected' ? 'Онлайн-комната, на связи' : connection === 'offline' ? 'Онлайн-комната, нет сети' : 'Онлайн-комната, подключаемся'}</span>}
     >
       {error && (room || roomDirectory || invitePreview) && (room?.gameType !== 'territory' || room.phase === 'lobby') && <InlineAlert tone="danger" className="room-alert" onDismiss={() => setError('')}>{error}</InlineAlert>}
       {loading && <RoomLoading />}
@@ -846,7 +846,7 @@ function TogetherDanetkiGame({ room, navigation, onExit, onLeaveRoom, busy, mess
 
   const projector = <article className={`room-projector${game.status !== 'playing' ? ' is-finished' : ''}`}>
             <header className="room-projector__header">
-              <div><span>Игра с друзьями · дело №{caseNumber}</span><h1>Данетки</h1></div>
+              <div><span>Игра с друзьями, дело №{caseNumber}</span><h1>Данетки</h1></div>
               <div className={`room-projector__host is-${state.aiStatus}`}><i /><span><strong>{hostStatus}</strong><small>{difficulty} дело</small></span>{state.aiStatus === 'error' && <RoomActionButton surface="paper" variant="secondary" type="button" aria-label="Повторить запрос к ведущему" onClick={() => void api.danetkiRetryAi(sessionId, idempotencyKey()).then(() => refresh()).catch((reason) => setError(errorText(reason)))}><RefreshCw /></RoomActionButton>}</div>
             </header>
 
@@ -912,8 +912,8 @@ function TogetherDanetkiGame({ room, navigation, onExit, onLeaveRoom, busy, mess
     description={dialog === 'guess' ? 'Опиши, что произошло. Версию увидят все участники.' : undefined}
     onClose={() => setDialog(null)}
     footer={<div className="room-dialog-actions"><QuestButton kind="outline" onClick={() => setDialog(null)}>{dialog === 'surrender' ? 'Продолжить игру' : 'Отмена'}</QuestButton>{dialog === 'guess' ? <QuestButton disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</QuestButton> : dialog === 'hint' ? <QuestButton disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</QuestButton> : <QuestButton kind="outline" className="room-action-danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</QuestButton>}</div>}
-  >{dialog === 'guess' ? <><TextArea className="room-guess-field" aria-label="Полная версия разгадки" rows={5} maxLength={1500} value={guess} onChange={event => setGuess(event.target.value)} /><p className="room-guess-meta">{guess.trim().length < 20 ? `Добавь ещё ${20 - guess.trim().length} ${plural(20 - guess.trim().length, 'символ', 'символа', 'символов')}` : `${guess.trim().length} из 1500 символов · можно проверять`}</p></> : dialog === 'hint' ? <p>Подсказка появится у всех участников. Уровень подсказок станет {Math.min(3, state.hintLevel + 1)} из 3. Дополнительные билеты не нужны.</p> : <p>Твой голос будет учтён. Для сдачи нужны голоса всех активных участников.</p>}</ApplicationDialog> : <DialogSurface backdropClassName="room-danetki-dialog-backdrop" className="room-danetki-dialog" onClose={() => setDialog(null)} ariaLabelledBy="room-danetki-dialog-title">
-      {dialog === 'guess' && <><h2 id="room-danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><TextArea surface="dark" aria-label="Полная версия разгадки" rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><p className={guess.trim().length >= 20 ? 'room-danetki-dialog__meta is-ready' : 'room-danetki-dialog__meta'}>{guess.trim().length < 20 ? `Добавьте ещё ${20 - guess.trim().length} ${plural(20 - guess.trim().length, 'символ', 'символа', 'символов')}` : `${guess.trim().length} из 1500 символов · можно проверять`}</p><div><RoomActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</RoomActionButton><RoomActionButton disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</RoomActionButton></div></>}
+  >{dialog === 'guess' ? <><TextArea className="room-guess-field" aria-label="Полная версия разгадки" rows={5} maxLength={1500} value={guess} onChange={event => setGuess(event.target.value)} /><p className="room-guess-meta">{guess.trim().length < 20 ? `Добавь ещё ${20 - guess.trim().length} ${plural(20 - guess.trim().length, 'символ', 'символа', 'символов')}` : `${guess.trim().length} из 1500 символов, можно проверять`}</p></> : dialog === 'hint' ? <p>Подсказка появится у всех участников. Уровень подсказок станет {Math.min(3, state.hintLevel + 1)} из 3. Дополнительные билеты не нужны.</p> : <p>Твой голос будет учтён. Для сдачи нужны голоса всех активных участников.</p>}</ApplicationDialog> : <DialogSurface backdropClassName="room-danetki-dialog-backdrop" className="room-danetki-dialog" onClose={() => setDialog(null)} ariaLabelledBy="room-danetki-dialog-title">
+      {dialog === 'guess' && <><h2 id="room-danetki-dialog-title">Ваша разгадка</h2><p>Опишите всю причинно-следственную связь. Версию увидят все участники.</p><TextArea surface="dark" aria-label="Полная версия разгадки" rows={7} maxLength={1500} value={guess} onChange={(event) => setGuess(event.target.value)} autoFocus /><p className={guess.trim().length >= 20 ? 'room-danetki-dialog__meta is-ready' : 'room-danetki-dialog__meta'}>{guess.trim().length < 20 ? `Добавьте ещё ${20 - guess.trim().length} ${plural(20 - guess.trim().length, 'символ', 'символа', 'символов')}` : `${guess.trim().length} из 1500 символов, можно проверять`}</p><div><RoomActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</RoomActionButton><RoomActionButton disabled={guess.trim().length < 20 || finalGuess.isPending} onClick={() => finalGuess.mutate()}>{finalGuess.isPending ? 'Проверяем…' : 'Проверить версию'}</RoomActionButton></div></>}
       {dialog === 'hint' && <><h2 id="room-danetki-dialog-title">Открыть подсказку?</h2><p>Она появится на общем экране у всех участников. Уровень подсказок станет {Math.min(3, state.hintLevel + 1)} из 3; билеты дополнительно не списываются.</p><div><RoomActionButton variant="secondary" onClick={() => setDialog(null)}>Отмена</RoomActionButton><RoomActionButton disabled={hint.isPending} onClick={() => hint.mutate()}>Показать подсказку</RoomActionButton></div></>}
       {dialog === 'surrender' && <><h2 id="room-danetki-dialog-title">Завершить расследование?</h2><p>Ваш голос будет учтён. Для сдачи нужны голоса всех активных участников.</p><div><RoomActionButton variant="secondary" onClick={() => setDialog(null)}>Продолжить игру</RoomActionButton><RoomActionButton variant="danger" disabled={surrender.isPending} onClick={() => surrender.mutate()}>Сдаться</RoomActionButton></div></>}
     </DialogSurface>)
@@ -935,7 +935,7 @@ function TogetherDanetkiGame({ room, navigation, onExit, onLeaveRoom, busy, mess
       className="game-shell friends-room"
       onBack={exit}
       backLabel="Вернуться к играм"
-      status={<span className={`room-connection room-connection--${gameFinished ? 'connected' : connection}`}><Popcorn />{gameFinished ? 'Онлайн-комната · дело закрыто' : connection === 'connected' ? 'Онлайн-комната · сеанс идёт' : connection === 'offline' ? 'Онлайн-комната · нет сети' : 'Онлайн-комната · подключаемся'}</span>}
+      status={<span className={`room-connection room-connection--${gameFinished ? 'connected' : connection}`}><Popcorn />{gameFinished ? 'Онлайн-комната, дело закрыто' : connection === 'connected' ? 'Онлайн-комната, сеанс идёт' : connection === 'offline' ? 'Онлайн-комната, нет сети' : 'Онлайн-комната, подключаемся'}</span>}
     >
       {error && <InlineAlert tone="danger" className="room-alert" onDismiss={() => setError('')}>{error}</InlineAlert>}
       <div className="friends-room__columns friends-room__columns--danetki">
@@ -1020,7 +1020,7 @@ function DanetkiParticipants({ players, capacity, currentUserId, currentTurnUser
             <strong><b>{player.displayName}</b>{player.userId === currentUserId && <em>Вы</em>}</strong>
             <small>{player.role === 'owner'
               ? <><RoomIcon name="trophy" /> Создатель комнаты</>
-              : finished ? 'Участник расследования' : `В очереди · №${index + 1}`}</small>
+              : finished ? 'Участник расследования' : `В очереди, №${index + 1}`}</small>
           </span>
           <span className="room-participants__status">{(finished ? player.userId === resolvedByUserId : isCurrent) && <RoomIcon name={finished ? 'check' : 'play'} />}<small>{status}</small></span>
         </article>
@@ -1052,7 +1052,7 @@ function RoomDirectory({ rooms, busy, onOpen, onLeave, onCreate }: {
   return <section className="room-directory">
     <header className="room-directory__heading">
       <div>
-        <span className="room-kicker">Игра с друзьями · онлайн-комната</span>
+        <span className="room-kicker">Игра с друзьями, онлайн-комната</span>
         <h1>{room ? 'Вернуться в комнату' : 'Создать комнату'}</h1>
         <p>{room
           ? 'Комната остаётся открытой, когда вы уходите на другую страницу. Вернитесь в игру или покиньте её, чтобы создать новую.'
@@ -1068,7 +1068,7 @@ function RoomDirectory({ rooms, busy, onOpen, onLeave, onCreate }: {
             <span>{room.gameType === 'danetki' ? 'Расследование' : room.gameType === 'territory' ? 'Дуэль' : 'Комната'}</span>
           </div>
           <div className="room-directory-card__body">
-            <span>{room.isHost ? 'Вы ведущий' : 'Вы игрок'} · {room.code}</span>
+            <span>{room.isHost ? 'Вы ведущий' : 'Вы игрок'}, {room.code}</span>
             <h2>{friendsRoomSummaryTitle(room)}</h2>
             <p>{progress}</p>
             <small><RoomIcon name="users" /> {room.players} из {room.capacity} игроков</small>
@@ -1113,7 +1113,7 @@ function RoomInvitePreview({ preview, busy, onJoin, onDecline }: {
         : <ThemedArtwork src={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/associations.webp' : 'images/friends-room/friends-ticket-art-v2.webp')} alt="" />}
     </div>
     <div className="room-invite__body">
-      <span className="room-kicker">Приглашение · комната {preview.code}</span>
+      <span className="room-kicker">Приглашение, комната {preview.code}</span>
       <h1>{preview.hostName} приглашает в {presentation.label}</h1>
       <p>{preview.gameType === 'danetki'
         ? 'Вас ждёт общее расследование: одна история, общий протокол и вопросы ведущему по очереди.'
@@ -1227,7 +1227,7 @@ function Lobby({ room, mode, members, copied, busy, messageSending, configSaving
   const quizShortage = isDanetki || isTerritory ? 0 : quote.shortage
   return <section className={`room-lobby${isDanetki ? ' is-danetki' : ''}${isTerritory ? ' is-territory' : ''}`}>
     <div className="room-lobby__intro">
-      <span className="room-kicker">Игра с друзьями · {isTerritory ? 'дуэль на двоих' : 'общая онлайн-комната'}</span>
+      <span className="room-kicker">Игра с друзьями, {isTerritory ? 'дуэль на двоих' : 'общая онлайн-комната'}</span>
       <h1>{isTerritory ? 'Захват' : 'Онлайн-комната'}</h1>
       <p>{isTerritory
         ? 'Пригласите одного соперника. Вы будете одновременно отвечать на вопросы, а победитель каждой дуэли выберет следующую территорию для захвата.'
@@ -1272,7 +1272,7 @@ function Lobby({ room, mode, members, copied, busy, messageSending, configSaving
       </div>
       </>}
       {room.isHost
-        ? <RoomActionButton variant="primary" className="room-start" type="button" onClick={onStart} disabled={busy || configSaving || (isTerritory ? !territoryReady : isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0)}><RoomIcon name="play" />{busy ? 'Запускаем…' : isTerritory ? territoryReady ? 'Начать матч' : 'Нужен второй игрок' : (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0) ? 'Не хватает билетов' : isDanetki ? 'Начать расследование' : 'Начать игру'}<span>{isTerritory ? territoryReady ? 'Оба игрока на связи' : 'Отправьте сопернику код комнаты' : isDanetki ? `${members.length} из ${room.capacity} · вопросы по очереди` : `${packCountLabel(room.packs.length)} · ${room.roundsTotal} ${plural(room.roundsTotal, 'раунд', 'раунда', 'раундов')} · ${quote.cost ? `${quote.cost} билетов` : 'бесплатно'}`}</span></RoomActionButton>
+        ? <RoomActionButton variant="primary" className="room-start" type="button" onClick={onStart} disabled={busy || configSaving || (isTerritory ? !territoryReady : isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0)}><RoomIcon name="play" />{busy ? 'Запускаем…' : isTerritory ? territoryReady ? 'Начать матч' : 'Нужен второй игрок' : (isDanetki ? danetkiGroupCost > ticketBalance : quizShortage > 0) ? 'Не хватает билетов' : isDanetki ? 'Начать расследование' : 'Начать игру'}<span>{isTerritory ? territoryReady ? 'Оба игрока на связи' : 'Отправьте сопернику код комнаты' : isDanetki ? `${members.length} из ${room.capacity}, вопросы по очереди` : `${packCountLabel(room.packs.length)}, ${room.roundsTotal} ${plural(room.roundsTotal, 'раунд', 'раунда', 'раундов')}, ${quote.cost ? `${quote.cost} билетов` : 'бесплатно'}`}</span></RoomActionButton>
         : <div className="room-waiting-host"><RoomIcon name="timer" /><span><strong>{isTerritory ? territoryReady ? 'Ждём запуска' : 'Ждём второго игрока' : 'Ждём ведущего'}</strong><small>{isTerritory ? territoryReady ? 'Матч запускает создатель комнаты' : 'Начнём, когда оба игрока будут на связи' : 'Настройки и запуск доступны создателю комнаты'}</small></span></div>}
     </div>
   </section>
@@ -1375,7 +1375,7 @@ function GameLayout({ room, mode, ranked, timeLeft, answer, message, busy, messa
       <article className={`room-ticket ${room.phase === 'results' ? 'is-results' : ''}`}>
         <div className="room-ticket__stub"><ThemedArtwork src={publicAssetUrl(REFERENCE_PRESENTATION ? `images/home-doodle/${mode.id}.webp` : mode.poster)} alt="" />{!REFERENCE_PRESENTATION && <><span>Вход<br /><strong>один</strong></span><small>№ {String(room.currentRound).padStart(3, '0')}</small></>}</div>
         <div className="room-ticket__body">
-          <div className="room-ticket__meta">Игра с друзьями · Раунд №{String(room.currentRound).padStart(3, '0')}</div>
+          <div className="room-ticket__meta">Игра с друзьями, Раунд №{String(room.currentRound).padStart(3, '0')}</div>
           <h1>{mode.label}</h1>
           {room.phase === 'results'
             ? <Results room={room} mode={mode} isHost={room.isHost} busy={busy} onNext={onNext} />
@@ -1457,7 +1457,7 @@ function AnswerForm({ room, answer, submitted, busy, onAnswer, onSubmit }: {
       if (event.key === 'Enter') { event.preventDefault(); choose(suggestions[activeIndex] ?? suggestions[0]) }
     }} placeholder={(room.round?.mode ?? room.mode) === 'city' ? 'Введите город…' : 'Введите название…'} autoComplete="off" />
     <RoomActionButton variant="primary" type="submit" disabled={!answer.trim() || busy}>Отправить</RoomActionButton>
-    {suggestions.length > 0 && <div className="room-answer__suggestions" id="friends-answer-suggestions" role="listbox">{suggestions.map((item, index) => <ControlButton type="button" role="option" aria-selected={index === activeIndex} className={index === activeIndex ? 'is-active' : ''} key={item.id} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveIndex(index)} onClick={() => choose(item)}>{item.titleRu}{item.titleOriginal && item.titleOriginal !== item.titleRu ? <small>{item.titleOriginal}{item.year ? ` · ${item.year}` : ''}</small> : item.year ? <small>{item.year}</small> : null}</ControlButton>)}</div>}
+    {suggestions.length > 0 && <div className="room-answer__suggestions" id="friends-answer-suggestions" role="listbox">{suggestions.map((item, index) => <ControlButton type="button" role="option" aria-selected={index === activeIndex} className={index === activeIndex ? 'is-active' : ''} key={item.id} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setActiveIndex(index)} onClick={() => choose(item)}>{item.titleRu}{item.titleOriginal && item.titleOriginal !== item.titleRu ? <small>{item.titleOriginal}{item.year ? `, ${item.year}` : ''}</small> : item.year ? <small>{item.year}</small> : null}</ControlButton>)}</div>}
   </form>
 }
 
@@ -1485,7 +1485,7 @@ function Results({ room, mode, isHost, busy, onNext }: { room: FriendsRoomSnapsh
     card?.genres?.length ? { label: 'Жанры', value: card.genres.slice(0, 3).join(', ') } : null,
     people,
   ].filter((entry): entry is { label: string; value: string } => Boolean(entry?.value))
-  return <div className="room-reveal"><div className="room-reveal__card"><div className="room-reveal__poster"><ThemedArtwork src={publicAssetUrl(card?.posterUrl || mode.poster)} alt={card?.titleRu || room.round?.answer || 'Правильный ответ'} /></div><div className="room-reveal__copy"><span>Правильный ответ</span><h2>{room.round?.answer}</h2>{room.round?.answerOriginal && room.round.answerOriginal !== room.round.answer && <small>{room.round.answerOriginal}</small>}<div className="room-reveal__facts">{facts.map((fact) => <span key={`${fact.label}-${fact.value}`}><small>{fact.label}</small><strong>{fact.value}</strong></span>)}</div><p>{correct} ответили точно{partial > 0 ? ` · ${partial} получили очки за совпавшие признаки` : ''}</p>{ownAnswer && ownAnswer.scoreBreakdown.length > 0 && <div className="room-score-breakdown" aria-label="Как начислены ваши очки"><strong>Ваши +{ownAnswer.points}</strong>{ownAnswer.scoreBreakdown.map((part) => <span key={part.key}><small>{part.label}</small><b>+{part.points}</b></span>)}</div>}{isHost ? <RoomActionButton variant="primary" type="button" onClick={onNext} disabled={busy}>{room.currentRound >= room.roundsTotal ? 'Показать итоги' : 'Следующий раунд'}<RoomIcon name="play" /></RoomActionButton> : <div className="room-reveal__waiting"><RoomIcon name="timer" />Ждём следующий раунд</div>}</div></div></div>
+  return <div className="room-reveal"><div className="room-reveal__card"><div className="room-reveal__poster"><ThemedArtwork src={publicAssetUrl(card?.posterUrl || mode.poster)} alt={card?.titleRu || room.round?.answer || 'Правильный ответ'} /></div><div className="room-reveal__copy"><span>Правильный ответ</span><h2>{room.round?.answer}</h2>{room.round?.answerOriginal && room.round.answerOriginal !== room.round.answer && <small>{room.round.answerOriginal}</small>}<div className="room-reveal__facts">{facts.map((fact) => <span key={`${fact.label}-${fact.value}`}><small>{fact.label}</small><strong>{fact.value}</strong></span>)}</div><p>{correct} ответили точно{partial > 0 ? `, ${partial} получили очки за совпавшие признаки` : ''}</p>{ownAnswer && ownAnswer.scoreBreakdown.length > 0 && <div className="room-score-breakdown" aria-label="Как начислены ваши очки"><strong>Ваши +{ownAnswer.points}</strong>{ownAnswer.scoreBreakdown.map((part) => <span key={part.key}><small>{part.label}</small><b>+{part.points}</b></span>)}</div>}{isHost ? <RoomActionButton variant="primary" type="button" onClick={onNext} disabled={busy}>{room.currentRound >= room.roundsTotal ? 'Показать итоги' : 'Следующий раунд'}<RoomIcon name="play" /></RoomActionButton> : <div className="room-reveal__waiting"><RoomIcon name="timer" />Ждём следующий раунд</div>}</div></div></div>
 }
 
 function PlayersPanel({ room, players }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members'] }) {
@@ -1495,7 +1495,7 @@ function PlayersPanel({ room, players }: { room: FriendsRoomSnapshot; players: F
     return rightPoints - leftPoints
   }).slice(0, 3)
   const scoresVisible = room.phase === 'results' || room.phase === 'intermission' || room.phase === 'finished'
-  return <aside className="room-right-rail"><section className="room-panel room-players"><span>Игроки ({players.length})</span><div>{players.map((player, index) => <article key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><strong>{player.displayName}{player.userId === room.currentUserId ? ' (вы)' : ''}</strong>{scoresVisible && index === 0 && <RoomIcon name="trophy" />}<small>{scoresVisible ? score(player.score) : '—'}</small></article>)}</div></section><section className="room-panel room-answers"><span>Ответы раунда</span>{room.phase === 'results' ? <div>{players.map((player) => { const answer = room.answers.find((entry) => entry.userId === player.userId); return <article className={answer && !answer.correct && answer.points > 0 ? 'is-partial' : ''} key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><span><strong>{player.displayName}</strong><small>{answer ? `${answer.text} · +${answer.points}` : 'Нет ответа'}</small></span><RoomIcon name={answer && answer.points > 0 ? 'check' : 'remove'} /></article> })}</div> : <div className="room-waiting"><RoomIcon name="chat" /><p>Ответы откроются одновременно после завершения раунда</p></div>}</section>{room.phase === 'results' && <section className="room-panel room-podium"><span>Счёт за раунд</span><div>{podium.map((player, index) => <article key={player.userId} className={`place-${index + 1}`}><strong>{index + 1}</strong><small>+{room.answers.find((entry) => entry.userId === player.userId)?.points ?? 0}</small></article>)}</div></section>}</aside>
+  return <aside className="room-right-rail"><section className="room-panel room-players"><span>Игроки ({players.length})</span><div>{players.map((player, index) => <article key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><strong>{player.displayName}{player.userId === room.currentUserId ? ' (вы)' : ''}</strong>{scoresVisible && index === 0 && <RoomIcon name="trophy" />}<small>{scoresVisible ? score(player.score) : '—'}</small></article>)}</div></section><section className="room-panel room-answers"><span>Ответы раунда</span>{room.phase === 'results' ? <div>{players.map((player) => { const answer = room.answers.find((entry) => entry.userId === player.userId); return <article className={answer && !answer.correct && answer.points > 0 ? 'is-partial' : ''} key={player.userId}><i style={{ '--avatar': colorByKey[player.colorKey] ?? 'var(--mode-movie-brand)' } as CSSProperties}>{initials(player.displayName)}</i><span><strong>{player.displayName}</strong><small>{answer ? `${answer.text}, +${answer.points}` : 'Нет ответа'}</small></span><RoomIcon name={answer && answer.points > 0 ? 'check' : 'remove'} /></article> })}</div> : <div className="room-waiting"><RoomIcon name="chat" /><p>Ответы откроются одновременно после завершения раунда</p></div>}</section>{room.phase === 'results' && <section className="room-panel room-podium"><span>Счёт за раунд</span><div>{podium.map((player, index) => <article key={player.userId} className={`place-${index + 1}`}><strong>{index + 1}</strong><small>+{room.answers.find((entry) => entry.userId === player.userId)?.points ?? 0}</small></article>)}</div></section>}</aside>
 }
 
 function ActivityLog({ room, players }: { room: FriendsRoomSnapshot; players: FriendsRoomSnapshot['members'] }) {

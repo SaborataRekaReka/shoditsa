@@ -170,10 +170,10 @@ function TerritoryPlayerHud({
   currentActorUserId: string | null
 }) {
   const isYou = player.userId === currentMemberId
-  const crest = <span className="territory-player__crest" aria-hidden="true">{player.displayName.trim().slice(0, 1).toLocaleUpperCase('ru-RU') || '•'}</span>
+  const crest = <span className="territory-player__crest" aria-hidden="true">{player.displayName.trim().slice(0, 1).toLocaleUpperCase('ru-RU') || '?'}</span>
   const copy = <span className="territory-player__copy">
     <small>{isYou ? 'Вы' : 'Соперник'}</small>
-    <strong>{player.displayName}<b aria-hidden="true"> · {player.territoryCount}</b></strong>
+    <strong>{player.displayName}<b aria-hidden="true">, {player.territoryCount}</b></strong>
   </span>
   const score = <span className="territory-player__score">
     <span className="territory-room-game__sr-only">{player.territoryCount} {territoryWord(player.territoryCount)}, стоимость {player.territoryValueTotal} {pointsWord(player.territoryValueTotal)}</span>
@@ -209,8 +209,8 @@ function QuestionPanel({
   return <>
     <div className="territory-question-panel__copy">
       <span className="territory-question-panel__kicker">
-        {question.duelKind === 'siege' ? 'Осада столицы · ' : ''}{question.category.label} · {difficultyLabel[question.difficulty]}
-        {question.answerRule === 'numeric_closest' ? ' · учитывается ближайшее значение' : ''}
+        {question.duelKind === 'siege' ? 'Осада столицы, ' : ''}{question.category.label}, {difficultyLabel[question.difficulty]}
+        {question.answerRule === 'numeric_closest' ? ', учитывается ближайшее значение' : ''}
       </span>
       <h2 id={titleId}>{question.prompt}</h2>
       <p aria-live="polite">{answered
@@ -264,7 +264,7 @@ function RevealPanel({ snapshot, currentMemberId }: {
       <small className="territory-question-panel__source">
         Источник: {sourceUrl
           ? <a href={sourceUrl} target="_blank" rel="noreferrer">{provenanceLabel}</a>
-          : provenanceLabel} · {reveal.provenance.license}
+          : provenanceLabel}, {reveal.provenance.license}
       </small>
     </div>
     <div className="territory-question-panel__actions" aria-label="Ответы завершённого вопроса">

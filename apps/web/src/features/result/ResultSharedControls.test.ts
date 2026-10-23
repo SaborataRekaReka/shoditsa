@@ -32,14 +32,27 @@ describe('shared result controls', () => {
     const html = renderActions(actionProps({ celebration: true, onShare: vi.fn(), primaryReplay: true, onReplay: vi.fn(), replayCost: 1 }))
     expect(html).toContain('Поделиться победой')
     expect(html).toContain('Ещё за 1 билет')
-    expect(html.indexOf('Поделиться победой')).toBeLessThan(html.indexOf('aria-label="Другие действия"'))
+    expect(html).toContain('Другие игры')
+    expect(html).toContain('aria-label="Настроить игру"')
+    expect(html).not.toContain('aria-expanded=')
     expect(html).not.toContain('result-next__art')
+  })
+
+  it('offers replay and a friend challenge directly on victory without a disclosure', () => {
+    const props = actionProps({ celebration: true, showReplayGate: true, onReplay: vi.fn(), onChallenge: vi.fn() })
+    const html = renderActions(props)
+    expect(html).toContain('aria-label="Сыграть ещё раз"')
+    expect(html).toContain('aria-label="Бросить вызов другу"')
+    expect(html).not.toContain('aria-expanded=')
+    expect(props.onReplay).not.toHaveBeenCalled()
+    expect(props.onChallenge).not.toHaveBeenCalled()
   })
 
   it('does not invent a share action when no handler is supplied', () => {
     const html = renderActions(actionProps({ celebration: true }))
     expect(html).not.toContain('Поделиться победой')
-    expect(html).toContain('Следующая игра')
+    expect(html).toContain('Играть дальше')
+    expect(html).toContain('aria-label="Играть дальше: кино"')
   })
 
   it('keeps ActionLink a native anchor and forwards the original tracking callback without intercepting navigation', () => {
@@ -130,8 +143,8 @@ describe('shared result controls', () => {
     const html = renderActions(props)
     const firstButton = html.match(/<button\b[^>]*>/)?.[0]
     expect(firstButton).toContain('disabled=""')
-    expect(firstButton).toContain('aria-label="Следующий случай · 5 билетов"')
-    expect(html).toContain('5 билетов · новая загадка')
+    expect(firstButton).toContain('aria-label="Следующий случай, 5 билетов"')
+    expect(html).toContain('5 билетов, новая загадка')
     expect(html).toContain('Запускаем…')
     expect(onReplay).not.toHaveBeenCalled()
     expect(props.onNext).not.toHaveBeenCalled()
@@ -139,8 +152,8 @@ describe('shared result controls', () => {
 
   it.each([
     ['club', 'по клубному билету', 'Входит в клубный билет'],
-    ['registration_bonus', 'за регистрационный бонус', 'Бонусная партия · без списания билетов'],
-    ['free_archive', 'Следующий диагноз — бесплатно', 'Бесплатно · из архива'],
+    ['registration_bonus', 'за регистрационный бонус', 'Бонусная партия, без списания билетов'],
+    ['free_archive', 'Следующий диагноз — бесплатно', 'Бесплатно, из архива'],
   ] as const)('explains %s replay access before an action can be taken', (replayAccessSource, accessibleLabel, explanation) => {
     const onReplay = vi.fn()
     const html = renderActions(actionProps({ primaryReplay: true, replayAccessSource, onReplay }))
@@ -152,7 +165,7 @@ describe('shared result controls', () => {
   it('explains insufficient tickets without starting a replay on render', () => {
     const onReplay = vi.fn()
     const html = renderActions(actionProps({ primaryReplay: true, replayCost: 5, replayShortage: 2, onReplay }))
-    expect(html).toContain('Следующий случай · недостаточно билетов')
+    expect(html).toContain('Следующий случай, недостаточно билетов')
     expect(html).toContain('Выберите способ продолжить')
     expect(onReplay).not.toHaveBeenCalled()
   })

@@ -53,7 +53,7 @@ export function ReferenceFooter({ onHome, onArchive, onRules, onProfile }: Refer
           <a href={localPresentationLink('/legal/contacts')}>Реквизиты</a>
           <ControlButton onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Настройки cookie</ControlButton>
         </nav>
-        <div className="reference-footer__credits"><span>© {new Date().getFullYear()} Сходится!</span><small>ИП Бренейзе А. В. · ИНН 540552157271<br />ОГРНИП 318547600133003</small></div>
+        <div className="reference-footer__credits"><span>© {new Date().getFullYear()} Сходится!</span><small>ИП Бренейзе А. В., ИНН 540552157271<br />ОГРНИП 318547600133003</small></div>
       </div>
     </div>
   </footer>

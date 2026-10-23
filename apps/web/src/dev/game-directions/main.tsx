@@ -18,9 +18,9 @@ const home = '/?preview=reference#/?preview=reference'
 const referenceOne = new URL('../../../../../qa/club-directions-2026-10-16/home-screen-1.png', import.meta.url).href
 const clubA = new URL('../../../../../qa/club-directions-2026-10-16/a-hero-desktop.png', import.meta.url).href
 const options = [
-  { id: 'a1', name: 'Загадка рядом', short: 'Текст · открытый рисунок · жёлтый блок запуска', description: 'Перенос трёхчастной сцены главной: описание слева, рисунок в центре, запуск и период справа. Сразу за вступлением — цветные карточки правил.' },
-  { id: 'a2', name: 'Сцена и полоса запуска', short: 'Большой рисунок · общая полоса действий', description: 'Заголовок и рисунок образуют свободную сцену. Ниже отдельная пастельная полоса собирает попытки, период и запуск. Правила остаются открытыми.' },
-  { id: 'a3', name: 'Большая игровая карточка', short: 'Цельная цветная поверхность · всё для начала внутри', description: 'Развитие карточек игр со второго экрана главной: большой рисунок и действия собраны в одной лиловой карточке. Пояснения идут ниже на открытом фоне.' },
+  { id: 'a1', name: 'Загадка рядом', short: 'Текст, открытый рисунок, жёлтый блок запуска', description: 'Перенос трёхчастной сцены главной: описание слева, рисунок в центре, запуск и период справа. Сразу за вступлением — цветные карточки правил.' },
+  { id: 'a2', name: 'Сцена и полоса запуска', short: 'Большой рисунок, общая полоса действий', description: 'Заголовок и рисунок образуют свободную сцену. Ниже отдельная пастельная полоса собирает попытки, период и запуск. Правила остаются открытыми.' },
+  { id: 'a3', name: 'Большая игровая карточка', short: 'Цельная цветная поверхность, всё для начала внутри', description: 'Развитие карточек игр со второго экрана главной: большой рисунок и действия собраны в одной лиловой карточке. Пояснения идут ниже на открытом фоне.' },
 ] as const
 type Variant = typeof options[number]['id']
 const query = new URLSearchParams(location.search)
@@ -53,7 +53,7 @@ export function Footer() {
   return <footer className="club-study-footer"><div className="study-container"><div><BrandWordmark variant="footer"/><p>Немного любопытства, одна хорошая догадка —<br/>и маленькое открытие каждый день.</p></div><a href={home}>Во что сыграем?<ArrowRight size={20}/></a><span className="club-study-footer__note">До новой загадки!</span></div></footer>
 }
 function Edition() {
-  return <div className="game-study-edition"><span><ReferenceIcon name="movie" size={20}/>Фильмы <i>·</i> Загадка № 289</span><time dateTime="2026-10-16"><ReferenceIcon name="calendar" size={18}/>16 октября</time></div>
+  return <div className="game-study-edition"><span><ReferenceIcon name="movie" size={20}/>Фильмы, загадка № 289</span><time dateTime="2026-10-16"><ReferenceIcon name="calendar" size={18}/>16 октября</time></div>
 }
 function FilmArt() {
   return <figure className="game-study-art"><img src={publicAssetUrl('images/home-doodle/movie.webp')} width="500" height="500" alt=""/></figure>

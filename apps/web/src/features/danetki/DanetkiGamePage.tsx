@@ -295,9 +295,9 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         <ThemedArtwork src={publicAssetUrl('images/home-doodle/yes-no.webp')} alt="" />
       </header> : <section className="game-heading danetki-game-heading">
         <div>
-          <div className="game-heading__kicker"><span>{session.kind === 'daily' ? 'Сегодня' : 'Архив'} · Дело №{caseNumber} · {difficulty}</span></div>
+          <div className="game-heading__kicker"><span>{session.kind === 'daily' ? 'Сегодня' : 'Архив'}, Дело №{caseNumber}, {difficulty}</span></div>
           <h1>{session.kind === 'daily' ? 'Данетка дня' : 'Архивная данетка'}</h1>
-          <p>{dateLabel} · обновление в 00:00 МСК</p>
+          <p>{dateLabel}, обновление в 00:00 МСК</p>
         </div>
         <div className="mini-ticket danetki-mini-ticket" aria-hidden="true"><CalendarDays /><span>{dateBadge.slice(0, 2)}<small>/{dateBadge.slice(-2)}</small></span></div>
       </section>}
@@ -337,7 +337,7 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
         <div className="danetki-room-toolbar">
           <div className="danetki-room-summary">
             <strong>Ход расследования</strong>
-            <small>{state.roomMode === 'group' ? `${activeMembers.length} ${participantWord} · вопросы по очереди` : 'Чат с ведущим'}</small>
+            <small>{state.roomMode === 'group' ? `${activeMembers.length} ${participantWord}, вопросы по очереди` : 'Чат с ведущим'}</small>
           </div>
           {session.status === 'playing' && <ActionButton type="button" variant="ghost" className="danetki-hint-button" onClick={() => setDialog('hint')} disabled={state.hintLevel >= 3}><Lightbulb /> Подсказка <span>{state.hintLevel}/3</span></ActionButton>}
           {state.roomMode === 'group' && <div className="danetki-members" aria-label={`${activeMembers.length} ${participantWord}`}>
@@ -375,11 +375,11 @@ export function DanetkiGamePage({ sessionId, session, onHome, onBack, onArchive,
           </article>}
           {(state.aiStatus === 'queued' || state.aiStatus === 'processing') && <div className="danetki-typing"><span className="danetki-message__avatar"><ThemedArtwork src={publicAssetUrl('images/mascot/think-v1.webp')} width="30" height="30" alt="" /></span><span><i /><i /><i /></span></div>}
         </div>
-        {newMessages > 0 && <ActionButton type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения · {newMessages}</ActionButton>}
+        {newMessages > 0 && <ActionButton type="button" className="danetki-new-messages" onClick={() => { wasNearBottom.current = true; setNewMessages(0); listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' }) }}>Новые сообщения, {newMessages}</ActionButton>}
 
       {session.status === 'playing' && <section className="search-area danetki-search-area" aria-label="Задать вопрос или назвать разгадку">
         <div className="sticky-composer__status" role="status" aria-live="polite">
-          <span>{!isMyTurn ? `Сейчас спрашивает ${currentTurn?.displayName ?? 'другой игрок'}` : !hostReady ? 'Ведущий готовит ответ…' : `Следующий вопрос · ${state.questionCount + 1}`}</span>
+          <span>{!isMyTurn ? `Сейчас спрашивает ${currentTurn?.displayName ?? 'другой игрок'}` : !hostReady ? 'Ведущий готовит ответ…' : `Следующий вопрос, ${state.questionCount + 1}`}</span>
           <strong>{state.questionCount} / {state.questionLimit} вопросов</strong>
         </div>
         <form className="danetki-composer" onSubmit={submit}><TextArea className="danetki-composer__input" surface="paper" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit() } }} maxLength={300} rows={1} placeholder={state.questionsRemaining <= 0 ? 'Лимит вопросов исчерпан' : !isMyTurn ? `Сейчас спрашивает ${currentTurn?.displayName ?? 'другой игрок'}` : !hostReady ? 'Дождитесь ответа ведущего…' : 'Спросите ведущего…'} aria-label="Вопрос ведущему" disabled={state.questionsRemaining <= 0 || !isMyTurn || !hostReady} /><ActionButton type="submit" className="danetki-composer__send" disabled={send.isPending || draft.trim().length < 2 || state.questionsRemaining <= 0 || !isMyTurn || !hostReady} aria-label="Отправить вопрос" title={isMyTurn ? 'Отправить вопрос' : 'Дождитесь своего хода'}>{send.isPending ? <LoaderCircle className="danetki-spinner" /> : <ArrowUp strokeWidth={2.6} />}</ActionButton></form>

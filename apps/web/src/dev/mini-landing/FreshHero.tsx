@@ -14,10 +14,6 @@ const criteria: Array<{ label: string; icon: ReferenceIconName }> = [
   { label: 'Рейтинг', icon: 'idea' },
 ]
 
-function SceneSpark({ className = '' }: { className?: string }) {
-  return <svg className={`fresh-scene__spark ${className}`} width="26" height="30" viewBox="0 0 26 30" fill="none"><path d="m13 2 2.8 9.2L24 15l-8.2 3.8L13 28l-2.8-9.2L2 15l8.2-3.8L13 2Z" fill="currentColor" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /></svg>
-}
-
 function HeroScene() {
   return <div className="fresh-scene" aria-hidden="true">
     <div className="fresh-scene__mascot">
@@ -26,12 +22,10 @@ function HeroScene() {
         <Mascot className="fresh-scene__think" pose="think" width={1254} height={1254} draggable={false} />
         <Mascot className="fresh-scene__celebrate" pose="celebrate" width={1254} height={1254} draggable={false} />
       </div>
-      <SceneSpark className="fresh-scene__spark--mascot" />
     </div>
     <div className="fresh-scene__cinema">
       <span className="fresh-scene__lilac" />
       <img src={publicAssetUrl('images/home-doodle/movie.webp')} alt="" width="250" height="250" draggable={false} />
-      <SceneSpark className="fresh-scene__spark--cinema" />
     </div>
   </div>
 }

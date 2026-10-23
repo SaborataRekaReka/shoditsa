@@ -1,0 +1,4 @@
+.user-avatar { display: inline-grid; place-items: center; flex: none; width: 36px; height: 36px; overflow: hidden; border: 1px solid var(--quest-line); border-radius: 50%; background: var(--quest-purple-pale); color: var(--quest-blue); font: 800 13px/1 var(--quest-heading); }
+.user-avatar[data-size='large'] { width: 64px; height: 64px; font-size: 23px; }
+.user-avatar > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.user-avatar > svg { width: 55%; height: 55%; }

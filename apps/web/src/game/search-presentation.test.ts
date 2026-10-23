@@ -18,8 +18,8 @@ describe('search presentation contract', () => {
     const diagnosis = item({ mode: 'diagnosis', titleRu: 'Импетиго', titleOriginal: 'Impetigo', icd10: ['L01'] })
 
     expect(searchMediaAlt(city)).toBe('Символ города «Москва»')
-    expect(searchResultMeta(city)).toBe('Moscow · Россия')
-    expect(searchResultMeta(diagnosis)).toBe('Impetigo · L01')
+    expect(searchResultMeta(city)).toBe('Moscow, Россия')
+    expect(searchResultMeta(diagnosis)).toBe('Impetigo, L01')
     expect(searchResultMeta(city)).not.toContain('—')
     expect(searchResultMeta(diagnosis)).not.toContain('—')
   })
@@ -31,7 +31,7 @@ describe('search presentation contract', () => {
       titleOriginal: 'Double Dragon',
       year: 1987,
       platforms: ['Arcade', 'NES'],
-    }))).toBe('1987 · Arcade · NES')
+    }))).toBe('1987, Arcade, NES')
 
     expect(searchResultMeta(item({
       mode: 'game',
@@ -41,7 +41,7 @@ describe('search presentation contract', () => {
       releaseScope: 'release',
       releaseLabel: 'Commodore 64 port',
       platforms: ['Commodore 64'],
-    }))).toBe('1991 · Commodore 64 port · Commodore 64')
+    }))).toBe('1991, Commodore 64 port, Commodore 64')
   })
 
   it('explains that an empty result belongs to the current pool', () => {

@@ -41,7 +41,7 @@ function HintValue({ hint, showLabel = true }: { hint: Hint; showLabel?: boolean
 }
 
 function FullComparison({ example }: { example: Example }) {
-  return <details className="gc-all-hints"><summary>Все признаки · {example.hints.length}<ChevronDown size={14} /></summary><div>{example.hints.map(hint => <HintValue key={hint.key} hint={hint} />)}</div></details>
+  return <details className="gc-all-hints"><summary>Все признаки, {example.hints.length}<ChevronDown size={14} /></summary><div>{example.hints.map(hint => <HintValue key={hint.key} hint={hint} />)}</div></details>
 }
 
 function KnownFacts({ attempts, board = false }: { attempts: Example[]; board?: boolean }) {
@@ -93,11 +93,11 @@ function EmptyGame({ variant }: { variant: Direction }) {
 }
 
 function AttemptTable({ attempts }: { attempts: Example[] }) {
-  return <div className="gc-attempt-table"><div className="gc-table-labels" aria-hidden="true"><span>Твоя версия</span><span>Формат</span><span>Студия</span><span>Эпизоды</span><span>Рейтинг</span></div>{[...attempts].reverse().map((example, index) => <article className="gc-table-row" key={example.id} data-latest={index === 0}><div className="gc-title-cell"><img src={imageUrl(example.poster)} alt="" width="38" height="53" /><div><h3>{example.title}</h3><small>{example.year} · версия {attempts.length - index}</small></div></div>{fields.slice(0, 4).map(key => { const hint = example.hints.find(item => item.key === key); return hint && <HintValue key={key} hint={hint} /> })}<FullComparison example={example} /></article>)}</div>
+  return <div className="gc-attempt-table"><div className="gc-table-labels" aria-hidden="true"><span>Твоя версия</span><span>Формат</span><span>Студия</span><span>Эпизоды</span><span>Рейтинг</span></div>{[...attempts].reverse().map((example, index) => <article className="gc-table-row" key={example.id} data-latest={index === 0}><div className="gc-title-cell"><img src={imageUrl(example.poster)} alt="" width="38" height="53" /><div><h3>{example.title}</h3><small>{example.year}, версия {attempts.length - index}</small></div></div>{fields.slice(0, 4).map(key => { const hint = example.hints.find(item => item.key === key); return hint && <HintValue key={key} hint={hint} /> })}<FullComparison example={example} /></article>)}</div>
 }
 
 function AttemptFeed({ attempts }: { attempts: Example[] }) {
-  return <div className="gc-feed">{[...attempts].reverse().map((example, index) => <article className="gc-feed-card" key={example.id} data-latest={index === 0}><header><span className="gc-feed__step">{attempts.length - index}</span><img src={imageUrl(example.poster)} width="42" height="58" alt="" /><div><small>{index === 0 ? 'Последняя версия' : 'Твоя версия'}</small><h3>{example.title}</h3><p>{example.original} · {example.year}</p></div><span className="gc-feed__score"><Check size={13} />{example.hints.filter(hint => hint.status === 'match').length} совпало</span></header><div className="gc-feed__hints">{fields.map(key => { const hint = example.hints.find(item => item.key === key); return hint && <HintValue key={key} hint={hint} /> })}</div><FullComparison example={example} /></article>)}</div>
+  return <div className="gc-feed">{[...attempts].reverse().map((example, index) => <article className="gc-feed-card" key={example.id} data-latest={index === 0}><header><span className="gc-feed__step">{attempts.length - index}</span><img src={imageUrl(example.poster)} width="42" height="58" alt="" /><div><small>{index === 0 ? 'Последняя версия' : 'Твоя версия'}</small><h3>{example.title}</h3><p>{example.original}, {example.year}</p></div><span className="gc-feed__score"><Check size={13} />{example.hints.filter(hint => hint.status === 'match').length} совпало</span></header><div className="gc-feed__hints">{fields.map(key => { const hint = example.hints.find(item => item.key === key); return hint && <HintValue key={key} hint={hint} /> })}</div><FullComparison example={example} /></article>)}</div>
 }
 
 function History({ attempts }: { attempts: Example[] }) {
@@ -105,7 +105,7 @@ function History({ attempts }: { attempts: Example[] }) {
 }
 
 function ScreenChrome() {
-  return <header className="gc-screen-chrome"><BrandWordmark variant="compact" /><span>Демо · Аниме</span><div><span className="gc-wallet"><Ticket size={15} />15</span><span className="gc-avatar"><UserRound size={17} /></span><Menu size={19} /></div></header>
+  return <header className="gc-screen-chrome"><BrandWordmark variant="compact" /><span>Демо, Аниме</span><div><span className="gc-wallet"><Ticket size={15} />15</span><span className="gc-avatar"><UserRound size={17} /></span><Menu size={19} /></div></header>
 }
 
 function ConsoleScreen({ attempts, search }: { attempts: Example[]; search: ReactNode }) {

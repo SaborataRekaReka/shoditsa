@@ -23,7 +23,7 @@ function Research() {
   const [view, setView] = useState<'game' | 'search' | 'matches'>('game')
   const previewWidth = new URLSearchParams(location.search).get('width') === '319' ? 319 : 390
   return <div className="mobile-research">
-    <header className="mobile-research__bar"><BrandWordmark /><span>Исследование интерфейса · 19.10.2026</span></header>
+    <header className="mobile-research__bar"><BrandWordmark /><span>Исследование интерфейса, 19.10.2026</span></header>
     <main>
       <section className="mobile-research__direction">
         <div className="mobile-research__proposal">
@@ -41,15 +41,15 @@ function Research() {
         <div className="mobile-research__preview" style={{ width: previewWidth }}>
           <Tabs label="Состояние прототипа" surface="paper" value={view} onChange={setView} items={[{ id: 'game', label: 'Игра' }, { id: 'search', label: 'Поиск' }, { id: 'matches', label: 'Совпадения' }]} />
           <iframe key={view} title="Интерактивный мобильный прототип" src={`mobile-game-direction.html?app=1${view === 'game' ? '' : `&panel=${view}`}`} />
-          <small>{previewWidth} px · можно нажимать и проверять версии</small>
+          <small>{previewWidth} px, можно нажимать и проверять версии</small>
         </div>
       </section>
       <section className="mobile-research__references">
         <div className="mobile-research__section-head"><span className="mobile-research__eyebrow">На что опираемся</span><h2>Три референса. Три конкретные задачи.</h2><p>Это разбор приёмов для «Сходится!». Иллюстрации ниже принадлежат авторам приложений.</p></div>
         <div className="mobile-research__reference-grid">
-          <article className="mobile-research__reference mobile-research__reference--nyt"><div className="mobile-research__image"><img src={images.nyt} loading="lazy" alt="Официальный скриншот NYT Games: Wordle, игровое поле и клавиатура" /></div><div><span>01 · Фокус на игре</span><h3>NYT Games</h3><p>На скриншоте Wordle основное место занимает поле, а действия находятся снизу. Переносим этот принцип на текущую попытку и ввод ответа.</p><a href={sources.nyt} target="_blank" rel="noreferrer">Официальные экраны в App Store<ArrowUpRight size={15} /></a></div></article>
-          <article className="mobile-research__reference mobile-research__reference--duo"><div className="mobile-research__image"><img src={images.duo} loading="lazy" alt="Официальное сравнение экрана Duolingo до и после упрощения визуальной иерархии" /></div><div><span>02 · Ясная иерархия</span><h3>Duolingo</h3><p>В разборе редизайна команда показывает, как упрощала шапки, отступы и рамки. Для нас это компактная навигация, ясный текст и персонаж с конкретной ролью.</p><a href={sources.duo} target="_blank" rel="noreferrer">Разбор команды Duolingo<ArrowUpRight size={15} /></a></div></article>
-          <article className="mobile-research__reference mobile-research__reference--apple"><div className="mobile-research__sheet-diagram" aria-hidden="true"><span>Игра</span><div><i /><Search size={22} /><strong>Следующая версия</strong><span>Выбрать → проверить → вернуться</span></div></div><div><span>03 · Действие в контексте</span><h3>Apple HIG</h3><p>Рекомендации по поиску и нижним панелям помогают вынести короткую задачу в отдельный слой. В прототипе так открываются ввод, история и совпадения.</p><a href={sources.search} target="_blank" rel="noreferrer">Search fields<ArrowUpRight size={15} /></a><a href={sources.sheets} target="_blank" rel="noreferrer">Sheets<ArrowUpRight size={15} /></a></div></article>
+          <article className="mobile-research__reference mobile-research__reference--nyt"><div className="mobile-research__image"><img src={images.nyt} loading="lazy" alt="Официальный скриншот NYT Games: Wordle, игровое поле и клавиатура" /></div><div><span>01, Фокус на игре</span><h3>NYT Games</h3><p>На скриншоте Wordle основное место занимает поле, а действия находятся снизу. Переносим этот принцип на текущую попытку и ввод ответа.</p><a href={sources.nyt} target="_blank" rel="noreferrer">Официальные экраны в App Store<ArrowUpRight size={15} /></a></div></article>
+          <article className="mobile-research__reference mobile-research__reference--duo"><div className="mobile-research__image"><img src={images.duo} loading="lazy" alt="Официальное сравнение экрана Duolingo до и после упрощения визуальной иерархии" /></div><div><span>02, Ясная иерархия</span><h3>Duolingo</h3><p>В разборе редизайна команда показывает, как упрощала шапки, отступы и рамки. Для нас это компактная навигация, ясный текст и персонаж с конкретной ролью.</p><a href={sources.duo} target="_blank" rel="noreferrer">Разбор команды Duolingo<ArrowUpRight size={15} /></a></div></article>
+          <article className="mobile-research__reference mobile-research__reference--apple"><div className="mobile-research__sheet-diagram" aria-hidden="true"><span>Игра</span><div><i /><Search size={22} /><strong>Следующая версия</strong><span>Выбрать → проверить → вернуться</span></div></div><div><span>03, Действие в контексте</span><h3>Apple HIG</h3><p>Рекомендации по поиску и нижним панелям помогают вынести короткую задачу в отдельный слой. В прототипе так открываются ввод, история и совпадения.</p><a href={sources.search} target="_blank" rel="noreferrer">Search fields<ArrowUpRight size={15} /></a><a href={sources.sheets} target="_blank" rel="noreferrer">Sheets<ArrowUpRight size={15} /></a></div></article>
         </div>
       </section>
     </main>

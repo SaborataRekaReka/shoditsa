@@ -38,7 +38,7 @@ describe('result presentation', () => {
       genres: ['Action'],
     })
 
-    expect(resultCardMeta(game)).toBe('1987 · Arcade · NES')
+    expect(resultCardMeta(game)).toBe('1987, Arcade, NES')
     expect(resultCardTags(game)).toEqual(['Action', 'Arcade', 'NES'])
   })
 })

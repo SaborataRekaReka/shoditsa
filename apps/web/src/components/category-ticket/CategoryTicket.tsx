@@ -42,9 +42,9 @@ const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number
 
 export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, progressLabel = 'ПОПЫТКИ', progressMax = 10, completedProgress = true, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, layout = 'ticket', onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
-  const badge = status === 'active' ? `${progressLabel} · ${attempts ?? 0}/${progressMax}` : null
+  const badge = status === 'active' ? `${progressLabel}, ${attempts ?? 0}/${progressMax}` : null
   const state = status === 'completed'
-    ? completedProgress ? `ГОТОВО · ${attempts ?? 0}/${progressMax}` : 'ГОТОВО'
+    ? completedProgress ? `ГОТОВО, ${attempts ?? 0}/${progressMax}` : 'ГОТОВО'
     : layout === 'poster' && status === 'active' ? '' : statusLabel[status]
 
   const content = <>

@@ -393,7 +393,7 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
             <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Cookie</button>
           </nav>
         </div>
-        <small className="app-footer__copy">© {new Date().getFullYear()} Сходится! · ИП Бренейзе А. В.<br />ИНН 540552157271 · ОГРНИП 318547600133003</small>
+        <small className="app-footer__copy">© {new Date().getFullYear()} Сходится!, ИП Бренейзе А. В.<br />ИНН 540552157271, ОГРНИП 318547600133003</small>
       </div>
     </div>
   </footer>

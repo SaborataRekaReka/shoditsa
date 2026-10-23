@@ -1,5 +1,12 @@
 .room-lobby-directory { display: grid; gap: 22px; min-width: 0; margin-top: 30px; }
-.room-directory-create { justify-self: start; }
+.room-lobby-history { margin-top: 32px; border-top: 1px solid var(--quest-line); }
+.room-lobby-history > summary { display: flex; align-items: center; gap: 9px; min-height: 52px; color: var(--quest-muted); font: 700 13px/1.4 var(--quest-font); cursor: pointer; list-style: none; }
+.room-lobby-history > summary::-webkit-details-marker { display: none; }
+.room-lobby-history > summary > svg:last-child { margin-left: auto; transition: transform .2s ease; }
+.room-lobby-history[open] > summary > svg:last-child { transform: rotate(180deg); }
+.room-lobby-history > summary:hover { color: var(--quest-blue); }
+.room-lobby-history > summary:focus-visible { outline: 2px solid var(--quest-blue); outline-offset: 3px; border-radius: 8px; }
+.room-lobby-history > .room-lobby-directory { margin-top: 8px; }
 .room-lobby-directory .quest-option-group { max-width: 440px; }
 .room-lobby-directory .quest-option-group > legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .room-directory-group { display: grid; gap: 11px; min-width: 0; }

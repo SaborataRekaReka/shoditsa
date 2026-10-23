@@ -1,7 +1,7 @@
 import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { useId, useState, type ReactNode, type Ref } from 'react'
-import { ArrowRight, Check, ChevronDown, Copy, RotateCcw, Share2, SlidersHorizontal, Swords, X } from 'lucide-react'
-import { ActionButton, ActionLink, ControlButton, TextButton } from '../../components/ui'
+import { ArrowRight, Check, ChevronDown, Copy, RotateCcw, SlidersHorizontal, Swords, X } from 'lucide-react'
+import { ActionButton, ActionLink, ControlButton, IconButton } from '../../components/ui'
 import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { referenceModeIllustration } from '../game/reference-mode-art'
@@ -86,6 +86,9 @@ export function ResultActionBar({
   const paidReplay = Boolean(onReplay)
   const freeArchiveReplay = replayAccessSource === 'free_archive'
   const hasSecondaryActions = showReplayGate || !compactNext || Boolean(onChallenge) || Boolean(showCopy && onCopy) || Boolean(afterMeta)
+  const hasCelebrationOptions = primaryReplay || showReplayGate || Boolean(onChallenge) || Boolean(showCopy && onCopy) || Boolean(afterMeta)
+  const standaloneSettings = !compactNext && !hasCelebrationOptions
+  const settingsAction = !compactNext && <IconButton className="result-celebration-options__settings" label="Настроить игру" title={`Настроить игру: ${configureLabel}`} onClick={onConfigure}><SlidersHorizontal size={18} aria-hidden="true" /></IconButton>
   const nextKicker = nextActionLabel === 'Перейти'
     ? nextLabel === 'На главную' ? 'Маршрут завершён' : 'Раунд завершён'
     : hasNamedNextDestination
@@ -100,32 +103,45 @@ export function ResultActionBar({
 
   return <>
     {celebration ? <div ref={primaryRef} className="result-celebration-actions result-card__wide">
-      <div className="result-celebration-actions__buttons">
-        <ActionButton onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} disabled={primaryReplay && replayPending}>
-          <span>{primaryReplay ? replayPending ? 'Запускаем…' : replayShortageValue > 0 ? 'Сыграть ещё' : freeArchiveReplay ? 'Следующий диагноз' : replayCostValue > 0 && replayAccessSource === 'tickets' ? `Ещё за ${formatTickets(replayCostValue)}` : 'Сыграть ещё' : nextActionLabel === 'Перейти' ? nextDestination : hasNamedNextDestination ? 'Следующая игра' : nextDestination}</span><ArrowRight aria-hidden="true" />
+      <div className={`result-celebration-actions__buttons${onShare ? ' has-share' : ''}${standaloneSettings ? ' has-settings' : ''}`}>
+        <ActionButton className="result-celebration-actions__next" title={!primaryReplay ? nextLabel : undefined} aria-label={!primaryReplay ? (nextActionLabel === 'Перейти' ? nextDestination : `Играть дальше: ${nextDestination}`) : undefined} onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} disabled={primaryReplay && replayPending}>
+          <span>{primaryReplay ? replayPending ? 'Запускаем…' : replayShortageValue > 0 ? 'Сыграть ещё' : freeArchiveReplay ? 'Следующий диагноз' : replayCostValue > 0 && replayAccessSource === 'tickets' ? `Ещё за ${formatTickets(replayCostValue)}` : 'Сыграть ещё' : nextActionLabel === 'Перейти' ? nextDestination : 'Играть дальше'}</span>
         </ActionButton>
-        {onShare && <ActionButton variant="secondary" onClick={onShare}><Share2 aria-hidden="true" /><span>{copied ? 'Результат скопирован' : 'Поделиться победой'}</span></ActionButton>}
+        {onShare && <ActionButton variant="secondary" className="result-celebration-actions__share" onClick={onShare} aria-label={copied ? 'Результат скопирован' : 'Поделиться победой'}>{copied && <Check aria-hidden="true" />}<span>{copied ? 'Скопировано' : 'Поделиться'}</span></ActionButton>}
+        {standaloneSettings && settingsAction}
       </div>
-      <p className="result-celebration-actions__hint">{primaryReplay ? freeArchiveReplay ? 'Бесплатная игра из архива' : replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия без списания билетов' : 'Новая загадка, новая победа' : hasNamedNextDestination ? `Дальше — ${nextDestination}` : onShare ? 'Друзья увидят результат, а ответ останется секретом' : ''}</p>
+      {primaryReplay && <p className="result-celebration-actions__hint">{freeArchiveReplay ? 'Бесплатная игра из архива' : replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия без списания билетов' : 'Новая загадка, новая победа'}</p>}
+      {hasCelebrationOptions && <div className="result-celebration-options" role="group" aria-label="Продолжить игру или пригласить друга">
+        {primaryReplay && <ActionButton variant="secondary" className="result-celebration-options__action" onClick={onNext} aria-label={nextLabel}><ArrowRight aria-hidden="true" /><span>Другие игры</span></ActionButton>}
+        {showReplayGate && !primaryReplay && <ActionButton variant="secondary" className="result-celebration-options__action" onClick={() => setReplayNoticeOpen(true)} disabled={replayPending} aria-label="Сыграть ещё раз">
+          <RotateCcw aria-hidden="true" /><span>{replayPending ? 'Запускаем…' : 'Ещё раз'}</span>
+        </ActionButton>}
+        {onChallenge && <ActionButton variant="secondary" className="result-celebration-options__action result-celebration-options__action--challenge" onClick={onChallenge} aria-label={copied ? 'Ссылка скопирована' : opponentAttempts ? 'Ответить вызовом' : 'Бросить вызов другу'}>
+          {copied ? <Check aria-hidden="true" /> : <Swords aria-hidden="true" />}<span>{copied ? 'Скопировано' : opponentAttempts ? 'Ответить другу' : 'Вызвать друга'}</span>
+        </ActionButton>}
+        {showCopy && onCopy && <ActionButton variant="secondary" className="result-celebration-options__action" onClick={onCopy} aria-label="Скопировать результат"><Copy aria-hidden="true" /><span>{copied ? 'Скопировано' : 'Копировать'}</span></ActionButton>}
+        {settingsAction}
+        {afterMeta && <div className="result-celebration-options__meta">{afterMeta}</div>}
+      </div>}
       <span className="result-copy-status" role="status" aria-live="polite">{copied ? 'Результат и ссылка скопированы' : ''}</span>
     </div> : <div ref={primaryRef} className={`result-primary-actions result-card__wide${compactNext ? ' is-compact' : ''}${primaryReplay ? ' is-replay' : ''}`}>
-      <ControlButton className={`result-next${referenceArtworkMode ? ' result-next--reference-art' : ''}`} disabled={primaryReplay && replayPending} onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} aria-label={primaryReplay ? freeArchiveReplay ? 'Следующий диагноз — бесплатно' : `${replayTitle} · ${replayShortageValue > 0 ? 'недостаточно билетов' : replayAccessSource === 'club' ? 'по клубному билету' : replayAccessSource === 'registration_bonus' ? 'за регистрационный бонус' : formatTickets(replayCostValue)}` : nextLabel}>
+      <ControlButton className={`result-next${referenceArtworkMode ? ' result-next--reference-art' : ''}`} disabled={primaryReplay && replayPending} onClick={primaryReplay ? () => { onReplayOfferClick?.(); if (replayShortageValue > 0) setReplayNoticeOpen(true); else confirmReplay() } : onNext} aria-label={primaryReplay ? freeArchiveReplay ? 'Следующий диагноз — бесплатно' : `${replayTitle}, ${replayShortageValue > 0 ? 'недостаточно билетов' : replayAccessSource === 'club' ? 'по клубному билету' : replayAccessSource === 'registration_bonus' ? 'за регистрационный бонус' : formatTickets(replayCostValue)}` : nextLabel}>
         <ThemedArtwork className="result-next__art" src={artworkUrl} alt="" aria-hidden="true" loading="lazy" />
         <span className="result-next__copy">
-          <small>{primaryReplay ? freeArchiveReplay ? 'Бесплатно · из архива' : `Продолжить «${replayModeLabel}»` : nextKicker}</small>
+          <small>{primaryReplay ? freeArchiveReplay ? 'Бесплатно, из архива' : `Продолжить «${replayModeLabel}»` : nextKicker}</small>
           <strong>{primaryReplay ? freeArchiveReplay ? 'Следующий диагноз' : replayTitle : nextDestination}</strong>
-          {primaryReplay ? <em>{freeArchiveReplay ? 'Непройденный случай из последних семи дней' : replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия · без списания билетов' : `${formatTickets(replayCostValue)} · новая загадка`}</em> : nextTicketNumber !== 'СЕАНС' && <em>{nextTicketNumber} · по маршруту</em>}
+          {primaryReplay ? <em>{freeArchiveReplay ? 'Непройденный случай из последних семи дней' : replayShortageValue > 0 ? 'Выберите способ продолжить' : replayAccessSource === 'club' ? 'Входит в клубный билет' : replayAccessSource === 'registration_bonus' ? 'Бонусная партия, без списания билетов' : `${formatTickets(replayCostValue)}, новая загадка`}</em> : nextTicketNumber !== 'СЕАНС' && <em>{nextTicketNumber}, по маршруту</em>}
         </span>
         <span className={`result-next__arrow${REFERENCE_PRESENTATION ? ' ui-button ui-button--primary' : ''}`} aria-hidden="true"><span>{primaryReplay ? replayPending ? 'Запускаем…' : replayShortageValue > 0 ? 'Дальше' : replayCostValue > 0 ? `За ${replayCostValue}` : 'Играть' : nextActionLabel}</span><ArrowRight /></span>
       </ControlButton>
     </div>}
 
-    {!celebration && persistence}
+    {persistence}
 
-    {hasSecondaryActions && <section className={`result-secondary-actions result-card__wide${compactNext ? ' is-compact' : ''}${moreActionsOpen ? ' is-open' : ''}${celebration ? ' result-secondary-actions--celebration' : ''}`} aria-label="Другие действия">
-      {celebration ? <TextButton className="result-more-toggle" onClick={() => setMoreActionsOpen((open) => !open)} aria-expanded={moreActionsOpen} aria-controls={secondaryActionsId}>Ещё<ChevronDown aria-hidden="true" /></TextButton> : <ActionButton variant="secondary" className="result-more-toggle" onClick={() => setMoreActionsOpen((open) => !open)} aria-expanded={moreActionsOpen} aria-controls={secondaryActionsId}>
+    {!celebration && hasSecondaryActions && <section className={`result-secondary-actions result-card__wide${compactNext ? ' is-compact' : ''}${moreActionsOpen ? ' is-open' : ''}`} aria-label="Другие действия">
+      <ActionButton variant="secondary" className="result-more-toggle" onClick={() => setMoreActionsOpen((open) => !open)} aria-expanded={moreActionsOpen} aria-controls={secondaryActionsId}>
         <span>Другие действия</span><ChevronDown aria-hidden="true" />
-      </ActionButton>}
+      </ActionButton>
       <div className="result-after-actions" id={secondaryActionsId}>
         {afterLabel && <span className="result-after-actions__label">{afterLabel}</span>}
         {primaryReplay && <ActionButton variant="secondary" className="result-replay" onClick={onNext}><ArrowRight /><span>{nextLabel}</span></ActionButton>}
@@ -153,8 +169,6 @@ export function ResultActionBar({
         {afterMeta && <div className="result-after-actions__meta">{afterMeta}</div>}
       </div>
     </section>}
-
-    {celebration && persistence}
 
     {replayNoticeOpen && <div className="result-replay-notice result-card__wide" role="status" aria-label={paidReplay ? 'Повторная игра' : 'Лимит игр на сегодня'}>
       {paidReplay

@@ -1,6 +1,70 @@
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Activity, AlertTriangle, Archive, ArrowLeft, ArrowUpDown, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug, Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink, Download, FileClock, FileJson, Filter, Grid2X2, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks, LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload, RotateCcw, Rows3, Save, Search, Settings2, ShieldCheck, SlidersHorizontal, Lightbulb, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2, UsersRound, Workflow, X } from 'lucide-react'
+import {
+  Activity,
+  AlertTriangle,
+  Archive,
+  ArrowLeft,
+  ArrowUpDown,
+  BadgeCheck,
+  Bot,
+  Boxes,
+  BriefcaseBusiness,
+  Bug,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  CircleDollarSign,
+  CircleGauge,
+  Clapperboard,
+  Clock3,
+  Copy,
+  Database,
+  Eye,
+  ExternalLink,
+  Download,
+  FileClock,
+  FileJson,
+  Filter,
+  Grid2X2,
+  HeartPulse,
+  History,
+  Image as ImageIcon,
+  KeyRound,
+  LayoutDashboard,
+  ListChecks,
+  LayoutTemplate,
+  LoaderCircle,
+  LockKeyhole,
+  Menu,
+  MessageSquareText,
+  MoreHorizontal,
+  PanelRightClose,
+  Play,
+  Plus,
+  RefreshCw,
+  Rocket,
+  Upload,
+  RotateCcw,
+  Rows3,
+  Save,
+  Search,
+  Settings2,
+  ShieldCheck,
+  SlidersHorizontal,
+  Lightbulb,
+  SquarePen,
+  Tags,
+  Ticket,
+  Trash2,
+  UserRound,
+  Volume2,
+  UsersRound,
+  Workflow,
+  X,
+} from 'lucide-react'
 import { CATALOG_HINT_COPY, CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type AdminAcquisitionFunnelResponse, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
 import { publicAssetUrl } from '../app/public-asset'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
@@ -34,7 +98,7 @@ function TagPicker({ tags, value, onChange, label, onCreate, compact = false, di
     setCreating(true)
     try { const created = await onCreate(name); onChange([...value, created.id]); setQuery('') } catch { /* caller shows the error */ } finally { setCreating(false) }
   }
-  return <div className={`admin-tag-picker ${compact ? 'admin-tag-picker--compact' : ''}`}><span>{label}</span><div className="admin-tag-picker__control">{value.map((id) => { const tag = tags.find((entry) => entry.id === id); return tag ? <button key={id} type="button" style={{ borderColor: tag.color }} disabled={disabled} onClick={() => onChange(value.filter((entry) => entry !== id))}>{tag.name}<X /></button> : null })}<input list={listId} value={query} disabled={disabled || creating} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ',') { event.preventDefault(); void commit() } }} onBlur={() => { if (available.some((tag) => tag.name.toLocaleLowerCase('ru-RU') === query.trim().toLocaleLowerCase('ru-RU'))) void commit() }} placeholder={value.length ? 'Ещё тег…' : 'Введите тег…'} /><datalist id={listId}>{available.map((tag) => <option key={tag.id} value={tag.name}>{tag.itemsCount == null ? tag.name : `${tag.name} · ${tag.itemsCount}`}</option>)}</datalist></div></div>
+  return <div className={`admin-tag-picker ${compact ? 'admin-tag-picker--compact' : ''}`}><span>{label}</span><div className="admin-tag-picker__control">{value.map((id) => { const tag = tags.find((entry) => entry.id === id); return tag ? <button key={id} type="button" style={{ borderColor: tag.color }} disabled={disabled} onClick={() => onChange(value.filter((entry) => entry !== id))}>{tag.name}<X /></button> : null })}<input list={listId} value={query} disabled={disabled || creating} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ',') { event.preventDefault(); void commit() } }} onBlur={() => { if (available.some((tag) => tag.name.toLocaleLowerCase('ru-RU') === query.trim().toLocaleLowerCase('ru-RU'))) void commit() }} placeholder={value.length ? 'Ещё тег…' : 'Введите тег…'} /><datalist id={listId}>{available.map((tag) => <option key={tag.id} value={tag.name}>{tag.itemsCount == null ? tag.name : `${tag.name}, ${tag.itemsCount}`}</option>)}</datalist></div></div>
 }
 
 const TagList = ({ tags }: { tags: AdminContentTag[] }) => <span className="admin-tags">{tags.map((tag) => <span key={tag.id} style={{ borderColor: tag.color }}>{tag.name}</span>)}</span>
@@ -279,7 +343,7 @@ const pipelineWarnings = (value: unknown) => {
   }
   return [...new Set(labels)]
 }
-const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.message}${error.code ? ` · ${error.code}` : ''}` : error instanceof Error ? error.message : 'Неизвестная ошибка'
+const errorText = (error: unknown) => error instanceof AdminApiError ? `${error.message}${error.code ? `, ${error.code}` : ''}` : error instanceof Error ? error.message : 'Неизвестная ошибка'
 type PipelineApprovalFailure = { invalidCount: number; items: Array<{ itemId: string; entityKey: string; message: string; fieldErrors: Array<{ field: string; message: string }> }> }
 const pipelineApprovalFailure = (error: unknown): PipelineApprovalFailure | null => {
   if (!(error instanceof AdminApiError) || error.code !== 'PIPELINE_ITEMS_INVALID') return null
@@ -401,7 +465,7 @@ function ContentRevisionControl({ activeRevision, navigate, notify }: {
   })
   const validateWorkspace = useMutation({
     mutationFn: adminApi.validateWorkspace,
-    onSuccess: (data) => { refreshContentState(); notify(Number(data.errors ?? 0) ? 'error' : 'success', Number(data.errors ?? 0) ? `Найдено ошибок: ${data.errors}` : `Проверка завершена · предупреждений: ${data.warnings ?? 0}`) },
+    onSuccess: (data) => { refreshContentState(); notify(Number(data.errors ?? 0) ? 'error' : 'success', Number(data.errors ?? 0) ? `Найдено ошибок: ${data.errors}` : `Проверка завершена, предупреждений: ${data.warnings ?? 0}`) },
     onError: (error) => notify('error', errorText(error)),
   })
   const buildWorkspace = useMutation({
@@ -420,14 +484,14 @@ function ContentRevisionControl({ activeRevision, navigate, notify }: {
   return <section className="admin-panel admin-revision-control"><header><div><span>Управление контентом</span><h2>Ревизии и публикация</h2></div><button onClick={() => { void release.refetch(); void revisions.refetch(); void workspace.refetch() }}>Обновить <RefreshCw /></button></header>
     <div className="admin-revision-summary">
       <div><small>Активная ревизия БД</small><strong>{activeRevision?.version ?? 'Не определена'}</strong><code>{String(release.data?.activeRevision?.checksumSha256 ?? '').slice(0, 12) || '—'}</code></div>
-      <div><small>Безопасное наложение релиза</small><strong>{release.isLoading ? 'Проверяем…' : release.error ? 'Недоступно' : releaseLabel}</strong><code>{release.data ? `${release.data.release.gitSha.slice(0, 10)} · ${release.data.release.totalItems.toLocaleString('ru-RU')} в релизе → ${release.data.preview.finalItems.toLocaleString('ru-RU')} в ревизии` : '—'}</code></div>
+      <div><small>Безопасное наложение релиза</small><strong>{release.isLoading ? 'Проверяем…' : release.error ? 'Недоступно' : releaseLabel}</strong><code>{release.data ? `${release.data.release.gitSha.slice(0, 10)}, ${release.data.release.totalItems.toLocaleString('ru-RU')} в релизе → ${release.data.preview.finalItems.toLocaleString('ru-RU')} в ревизии` : '—'}</code></div>
       <div className="admin-revision-summary__action"><Status value={releaseState ?? (release.error ? 'failed' : 'neutral')} />{release.data?.updateAvailable && <button className="admin-btn admin-btn--primary" disabled={buildRelease.isPending} onClick={() => buildRelease.mutate()}><Rocket />{releaseState === 'failed' ? 'Повторить безопасную сборку' : 'Создать безопасную ревизию'}</button>}</div>
     </div>
     {release.data && <div className="admin-release-preview"><span><small>Будет обновлено</small><strong>{release.data.preview.updated.toLocaleString('ru-RU')}</strong></span><span><small>Будет добавлено</small><strong>{release.data.preview.added.toLocaleString('ru-RU')}</strong></span><span><small>Сохранится из БД</small><strong>{release.data.preview.preserved.toLocaleString('ru-RU')}</strong></span><span className="is-safe"><small>Будет удалено</small><strong>0</strong></span><p><ShieldCheck />Совпадающие ID обновляются из релиза; отсутствующие в JSON карточки и конфликты режима сохраняются из активной ревизии без изменений.{release.data.preview.conflicted > 0 && <> Конфликтов режима: <strong>{release.data.preview.conflicted}</strong> ({release.data.preview.modeConflicts.map((conflict) => conflict.itemId).join(', ')}).</>}</p></div>}
     {release.error && <ErrorState error={release.error} retry={() => void release.refetch()} />}
     <div className="admin-revision-columns">
       <div className="admin-revision-workspace"><header><span><strong>Рабочая версия</strong><small>Ручные правки карточек</small></span><Status value={workspaceData?.status} /></header><div><span><small>Изменений</small><strong>{workspaceData?.changesCount ?? 0}</strong></span><span><small>Ошибок</small><strong>{workspaceData?.errorsCount ?? 0}</strong></span><span><small>Предупреждений</small><strong>{workspaceData?.warningsCount ?? 0}</strong></span></div><footer><button className="admin-btn admin-btn--secondary" disabled={!workspaceData || validateWorkspace.isPending} onClick={() => validateWorkspace.mutate()}><ListChecks />Проверить</button>{workspaceData?.status === 'ready' ? <button className="admin-btn admin-btn--primary" disabled={activateWorkspace.isPending} onClick={() => activateWorkspace.mutate()}><Rocket />Опубликовать</button> : <button className="admin-btn admin-btn--primary" disabled={!workspaceData?.changesCount || workspaceData.status !== 'open' || buildWorkspace.isPending} onClick={() => buildWorkspace.mutate()}><Rocket />Собрать ревизию</button>}<button className="admin-btn admin-btn--secondary" onClick={() => navigate('content')}>Открыть карточки <ChevronRight /></button></footer></div>
-      <div className="admin-revisions"><header><strong>Последние ревизии</strong><small>Готовые можно активировать, retired — вернуть откатом</small></header>{revisions.data?.items.slice(0, 8).map((raw) => { const revision = record(raw); return <article key={String(revision.id)}><span><strong>{title(revision.version)}</strong><small>{compactDate(revision.createdAt)} · {String(revision.checksumSha256).slice(0, 10)}</small></span><Status value={revision.status} />{['ready', 'retired'].includes(String(revision.status)) && <button disabled={activateRevision.isPending} onClick={() => activateRevision.mutate(revision)}>{revision.status === 'retired' ? 'Откатить' : 'Активировать'}</button>}</article> })}</div>
+      <div className="admin-revisions"><header><strong>Последние ревизии</strong><small>Готовые можно активировать, retired — вернуть откатом</small></header>{revisions.data?.items.slice(0, 8).map((raw) => { const revision = record(raw); return <article key={String(revision.id)}><span><strong>{title(revision.version)}</strong><small>{compactDate(revision.createdAt)}, {String(revision.checksumSha256).slice(0, 10)}</small></span><Status value={revision.status} />{['ready', 'retired'].includes(String(revision.status)) && <button disabled={activateRevision.isPending} onClick={() => activateRevision.mutate(revision)}>{revision.status === 'retired' ? 'Откатить' : 'Активировать'}</button>}</article> })}</div>
     </div>
     <div className="admin-mode-counts">{activeRevision?.counts.map((mode) => <div key={mode.mode}><span>{MODE_LABEL[mode.mode]}</span><strong>{mode.count.toLocaleString('ru-RU')}</strong></div>)}</div>
   </section>
@@ -454,8 +518,8 @@ export function AcquisitionFunnelPanel({
   const coverageTone = coverage == null ? 'unknown' : coverage >= 80 ? 'good' : coverage >= 50 ? 'warning' : 'danger'
   const sourceStrategy = data?.dataSources.strategy ?? 'raw'
   const sourceLabel = data && !data.dataSources.eventTotalsExact
-    ? 'RAW · ЧАСТИЧНО'
-    : sourceStrategy === 'raw_with_daily_archive' ? 'RAW · DAILY АРХИВ' : 'RAW'
+    ? 'RAW, ЧАСТИЧНО'
+    : sourceStrategy === 'raw_with_daily_archive' ? 'RAW, DAILY АРХИВ' : 'RAW'
   return <section className="admin-panel admin-acquisition">
     <header>
       <div><span>SEO → продукт</span><h2>Поисковая воронка <i className={`admin-acquisition__source is-${sourceStrategy}`}>{sourceLabel}</i></h2></div>
@@ -469,14 +533,14 @@ export function AcquisitionFunnelPanel({
       {!data.dataSources.eventTotalsExact && <div className="admin-acquisition__quality"><AlertTriangle /><span><strong>Срез пока частичный</strong><small>Показаны только фактически доступные raw-события; отсутствующие дни не подставлены нулями и точные выводы по конверсии пока преждевременны.</small></span></div>}
       <div className="admin-acquisition__metrics">
         <article><span><Search /></span><small>Поисковые входы</small><strong>{data.summary.organicLandings.toLocaleString('ru-RU')}</strong><em>{data.summary.organicUsers == null ? 'уникальные не суммируются' : `${data.summary.organicUsers.toLocaleString('ru-RU')} пользователей`}</em></article>
-        <article><span><Play /></span><small>Начали игру</small><strong>{data.summary.starts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToStartRate)} от входов · {data.summary.activity.sessionStarts} сессий</em></article>
-        <article><span><BadgeCheck /></span><small>Завершили</small><strong>{data.summary.completions.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.startToCompleteRate)} от стартов · {data.summary.activity.sessionCompletions} сессий</em></article>
-        <article><span><ChevronRight /></span><small>Начали следующую</small><strong>{data.summary.nextStarts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.completeToNextStartRate)} от завершений · {data.summary.activity.nextStarts} переходов</em></article>
+        <article><span><Play /></span><small>Начали игру</small><strong>{data.summary.starts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToStartRate)} от входов, {data.summary.activity.sessionStarts} сессий</em></article>
+        <article><span><BadgeCheck /></span><small>Завершили</small><strong>{data.summary.completions.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.startToCompleteRate)} от стартов, {data.summary.activity.sessionCompletions} сессий</em></article>
+        <article><span><ChevronRight /></span><small>Начали следующую</small><strong>{data.summary.nextStarts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.completeToNextStartRate)} от завершений, {data.summary.activity.nextStarts} переходов</em></article>
         <article><span><UserRound /></span><small>Регистрации</small><strong>{data.summary.signUps.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToSignUpRate)} от входов</em></article>
         <article className={`is-${coverageTone}`}><span><Database /></span><small>Покрытие consented</small><strong>{acquisitionRate(coverage)}</strong><em>{data.coverage.lifecycleEventsConsentedWithAcquisition} из {data.coverage.consentedLifecycleEvents}</em></article>
       </div>
       <section className="admin-acquisition__activity">
-        <header><div><span>Серверные агрегаты · без PII</span><h3>Аккаунты и авторизация</h3></div><small>Создание аккаунта отделено от последующих входов</small></header>
+        <header><div><span>Серверные агрегаты, без PII</span><h3>Аккаунты и авторизация</h3></div><small>Создание аккаунта отделено от последующих входов</small></header>
         <div>
           <span><small>Новые аккаунты</small><strong>{data.registrations.accountsCreated?.toLocaleString('ru-RU') ?? '—'}</strong><em>users.createdAt</em></span>
           <span><small>sign_up success</small><strong>{data.registrations.signUpSuccesses.toLocaleString('ru-RU')}</strong><em>уникальные аккаунты</em></span>
@@ -489,7 +553,7 @@ export function AcquisitionFunnelPanel({
         </div>
       </section>
       {data.diagnosisRecommendations && <section className="admin-acquisition__danetki">
-        <header><div><span>После результата · SEO страницы не меняем</span><h3>Диагнозы → следующая игра</h3></div><small>Цель: 6–8 стартов за 7 дней либо ≥25% завершивших</small></header>
+        <header><div><span>После результата, SEO страницы не меняем</span><h3>Диагнозы → следующая игра</h3></div><small>Цель: 6–8 стартов за 7 дней либо ≥25% завершивших</small></header>
         <div className="admin-acquisition__danetki-columns">
           {([['all', 'Весь трафик'], ['organic', 'Органика']] as const).map(([scope, label]) => {
             const funnel = data.diagnosisRecommendations[scope]
@@ -515,7 +579,7 @@ export function AcquisitionFunnelPanel({
             const enoughStarts = scope === 'organic' && (funnel.roomCohort?.starts ?? 0) >= 20 && data.dataSources.eventTotalsExact
             const checkpointReady = data.generatedAt >= '2026-09-04T00:00:00.000Z'
             return <article key={scope}>
-              <header><strong>{label}</strong><small>{scope === 'all' ? 'Контекст, не порог решения по SEO' : enoughStarts && checkpointReady ? 'Можно проверять гипотезу о комнате' : `${funnel.roomCohort?.starts ?? funnel.game.roomStarts}/20 органических стартов${checkpointReady ? '' : ' · до контрольной даты'}`}</small></header>
+              <header><strong>{label}</strong><small>{scope === 'all' ? 'Контекст, не порог решения по SEO' : enoughStarts && checkpointReady ? 'Можно проверять гипотезу о комнате' : `${funnel.roomCohort?.starts ?? funnel.game.roomStarts}/20 органических стартов${checkpointReady ? '' : ', до контрольной даты'}`}</small></header>
               <div className="admin-acquisition__danetki-group"><h4>Контентная воронка</h4><dl>
                 <div><dt>Каталог</dt><dd>{funnel.content.catalogViews}</dd></div>
                 <div><dt>Истории</dt><dd>{funnel.content.storyViews}</dd></div>
@@ -524,15 +588,15 @@ export function AcquisitionFunnelPanel({
               </dl></div>
               <div className="admin-acquisition__danetki-group"><h4>Играть с ведущим</h4><dl>
                 <div><dt>Входы</dt><dd>{funnel.game.landingViews}</dd></div>
-                <div><dt>Нажали старт</dt><dd>{funnel.game.startClicks}<small>{acquisitionRate(funnel.game.landingToStartRate)} · отношение событий</small></dd></div>
+                <div><dt>Нажали старт</dt><dd>{funnel.game.startClicks}<small>{acquisitionRate(funnel.game.landingToStartRate)}, отношение событий</small></dd></div>
                 <div><dt>Комнаты</dt><dd>{funnel.game.roomStarts}<small>фактические старты</small></dd></div>
                 <div><dt>Первый вопрос</dt><dd>{funnel.game.firstQuestions}<small>{acquisitionRate(funnel.game.roomToFirstQuestionRate)}</small></dd></div>
                 <div><dt>Завершили</dt><dd>{funnel.game.roomCompletions}<small>все завершения в окне</small></dd></div>
                 <div><dt>Следующая игра</dt><dd>{funnel.game.nextClicks}<small>{acquisitionRate(funnel.game.completionToNextRate)}</small></dd></div>
               </dl></div>
               {funnel.entryCohort && funnel.roomCohort && <div className="admin-acquisition__danetki-group"><h4>Сопоставимые когорты</h4><dl>
-                <div><dt>Входы → первая комната</dt><dd>{funnel.entryCohort.started}/{funnel.entryCohort.landings}<small>{acquisitionRate(funnel.entryCohort.landingToRoomRate)} · цель ≥40%</small></dd></div>
-                <div><dt>Начатые комнаты → завершение</dt><dd>{funnel.roomCohort.completions}/{funnel.roomCohort.starts}<small>{acquisitionRate(funnel.roomCohort.completionRate)} · цель ≥30%</small></dd></div>
+                <div><dt>Входы → первая комната</dt><dd>{funnel.entryCohort.started}/{funnel.entryCohort.landings}<small>{acquisitionRate(funnel.entryCohort.landingToRoomRate)}, цель ≥40%</small></dd></div>
+                <div><dt>Начатые комнаты → завершение</dt><dd>{funnel.roomCohort.completions}/{funnel.roomCohort.starts}<small>{acquisitionRate(funnel.roomCohort.completionRate)}, цель ≥30%</small></dd></div>
               </dl><p>Без acquisition не включены {funnel.entryCohort.unkeyedLandingViews} просмотров. Завершения сопоставлены с комнатами, начатыми в этом же окне.</p></div>}
             </article>
           })}
@@ -571,7 +635,7 @@ export function AcquisitionFunnelPanel({
         <div>{data.activityByMode.slice(0, 6).map((entry) => <span key={entry.key}><small>{entry.label}</small><strong>{entry.sessionStarts} / {entry.sessionCompletions}</strong><em>старт / финиш</em></span>)}</div>
       </section>}
       {data.dailyActivityArchive && <section className="admin-acquisition__archive">
-        <header><div><span>Отдельный источник</span><h3>Daily-архив активности</h3></div><small>{data.dailyActivityArchive.complete ? 'Полный архив' : 'Частичные данные'} · не участвует в конверсии и unique users</small></header>
+        <header><div><span>Отдельный источник</span><h3>Daily-архив активности</h3></div><small>{data.dailyActivityArchive.complete ? 'Полный архив' : 'Частичные данные'}, не участвует в конверсии и unique users</small></header>
         <div>
           <span><small>Стартов сессий</small><strong>{data.dailyActivityArchive.sessionStarts.toLocaleString('ru-RU')}</strong></span>
           <span><small>Завершений</small><strong>{data.dailyActivityArchive.sessionCompletions.toLocaleString('ru-RU')}</strong></span>
@@ -580,7 +644,7 @@ export function AcquisitionFunnelPanel({
         </div>
       </section>}
       <footer className="admin-acquisition__foot">
-        <span><Database /> client_events + auth_events + users.createdAt · {compactDate(data.generatedAt)}</span>
+        <span><Database /> client_events + auth_events + users.createdAt, {compactDate(data.generatedAt)}</span>
         <span>Только завершённые UTC-дни.</span>
         <span>Без согласия first-party события остаются без acquisition/referrer/search; такие пропуски не считаются прямым трафиком.</span>
         {data.dataSources.daily
@@ -613,14 +677,14 @@ function DashboardPage({ navigate, notify }: { navigate: (section: Section, id?:
     <AcquisitionFunnelPanel data={acquisition.data} loading={acquisition.isLoading} error={acquisition.error} days={acquisitionDays} onDaysChange={setAcquisitionDays} retry={() => void acquisition.refetch()} />
     <div className="admin-dashboard-grid">
       <section className="admin-panel admin-attention"><header><div><span>Требует внимания</span><h2>Очередь на сегодня</h2></div><button onClick={() => navigate('reports')}>Вся очередь <ChevronRight /></button></header>
-        {dashboard.data.recentReports.length ? <div className="admin-feed">{dashboard.data.recentReports.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('reports', String(item.id))}><span className="admin-feed__icon"><Bug /></span><span><strong>{REPORT_REASON[String(item.reason)] ?? title(item.reason)}</strong><small>{title(item.itemId)} · {compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Очередь пуста" text="Новых сообщений от игроков нет." icon={<BadgeCheck />} />}
+        {dashboard.data.recentReports.length ? <div className="admin-feed">{dashboard.data.recentReports.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('reports', String(item.id))}><span className="admin-feed__icon"><Bug /></span><span><strong>{REPORT_REASON[String(item.reason)] ?? title(item.reason)}</strong><small>{title(item.itemId)}, {compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Очередь пуста" text="Новых сообщений от игроков нет." icon={<BadgeCheck />} />}
       </section>
       <ContentRevisionControl activeRevision={dashboard.data.activeRevision} navigate={navigate} notify={notify} />
       <section className="admin-panel"><header><div><span>Последние изменения</span><h2>Карточки</h2></div></header>
-        {dashboard.data.recentChanges.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentChanges.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('content', String(item.itemId))}><span><strong>{title(item.itemId)}</strong><small>{array(item.changedFields).join(', ') || 'Изменение карточки'} · {compactDate(item.updatedAt)}</small></span><Status value={item.source}>{String(item.source)}</Status></button> })}</div> : <Empty title="Изменений нет" text="Сохранённые правки появятся здесь." />}
+        {dashboard.data.recentChanges.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentChanges.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('content', String(item.itemId))}><span><strong>{title(item.itemId)}</strong><small>{array(item.changedFields).join(', ') || 'Изменение карточки'}, {compactDate(item.updatedAt)}</small></span><Status value={item.source}>{String(item.source)}</Status></button> })}</div> : <Empty title="Изменений нет" text="Сохранённые правки появятся здесь." />}
       </section>
       <section className="admin-panel"><header><div><span>Автоматизация</span><h2>Последние запуски ИИ</h2></div><button onClick={() => navigate('pipelines')}>Пайплайны <ChevronRight /></button></header>
-        {dashboard.data.recentRuns.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentRuns.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('pipelines', String(item.id))}><span><strong>Музыка · {Number(item.itemsProcessed ?? 0)}/{Number(item.itemsTotal ?? 0)}</strong><small>{compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Запусков ещё нет" text="Музыкальный пайплайн можно запустить из каталога." icon={<Workflow />} />}
+        {dashboard.data.recentRuns.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentRuns.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('pipelines', String(item.id))}><span><strong>Музыка, {Number(item.itemsProcessed ?? 0)}/{Number(item.itemsTotal ?? 0)}</strong><small>{compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Запусков ещё нет" text="Музыкальный пайплайн можно запустить из каталога." icon={<Workflow />} />}
       </section>
     </div>
   </>
@@ -628,11 +692,11 @@ function DashboardPage({ navigate, notify }: { navigate: (section: Section, id?:
 
 function WorkspaceBar({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
   const client = useQueryClient(); const workspace = useQuery({ queryKey: ['admin', 'workspace'], queryFn: adminApi.workspace, refetchInterval: 5_000 })
-  const validate = useMutation({ mutationFn: adminApi.validateWorkspace, onSuccess: (data) => { void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }); notify(Number(data.errors ?? 0) ? 'error' : 'success', Number(data.errors ?? 0) ? `Найдено ошибок: ${data.errors}` : `Проверка завершена · предупреждений: ${data.warnings ?? 0}`) }, onError: (error) => notify('error', errorText(error)) })
+  const validate = useMutation({ mutationFn: adminApi.validateWorkspace, onSuccess: (data) => { void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }); notify(Number(data.errors ?? 0) ? 'error' : 'success', Number(data.errors ?? 0) ? `Найдено ошибок: ${data.errors}` : `Проверка завершена, предупреждений: ${data.warnings ?? 0}`) }, onError: (error) => notify('error', errorText(error)) })
   const build = useMutation({ mutationFn: adminApi.buildWorkspace, onSuccess: () => { notify('info', 'Сборка поставлена в очередь'); void client.invalidateQueries({ queryKey: ['admin', 'jobs'] }); void client.invalidateQueries({ queryKey: ['admin', 'workspace'] }) }, onError: (error) => notify('error', errorText(error)) })
   const activate = useMutation({ mutationFn: adminApi.activateWorkspace, onSuccess: () => { notify('success', 'Новая ревизия опубликована'); void client.invalidateQueries({ queryKey: ['admin'] }) }, onError: (error) => notify('error', errorText(error)) })
   const data = workspace.data
-  return <div className="admin-workspace-bar"><div className="admin-workspace-bar__state"><span>Рабочая версия</span><strong>{data ? `${data.changesCount} изменений` : 'Загрузка…'}</strong>{data && <Status value={data.status} />}<small>{data ? `Ошибок ${data.errorsCount} · предупреждений ${data.warningsCount}` : ''}</small></div><div>
+  return <div className="admin-workspace-bar"><div className="admin-workspace-bar__state"><span>Рабочая версия</span><strong>{data ? `${data.changesCount} изменений` : 'Загрузка…'}</strong>{data && <Status value={data.status} />}<small>{data ? `Ошибок ${data.errorsCount}, предупреждений ${data.warningsCount}` : ''}</small></div><div>
     <button className="admin-btn admin-btn--secondary" onClick={() => validate.mutate()} disabled={validate.isPending || !data}><ListChecks />Проверить</button>
     {data?.status === 'ready' ? <button className="admin-btn admin-btn--primary" onClick={() => activate.mutate()} disabled={activate.isPending}><Rocket />Опубликовать {data.changesCount}</button>
       : <button className="admin-btn admin-btn--primary" onClick={() => build.mutate()} disabled={build.isPending || !data?.changesCount || data.status !== 'open'}><Rocket />Собрать ревизию</button>}
@@ -880,8 +944,8 @@ function ContentCommentsPreview({ payload, mode, compact = false }: { payload: R
           {!!comment.topics.length && <div className="admin-content-comments__topics">{comment.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>}
           <footer>
             {comment.sourceUrl
-              ? <a href={comment.sourceUrl} target="_blank" rel="noreferrer noopener"><ExternalLink />Открыть источник{comment.sourceId ? ` · #${comment.sourceId}` : ''}</a>
-              : <span className="admin-content-comments__missing">Источник не сохранён{comment.sourcePackId ? ` · ${comment.sourcePackId}` : ''}</span>}
+              ? <a href={comment.sourceUrl} target="_blank" rel="noreferrer noopener"><ExternalLink />Открыть источник{comment.sourceId ? `, #${comment.sourceId}` : ''}</a>
+              : <span className="admin-content-comments__missing">Источник не сохранён{comment.sourcePackId ? `, ${comment.sourcePackId}` : ''}</span>}
             {comment.sourceVerifiedAt && <time>Проверен {comment.sourceVerifiedAt}</time>}
           </footer>
           {originalDiffers && <details><summary>Исходный фрагмент до скрытия ответа</summary><p>{comment.sourceExcerpt}</p></details>}
@@ -1072,7 +1136,7 @@ function AnimalAudioPreview({ payload, compact = false }: { payload: Record<stri
     {soundUrl && <>
       <audio key={soundUrl} controls preload="metadata" src={soundUrl}>Ваш браузер не поддерживает воспроизведение аудио.</audio>
       {(credits.length > 0 || license || sourcePageUrl) && <footer>
-        <span>{credits.join(' · ')}{credits.length > 0 && license ? ' · ' : ''}{licenseUrl ? <a href={licenseUrl} target="_blank" rel="noreferrer noopener">{license}</a> : license}</span>
+        <span>{credits.join(', ')}{credits.length > 0 && license ? ', ' : ''}{licenseUrl ? <a href={licenseUrl} target="_blank" rel="noreferrer noopener">{license}</a> : license}</span>
         {sourcePageUrl && <a href={sourcePageUrl} target="_blank" rel="noreferrer noopener"><ExternalLink />Источник записи</a>}
       </footer>}
     </>}
@@ -1201,7 +1265,7 @@ function ContentPreviewModal({
   return <div className="admin-modal-backdrop admin-modal-backdrop--moderation admin-content-preview-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
     <div className={`admin-modal admin-modal--moderation admin-content-preview-modal${imageReview ? ' is-image-review' : ''}`} role="dialog" aria-modal="true" aria-label={`Предпросмотр ${currentItem.titleRu}`}>
       <header>
-        <div><span>{MODE_LABEL[mode]} · Предпросмотр текущей выборки</span><h2>{imageReview ? 'Отбор изображений' : 'Карточка как в игре'}</h2></div>
+        <div><span>{MODE_LABEL[mode]}, Предпросмотр текущей выборки</span><h2>{imageReview ? 'Отбор изображений' : 'Карточка как в игре'}</h2></div>
         <div className="admin-content-preview-header-actions">
           <div className="admin-content-preview-switch" role="tablist" aria-label="Режим предпросмотра">
             <button type="button" role="tab" aria-selected={imageReview} className={imageReview ? 'is-active' : ''} onClick={() => setPreviewMode('image')}><ImageIcon />Изображение</button>
@@ -1222,7 +1286,7 @@ function ContentPreviewModal({
           <aside className="admin-portrait-review__info">
             <div className="admin-portrait-review__progress-head"><span>Портрет {currentIndex + 1} из {items.length}</span><strong>{Math.round(((currentIndex + 1) / items.length) * 100)}%</strong></div>
             <div className="admin-portrait-review__progress" aria-hidden="true"><i style={{ width: `${((currentIndex + 1) / items.length) * 100}%` }} /></div>
-            <span className="admin-portrait-review__eyebrow">{MODE_LABEL[mode]} · визуальный контроль</span>
+            <span className="admin-portrait-review__eyebrow">{MODE_LABEL[mode]}, визуальный контроль</span>
             <h2>{previewValue(payload.titleRu) || currentItem.titleRu}</h2>
             {originalTitle && <p>{originalTitle}</p>}
             <dl>
@@ -1242,7 +1306,7 @@ function ContentPreviewModal({
           <article><small>Позиция</small><strong>{currentIndex + 1}/{items.length}</strong></article>
           <article><small>Загружено в таблице</small><strong>{items.length}</strong></article>
           <article><small>Результат проверки</small><strong>{reviewStatus === 'approved' ? 'Всё в порядке' : reviewStatus === 'issue' ? 'Есть проблема' : 'Не проверена'}</strong></article>
-          <article><small>Горячие клавиши</small><strong>← → · X / C</strong></article>
+          <article><small>Горячие клавиши</small><strong>← →, X / C</strong></article>
         </section>
         {detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} retry={() => void detail.refetch()} /> : <>
           <section className={`attempt-card attempt-card--screen admin-attempt-card ${warnings.length ? 'has-conflict' : ''}`}>
@@ -1250,18 +1314,18 @@ function ContentPreviewModal({
               <span className="attempt-card__number">{String(currentIndex + 1).padStart(2, '0')}</span>
               {poster ? <img className="review-card__poster" src={poster} alt="" /> : <div className="review-card__poster admin-review-poster-fallback"><ImageIcon /></div>}
               <div className="attempt-card__identity">
-                <span className="attempt-label">Попытка воспроизведения · {MODE_LABEL[mode]}</span>
+                <span className="attempt-label">Попытка воспроизведения, {MODE_LABEL[mode]}</span>
                 <h2>{previewValue(payload.titleRu) || currentItem.titleRu}</h2>
                 <p className="gm-head__sub">
                   {originalTitle && <span className="gm-head__orig">{originalTitle}</span>}
-                  {year && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{year}</span></>}
-                  {country && <><i className="gm-head__dot" aria-hidden="true">·</i><span className="gm-year">{country}</span></>}
+                  {year && <><span className="gm-year">{year}</span></>}
+                  {country && <><span className="gm-year">{country}</span></>}
                 </p>
                 {!!genres.length && <div className="gm-genres">{genres.map((genre) => <span key={genre} className="gm-genre">{genre}</span>)}</div>}
               </div>
               <div className={`review-approval-badge admin-content-preview-status is-${reviewStatus}`}><small>Проверка</small><strong>{reviewStatus === 'approved' ? 'В порядке' : reviewStatus === 'issue' ? 'Проблема' : 'Ожидает'}</strong></div>
             </div>
-            {!!warnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Проверьте карточку</strong><span>{warnings.join(' • ')}</span></div>}
+            {!!warnings.length && <div className="review-conflict-banner"><strong><AlertTriangle /> Проверьте карточку</strong><span>{warnings.join(', ')}</span></div>}
             <div className="admin-attempt-fields">{fields.length ? fields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
           </section>
           {mode === 'animal' && <AnimalAudioPreview payload={payload} compact />}
@@ -1312,7 +1376,7 @@ function MediaUpload({ itemId, field, onUploaded, notify }: { itemId: string; fi
   return <div className={`admin-media-upload${upload.isPending ? ' is-loading' : ''}`} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); choose(event.dataTransfer.files) }}>
     <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => choose(event.target.files)} />
     <button type="button" onClick={() => input.current?.click()} disabled={upload.isPending}>{upload.isPending ? <LoaderCircle /> : <ImageIcon />}{upload.isPending ? 'Загрузка…' : 'Выбрать или перетащить изображение'}</button>
-    <small>JPEG, PNG или WebP · до 5 МБ · от 320×180</small>
+    <small>JPEG, PNG или WebP, до 5 МБ, от 320×180</small>
   </div>
 }
 
@@ -1386,7 +1450,7 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
   ] as const
   return <aside className="admin-drawer" role="dialog" aria-label={`Карточка ${itemId}`}>
     <header className="admin-drawer__head">
-      <div className="admin-drawer__identity"><span><LayoutTemplate />{MODE_LABEL[mode]}</span><h2>{title(payload.titleRu || itemId)}</h2><small><code>{itemId}</code><i>·</i>{data.active?.revisionId ? `Версия ${String(data.active.revisionId).slice(0, 8)}` : 'Новая карточка'}{data.draft && <><i>·</i>Черновик v{data.draft.version}</>}</small></div>
+      <div className="admin-drawer__identity"><span><LayoutTemplate />{MODE_LABEL[mode]}</span><h2>{title(payload.titleRu || itemId)}</h2><small><code>{itemId}</code>{data.active?.revisionId ? `Версия ${String(data.active.revisionId).slice(0, 8)}` : 'Новая карточка'}{data.draft && <>Черновик v{data.draft.version}</>}</small></div>
       <div className="admin-drawer__head-actions">{dirty ? <span className="admin-drawer__unsaved"><i />Есть изменения</span> : <span className="admin-drawer__saved"><Check />Сохранено</span>}<button onClick={close} aria-label="Закрыть карточку" title="Закрыть (Esc)"><PanelRightClose /></button></div>
     </header>
     {restored && <div className="admin-recovered"><FileClock />Восстановлен несохранённый текст из этого браузера.</div>}
@@ -1411,7 +1475,7 @@ function ItemEditor({ itemId, onClose, notify }: { itemId: string; onClose: () =
         : historyQuery.error
           ? <ErrorState error={historyQuery.error} retry={() => void historyQuery.refetch()} />
           : historyVersions.length
-            ? <div className="admin-history">{historyVersions.map((raw) => { const version = record(raw); const versionPayload = record(version.payload); return <article key={String(version.id)}><span><History /></span><div><header><strong>{title(version.revisionVersion)}</strong><Status value={version.revisionStatus} /><time>{formatDate(version.createdAt)}</time></header><p>{title(versionPayload.titleRu)} · {Object.keys(versionPayload).length} полей</p><button className="admin-link" onClick={() => { setPayload(versionPayload); setTab('data') }}>Взять это значение в рабочую версию</button></div></article> })}
+            ? <div className="admin-history">{historyVersions.map((raw) => { const version = record(raw); const versionPayload = record(version.payload); return <article key={String(version.id)}><span><History /></span><div><header><strong>{title(version.revisionVersion)}</strong><Status value={version.revisionStatus} /><time>{formatDate(version.createdAt)}</time></header><p>{title(versionPayload.titleRu)}, {Object.keys(versionPayload).length} полей</p><button className="admin-link" onClick={() => { setPayload(versionPayload); setTab('data') }}>Взять это значение в рабочую версию</button></div></article> })}
             </div>
             : <Empty title="Истории пока нет" text="Версии появятся после первого сохранения или публикации карточки." icon={<History />} />)}
       {tab === 'technical' && <div className="admin-technical"><div className="admin-technical__actions"><button className="admin-btn admin-btn--secondary" onClick={() => void navigator.clipboard.writeText(JSON.stringify(payload, null, 2))}><Copy />Копировать JSON</button><button className="admin-btn admin-btn--secondary" onClick={() => { if (!advanced && !confirm('Расширенное редактирование позволяет изменить технические поля. Продолжить?')) return; setAdvanced((value) => !value) }}><SquarePen />{advanced ? 'Закрыть редактирование' : 'Расширенное редактирование'}</button></div><textarea readOnly={!advanced} value={JSON.stringify(payload, null, 2)} onChange={(event) => { try { setPayload(JSON.parse(event.target.value)) } catch { /* keep valid JSON */ } }} /></div>}
@@ -1450,7 +1514,7 @@ function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { i
   }, [selection.data])
   const exportMutation = useMutation({
     mutationFn: () => adminApi.exportContentExchange(itemIds, [...fields]),
-    onSuccess: ({ blob, fileName: exportedFileName }) => { downloadBlob(blob, exportedFileName); notify('success', `Экспортировано карточек: ${itemIds.length} · ${(blob.size / 1024 / 1024).toFixed(1)} МБ`) },
+    onSuccess: ({ blob, fileName: exportedFileName }) => { downloadBlob(blob, exportedFileName); notify('success', `Экспортировано карточек: ${itemIds.length}, ${(blob.size / 1024 / 1024).toFixed(1)} МБ`) },
     onError: (error) => notify('error', errorText(error)),
   })
   const preview = useMutation({
@@ -1478,7 +1542,7 @@ function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { i
   }
   const actionableCount = preview.data?.items.filter((item) => importItems.has(exchangeItemKey(item.mode, item.id))).length ?? 0
   return <div className="admin-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && close()}><div className="admin-modal admin-modal--exchange">
-    <header><div><span>Версионированный JSON · schema v1</span><h2>Экспорт и импорт контента</h2></div><button onClick={close}><X /></button></header>
+    <header><div><span>Версионированный JSON, schema v1</span><h2>Экспорт и импорт контента</h2></div><button onClick={close}><X /></button></header>
     <div className="admin-exchange-tabs"><button className={tab === 'export' ? 'is-active' : ''} onClick={() => setTab('export')}><Download />Экспорт</button><button className={tab === 'import' ? 'is-active' : ''} onClick={() => setTab('import')}><Upload />Импорт</button></div>
     <div className="admin-modal__body">
       {tab === 'export' ? !itemIds.length ? <Empty title="Сначала выберите карточки" text="Закройте окно, отметьте нужные строки в таблице и снова откройте экспорт." icon={<FileJson />} /> : selection.isLoading ? <Loading /> : selection.error ? <ErrorState error={selection.error} /> : <>
@@ -1490,7 +1554,7 @@ function ContentExchangeDialog({ initialTab, itemIds, close, notify, done }: { i
         {parseError && <div className="admin-exchange-error"><AlertTriangle />{parseError}</div>}
         {preview.isPending && <Loading />}
         {preview.data && <><div className="admin-exchange-summary"><div><span>Новые</span><strong>{preview.data.summary.create}</strong></div><div><span>Изменить</span><strong>{preview.data.summary.update}</strong></div><div><span>Без изменений</span><strong>{preview.data.summary.unchanged}</strong></div><div><span>Конфликты</span><strong>{preview.data.summary.conflict}</strong></div><div><span>Ошибки</span><strong>{preview.data.summary.invalid}</strong></div></div>
-          <div className="admin-exchange-import-list">{preview.data.items.slice(0, 500).map((item) => { const actionable = item.status === 'create' || item.status === 'update'; const key = exchangeItemKey(item.mode, item.id); return <article key={key} className={`is-${item.status}`}><input type="checkbox" disabled={!actionable} checked={importItems.has(key)} onChange={(event) => setImportItems((current) => { const next = new Set(current); event.target.checked ? next.add(key) : next.delete(key); return next })} /><div><header><strong>{item.title}</strong><Status value={item.status} /></header><small>{MODE_LABEL[item.mode]} · <code>{item.id}</code></small><p>{item.message || (item.changedFields.length ? `Поля: ${item.changedFields.join(', ')}` : 'Изменений нет')}</p>{item.conflicts.length > 0 && <em>Конфликтуют: {item.conflicts.join(', ')}</em>}{item.issues.length > 0 && <em>{item.issues.map((issue) => String(issue.message ?? issue.code)).join(' · ')}</em>}</div></article> })}</div>
+          <div className="admin-exchange-import-list">{preview.data.items.slice(0, 500).map((item) => { const actionable = item.status === 'create' || item.status === 'update'; const key = exchangeItemKey(item.mode, item.id); return <article key={key} className={`is-${item.status}`}><input type="checkbox" disabled={!actionable} checked={importItems.has(key)} onChange={(event) => setImportItems((current) => { const next = new Set(current); event.target.checked ? next.add(key) : next.delete(key); return next })} /><div><header><strong>{item.title}</strong><Status value={item.status} /></header><small>{MODE_LABEL[item.mode]}, <code>{item.id}</code></small><p>{item.message || (item.changedFields.length ? `Поля: ${item.changedFields.join(', ')}` : 'Изменений нет')}</p>{item.conflicts.length > 0 && <em>Конфликтуют: {item.conflicts.join(', ')}</em>}{item.issues.length > 0 && <em>{item.issues.map((issue) => String(issue.message ?? issue.code)).join(', ')}</em>}</div></article> })}</div>
           <label className="admin-field admin-field--wide"><span>Причина изменений</span><input value={reason} onChange={(event) => setReason(event.target.value)} /></label>
         </>}
       </>}
@@ -1552,7 +1616,7 @@ function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: strin
               onClick={() => setExchange("export")}
             >
               <Download />
-              Экспорт JSON{selected.size ? ` · ${selected.size}` : ""}
+              Экспорт JSON{selected.size ? `, ${selected.size}` : ""}
             </button>
             <button
               className="admin-btn admin-btn--primary"
@@ -1764,7 +1828,7 @@ function ContentPageLegacy({ selectedId, navigate, notify }: { selectedId: strin
                         <strong>{item.titleRu}</strong>
                         <small>
                           {item.titleOriginal || "Без оригинального названия"}
-                          {item.year ? ` · ${item.year}` : ""}
+                          {item.year ? `, ${item.year}` : ""}
                         </small>
                       </span>
                     </button>
@@ -2409,7 +2473,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
     <>
       <PageHead
         eyebrow="Контент"
-        title={scopedMode ? `Карточки · ${MODE_LABEL[scopedMode]}` : "Карточки"}
+        title={scopedMode ? `Карточки, ${MODE_LABEL[scopedMode]}` : "Карточки"}
         description={scopedMode ? `Поиск, проверка и публикация карточек категории «${MODE_LABEL[scopedMode]}».` : "Поиск, проверка и публикация всех игровых библиотек."}
         actions={
           <>
@@ -2557,19 +2621,19 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             Скрыть
           </button>
           <details className="admin-bulk-tags">
-            <summary><Tags />Теги{bulkTagIds.length ? ` · ${bulkTagIds.length}` : ""}</summary>
+            <summary><Tags />Теги{bulkTagIds.length ? `, ${bulkTagIds.length}` : ""}</summary>
             <div>
               <TagPicker compact label="Массовые теги" tags={tags.data?.items ?? []} value={bulkTagIds} onChange={setBulkTagIds} onCreate={createTag} />
               <button disabled={!bulkTagIds.length} onClick={() => bulk.mutate("add_tag")}>
                 <Tags />
-                Назначить · {bulkTagIds.length}
+                Назначить, {bulkTagIds.length}
               </button>
               <button
                 disabled={!bulkTagIds.length}
                 onClick={() => bulk.mutate("remove_tag")}
               >
                 <X />
-                Снять · {bulkTagIds.length}
+                Снять, {bulkTagIds.length}
               </button>
             </div>
           </details>
@@ -2628,7 +2692,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                   {item.allowedInGame ? "В игре" : "Скрыта"}
                 </Status>
                 <span>
-                  {item.fieldsFilled}/{item.fieldsTotal} · {item.completeness}%
+                  {item.fieldsFilled}/{item.fieldsTotal}, {item.completeness}%
                 </span>
               </footer>
             </button>
@@ -2871,7 +2935,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
                           <strong>{item.titleRu}</strong>
                           <small>
                             {item.titleOriginal || "Без оригинального названия"}
-                            {item.year ? ` · ${item.year}` : ""}
+                            {item.year ? `, ${item.year}` : ""}
                           </small>
                         </span>
                       </button>
@@ -2970,7 +3034,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <span>
               Показано {sortedItems.length} из{" "}
               {totalItems.toLocaleString("ru-RU")}
-              {hasFieldFilter ? ` · ${fieldFilter} · ${contentFieldOperatorLabel(fieldFilterOperator, fieldFilter)}${fieldOperatorNeedsValue ? ` · ${fieldFilterValue.trim()}` : ''}` : ""}
+              {hasFieldFilter ? `, ${fieldFilter}, ${contentFieldOperatorLabel(fieldFilterOperator, fieldFilter)}${fieldOperatorNeedsValue ? `, ${fieldFilterValue.trim()}` : ''}` : ""}
             </span>
           </footer>
         </div>
@@ -3051,8 +3115,8 @@ function ReportsPage({ selectedId, navigate, notify }: { selectedId: string | nu
   const current = detail.data ? record(detail.data.report) : null; const game = detail.data ? record(detail.data.game) : null
   return <><PageHead eyebrow="Обратная связь" title="Баг-репорты" description="Разбирайте проблему вместе со снимком раунда и текущей карточкой." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void reports.refetch()}><RefreshCw />Обновить очередь</button>} />
     <div className="admin-toolbar"><label><Filter /><select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Все статусы</option><option value="open">Новые</option><option value="in_progress">В работе</option><option value="resolved">Исправлены</option><option value="dismissed">Отклонены</option><option value="duplicate">Дубликаты</option></select></label><label><Bug /><select value={reason} onChange={(event) => setReason(event.target.value)}><option value="">Все причины</option>{Object.entries(REPORT_REASON).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></div>
-    <div className="admin-split"><section className="admin-list-panel">{reports.isLoading ? <Loading /> : reports.error ? <ErrorState error={reports.error} /> : reports.data?.items.length ? reports.data.items.map((entry) => { const report = record(entry.report); return <button key={String(report.id)} className={selectedId === report.id ? 'is-active' : ''} onClick={() => navigate('reports', String(report.id))}><span className={`admin-list-icon admin-list-icon--${statusTone(report.status)}`}><Bug /></span><span><header><strong>{REPORT_REASON[String(report.reason)] ?? title(report.reason)}</strong><time>{compactDate(report.createdAt)}</time></header><p>{title(entry.titleRu)} · {entry.userEmail}</p><small>{title(report.comment || 'Без комментария')}</small></span><Status value={report.status} /></button> }) : <Empty title="Очередь пуста" text="Для выбранных фильтров отчётов нет." />}</section>
-      <section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите отчёт" text="Справа появится контекст игрового раунда и текущая карточка." icon={<PanelRightClose />} /> : detail.isLoading ? <Loading /> : detail.error || !current ? <ErrorState error={detail.error} /> : <><header className="admin-detail-head"><div><span>Отчёт {String(current.id).slice(0, 8)}</span><h2>{REPORT_REASON[String(current.reason)] ?? title(current.reason)}</h2><p>{formatDate(current.createdAt)} · {title(record(detail.data!.reporter).email)}</p></div><Status value={current.status} /></header><div className="admin-report-actions"><button onClick={() => resolve('in_progress')} disabled={patch.isPending}><Clock3 />В работу</button><button onClick={() => resolve('resolved')}><Check />Исправлено</button><button onClick={() => resolve('dismissed')}><X />Отклонить</button><button onClick={() => resolve('duplicate')}><Copy />Дубликат</button></div><div className="admin-report-comment"><span>Комментарий игрока</span><p>{title(current.comment || 'Комментарий не оставлен')}</p>{current.clientErrorId && <code>Ошибка: {String(current.clientErrorId)}</code>}</div><div className="admin-report-context"><div><span>Режим</span><strong>{MODE_LABEL[String(current.mode) as ContentMode]}</strong></div><div><span>Статус раунда</span><strong>{title(game?.status)}</strong></div><div><span>Попыток</span><strong>{String(game?.attemptsCount ?? 0)}</strong></div><div><span>Версия правил</span><strong>{String(game?.rulesVersion ?? '—')}</strong></div></div><div className="admin-compare"><header><h3>Карточка в момент игры</h3><button className="admin-link" onClick={() => navigate('content', String(current.itemId))}>Открыть редактор рядом <ChevronRight /></button></header><div><article><span>Снимок раунда</span><strong>{title(record(detail.data!.snapshot).titleRu)}</strong><pre>{JSON.stringify(detail.data!.snapshot, null, 2)}</pre></article><article><span>Active + draft</span><strong>{title(record(record(detail.data!.draft).afterPayload || record(detail.data!.active).payload).titleRu)}</strong><pre>{JSON.stringify(record(detail.data!.draft).afterPayload || record(detail.data!.active).payload, null, 2)}</pre></article></div></div><section className="admin-round-log"><h3>Хронология раунда</h3>{array(detail.data!.attempts).map((raw, index) => { const attempt = record(raw); return <div key={String(attempt.id)}><span>{index + 1}</span><p>Попытка · {attempt.isCorrect ? 'верно' : 'неверно'}</p><time>{compactDate(attempt.createdAt)}</time></div> })}{array(detail.data!.hints).map((raw) => { const hint = record(raw); return <div key={String(hint.id)}><span>?</span><p>Открыта подсказка {title(hint.hintKey)}</p><time>{compactDate(hint.createdAt)}</time></div> })}</section></>}</section>
+    <div className="admin-split"><section className="admin-list-panel">{reports.isLoading ? <Loading /> : reports.error ? <ErrorState error={reports.error} /> : reports.data?.items.length ? reports.data.items.map((entry) => { const report = record(entry.report); return <button key={String(report.id)} className={selectedId === report.id ? 'is-active' : ''} onClick={() => navigate('reports', String(report.id))}><span className={`admin-list-icon admin-list-icon--${statusTone(report.status)}`}><Bug /></span><span><header><strong>{REPORT_REASON[String(report.reason)] ?? title(report.reason)}</strong><time>{compactDate(report.createdAt)}</time></header><p>{title(entry.titleRu)}, {entry.userEmail}</p><small>{title(report.comment || 'Без комментария')}</small></span><Status value={report.status} /></button> }) : <Empty title="Очередь пуста" text="Для выбранных фильтров отчётов нет." />}</section>
+      <section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите отчёт" text="Справа появится контекст игрового раунда и текущая карточка." icon={<PanelRightClose />} /> : detail.isLoading ? <Loading /> : detail.error || !current ? <ErrorState error={detail.error} /> : <><header className="admin-detail-head"><div><span>Отчёт {String(current.id).slice(0, 8)}</span><h2>{REPORT_REASON[String(current.reason)] ?? title(current.reason)}</h2><p>{formatDate(current.createdAt)}, {title(record(detail.data!.reporter).email)}</p></div><Status value={current.status} /></header><div className="admin-report-actions"><button onClick={() => resolve('in_progress')} disabled={patch.isPending}><Clock3 />В работу</button><button onClick={() => resolve('resolved')}><Check />Исправлено</button><button onClick={() => resolve('dismissed')}><X />Отклонить</button><button onClick={() => resolve('duplicate')}><Copy />Дубликат</button></div><div className="admin-report-comment"><span>Комментарий игрока</span><p>{title(current.comment || 'Комментарий не оставлен')}</p>{current.clientErrorId && <code>Ошибка: {String(current.clientErrorId)}</code>}</div><div className="admin-report-context"><div><span>Режим</span><strong>{MODE_LABEL[String(current.mode) as ContentMode]}</strong></div><div><span>Статус раунда</span><strong>{title(game?.status)}</strong></div><div><span>Попыток</span><strong>{String(game?.attemptsCount ?? 0)}</strong></div><div><span>Версия правил</span><strong>{String(game?.rulesVersion ?? '—')}</strong></div></div><div className="admin-compare"><header><h3>Карточка в момент игры</h3><button className="admin-link" onClick={() => navigate('content', String(current.itemId))}>Открыть редактор рядом <ChevronRight /></button></header><div><article><span>Снимок раунда</span><strong>{title(record(detail.data!.snapshot).titleRu)}</strong><pre>{JSON.stringify(detail.data!.snapshot, null, 2)}</pre></article><article><span>Active + draft</span><strong>{title(record(record(detail.data!.draft).afterPayload || record(detail.data!.active).payload).titleRu)}</strong><pre>{JSON.stringify(record(detail.data!.draft).afterPayload || record(detail.data!.active).payload, null, 2)}</pre></article></div></div><section className="admin-round-log"><h3>Хронология раунда</h3>{array(detail.data!.attempts).map((raw, index) => { const attempt = record(raw); return <div key={String(attempt.id)}><span>{index + 1}</span><p>Попытка, {attempt.isCorrect ? 'верно' : 'неверно'}</p><time>{compactDate(attempt.createdAt)}</time></div> })}{array(detail.data!.hints).map((raw) => { const hint = record(raw); return <div key={String(hint.id)}><span>?</span><p>Открыта подсказка {title(hint.hintKey)}</p><time>{compactDate(hint.createdAt)}</time></div> })}</section></>}</section>
     </div></>
 }
 
@@ -3289,7 +3353,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
     onSuccess: (result, variables) => {
       const publishedTag = record(result).tag
       setApprovalFailure(null)
-      notify('success', variables.publish ? `Изменения опубликованы${publishedTag?.name ? ` · тег «${publishedTag.name}» назначен` : ''}` : 'Изменения добавлены в рабочую версию')
+      notify('success', variables.publish ? `Изменения опубликованы${publishedTag?.name ? `, тег «${publishedTag.name}» назначен` : ''}` : 'Изменения добавлены в рабочую версию')
       setSelectedPipelineItems(new Set())
       void client.invalidateQueries({ queryKey: ['admin'] })
     },
@@ -3883,8 +3947,8 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
               : live
                 ? staleRun
                   ? `Нет heartbeat ${heartbeat}s`
-                  : `${pipelinePulseText(String(run.status))}${heartbeat != null ? ` · heartbeat ${heartbeat}s назад` : ""}`
-                : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0} · $${Number(run.actualCost ?? 0).toFixed(4)}`;
+                  : `${pipelinePulseText(String(run.status))}${heartbeat != null ? `, heartbeat ${heartbeat}s назад` : ""}`
+                : `Успешно ${run.itemsSucceeded ?? 0}, ошибок ${run.itemsFailed ?? 0}, $${Number(run.actualCost ?? 0).toFixed(4)}`;
             return (
               <article
                 key={String(run.id)}
@@ -3900,7 +3964,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   <span>
                     <header>
                       <strong>
-                        {pipelineLabel(run.pipelineKey)} ·{" "}
+                        {pipelineLabel(run.pipelineKey)},{" "}
                         {Number(run.itemsProcessed ?? 0)}/
                         {Number(run.itemsTotal ?? 0)}
                       </strong>
@@ -3951,7 +4015,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   <span>Запуск {String(selectedRun.id).slice(0, 8)}</span>
                   <h2>{pipelineDetailTitle(selectedRun.pipelineKey)}</h2>
                   <p>
-                    {formatDate(selectedRun.createdAt)} ·{" "}
+                    {formatDate(selectedRun.createdAt)},{" "}
                     {title(record(selectedRun.settingsJson).model)}
                   </p>
                 </div>
@@ -3992,7 +4056,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       title="Повторить только ошибочные айтемы"
                     >
                       <RefreshCw />
-                      Перегенерировать ошибки · {failedItemCount}
+                      Перегенерировать ошибки, {failedItemCount}
                     </button>
                   )}
                   {canRetryUnresolvedItems && (
@@ -4002,7 +4066,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       title="Переоценить сохранённые ответы без новых запросов OpenAI"
                     >
                       <RefreshCw />
-                      Переоценить сохранённое · $0
+                      Переоценить сохранённое, $0
                     </button>
                   )}
                   {canRetryUnresolvedItems && (
@@ -4012,7 +4076,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       title="Переиспользовать сохранённые результаты и запросить только незакрытые фактические поля"
                     >
                       <RefreshCw />
-                      Точечно перепроверить спорные · {unresolvedItemCount}
+                      Точечно перепроверить спорные, {unresolvedItemCount}
                     </button>
                   )}
                   {["queued", "running"].includes(
@@ -4067,15 +4131,15 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     {Number(
                       record(selectedRun.usageJson).inputTokens ?? 0,
                     ).toLocaleString("ru-RU")}{" "}
-                    · кэш{" "}
+, кэш{" "}
                     {Number(
                       record(selectedRun.usageJson).cachedInputTokens ?? 0,
                     ).toLocaleString("ru-RU")}{" "}
-                    · выход{" "}
+, выход{" "}
                     {Number(
                       record(selectedRun.usageJson).outputTokens ?? 0,
                     ).toLocaleString("ru-RU")}{" "}
-                    · web search{" "}
+, web search{" "}
                     {String(record(selectedRun.usageJson).webSearchCalls ?? 0)}
                   </small>
                 )}
@@ -4277,7 +4341,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                           onClick={() => updateSelectedPipelineItemTags.mutate('add_tag')}
                         >
                           <Tags />
-                          Назначить теги · {pipelineBulkTagIds.length}
+                          Назначить теги, {pipelineBulkTagIds.length}
                         </button>
                         <button
                           className="admin-btn admin-btn--secondary"
@@ -4285,7 +4349,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                           onClick={() => updateSelectedPipelineItemTags.mutate('remove_tag')}
                         >
                           <X />
-                          Снять теги · {pipelineBulkTagIds.length}
+                          Снять теги, {pipelineBulkTagIds.length}
                         </button>
                       </div>
                     )}
@@ -4554,7 +4618,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   >
                     В рабочую версию
                     {selectedApprovedIds.length
-                      ? ` · ${selectedApprovedIds.length}`
+                      ? `, ${selectedApprovedIds.length}`
                       : ""}
                   </button>
                   <button
@@ -4571,7 +4635,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   >
                     Одобрить и опубликовать
                     {selectedApprovedIds.length
-                      ? ` · ${selectedApprovedIds.length}`
+                      ? `, ${selectedApprovedIds.length}`
                       : ""}
                   </button>
                 </div>
@@ -4591,7 +4655,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             <header>
               <div>
                 <span>
-                  {pipelineLabel(selectedRun.pipelineKey)} · Ручная модерация
+                  {pipelineLabel(selectedRun.pipelineKey)}, Ручная модерация
                 </span>
                 <h2>Карточка как в игре</h2>
               </div>
@@ -4623,7 +4687,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                 </article>
                 <article>
                   <small>Горячие клавиши</small>
-                  <strong>← → · X / C</strong>
+                  <strong>← →, X / C</strong>
                 </article>
               </section>
               <section
@@ -4646,7 +4710,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   )}
                   <div className="attempt-card__identity">
                     <span className="attempt-label">
-                      Попытка воспроизведения · {MODE_LABEL[moderationMode]}
+                      Попытка воспроизведения, {MODE_LABEL[moderationMode]}
                     </span>
                     <h2>{moderationTitle}</h2>
                     <p className="gm-head__sub">
@@ -4655,17 +4719,13 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       </span>
                       {moderationYear && (
                         <>
-                          <i className="gm-head__dot" aria-hidden="true">
-                            ·
-                          </i>
+                          
                           <span className="gm-year">{moderationYear}</span>
                         </>
                       )}
                       {moderationCountry && (
                         <>
-                          <i className="gm-head__dot" aria-hidden="true">
-                            ·
-                          </i>
+                          
                           <span className="gm-year">{moderationCountry}</span>
                         </>
                       )}
@@ -4693,7 +4753,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     <strong>
                       <AlertTriangle /> Предупреждения
                     </strong>
-                    <span>{moderationWarnings.join(" • ")}</span>
+                    <span>{moderationWarnings.join(", ")}</span>
                   </div>
                 )}
                 <div className="admin-attempt-fields">
@@ -4820,7 +4880,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
           <header className="admin-drawer__head">
             <div>
               <small>
-                {pipelineLabel(selectedRun.pipelineKey)} ·{" "}
+                {pipelineLabel(selectedRun.pipelineKey)},{" "}
                 {title(activePipelineItem.entityKey)}
               </small>
               <h2>
@@ -4874,7 +4934,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             {pipelineWarnings(activePipelineItem.warningsJson).length > 0 && (
               <div className="admin-pipeline-item-warnings">
                 <AlertTriangle />
-                {pipelineWarnings(activePipelineItem.warningsJson).join(" · ")}
+                {pipelineWarnings(activePipelineItem.warningsJson).join(", ")}
               </div>
             )}
           </div>
@@ -4922,7 +4982,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
           <div className="admin-modal admin-modal--pipeline">
             <header>
               <div>
-                <span>{pipelineDetailTitle(pipelineKey)} · gpt-5-mini{repeatSourceRunId ? ` · на основе ${repeatSourceRunId.slice(0, 8)}` : ''}</span>
+                <span>{pipelineDetailTitle(pipelineKey)}, gpt-5-mini{repeatSourceRunId ? `, на основе ${repeatSourceRunId.slice(0, 8)}` : ''}</span>
                 <h2>{repeatSourceRunId ? 'Повторный запуск' : 'Новый запуск'}</h2>
               </div>
               <button onClick={closePipelineDialog}>
@@ -4964,7 +5024,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     >
                       {normalizationFieldOptions.map((entry) => (
                         <option key={entry.field} value={entry.field}>
-                          {entry.label} · {entry.field}
+                          {entry.label}, {entry.field}
                         </option>
                       ))}
                     </select>
@@ -5108,7 +5168,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                       }
                       onClick={() => setNormalizationScope("selected")}
                     >
-                      Только выбранные · {normalizationSelected.size}
+                      Только выбранные, {normalizationSelected.size}
                     </button>
                   </div>
                   {normalizationScope === "selected" && (
@@ -5139,7 +5199,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     </div>
                   )}
                   <label className="admin-field">
-                    <span>Максимум карточек · {maxItems}</span>
+                    <span>Максимум карточек, {maxItems}</span>
                     <input
                       type="range"
                       min="1"
@@ -5193,7 +5253,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     <small>Выбрано: {factcheckItemIds.length}</small>
                   </label>}
                   <label className="admin-field">
-                    <span>Максимум карточек · {maxItems}</span>
+                    <span>Максимум карточек, {maxItems}</span>
                     <input type="range" min="1" max="500" value={maxItems} onChange={(event) => setMaxItems(Number(event.target.value))} />
                   </label>
                   <div className="admin-normalization-warning"><BadgeCheck /> Запуск привязывается к точной активной ревизии. Исправления не публикуются: сначала появятся diff «до / после», вывод и источники.</div>
@@ -5319,7 +5379,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                                     ? item.existingTitle ||
                                       (item.kinopoiskId
                                         ? `Кинопоиск #${String(item.kinopoiskId)}`
-                                        : `ID будет найден после запуска${item.requestedYear ? ` · ${String(item.requestedYear)}` : ""}`)
+                                        : `ID будет найден после запуска${item.requestedYear ? `, ${String(item.requestedYear)}` : ""}`)
                                     : item.country ||
                                       item.existingTitle ||
                                       item.hint ||
@@ -5364,7 +5424,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                   )}
                   <label className="admin-field">
                     <span>
-                      {scenario === "manual" ? "Размер партии" : "Количество"} ·{" "}
+                      {scenario === "manual" ? "Размер партии" : "Количество"},{" "}
                       {maxItems}
                     </span>
                     <input
@@ -5413,7 +5473,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
                     ${String(estimate.data?.estimatedCost ?? "—")}
                   </strong>
                   <small>
-                    {String(estimate.data?.aiReviewCalls ?? "—")} AI-вызовов ·
+                    {String(estimate.data?.aiReviewCalls ?? "—")} AI-вызовов,
                     фактическая сумма считается по usage и web search calls
                   </small>
                 </div>
@@ -5544,7 +5604,7 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
   const clubSummaryStatus = clubSummaryEntitlement ? effectiveEntitlementStatus(clubSummaryEntitlement, clubNow) : 'expired'
   return <><PageHead eyebrow="Аккаунты" title="Пользователи" description="Активность, игровые сессии, билеты, репорты и безопасные административные действия." />
     <div className="admin-toolbar admin-toolbar--users"><label className="admin-search"><Search /><input value={q} onChange={(event) => setQ(event.target.value)} placeholder="Email, ID или имя" /></label><div className="admin-periods admin-account-type-filter" role="group" aria-label="Тип аккаунта"><button type="button" className={accountType === '' ? 'is-active' : ''} aria-pressed={accountType === ''} onClick={() => setAccountType('')}>Все</button><button type="button" className={accountType === 'permanent' ? 'is-active' : ''} aria-pressed={accountType === 'permanent'} onClick={() => setAccountType('permanent')}><BadgeCheck />Зарегистрированные</button><button type="button" className={accountType === 'anonymous' ? 'is-active' : ''} aria-pressed={accountType === 'anonymous'} onClick={() => setAccountType('anonymous')}><UserRound />Гостевые</button></div><label><ShieldCheck /><select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Все состояния</option><option value="active">Активны</option><option value="blocked">Заблокированы</option></select></label></div>
-    <div className="admin-split"><section className="admin-list-panel">{users.isLoading ? <Loading /> : users.data?.items.map((userItem) => <button key={userItem.id} className={selectedId === userItem.id ? 'is-active' : ''} onClick={() => navigate('users', userItem.id)}><span className={`admin-user-avatar ${userItem.isAnonymous ? 'is-guest' : 'is-registered'}`}>{userItem.isAnonymous ? '?' : title(userItem.displayName || userItem.name).slice(0, 1)}</span><span><header><strong>{userItem.isAnonymous ? 'Гость' : title(userItem.displayName || userItem.name)}</strong><time>{compactDate(userItem.lastActivityAt)}</time></header><p>{userItem.isAnonymous ? userItem.id : userItem.email}</p><small>{userItem.sessionsCount} сессий · {userItem.balance} билетов</small></span><span className="admin-user-state"><span className={`admin-account-type admin-account-type--${userItem.isAnonymous ? 'guest' : 'registered'}`}>{userItem.isAnonymous ? 'Гостевой' : 'Регистрация'}</span><Status value={userItem.accountStatus} /></span></button>)}</section><section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите пользователя" text="Откроются профиль, активность и операции." icon={<UserRound />} /> : detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} /> : <><header className="admin-user-head"><span className={`admin-user-avatar admin-user-avatar--large ${account.isAnonymous ? 'is-guest' : 'is-registered'}`}>{account.isAnonymous ? '?' : title(profile.displayName || account.name).slice(0, 1)}</span><div><div className="admin-user-head__statuses"><span className={`admin-account-type admin-account-type--${account.isAnonymous ? 'guest' : 'registered'}`}>{account.isAnonymous ? 'Гостевой аккаунт' : 'Зарегистрированный аккаунт'}</span><Status value={profile.accountStatus} /><Status value={clubSummaryStatus}>{clubSummaryStatus === 'active' ? 'В клубе' : clubSummaryStatus === 'scheduled' ? 'Клуб запланирован' : 'Не в клубе'}</Status></div><h2>{account.isAnonymous ? 'Гость' : title(profile.displayName || account.name)}</h2><p>{account.isAnonymous ? 'Без регистрации' : title(account.email)} · <code>{selectedId}</code></p></div></header><div className="admin-user-actions"><button onClick={() => action.mutate({ type: profile.accountStatus === 'blocked' ? 'unblock' : 'block', id: selectedId })}><LockKeyhole />{profile.accountStatus === 'blocked' ? 'Разблокировать' : 'Заблокировать'}</button><button onClick={() => action.mutate({ type: 'revoke', id: selectedId })}><RefreshCw />Завершить сессии</button><button onClick={() => action.mutate({ type: 'note', id: selectedId })}><SquarePen />Заметка</button><button onClick={() => action.mutate({ type: 'wallet', id: selectedId })}><Ticket />Билеты</button><button onClick={() => void navigator.clipboard.writeText(selectedId)}><Copy />Копировать ID</button></div><div className="admin-user-kpis"><div><span>Баланс</span><strong>{String(wallet.balance ?? 0)}</strong><small>заработано {String(wallet.lifetimeEarned ?? 0)} · долг {String(wallet.purchaseDebt ?? 0)}</small></div><div><span>Сессии</span><strong>{array(data?.sessions).length}</strong><small>последние 30</small></div><div><span>Репорты</span><strong>{array(data?.reports).length}</strong><small>последние 30</small></div><div><span>Серия</span><strong>{String(record(data?.attendance).currentDailyStreak ?? 0)}</strong><small>дней</small></div></div>
+    <div className="admin-split"><section className="admin-list-panel">{users.isLoading ? <Loading /> : users.data?.items.map((userItem) => <button key={userItem.id} className={selectedId === userItem.id ? 'is-active' : ''} onClick={() => navigate('users', userItem.id)}><span className={`admin-user-avatar ${userItem.isAnonymous ? 'is-guest' : 'is-registered'}`}>{userItem.isAnonymous ? '?' : title(userItem.displayName || userItem.name).slice(0, 1)}</span><span><header><strong>{userItem.isAnonymous ? 'Гость' : title(userItem.displayName || userItem.name)}</strong><time>{compactDate(userItem.lastActivityAt)}</time></header><p>{userItem.isAnonymous ? userItem.id : userItem.email}</p><small>{userItem.sessionsCount} сессий, {userItem.balance} билетов</small></span><span className="admin-user-state"><span className={`admin-account-type admin-account-type--${userItem.isAnonymous ? 'guest' : 'registered'}`}>{userItem.isAnonymous ? 'Гостевой' : 'Регистрация'}</span><Status value={userItem.accountStatus} /></span></button>)}</section><section className="admin-detail-panel">{!selectedId ? <Empty title="Выберите пользователя" text="Откроются профиль, активность и операции." icon={<UserRound />} /> : detail.isLoading ? <Loading /> : detail.error ? <ErrorState error={detail.error} /> : <><header className="admin-user-head"><span className={`admin-user-avatar admin-user-avatar--large ${account.isAnonymous ? 'is-guest' : 'is-registered'}`}>{account.isAnonymous ? '?' : title(profile.displayName || account.name).slice(0, 1)}</span><div><div className="admin-user-head__statuses"><span className={`admin-account-type admin-account-type--${account.isAnonymous ? 'guest' : 'registered'}`}>{account.isAnonymous ? 'Гостевой аккаунт' : 'Зарегистрированный аккаунт'}</span><Status value={profile.accountStatus} /><Status value={clubSummaryStatus}>{clubSummaryStatus === 'active' ? 'В клубе' : clubSummaryStatus === 'scheduled' ? 'Клуб запланирован' : 'Не в клубе'}</Status></div><h2>{account.isAnonymous ? 'Гость' : title(profile.displayName || account.name)}</h2><p>{account.isAnonymous ? 'Без регистрации' : title(account.email)}, <code>{selectedId}</code></p></div></header><div className="admin-user-actions"><button onClick={() => action.mutate({ type: profile.accountStatus === 'blocked' ? 'unblock' : 'block', id: selectedId })}><LockKeyhole />{profile.accountStatus === 'blocked' ? 'Разблокировать' : 'Заблокировать'}</button><button onClick={() => action.mutate({ type: 'revoke', id: selectedId })}><RefreshCw />Завершить сессии</button><button onClick={() => action.mutate({ type: 'note', id: selectedId })}><SquarePen />Заметка</button><button onClick={() => action.mutate({ type: 'wallet', id: selectedId })}><Ticket />Билеты</button><button onClick={() => void navigator.clipboard.writeText(selectedId)}><Copy />Копировать ID</button></div><div className="admin-user-kpis"><div><span>Баланс</span><strong>{String(wallet.balance ?? 0)}</strong><small>заработано {String(wallet.lifetimeEarned ?? 0)}, долг {String(wallet.purchaseDebt ?? 0)}</small></div><div><span>Сессии</span><strong>{array(data?.sessions).length}</strong><small>последние 30</small></div><div><span>Репорты</span><strong>{array(data?.reports).length}</strong><small>последние 30</small></div><div><span>Серия</span><strong>{String(record(data?.attendance).currentDailyStreak ?? 0)}</strong><small>дней</small></div></div>
       <section className="admin-user-game-access admin-user-club-access">
         <header><div><BadgeCheck /><span><strong>Клубный доступ</strong><small>Фактический статус учитывает даты начала и окончания, а не только значение в базе.</small></span></div></header>
         <div className="admin-user-club-access__summary">
@@ -5558,7 +5618,7 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
                   : clubSummaryEntitlement?.endsAt
                     ? `Последний доступ закончился ${formatDate(clubSummaryEntitlement.endsAt)}`
                     : 'Клубный доступ не выдавался'}</strong>
-              <small>{clubSummaryEntitlement ? `${entitlementSourceLabel(clubSummaryEntitlement.sourceType)} · ${ENTITLEMENT_STATUS_LABEL[clubSummaryStatus]}` : 'Можно выдать доступ вручную'}</small>
+              <small>{clubSummaryEntitlement ? `${entitlementSourceLabel(clubSummaryEntitlement.sourceType)}, ${ENTITLEMENT_STATUS_LABEL[clubSummaryStatus]}` : 'Можно выдать доступ вручную'}</small>
             </span>
           </div>
           <button className="admin-btn admin-btn--primary" disabled={grantClubAccess.isPending} onClick={() => grantClubAccess.mutate(selectedId)}><Plus />{grantClubAccess.isPending ? 'Выдаём…' : currentClubEntitlement || scheduledClubEntitlement ? 'Продлить клуб' : 'Выдать клуб'}</button>
@@ -5568,7 +5628,7 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
               const state = effectiveEntitlementStatus(entitlement, clubNow)
               const active = state === 'active'
               return <article className={active ? 'is-enabled' : ''} key={String(entitlement.id)}>
-                <span><strong>{entitlementSourceLabel(entitlement.sourceType)}</strong><small>{formatDate(entitlement.startsAt)} → {entitlement.endsAt ? formatDate(entitlement.endsAt) : 'без срока'} · <code>{String(entitlement.sourceId)}</code></small></span>
+                <span><strong>{entitlementSourceLabel(entitlement.sourceType)}</strong><small>{formatDate(entitlement.startsAt)} → {entitlement.endsAt ? formatDate(entitlement.endsAt) : 'без срока'}, <code>{String(entitlement.sourceId)}</code></small></span>
                 <span className={`admin-user-game-access__state ${active ? 'is-enabled' : state === 'scheduled' ? 'is-draft' : ''}`}>{ENTITLEMENT_STATUS_LABEL[state]}</span>
                 {canRevokeEntitlement(entitlement, clubNow) && <button disabled={revokeClubAccess.isPending} onClick={() => revokeClubAccess.mutate(String(entitlement.id))}>Отозвать</button>}
               </article>
@@ -5600,14 +5660,14 @@ function UsersPage({ selectedId, navigate, notify }: { selectedId: string | null
               const state = effectiveEntitlementStatus(entitlement)
               const active = state === 'active'
               return <article className={active ? 'is-enabled' : ''} key={String(entitlement.id)}>
-                <span><strong>{packTitles.get(String(entitlement.scope)) ?? title(entitlement.scope)}</strong><small>{entitlementSourceLabel(entitlement.sourceType)} · выдан {compactDate(entitlement.createdAt)}{entitlement.endsAt ? ` · до ${compactDate(entitlement.endsAt)}` : ' · бессрочно'}</small></span>
+                <span><strong>{packTitles.get(String(entitlement.scope)) ?? title(entitlement.scope)}</strong><small>{entitlementSourceLabel(entitlement.sourceType)}, выдан {compactDate(entitlement.createdAt)}{entitlement.endsAt ? `, до ${compactDate(entitlement.endsAt)}` : ', бессрочно'}</small></span>
                 <span className={`admin-user-game-access__state ${active ? 'is-enabled' : state === 'scheduled' ? 'is-draft' : ''}`}>{ENTITLEMENT_STATUS_LABEL[state]}</span>
                 {canRevokeEntitlement(entitlement) && <button disabled={revokePackAccess.isPending} onClick={() => revokePackAccess.mutate(String(entitlement.id))}>Отозвать</button>}
               </article>
             })}</div>
           : <p>Персональных доступов пока нет.</p>}
       </section>
-      <div className="admin-user-columns"><section><h3>Последние игровые сессии</h3>{array(data?.sessions).map((raw) => { const sessionItem = record(raw); return <button key={String(sessionItem.id)} onClick={() => navigate('events', String(sessionItem.id))}><span><strong>{MODE_LABEL[String(sessionItem.mode) as ContentMode]}</strong><small>{title(sessionItem.kind)} · {compactDate(sessionItem.startedAt)}</small></span><Status value={sessionItem.status} /></button> })}</section><section><h3>Операции баланса</h3>{array(data?.ledger).map((raw) => { const entry = record(raw); return <div key={String(entry.id)}><span><strong>{Number(entry.amount) > 0 ? '+' : ''}{String(entry.amount)}</strong><small>{title(entry.reason)}</small></span><time>{compactDate(entry.createdAt)}</time></div> })}</section></div><section className="admin-notes"><h3>Внутренние заметки</h3>{array(data?.notes).length ? array(data?.notes).map((raw) => { const note = record(raw); return <article key={String(note.id)}><p>{title(note.text)}</p><time>{formatDate(note.createdAt)}</time></article> }) : <p>Заметок нет.</p>}</section></>}</section></div></>
+      <div className="admin-user-columns"><section><h3>Последние игровые сессии</h3>{array(data?.sessions).map((raw) => { const sessionItem = record(raw); return <button key={String(sessionItem.id)} onClick={() => navigate('events', String(sessionItem.id))}><span><strong>{MODE_LABEL[String(sessionItem.mode) as ContentMode]}</strong><small>{title(sessionItem.kind)}, {compactDate(sessionItem.startedAt)}</small></span><Status value={sessionItem.status} /></button> })}</section><section><h3>Операции баланса</h3>{array(data?.ledger).map((raw) => { const entry = record(raw); return <div key={String(entry.id)}><span><strong>{Number(entry.amount) > 0 ? '+' : ''}{String(entry.amount)}</strong><small>{title(entry.reason)}</small></span><time>{compactDate(entry.createdAt)}</time></div> })}</section></div><section className="admin-notes"><h3>Внутренние заметки</h3>{array(data?.notes).length ? array(data?.notes).map((raw) => { const note = record(raw); return <article key={String(note.id)}><p>{title(note.text)}</p><time>{formatDate(note.createdAt)}</time></article> }) : <p>Заметок нет.</p>}</section></>}</section></div></>
 }
 
 function EventsPage({ sessionId }: { sessionId: string | null }) {
@@ -5625,7 +5685,7 @@ function QualityPage({ navigate, notify }: { navigate: (section: Section, id?: s
   const grouped = useMemo(() => Object.entries((issues.data?.items ?? []).reduce<Record<string, Array<Record<string, unknown>>>>((result, raw) => {
     const key = String(raw.ruleKey); (result[key] ??= []).push(raw); return result
   }, {})), [issues.data])
-  return <><PageHead eyebrow="Автоматические правила" title="Контроль качества" description="Ошибки схемы, подсказок, дублей, медиа и допустимых ответов." actions={<button className="admin-btn admin-btn--primary" onClick={() => run.mutate()}><RefreshCw />Запустить проверку</button>} />{issues.isLoading ? <Loading /> : !grouped.length ? <Empty title="Открытых проблем нет" text="Запустите проверку, чтобы подтвердить актуальное состояние active revision." icon={<BadgeCheck />} /> : <div className="admin-quality">{grouped.map(([rule, entries]) => <section key={rule}><header><div><AlertTriangle /><span><strong>{rule}</strong><small>Открытых проблем: {entries.length}</small></span></div><Status value={entries.some((entry) => entry.severity === 'critical') ? 'critical' : 'warning'} /></header>{entries.map((entry) => <div className="admin-quality-row" key={String(entry.id)}><button onClick={() => navigate('content', String(entry.itemId))}><span><strong>{title(entry.itemId)}</strong><small>{MODE_LABEL[String(entry.mode) as ContentMode]} · {title(entry.field)}</small></span><p>{title(entry.message)}</p><ChevronRight /></button><button className="admin-link" onClick={() => { const comment = prompt('Почему это предупреждение допустимо?'); if (comment?.trim()) accept.mutate({ id: String(entry.id), comment: comment.trim() }) }}>Допустимо</button></div>)}</section>)}</div>}</>
+  return <><PageHead eyebrow="Автоматические правила" title="Контроль качества" description="Ошибки схемы, подсказок, дублей, медиа и допустимых ответов." actions={<button className="admin-btn admin-btn--primary" onClick={() => run.mutate()}><RefreshCw />Запустить проверку</button>} />{issues.isLoading ? <Loading /> : !grouped.length ? <Empty title="Открытых проблем нет" text="Запустите проверку, чтобы подтвердить актуальное состояние active revision." icon={<BadgeCheck />} /> : <div className="admin-quality">{grouped.map(([rule, entries]) => <section key={rule}><header><div><AlertTriangle /><span><strong>{rule}</strong><small>Открытых проблем: {entries.length}</small></span></div><Status value={entries.some((entry) => entry.severity === 'critical') ? 'critical' : 'warning'} /></header>{entries.map((entry) => <div className="admin-quality-row" key={String(entry.id)}><button onClick={() => navigate('content', String(entry.itemId))}><span><strong>{title(entry.itemId)}</strong><small>{MODE_LABEL[String(entry.mode) as ContentMode]}, {title(entry.field)}</small></span><p>{title(entry.message)}</p><ChevronRight /></button><button className="admin-link" onClick={() => { const comment = prompt('Почему это предупреждение допустимо?'); if (comment?.trim()) accept.mutate({ id: String(entry.id), comment: comment.trim() }) }}>Допустимо</button></div>)}</section>)}</div>}</>
 }
 
 function EconomyPage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
@@ -5653,11 +5713,11 @@ function EconomyPage({ notify }: { notify: (tone: Notice['tone'], text: string) 
     {metrics.isLoading ? <Loading /> : metrics.error ? <ErrorState error={metrics.error} /> : summary && overview && <>
       <div className="admin-economy-metrics">
         <article><span><Ticket /></span><small>Заработано / потрачено</small><strong>{summary.ticketsEarned} / {summary.ticketsSpent}</strong><em>ratio {summary.earnedSpentRatio?.toFixed(2) ?? '—'}</em></article>
-        <article><span><AlertTriangle /></span><small>Столкнулись с нехваткой</small><strong>{percent(summary.shortageUserRate)}</strong><em>{summary.shortageUsers} из {summary.activeUsers} · {summary.shortageClubConversions} → Клуб</em></article>
+        <article><span><AlertTriangle /></span><small>Столкнулись с нехваткой</small><strong>{percent(summary.shortageUserRate)}</strong><em>{summary.shortageUsers} из {summary.activeUsers}, {summary.shortageClubConversions} → Клуб</em></article>
         <article><span><Activity /></span><small>Уход после нехватки</small><strong>{percent(summary.shortageExitRate)}</strong><em>proxy: нет события 15 минут</em></article>
         <article><span><CircleGauge /></span><small>Баланс P50 / P90</small><strong>{Math.round(summary.balanceP50)} / {Math.round(summary.balanceP90)}</strong><em>билетов</em></article>
-        <article><span><Bot /></span><small>Данетки P50 / P95</small><strong>{Math.round(summary.danetkiTokensP50)} / {Math.round(summary.danetkiTokensP95)}</strong><em>AI-токенов · {summary.danetkiRoomsMeasured} комнат</em></article>
-        <article><span><CircleDollarSign /></span><small>Выручка / плательщика</small><strong>{Math.round(summary.revenueMinor / 100).toLocaleString('ru-RU')} ₽ / {Math.round(summary.revenuePerPayingUserMinor / 100).toLocaleString('ru-RU')} ₽</strong><em>{summary.repeatBuyers} повторных · {summary.refunds} возвратов</em></article>
+        <article><span><Bot /></span><small>Данетки P50 / P95</small><strong>{Math.round(summary.danetkiTokensP50)} / {Math.round(summary.danetkiTokensP95)}</strong><em>AI-токенов, {summary.danetkiRoomsMeasured} комнат</em></article>
+        <article><span><CircleDollarSign /></span><small>Выручка / плательщика</small><strong>{Math.round(summary.revenueMinor / 100).toLocaleString('ru-RU')} ₽ / {Math.round(summary.revenuePerPayingUserMinor / 100).toLocaleString('ru-RU')} ₽</strong><em>{summary.repeatBuyers} повторных, {summary.refunds} возвратов</em></article>
       </div>
       <section className="admin-economy-targets">
         <article><Status value={ratioOk ? 'active' : 'warning'} /><span><strong>Earned / spent: 0,9–1,1</strong><small>Фактически {summary.earnedSpentRatio?.toFixed(2) ?? 'нет расходов'}</small></span></article>
@@ -5674,7 +5734,7 @@ function EconomyPage({ notify }: { notify: (tone: Notice['tone'], text: string) 
         <section className="admin-panel"><header><div><span>Economy v4 usage</span><h2>Ключевые действия</h2></div></header><div className="admin-balance-buckets"><span><strong>{summary.friendsRoomContinuations}</strong><small>продолжений Friends Room</small></span><span><strong>{summary.clubDanetkiRooms}</strong><small>клубных Данеток</small></span><span><strong>{summary.ticketBundlePurchases}</strong><small>покупок ticket bundles</small></span></div></section>
       </div>
     </>}
-    <div className="admin-economy-grid"><section className="admin-panel"><header><div><span>Промокоды</span><h2>Активные и завершённые</h2></div></header><div className="admin-promo-list">{promos.data?.items.map((raw) => { const entry = record(raw); const promo = record(entry.promo); return <article key={String(promo.id)}><span className="admin-list-icon"><Tags /></span><div><strong>{title(promo.title)}</strong><small>{promo.enabled ? 'Активен' : 'Отключён'} · {String(entry.redemptions ?? 0)} применений</small><p>{String(record(promo.rewardValue).amount ?? promo.rewardValue)} билетов · лимит {String(promo.perUserLimit)}/польз.</p></div><Status value={promo.enabled ? 'active' : 'blocked'} /></article> })}</div></section><section className="admin-panel admin-ledger-explainer"><header><div><span>Гарантия</span><h2>Ledger не редактируется</h2></div></header><CircleDollarSign /><h3>Каждая корректировка — отдельная операция</h3><p>Баланс меняется только через audited endpoint с обязательной причиной и idempotency key. Старые операции нельзя удалить или переписать.</p><a href="/admin/users">Найти пользователя для корректировки <ChevronRight /></a></section></div>
+    <div className="admin-economy-grid"><section className="admin-panel"><header><div><span>Промокоды</span><h2>Активные и завершённые</h2></div></header><div className="admin-promo-list">{promos.data?.items.map((raw) => { const entry = record(raw); const promo = record(entry.promo); return <article key={String(promo.id)}><span className="admin-list-icon"><Tags /></span><div><strong>{title(promo.title)}</strong><small>{promo.enabled ? 'Активен' : 'Отключён'}, {String(entry.redemptions ?? 0)} применений</small><p>{String(record(promo.rewardValue).amount ?? promo.rewardValue)} билетов, лимит {String(promo.perUserLimit)}/польз.</p></div><Status value={promo.enabled ? 'active' : 'blocked'} /></article> })}</div></section><section className="admin-panel admin-ledger-explainer"><header><div><span>Гарантия</span><h2>Ledger не редактируется</h2></div></header><CircleDollarSign /><h3>Каждая корректировка — отдельная операция</h3><p>Баланс меняется только через audited endpoint с обязательной причиной и idempotency key. Старые операции нельзя удалить или переписать.</p><a href="/admin/users">Найти пользователя для корректировки <ChevronRight /></a></section></div>
     {creating && <div className="admin-modal-backdrop"><div className="admin-modal"><header><div><span>Credential показывается один раз</span><h2>Новый промокод</h2></div><button onClick={() => setCreating(false)}><X /></button></header><div className="admin-modal__body"><label className="admin-field"><span>Сырой код</span><input value={code} onChange={(event) => setCode(event.target.value)} placeholder="SHODITSA-2026" /></label><label className="admin-field"><span>Название</span><input value={promoTitle} onChange={(event) => setPromoTitle(event.target.value)} placeholder="Летний подарок" /></label><label className="admin-field"><span>Билетов</span><input type="number" min="1" value={reward} onChange={(event) => setReward(Number(event.target.value))} /></label><div className="admin-warning"><AlertTriangle />После создания БД хранит только HMAC hash. Потерянный код восстановить нельзя.</div></div><footer><button className="admin-btn admin-btn--secondary" onClick={() => setCreating(false)}>Отмена</button><button className="admin-btn admin-btn--primary" onClick={() => create.mutate()} disabled={!code || !promoTitle || create.isPending}>Создать код</button></footer></div></div>}
   </>
 }
@@ -5731,7 +5791,7 @@ function SystemPage({ notify }: { notify: (tone: Notice['tone'], text: string) =
   const activate = useMutation({ mutationFn: async (revision: Record<string, unknown>) => { const rollback = revision.status === 'retired'; const reason = rollback ? prompt('Причина отката на эту ревизию') : undefined; if ((rollback && !reason?.trim()) || !confirm(rollback ? 'Откат немедленно изменит active revision. Продолжить?' : 'Активировать готовую ревизию?')) throw new Error('Действие отменено'); return adminApi.activateRevision(String(revision.id), reason?.trim()) }, onSuccess: () => { notify('success', 'Active revision обновлена'); void revisions.refetch(); void client.invalidateQueries({ queryKey: ['admin', 'dashboard'] }) }, onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) } })
   const replaceChallenge = useMutation({ mutationFn: async (challenge: Record<string, unknown>) => { const target = prompt(`ID новой карточки для ${title(challenge.puzzleDate)} (${MODE_LABEL[String(challenge.mode) as ContentMode]})`); const reason = prompt('Причина срочной замены'); if (!target?.trim() || !reason?.trim() || !confirm('Будущая загадка будет заменена. Действие попадёт в аудит. Продолжить?')) throw new Error('Действие отменено'); return adminApi.replaceDailyChallenge(String(challenge.id), target.trim(), reason.trim()) }, onSuccess: () => { notify('success', 'Будущая загадка заменена'); void challenges.refetch() }, onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) } })
   const healthRecord = record(health.data); const checks = record(healthRecord.checks); const appInfo = record(healthRecord.app)
-  return <><PageHead eyebrow="Эксплуатация" title="Система" description="База данных, очередь PostgreSQL, воркеры, ревизии и игровые настройки." actions={<button className="admin-btn admin-btn--secondary" onClick={() => { void health.refetch(); void jobs.refetch(); void challenges.refetch() }}><RefreshCw />Обновить</button>} /><div className="admin-system-health"><article><span><Database /></span><div><small>PostgreSQL</small><strong>{checks.database ? 'Доступна' : 'Недоступна'}</strong></div><Status value={checks.database ? 'active' : 'failed'} /></article><article><span><BriefcaseBusiness /></span><div><small>Очередь</small><strong>{String(checks.queueDepth ?? '—')} задач</strong></div><Status value={Number(checks.queueDepth ?? 0) > 20 ? 'warning' : 'active'} /></article><article><span><ImageIcon /></span><div><small>Медиа</small><strong>{checks.mediaRootConfigured ? 'Настроено' : 'Не настроено'}</strong></div><Status value={checks.mediaRootConfigured ? 'active' : 'warning'} /></article><article><span><Boxes /></span><div><small>Версия</small><strong>{title(appInfo.version)}</strong></div><code>{title(appInfo.gitSha).slice(0, 10)}</code></article></div><div className="admin-system-grid"><section className="admin-panel"><header><div><span>PostgreSQL queue</span><h2>Фоновые задачи</h2></div></header><div className="admin-jobs">{jobs.data?.items.map((raw) => { const job = record(raw); const progress = record(job.progress); return <article key={String(job.id)}><span className="admin-list-icon">{job.type === 'music_pipeline' ? <Bot /> : job.type === 'content_revision_build' ? <Rocket /> : <BriefcaseBusiness />}</span><div><header><strong>{title(job.type)}</strong><Status value={job.status} /></header><small>{compactDate(job.createdAt)} · попытка {String(job.attempts ?? 0)}/{String(job.maxAttempts ?? 0)}</small>{job.status === 'running' && <i><b style={{ width: `${Number(progress.percent ?? 15)}%` }} /></i>}{job.safeErrorMessage && <p>{title(job.safeErrorMessage)}</p>}</div>{job.status === 'failed' && <button onClick={() => retry.mutate(String(job.id))}><RefreshCw />Повторить</button>}</article> })}</div></section><section className="admin-panel"><header><div><span>Immutable snapshots</span><h2>Ревизии контента</h2></div></header><div className="admin-revisions">{revisions.data?.items.slice(0, 12).map((raw) => { const revision = record(raw); return <article key={String(revision.id)}><span><strong>{title(revision.version)}</strong><small>{compactDate(revision.createdAt)} · {String(revision.checksumSha256).slice(0, 10)}</small></span><Status value={revision.status} />{['ready', 'retired'].includes(String(revision.status)) && <button onClick={() => activate.mutate(revision)}>{revision.status === 'retired' ? 'Откатить' : 'Активировать'}</button>}</article> })}</div></section><section className="admin-panel admin-settings-card"><header><div><span>Игровые настройки</span><h2>Daily global salt</h2></div></header><div><CircleGauge /><span><small>Текущее значение</small><strong>{String(record(salt.data).value ?? '—')}</strong></span><button className="admin-btn admin-btn--secondary" onClick={() => updateSalt.mutate()}><Settings2 />Изменить</button></div><p>Влияет только на будущую материализацию загадок. Текущая загадка дня не меняется.</p></section><section className="admin-panel"><header><div><span>Опасное действие</span><h2>Будущие загадки</h2></div></header><div className="admin-revisions">{challenges.data?.items.slice(0, 30).map((raw) => { const entry = record(raw); const challenge = record(entry.challenge); return <article key={String(challenge.id)}><span><strong>{title(entry.titleRu)}</strong><small>{title(challenge.puzzleDate)} · {MODE_LABEL[String(challenge.mode) as ContentMode]} · {title(challenge.period)}</small></span><button onClick={() => replaceChallenge.mutate(challenge)}>Заменить</button></article> })}</div>{!challenges.data?.items.length && <p>Будущих материализованных загадок нет.</p>}</section></div></>
+  return <><PageHead eyebrow="Эксплуатация" title="Система" description="База данных, очередь PostgreSQL, воркеры, ревизии и игровые настройки." actions={<button className="admin-btn admin-btn--secondary" onClick={() => { void health.refetch(); void jobs.refetch(); void challenges.refetch() }}><RefreshCw />Обновить</button>} /><div className="admin-system-health"><article><span><Database /></span><div><small>PostgreSQL</small><strong>{checks.database ? 'Доступна' : 'Недоступна'}</strong></div><Status value={checks.database ? 'active' : 'failed'} /></article><article><span><BriefcaseBusiness /></span><div><small>Очередь</small><strong>{String(checks.queueDepth ?? '—')} задач</strong></div><Status value={Number(checks.queueDepth ?? 0) > 20 ? 'warning' : 'active'} /></article><article><span><ImageIcon /></span><div><small>Медиа</small><strong>{checks.mediaRootConfigured ? 'Настроено' : 'Не настроено'}</strong></div><Status value={checks.mediaRootConfigured ? 'active' : 'warning'} /></article><article><span><Boxes /></span><div><small>Версия</small><strong>{title(appInfo.version)}</strong></div><code>{title(appInfo.gitSha).slice(0, 10)}</code></article></div><div className="admin-system-grid"><section className="admin-panel"><header><div><span>PostgreSQL queue</span><h2>Фоновые задачи</h2></div></header><div className="admin-jobs">{jobs.data?.items.map((raw) => { const job = record(raw); const progress = record(job.progress); return <article key={String(job.id)}><span className="admin-list-icon">{job.type === 'music_pipeline' ? <Bot /> : job.type === 'content_revision_build' ? <Rocket /> : <BriefcaseBusiness />}</span><div><header><strong>{title(job.type)}</strong><Status value={job.status} /></header><small>{compactDate(job.createdAt)}, попытка {String(job.attempts ?? 0)}/{String(job.maxAttempts ?? 0)}</small>{job.status === 'running' && <i><b style={{ width: `${Number(progress.percent ?? 15)}%` }} /></i>}{job.safeErrorMessage && <p>{title(job.safeErrorMessage)}</p>}</div>{job.status === 'failed' && <button onClick={() => retry.mutate(String(job.id))}><RefreshCw />Повторить</button>}</article> })}</div></section><section className="admin-panel"><header><div><span>Immutable snapshots</span><h2>Ревизии контента</h2></div></header><div className="admin-revisions">{revisions.data?.items.slice(0, 12).map((raw) => { const revision = record(raw); return <article key={String(revision.id)}><span><strong>{title(revision.version)}</strong><small>{compactDate(revision.createdAt)}, {String(revision.checksumSha256).slice(0, 10)}</small></span><Status value={revision.status} />{['ready', 'retired'].includes(String(revision.status)) && <button onClick={() => activate.mutate(revision)}>{revision.status === 'retired' ? 'Откатить' : 'Активировать'}</button>}</article> })}</div></section><section className="admin-panel admin-settings-card"><header><div><span>Игровые настройки</span><h2>Daily global salt</h2></div></header><div><CircleGauge /><span><small>Текущее значение</small><strong>{String(record(salt.data).value ?? '—')}</strong></span><button className="admin-btn admin-btn--secondary" onClick={() => updateSalt.mutate()}><Settings2 />Изменить</button></div><p>Влияет только на будущую материализацию загадок. Текущая загадка дня не меняется.</p></section><section className="admin-panel"><header><div><span>Опасное действие</span><h2>Будущие загадки</h2></div></header><div className="admin-revisions">{challenges.data?.items.slice(0, 30).map((raw) => { const entry = record(raw); const challenge = record(entry.challenge); return <article key={String(challenge.id)}><span><strong>{title(entry.titleRu)}</strong><small>{title(challenge.puzzleDate)}, {MODE_LABEL[String(challenge.mode) as ContentMode]}, {title(challenge.period)}</small></span><button onClick={() => replaceChallenge.mutate(challenge)}>Заменить</button></article> })}</div>{!challenges.data?.items.length && <p>Будущих материализованных загадок нет.</p>}</section></div></>
 }
 
 function IntegrationsPage({ notify }: { notify: (tone: Notice['tone'], text: string) => void }) {
@@ -5760,8 +5820,8 @@ function IntegrationsPage({ notify }: { notify: (tone: Notice['tone'], text: str
     onError: (error) => { if (errorText(error) !== 'Действие отменено') notify('error', errorText(error)) },
   })
   return <><PageHead eyebrow="Зашифрованное хранилище" title="API-интеграции" description="Ключи платёжных, музыкальных и контентных сервисов в одном месте. Исходные секреты никогда не возвращаются в браузер." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void integrations.refetch()}><RefreshCw />Обновить</button>} />
-    <div className="admin-integration-banner"><ShieldCheck /><div><strong>AES-256-GCM · write-only</strong><p>После сохранения сервер показывает только маску и источник настройки. Секрет расшифровывается только на сервере непосредственно перед обращением к соответствующему API.</p></div></div>
-    <section className="admin-panel admin-portrait-test"><header><div><span>GPT Image 2 · low</span><h2>Тест портретов персонажей</h2></div><Status value={portraitTest.data?.status ?? 'neutral'}>{portraitTest.data?.status === 'completed' ? 'Готово' : portraitTest.data?.status === 'failed' ? 'Ошибка' : portraitTestId ? 'Генерация' : 'Не запускался'}</Status></header><p>Фирменный стиль «Сходится», 1024×1536. Один Холмс — около $0.005, тестовая серия из пяти — около $0.025, расширение из 50 — около $0.25, расширение из 330 — около $1.65 за вывод; ключ остаётся на сервере.</p><div className="admin-actions"><button className="admin-btn admin-btn--primary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать только Шерлока Холмса GPT Image 2 в качестве low? Оценка стоимости вывода: $0.005.')) startPortraitTest.mutate({ portraitId: 'sherlock-holmes' }) }}><Workflow />{startPortraitTest.isPending || portraitTest.data?.status === 'running' ? 'Генерация…' : 'Проверить Холмса · $0.005'}</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 5 тестовых портретов GPT Image 2 в качестве low? Оценка стоимости вывода: $0.025.')) startPortraitTest.mutate(undefined) }}>Сгенерировать тестовые 5</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 50 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $0.25 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-50' }) }}>Сгенерировать новые 50 · $0.25</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 330 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $1.65 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-330' }) }}>Сгенерировать новые 330 · $1.65</button></div>{portraitTest.data?.error && <p className="admin-portrait-test__error">{portraitTest.data.error}</p>}{portraitTest.data?.warning && <p>{portraitTest.data.warning}</p>}{portraitTest.data?.items.length ? <div className="admin-portrait-test__grid">{portraitTest.data.items.map((item) => <a key={item.id} href={item.url} target="_blank" rel="noreferrer"><img src={item.url} alt={item.title} /><span><strong>{item.title}</strong><small>{item.width}×{item.height} · {Math.ceil(item.bytes / 1024)} КБ · {item.storage === 'media' ? 'media' : 'память 1 ч.'}</small></span></a>)}</div> : null}</section>
+    <div className="admin-integration-banner"><ShieldCheck /><div><strong>AES-256-GCM, write-only</strong><p>После сохранения сервер показывает только маску и источник настройки. Секрет расшифровывается только на сервере непосредственно перед обращением к соответствующему API.</p></div></div>
+    <section className="admin-panel admin-portrait-test"><header><div><span>GPT Image 2, low</span><h2>Тест портретов персонажей</h2></div><Status value={portraitTest.data?.status ?? 'neutral'}>{portraitTest.data?.status === 'completed' ? 'Готово' : portraitTest.data?.status === 'failed' ? 'Ошибка' : portraitTestId ? 'Генерация' : 'Не запускался'}</Status></header><p>Фирменный стиль «Сходится», 1024×1536. Один Холмс — около $0.005, тестовая серия из пяти — около $0.025, расширение из 50 — около $0.25, расширение из 330 — около $1.65 за вывод; ключ остаётся на сервере.</p><div className="admin-actions"><button className="admin-btn admin-btn--primary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать только Шерлока Холмса GPT Image 2 в качестве low? Оценка стоимости вывода: $0.005.')) startPortraitTest.mutate({ portraitId: 'sherlock-holmes' }) }}><Workflow />{startPortraitTest.isPending || portraitTest.data?.status === 'running' ? 'Генерация…' : 'Проверить Холмса, $0.005'}</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 5 тестовых портретов GPT Image 2 в качестве low? Оценка стоимости вывода: $0.025.')) startPortraitTest.mutate(undefined) }}>Сгенерировать тестовые 5</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 50 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $0.25 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-50' }) }}>Сгенерировать новые 50, $0.25</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 330 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $1.65 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-330' }) }}>Сгенерировать новые 330, $1.65</button></div>{portraitTest.data?.error && <p className="admin-portrait-test__error">{portraitTest.data.error}</p>}{portraitTest.data?.warning && <p>{portraitTest.data.warning}</p>}{portraitTest.data?.items.length ? <div className="admin-portrait-test__grid">{portraitTest.data.items.map((item) => <a key={item.id} href={item.url} target="_blank" rel="noreferrer"><img src={item.url} alt={item.title} /><span><strong>{item.title}</strong><small>{item.width}×{item.height}, {Math.ceil(item.bytes / 1024)} КБ, {item.storage === 'media' ? 'media' : 'память 1 ч.'}</small></span></a>)}</div> : null}</section>
     <div className="admin-integrations-grid">{integrations.isLoading ? <Loading /> : integrations.data?.items.map((raw) => { const item = record(raw); const value = values[String(item.key)] ?? ''; const busy = save.isPending && save.variables?.key === item.key; return <section key={String(item.key)} className="admin-integration-card"><header><span><KeyRound /></span><div><small>{title(item.provider)}</small><h2>{title(item.title)}</h2></div><Status value={item.configured ? 'active' : item.required ? 'failed' : 'neutral'}>{item.configured ? 'Настроено' : item.required ? 'Обязательно' : 'Необязательно'}</Status></header><p>{title(item.description)}</p><div className="admin-integration-current"><span>Текущее значение</span><code>{item.maskedValue || 'Не задано'}</code><small>{item.source === 'admin' ? 'Сохранено в зашифрованном хранилище' : item.source === 'environment' ? 'Получено из переменной окружения' : 'Провайдер будет пропущен или использует публичный режим'}</small></div><label className="admin-field"><span>Новое значение</span><input type={item.secret ? 'password' : 'text'} autoComplete="new-password" value={value} onChange={(event) => setValues((current) => ({ ...current, [String(item.key)]: event.target.value }))} placeholder={item.configured ? 'Введите только для замены' : 'Вставьте значение'} /></label><footer><button className="admin-btn admin-btn--primary" disabled={!value.trim() || busy} onClick={() => save.mutate({ key: String(item.key), value: value.trim() })}><Save />Сохранить</button>{item.source === 'admin' && <button className="admin-btn admin-btn--secondary" onClick={() => remove.mutate(String(item.key))}><Trash2 />Удалить override</button>}</footer></section> })}</div>
   </>
 }
@@ -5785,7 +5845,7 @@ function PrivateOrdersPage({ notify }: { notify: (tone: Notice['tone'], text: st
     onError: (error) => notify('error', errorText(error)),
   })
   return <><PageHead eyebrow="Ручная обработка" title="Корпоративные заявки" description="Очередь запросов на частные игры. Оплата и выдача ссылки выполняются вне первого MVP." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void orders.refetch()}><RefreshCw />Обновить</button>} />
-    {orders.isLoading ? <Loading /> : orders.error ? <ErrorState error={orders.error} /> : !orders.data?.items.length ? <Empty title="Новых заявок нет" text="Заявки с публичного лендинга появятся здесь." icon={<BriefcaseBusiness />} /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Создана</th><th>Контакт</th><th>Событие</th><th>Описание</th><th>Статус</th></tr></thead><tbody>{orders.data.items.map((raw) => { const item = record(raw); return <tr key={String(item.id)}><td>{formatDate(item.createdAt)}</td><td><strong>{title(item.contactName)}</strong><small>{title(item.email)}{item.company ? ` · ${title(item.company)}` : ''}</small></td><td><strong>{String(item.participants)} участников</strong><small>{item.eventDate ? title(item.eventDate) : 'Дата не выбрана'}</small></td><td><p>{title(item.description)}</p>{item.internalNote && <small>Заметка: {title(item.internalNote)}</small>}</td><td><select value={String(item.status)} disabled={update.isPending} onChange={(event) => update.mutate({ id: String(item.id), status: event.target.value })}><option value="new">Новая</option><option value="contacted">Связались</option><option value="in_progress">В работе</option><option value="completed">Готово</option><option value="rejected">Отклонена</option></select></td></tr> })}</tbody></table></div>}
+    {orders.isLoading ? <Loading /> : orders.error ? <ErrorState error={orders.error} /> : !orders.data?.items.length ? <Empty title="Новых заявок нет" text="Заявки с публичного лендинга появятся здесь." icon={<BriefcaseBusiness />} /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Создана</th><th>Контакт</th><th>Событие</th><th>Описание</th><th>Статус</th></tr></thead><tbody>{orders.data.items.map((raw) => { const item = record(raw); return <tr key={String(item.id)}><td>{formatDate(item.createdAt)}</td><td><strong>{title(item.contactName)}</strong><small>{title(item.email)}{item.company ? `, ${title(item.company)}` : ''}</small></td><td><strong>{String(item.participants)} участников</strong><small>{item.eventDate ? title(item.eventDate) : 'Дата не выбрана'}</small></td><td><p>{title(item.description)}</p>{item.internalNote && <small>Заметка: {title(item.internalNote)}</small>}</td><td><select value={String(item.status)} disabled={update.isPending} onChange={(event) => update.mutate({ id: String(item.id), status: event.target.value })}><option value="new">Новая</option><option value="contacted">Связались</option><option value="in_progress">В работе</option><option value="completed">Готово</option><option value="rejected">Отклонена</option></select></td></tr> })}</tbody></table></div>}
   </>
 }
 
@@ -5821,8 +5881,8 @@ function DanetkiAdminPage({ notify }: { notify: (tone: Notice['tone'], text: str
       </section>
       <section className="admin-panel"><header><div><span>Structured output</span><h2>Проверка подключения</h2></div></header><label className="admin-field"><span>Тестовый вопрос</span><input value={testQuestion} maxLength={300} onChange={(event) => setTestQuestion(event.target.value)} /></label><button className="admin-btn admin-btn--secondary" disabled={aiTest.isPending || testQuestion.trim().length < 2} onClick={() => aiTest.mutate()}><Bot />{aiTest.isPending ? 'Проверяем…' : 'Проверить ИИ'}</button>{aiTest.data && <pre className="danetki-admin-json">{JSON.stringify(aiTest.data, null, 2)}</pre>}</section>
     </div>
-    <section className="admin-panel"><header><div><span>Realtime</span><h2>Комнаты</h2></div></header>{rooms.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Начало</th><th>Данетка</th><th>Комната</th><th>Ход игры</th><th>ИИ</th></tr></thead><tbody>{rooms.data?.items.map((raw) => { const room = record(raw); return <tr key={String(room.id)} className={selectedId === room.id ? 'is-selected' : ''} onClick={() => setSelectedId(String(room.id))}><td>{formatDate(room.startedAt)}</td><td><strong>{title(room.title)}</strong><small>{title(room.puzzleDate)}</small></td><td>{room.roomMode === 'group' ? 'Совместная' : 'Одиночная'}<small>{String(room.participants)} участников</small></td><td><Status value={room.status} /><small>{String(room.questionCount)} вопросов · {String(room.hintLevel)} подсказок</small></td><td><Status value={room.aiStatus} /><small>{room.lastLatencyMs ? `${String(room.lastLatencyMs)} мс` : '—'}{room.lastError ? ` · ${title(room.lastError)}` : ''}</small></td></tr> })}</tbody></table></div>}</section>
-    {selectedId && <section className="admin-panel danetki-admin-room"><header><div><span>{selectedId}</span><h2>Transcript и AI timeline</h2></div><div><button className="admin-btn admin-btn--secondary" disabled={retry.isPending} onClick={() => retry.mutate(selectedId)}><RefreshCw />Повторить AI</button><button className="admin-btn admin-btn--danger" onClick={() => { const reason = prompt('Обязательная причина закрытия комнаты'); if (reason?.trim() && reason.trim().length >= 5) close.mutate({ id: selectedId, reason: reason.trim() }) }}><X />Закрыть комнату</button></div></header>{detail.isLoading ? <Loading /> : <div className="danetki-admin-transcript">{messages.map((message) => <article key={String(message.id)}><header><strong>{message.senderKind === 'ai' ? 'ИИ-ведущая' : message.senderKind === 'system' ? 'Система' : 'Игрок'}</strong><small>#{String(message.seq)} · {formatDate(message.createdAt)}</small></header><p>{title(message.text)}</p></article>)}</div>}<h3>Последние AI-вызовы</h3><div className="admin-jobs">{calls.slice(0, 20).map((call) => <article key={String(call.id)}><Bot /><div><header><strong>{title(call.purpose)}</strong><Status value={call.status} /></header><small>{title(call.model)} · {String(call.latencyMs ?? '—')} мс · {String(call.inputTokens ?? 0)}/{String(call.outputTokens ?? 0)} tokens</small>{call.errorCode && <p>{title(call.errorCode)}</p>}</div></article>)}</div></section>}
+    <section className="admin-panel"><header><div><span>Realtime</span><h2>Комнаты</h2></div></header>{rooms.isLoading ? <Loading /> : <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Начало</th><th>Данетка</th><th>Комната</th><th>Ход игры</th><th>ИИ</th></tr></thead><tbody>{rooms.data?.items.map((raw) => { const room = record(raw); return <tr key={String(room.id)} className={selectedId === room.id ? 'is-selected' : ''} onClick={() => setSelectedId(String(room.id))}><td>{formatDate(room.startedAt)}</td><td><strong>{title(room.title)}</strong><small>{title(room.puzzleDate)}</small></td><td>{room.roomMode === 'group' ? 'Совместная' : 'Одиночная'}<small>{String(room.participants)} участников</small></td><td><Status value={room.status} /><small>{String(room.questionCount)} вопросов, {String(room.hintLevel)} подсказок</small></td><td><Status value={room.aiStatus} /><small>{room.lastLatencyMs ? `${String(room.lastLatencyMs)} мс` : '—'}{room.lastError ? `, ${title(room.lastError)}` : ''}</small></td></tr> })}</tbody></table></div>}</section>
+    {selectedId && <section className="admin-panel danetki-admin-room"><header><div><span>{selectedId}</span><h2>Transcript и AI timeline</h2></div><div><button className="admin-btn admin-btn--secondary" disabled={retry.isPending} onClick={() => retry.mutate(selectedId)}><RefreshCw />Повторить AI</button><button className="admin-btn admin-btn--danger" onClick={() => { const reason = prompt('Обязательная причина закрытия комнаты'); if (reason?.trim() && reason.trim().length >= 5) close.mutate({ id: selectedId, reason: reason.trim() }) }}><X />Закрыть комнату</button></div></header>{detail.isLoading ? <Loading /> : <div className="danetki-admin-transcript">{messages.map((message) => <article key={String(message.id)}><header><strong>{message.senderKind === 'ai' ? 'ИИ-ведущая' : message.senderKind === 'system' ? 'Система' : 'Игрок'}</strong><small>#{String(message.seq)}, {formatDate(message.createdAt)}</small></header><p>{title(message.text)}</p></article>)}</div>}<h3>Последние AI-вызовы</h3><div className="admin-jobs">{calls.slice(0, 20).map((call) => <article key={String(call.id)}><Bot /><div><header><strong>{title(call.purpose)}</strong><Status value={call.status} /></header><small>{title(call.model)}, {String(call.latencyMs ?? '—')} мс, {String(call.inputTokens ?? 0)}/{String(call.outputTokens ?? 0)} tokens</small>{call.errorCode && <p>{title(call.errorCode)}</p>}</div></article>)}</div></section>}
   </>
 }
 
@@ -5850,7 +5910,7 @@ export default function AdminApp() {
   if (me.error || me.data?.user.role !== 'admin' || access.error) return <div className="admin-gate admin-gate--denied"><span><ShieldCheck /></span><h1>Административный доступ закрыт</h1><p>Войдите как разрешённый владелец проекта. Сервер дополнительно проверяет роль, UUID и email.</p><a className="admin-btn admin-btn--primary" href="/">Вернуться в игру</a>{(me.error || access.error) && <code>{errorText(me.error || access.error)}</code>}</div>
   const activeJobs = jobs.data?.items.filter((item) => ['queued', 'running'].includes(String(item.status))).length ?? 0
   const activeContentMode = new URLSearchParams(route.search).get('mode')
-  return <div className="admin-root"><aside className="admin-sidebar"><a className="admin-brand" href="/" aria-label="Сходится! — игра"><img src={adminLogoUrl} alt="Сходится!" /><span>ADMIN</span></a><nav>{MENU.map(({ id, label, icon: Icon }) => id === 'content' ? <div key={id} className={`admin-nav-group ${contentMenuOpen ? 'is-open' : ''}`}><button className={route.section === id ? 'is-active' : ''} title={label} aria-expanded={contentMenuOpen} onClick={() => { setContentMenuOpen((isOpen) => !isOpen); if (route.section !== 'content') route.navigate('content') }}><Icon /><span>{label}</span><ChevronDown className="admin-nav-group__chevron" /></button><div className="admin-nav-group__children">{MODES.map((entry) => <button key={entry.value} title={entry.label} className={activeContentMode === entry.value ? 'is-active' : ''} onClick={() => route.navigateContentMode(entry.value)}><span>{entry.label}</span></button>)}</div></div> : <button key={id} className={route.section === id ? 'is-active' : ''} title={label} onClick={() => route.navigate(id)}><Icon /><span>{label}</span>{id === 'reports' && <i />}</button>)}</nav><footer><div className="admin-admin-card"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>{me.data.user.email}</small></div></div><a href="/"><ArrowLeft />Вернуться в игру</a></footer></aside><div className="admin-main"><header className="admin-topbar"><div className="admin-global-search"><Search /><input ref={searchRef} value={global} onChange={(event) => setGlobal(event.target.value)} placeholder="Глобальный поиск" /><kbd>Ctrl K</kbd>{globalResults.data && global.trim().length >= 2 && <div className="admin-search-results"><section><span>Карточки</span>{globalResults.data.content.map((item: AdminContentListItem) => <button key={item.id} onClick={() => { route.navigate('content', item.id); setGlobal('') }}><Boxes /><span><strong>{item.titleRu}</strong><small>{MODE_LABEL[item.mode]} · {item.id}</small></span></button>)}</section><section><span>Пользователи</span>{globalResults.data.users.map((item) => <button key={item.id} onClick={() => { route.navigate('users', item.id); setGlobal('') }}><UserRound /><span><strong>{item.isAnonymous ? 'Гость' : item.displayName || item.name}</strong><small>{item.email}</small></span></button>)}</section><section><span>Репорты</span>{globalResults.data.reports.map((entry) => <button key={String(entry.report.id)} onClick={() => { route.navigate('reports', String(entry.report.id)); setGlobal('') }}><Bug /><span><strong>{REPORT_REASON[String(entry.report.reason)]}</strong><small>{entry.titleRu}</small></span></button>)}</section></div>}</div><button className="admin-job-indicator" onClick={() => route.navigate('system')}><Activity />{activeJobs ? <><strong>{activeJobs}</strong><span>задач выполняется</span></> : <span>Фоновых задач нет</span>}</button><div className="admin-topbar-user"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>Asia/Almaty</small></div></div></header><main className="admin-content">
+  return <div className="admin-root"><aside className="admin-sidebar"><a className="admin-brand" href="/" aria-label="Сходится! — игра"><img src={adminLogoUrl} alt="Сходится!" /><span>ADMIN</span></a><nav>{MENU.map(({ id, label, icon: Icon }) => id === 'content' ? <div key={id} className={`admin-nav-group ${contentMenuOpen ? 'is-open' : ''}`}><button className={route.section === id ? 'is-active' : ''} title={label} aria-expanded={contentMenuOpen} onClick={() => { setContentMenuOpen((isOpen) => !isOpen); if (route.section !== 'content') route.navigate('content') }}><Icon /><span>{label}</span><ChevronDown className="admin-nav-group__chevron" /></button><div className="admin-nav-group__children">{MODES.map((entry) => <button key={entry.value} title={entry.label} className={activeContentMode === entry.value ? 'is-active' : ''} onClick={() => route.navigateContentMode(entry.value)}><span>{entry.label}</span></button>)}</div></div> : <button key={id} className={route.section === id ? 'is-active' : ''} title={label} onClick={() => route.navigate(id)}><Icon /><span>{label}</span>{id === 'reports' && <i />}</button>)}</nav><footer><div className="admin-admin-card"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>{me.data.user.email}</small></div></div><a href="/"><ArrowLeft />Вернуться в игру</a></footer></aside><div className="admin-main"><header className="admin-topbar"><div className="admin-global-search"><Search /><input ref={searchRef} value={global} onChange={(event) => setGlobal(event.target.value)} placeholder="Глобальный поиск" /><kbd>Ctrl K</kbd>{globalResults.data && global.trim().length >= 2 && <div className="admin-search-results"><section><span>Карточки</span>{globalResults.data.content.map((item: AdminContentListItem) => <button key={item.id} onClick={() => { route.navigate('content', item.id); setGlobal('') }}><Boxes /><span><strong>{item.titleRu}</strong><small>{MODE_LABEL[item.mode]}, {item.id}</small></span></button>)}</section><section><span>Пользователи</span>{globalResults.data.users.map((item) => <button key={item.id} onClick={() => { route.navigate('users', item.id); setGlobal('') }}><UserRound /><span><strong>{item.isAnonymous ? 'Гость' : item.displayName || item.name}</strong><small>{item.email}</small></span></button>)}</section><section><span>Репорты</span>{globalResults.data.reports.map((entry) => <button key={String(entry.report.id)} onClick={() => { route.navigate('reports', String(entry.report.id)); setGlobal('') }}><Bug /><span><strong>{REPORT_REASON[String(entry.report.reason)]}</strong><small>{entry.titleRu}</small></span></button>)}</section></div>}</div><button className="admin-job-indicator" onClick={() => route.navigate('system')}><Activity />{activeJobs ? <><strong>{activeJobs}</strong><span>задач выполняется</span></> : <span>Фоновых задач нет</span>}</button><div className="admin-topbar-user"><span>{title(me.data.user.name).slice(0, 1)}</span><div><strong>{title(me.data.user.name)}</strong><small>Asia/Almaty</small></div></div></header><main className="admin-content">
     {route.section === 'dashboard' && <DashboardPage navigate={route.navigate} notify={notify} />}
     {route.section === 'content' && <ContentPage key={route.search} selectedId={route.id} navigate={route.navigate} notify={notify} />}
     {route.section === 'builder' && <GameBuilderPage notify={notify} onNavigateContent={() => route.navigate('content')} />}

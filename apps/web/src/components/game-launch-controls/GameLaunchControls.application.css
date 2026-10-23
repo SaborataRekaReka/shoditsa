@@ -6,6 +6,10 @@
 [data-public-theme='quest-study'] .launch-start__label { min-width: 0; }
 [data-public-theme='quest-study'] .launch-start__label > :is(svg,.keycap-hint) { display: none; }
 [data-public-theme='quest-study'] .launch-start > svg { flex: none; }
+@media (min-width: 700px) and (hover: hover) and (pointer: fine) {
+  [data-public-theme='quest-study'] .launch-start.has-shortcut { padding-inline: 14px; }
+  [data-public-theme='quest-study'] .launch-start.has-shortcut > svg { display: none; }
+}
 [data-public-theme='quest-study'] .launch-option-trigger { min-height: 54px; padding: 8px 13px; gap: 10px; }
 [data-public-theme='quest-study'] .launch-option-trigger > svg { flex: none; margin-left: auto; color: var(--quest-muted); }
 [data-public-theme='quest-study'] .launch-option-art { flex: none; display: grid; place-items: center; width: 30px; height: 30px; color: var(--quest-blue); }

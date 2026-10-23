@@ -18,12 +18,12 @@ const sectionLabels: Partial<Record<StudyView, string>> = {
 export const studyAsideLabel = (view: StudyView) => sectionLabels[view] ?? 'Прогресс и помощь'
 
 /** Each application section has its own widgets; game hints stay on the game. */
-export function StudySectionAside({ view, homeHref, goalsDone, onContinue }: Props) {
+export function StudySectionAside({ view, homeHref, goalsDone }: Props) {
   return <>
     {view === 'archive' ? <>
       <StudyAccountWidget />
     </> : view === 'league' ? <><StudyStreakWidget homeHref={homeHref} /><StudyAccountWidget /></> : view === 'quests' ? <>
-      <StudyTasksWidget goalsDone={goalsDone} onContinue={onContinue} />
+      <StudyTasksWidget goalsDone={goalsDone} />
       <StudyAccountWidget />
     </> : <>
       <StudyAccountWidget />

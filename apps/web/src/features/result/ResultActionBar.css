@@ -279,12 +279,52 @@ html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .res
 
 /* Shared result actions own their theme in every consumer, including standalone previews. */
 .result-celebration-actions { display: grid; gap: 10px; }
-.result-celebration-actions__buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; }
+.result-celebration-actions__buttons { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.result-celebration-actions__buttons.has-share { grid-template-columns: 1.2fr 1fr; }
+.result-celebration-actions__buttons.has-settings { grid-template-columns: minmax(0, 1fr) 44px; }
+.result-celebration-actions__buttons.has-share.has-settings { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 44px; }
+.result-celebration-actions__share { min-height: 48px; }
 .result-celebration-actions__buttons > .ui-button { width: 100%; min-height: 50px; padding-inline: 16px; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .ui-button { min-height: 50px; border-radius: 13px; font: 800 14px/1.3 var(--font-body); letter-spacing: .015em; text-transform: uppercase; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .result-celebration-actions__next.ui-button--primary { border: 1px solid #8050ee; border-bottom: 4px solid #6936d5; color: #fff; background: #8554f4; box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .result-celebration-actions__next.ui-button--primary:hover:not(:disabled) { background: #7543e3; border-color: #6936d5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .result-celebration-actions__share.ui-button--secondary { border: 2px solid var(--color-line); border-bottom-width: 4px; color: #7945e5; background: var(--color-surface); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .ui-button:active:not(:disabled) { transform: translateY(2px); border-bottom-width: 2px; }
+html[data-quest-tone='dark'] .result-celebration-actions__buttons > .result-celebration-actions__share.ui-button--secondary { color: #c3a5ff; }
+@media (max-width: 600px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .ui-button { padding-inline: 10px; font-size: 13px; }
+}
+@media (max-width: 380px) {
+  .result-celebration-actions__buttons.has-share { gap: 8px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-celebration-actions__buttons > .ui-button { padding-inline: 8px; font-size: 12px; }
+}
 .result-celebration-actions__hint { margin: 0; color: var(--color-muted); font: 400 13px/1.5 var(--font-body); text-align: center; text-wrap: balance; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-secondary-actions--celebration .result-more-toggle { display: flex; justify-content: center; gap: 6px; width: auto; margin: 0 auto; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-secondary-actions--celebration .result-after-actions { display: none; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-secondary-actions--celebration.is-open .result-after-actions { display: flex; margin-top: 12px; }
+.result-celebration-options { display: flex; align-items: stretch; gap: 8px; min-width: 0; }
+.result-celebration-actions .result-celebration-options .result-celebration-options__action.ui-button {
+  flex: 1 1 0; min-width: 0; min-height: 44px; padding: 10px 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid transparent; border-radius: 11px;
+  color: var(--color-ink); background: var(--color-surface-2); box-shadow: none;
+  font: 700 14px/1.3 var(--font-body); letter-spacing: 0; text-transform: none; white-space: normal;
+}
+.result-celebration-actions .result-celebration-options .result-celebration-options__action.ui-button:hover:not(:disabled) { background: var(--color-primary-soft); border-color: var(--color-line); transform: none; }
+.result-celebration-actions .result-celebration-options .result-celebration-options__action--challenge.ui-button { flex-grow: 1.35; }
+.result-celebration-options__action > svg { flex: none; width: 17px; height: 17px; color: var(--color-primary-ink, var(--color-muted)); }
+.result-celebration-actions .result-celebration-options__settings.ui-icon-button {
+  flex: 0 0 44px; width: 44px; height: auto; min-height: 44px; margin-left: auto; padding: 10px;
+  border: 1px solid var(--color-line); border-radius: 11px; color: var(--color-muted);
+  background: transparent; box-shadow: none;
+}
+.result-celebration-actions .result-celebration-options__settings.ui-icon-button:hover:not(:disabled) { color: var(--color-ink); background: var(--color-surface-2); transform: none; }
+.result-celebration-options__meta { align-self: center; font-size: 13px; color: var(--color-muted); }
+@media (max-width: 600px) {
+  .result-celebration-options { gap: 6px; }
+  .result-celebration-actions .result-celebration-options .result-celebration-options__action.ui-button { padding: 8px; gap: 6px; font-size: 13px; }
+}
+@media (max-width: 380px) {
+  .result-celebration-actions .result-celebration-options .result-celebration-options__action.ui-button { padding-inline: 6px; font-size: 12px; }
+  .result-celebration-options__action > svg { display: none; }
+}
 
 html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .result-primary-actions {
   border: 0;
@@ -342,4 +382,3 @@ html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .result-r
   html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .result-more-toggle { display: flex; }
   html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .result-secondary-actions.is-compact .result-more-toggle { display: none; }
 }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-secondary-actions--celebration .result-more-toggle.ui-text-button { display: flex; width: auto; min-height: 44px; margin: 0 auto; padding: 8px 12px; border: 0; background: transparent; font-size: 13px; }

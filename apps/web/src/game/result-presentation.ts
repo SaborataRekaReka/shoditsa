@@ -47,36 +47,36 @@ const values = (items: Array<string | number | null | undefined>) =>
 
 export const resultCardMeta = (item: ResultItem) => {
   if (item.mode === 'diagnosis') {
-    return values([item.titleOriginal, ...(item.icd10 ?? []), item.icdGroup]).join(' · ')
+    return values([item.titleOriginal, ...(item.icd10 ?? []), item.icdGroup]).join(', ')
   }
   if (item.mode === 'animal') {
-    return values([item.scientificName || item.titleOriginal, item.taxonomicClass, item.animalOrder]).join(' · ')
+    return values([item.scientificName || item.titleOriginal, item.taxonomicClass, item.animalOrder]).join(', ')
   }
   if (item.mode === 'book') {
-    return values([...(item.bookAuthors ?? []).slice(0, 2), item.bookPublicationYear, item.bookCountry]).join(' · ')
+    return values([...(item.bookAuthors ?? []).slice(0, 2), item.bookPublicationYear, item.bookCountry]).join(', ')
   }
   if (item.mode === 'game') {
     return values([
       item.year,
       item.releaseScope === 'release' ? item.releaseLabel : null,
       ...(item.platforms ?? []).slice(0, 2),
-    ]).join(' · ')
+    ]).join(', ')
   }
   if (item.mode === 'city') {
     return values([
       item.country,
       item.continent,
       item.population ? `${new Intl.NumberFormat('ru-RU').format(item.population)} жителей` : null,
-    ]).join(' · ')
+    ]).join(', ')
   }
   if (item.mode === 'music') {
     return values([
       musicYearMeta(item),
       item.musicType ? musicTypeLabel(item.musicType) : null,
       ...(item.countries ?? []).slice(0, 2).map(localizeMusicCountry),
-    ]).join(' · ')
+    ]).join(', ')
   }
-  return values([item.year, ...(item.genres ?? []).slice(0, 1)]).join(' · ')
+  return values([item.year, ...(item.genres ?? []).slice(0, 1)]).join(', ')
 }
 
 export const resultCardTags = (item: ResultItem) => {

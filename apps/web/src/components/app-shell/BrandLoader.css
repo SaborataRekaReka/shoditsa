@@ -43,10 +43,6 @@
   animation: brand-loader-float 2.8s ease-in-out infinite;
 }
 .brand-loader__symbol > svg { display: block; width: 100%; height: 100%; }
-.brand-loader__spark { position: absolute; width: 16px; height: 16px; background: var(--color-focus); clip-path: polygon(50% 0, 63% 36%, 100% 50%, 63% 64%, 50% 100%, 37% 64%, 0 50%, 37% 36%); animation: brand-loader-sparkle 2.8s ease-in-out infinite; }
-.brand-loader__spark--one { left: 24px; top: 26px; }
-.brand-loader__spark--two { right: 16px; top: 62px; width: 12px; height: 12px; background: var(--color-primary-border); animation-delay: -.8s; }
-.brand-loader__spark--three { left: 45px; bottom: 12px; width: 10px; height: 10px; background: var(--color-primary-border); animation-delay: -1.6s; }
 .brand-loader__caption { margin: 15px 0 18px; color: var(--quest-muted, var(--color-muted)); font-size: 15px; line-height: 1.5; }
 .brand-loader__dots { display: flex; gap: 7px; }
 .brand-loader__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--color-focus); animation: brand-loader-dot 1.4s ease-in-out infinite; }
@@ -57,7 +53,6 @@
 @keyframes brand-loader-gather-left { 0%, 100% { transform: translate(-26px, 5px) rotate(-22deg); } 50% { transform: translate(-13px, -1px) rotate(-12deg); } }
 @keyframes brand-loader-gather-right { 0%, 100% { transform: translate(26px, -4px) rotate(19deg); } 50% { transform: translate(13px, 5px) rotate(10deg); } }
 @keyframes brand-loader-glow { 0%, 100% { opacity: .6; transform: scale(.92); } 50% { opacity: 1; transform: scale(1.06); } }
-@keyframes brand-loader-sparkle { 0%, 100% { opacity: .3; transform: scale(.7) rotate(-12deg); } 50% { opacity: 1; transform: scale(1) rotate(12deg); } }
 @keyframes brand-loader-dot { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
 @media (max-height: 460px) {
   .brand-loader__scene { height: 140px; margin-bottom: 14px; }

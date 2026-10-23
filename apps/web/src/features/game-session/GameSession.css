@@ -393,7 +393,7 @@
 
 .gm-head__sub > .gm-head__orig { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.gm-head__dot { color: var(--color-muted-2); font-style: normal; }
+
 
 .gm-year { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border: 1px solid var(--color-line-strong); border-radius: 999px; background: var(--color-surface-2); color: var(--color-muted); font-size: 12px; font-weight: 700; line-height: 1; }
 
@@ -758,7 +758,7 @@
   line-height: 1.35;
 }
 
-.character-summary__detail > div span:not(:last-child)::after { content: ' · '; color: var(--color-muted-2); }
+.character-summary__detail > div { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .character-summary__detail > div span.is-match { color: var(--color-success-text); }
 
 .character-summary__detail--match {
@@ -1605,11 +1605,7 @@
   white-space: nowrap;
 }
 .dtf-comment-card__status time { color: var(--color-muted); }
-.dtf-comment-card__status time + span::before {
-  content: '·';
-  margin-right: 5px;
-  color: var(--color-muted-2);
-}
+
 .dtf-comment-card__status b {
   padding: 3px 6px;
   border: 1px solid color-mix(in srgb, var(--color-primary) 55%, transparent);

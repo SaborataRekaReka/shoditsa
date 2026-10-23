@@ -570,7 +570,7 @@ export function ConnectionsResult({
             <span className="connections-result__group-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
             <div>
               <strong>{group.title}</strong>
-              <small>{group.tiles.map((tile) => tile.label).join(' · ')}</small>
+              <small>{group.tiles.map((tile) => tile.label).join(', ')}</small>
             </div>
           </article>
         ))}

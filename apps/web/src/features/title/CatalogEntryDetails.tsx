@@ -32,7 +32,7 @@ function StorySection({ name, title, children, scene }: { name: string; title: s
 function SearchIllustration({ mode, example }: { mode: TitleMode; example: ReelPoster }) {
   const [run, setRun] = useState(0)
   return <div className="entry-story-search">
-    <div className="entry-story-search__back" aria-hidden="true"><ReferenceIcon name={mode} size={18} /><span>Твоя версия</span><span>···</span></div>
+    <div className="entry-story-search__back" aria-hidden="true"><ReferenceIcon name={mode} size={18} /><span>Твоя версия</span><span>…</span></div>
     <div className="entry-story-search__field"><Search size={18} strokeWidth={1.5} aria-hidden="true" /><span>{example.title}<span className="entry-story-search__caret" aria-hidden="true" /></span><IconButton className="entry-story-search__submit" label="Повторить пример выбора ответа" onClick={() => setRun(value => value + 1)}><ArrowRight size={17} /></IconButton></div>
     <div className="entry-story-search__result" key={run}>{example.src ? <ThemedArtwork src={example.src} alt="" width="36" height="50" /> : <ReferenceIcon name={mode} size={30} />}<div><strong>{example.title}</strong><span>Ответ из каталога</span></div><span className="entry-story-search__check"><Check size={17} strokeWidth={1.6} /></span></div>
   </div>

@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Pause, Play } from 'lucide-react'
 import { Mascot } from '../../components/mascot/Mascot'
 import { BrandWordmark } from '../../components/app-shell/BrandWordmark'
 import { QuestButton } from '../../components/ui/QuestPrimitives'
-import { MeadowButterfly, MeadowFlower, MeadowLandscape, MeadowPlant } from './ClubMeadowArt'
+import { MeadowButterfly, MeadowFlower, MeadowLandscape, MeadowPlant } from '../../components/mascot/MeadowArt'
 import './study-club-sky.css'
 
 /** One branded scene for the Club invitation and the membership offer. */
 export function StudyClubSky({ heading, headingId, page = false }: { heading: ReactNode; headingId: string; page?: boolean }) {
+  const ticketId = useId()
   const scene = useRef<HTMLElement>(null)
   const [paused, setPaused] = useState(false)
   const [visible, setVisible] = useState(true)
@@ -24,8 +25,8 @@ export function StudyClubSky({ heading, headingId, page = false }: { heading: Re
     <div className="club-sky__sunlight" aria-hidden="true" />
     <span className="club-sky__badge">
       <svg className="club-sky__badge-ticket" viewBox="0 0 176 48" aria-hidden="true">
-        <path d="M9 1h158a8 8 0 0 1 8 8v9a6 6 0 0 0 0 12v9a8 8 0 0 1-8 8H9a8 8 0 0 1-8-8v-9a6 6 0 0 0 0-12V9a8 8 0 0 1 8-8Z" />
-        <path className="club-sky__badge-perforation" d="M44 7v34" />
+        <defs><linearGradient id={`${ticketId}-pass`} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#e2d5fa" /><stop offset=".5" stopColor="#eee6fb" /><stop offset="1" stopColor="#c9ece4" /></linearGradient></defs>
+        <path fill={`url(#${ticketId}-pass)`} d="M9 1h158a8 8 0 0 1 8 8v9a6 6 0 0 0 0 12v9a8 8 0 0 1-8 8H9a8 8 0 0 1-8-8v-9a6 6 0 0 0 0-12V9a8 8 0 0 1 8-8Z" />
       </svg>
       <span className="club-sky__badge-copy"><span>Клуб</span><BrandWordmark variant="compact" /></span>
     </span>
@@ -43,7 +44,6 @@ export function StudyClubSky({ heading, headingId, page = false }: { heading: Re
       <div className="club-sky__seat" />
       <div className="club-sky__arrival"><div className="club-sky__flyer">
         <Mascot pose="club" width={208} height={208} fetchPriority="high" />
-        <span className="club-sky__ticket-glint" />
       </div></div>
     </div>
     <QuestButton kind="icon" className="club-sky__motion" aria-label={paused ? 'Включить анимацию' : 'Остановить анимацию'} aria-pressed={paused} onClick={() => setPaused(value => !value)}>

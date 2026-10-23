@@ -159,7 +159,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
     setCustomSlots(stored?.customSlots ?? [])
     setVisibility(stored?.visibility ?? {})
     setMapping(stored?.mapping ?? autoMapFields(analysed.fields, nextTargets))
-    notify('success', `${analysed.records.length.toLocaleString('ru-RU')} карточек · распознано ${analysed.fields.length} полей${stored ? ' · шаблон восстановлен' : ''}`)
+    notify('success', `${analysed.records.length.toLocaleString('ru-RU')} карточек, распознано ${analysed.fields.length} полей${stored ? ', шаблон восстановлен' : ''}`)
   }
 
   const loadJsonValue = (value: unknown, name: string) => {
@@ -237,7 +237,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
       const result = await adminApi.previewContentExchangeImport(document)
       setPreviewDocument(document); setPreview(result)
       const blocked = result.summary.invalid + result.summary.conflict
-      notify(blocked ? 'info' : 'success', blocked ? `Проверка завершена · требуют внимания: ${blocked}` : `Все ${result.summary.total} карточек прошли проверку`)
+      notify(blocked ? 'info' : 'success', blocked ? `Проверка завершена, требуют внимания: ${blocked}` : `Все ${result.summary.total} карточек прошли проверку`)
     } catch (error) { notify('error', error instanceof Error ? error.message : 'Не удалось проверить импорт') } finally { setChecking(false) }
   }
 
@@ -248,7 +248,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
     setApplying(true)
     try {
       const result = await adminApi.applyContentExchangeImport({ document: previewDocument, previewHash: preview.previewHash, items: actionable.map(({ id, mode: itemMode }) => ({ id, mode: itemMode })), reason: 'Импорт через конструктор JSON', confirmation: true })
-      notify(result.summary.failed ? 'info' : 'success', `В рабочую версию добавлено: ${result.summary.staged}${result.summary.failed ? ` · ошибок: ${result.summary.failed}` : ''}`)
+      notify(result.summary.failed ? 'info' : 'success', `В рабочую версию добавлено: ${result.summary.staged}${result.summary.failed ? `, ошибок: ${result.summary.failed}` : ''}`)
       setPreview(null); setPreviewDocument(null)
     } catch (error) { notify('error', error instanceof Error ? error.message : 'Не удалось применить импорт') } finally { setApplying(false) }
   }
@@ -312,8 +312,8 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
         <header><div className="game-builder-scene-switch"><button className={scene === 'title' ? 'is-active' : ''} onClick={() => setScene('title')}>Титульник</button><button className={scene === 'attempt' ? 'is-active' : ''} onClick={() => setScene('attempt')}>Карточка попытки</button></div><div className="game-builder-record-nav"><button disabled={recordIndex === 0} onClick={() => setRecordIndex((value) => Math.max(0, value - 1))}><ArrowLeft /></button><span><strong>{recordIndex + 1}</strong> / {dataset.records.length}</span><button disabled={recordIndex === dataset.records.length - 1} onClick={() => setRecordIndex((value) => Math.min(dataset.records.length - 1, value + 1))}><ArrowRight /></button></div></header>
         <div className={`game-builder-stage is-${scene}`}>
           {scene === 'title' ? <section className="title-stage game-builder-film-title">
-            <div className="title-game-mark"><span><Clapperboard /></span><i>Игра дня · №{String(today.getDate()).padStart(2, '0')}</i><h1>{MODE_LABEL[mode]}</h1></div>
-            <time>{prettyToday} · {today.getFullYear()}</time><p>Угадайте {gameSubject[mode]} дня за десять попыток</p>
+            <div className="title-game-mark"><span><Clapperboard /></span><i>Игра дня, №{String(today.getDate()).padStart(2, '0')}</i><h1>{MODE_LABEL[mode]}</h1></div>
+            <time>{prettyToday}, {today.getFullYear()}</time><p>Угадайте {gameSubject[mode]} дня за десять попыток</p>
             <section className="admit-ticket">
               <div className="admit-ticket__stub"><span>ВХОД</span><strong>ОДИН</strong><small>№ {String(today.getDate()).padStart(2, '0')}</small><em>{String(today.getDate()).padStart(2, '0')}.{String(today.getMonth() + 1).padStart(2, '0')}</em><i /></div>
               <div className="admit-ticket__body"><div className="ticket-kicker"><span>Ежедневная премьера</span><i /><small>полночный сеанс</small></div><h1>Ежедневная игра: {MODE_LABEL[mode].toLocaleLowerCase('ru-RU')}</h1><p>Каждый день доступна новая загадка. У вас есть <strong>10 попыток</strong>, а каждый ответ открывает сравнительные подсказки.</p><div className="ticket-settings"><div className="period-select-wrap"><button type="button" className="period-control period-control--custom"><span className="period-control__top"><span>Период</span><strong><Ticket /> 3</strong></span><span className="period-control__value"><span>За всё время</span><ChevronRight /></span></button></div></div></div>
@@ -326,7 +326,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
               <div className="attempt-card__identity">
                 <span className="attempt-label">Попытка 1</span>
                 {visibility.titleRu !== false && <h2 className={`game-builder-native-drop ${mapping.titleRu ? 'is-mapped' : ''}`} {...nativeDrop('titleRu')}>{title}</h2>}
-                <p className="gm-head__sub">{visibility.titleOriginal !== false && <span className={`gm-head__orig game-builder-native-drop ${mapping.titleOriginal ? 'is-mapped' : ''}`} {...nativeDrop('titleOriginal')}>{originalTitle}</span>}{visibility.year !== false && <><i className="gm-head__dot" aria-hidden="true">·</i><span className={`gm-year game-builder-native-drop ${mapping.year ? 'is-mapped' : ''}`} {...nativeDrop('year')}>{displayValue(year, 'Год')}</span></>}{visibility.ageRating !== false && <><i className="gm-head__dot" aria-hidden="true">·</i><span className={`gm-year gm-year--age game-builder-native-drop ${mapping.ageRating ? 'is-mapped' : ''}`} {...nativeDrop('ageRating')}>{displayValue(ageRating, 'Возраст')}</span></>}</p>
+                <p className="gm-head__sub">{visibility.titleOriginal !== false && <span className={`gm-head__orig game-builder-native-drop ${mapping.titleOriginal ? 'is-mapped' : ''}`} {...nativeDrop('titleOriginal')}>{originalTitle}</span>}{visibility.year !== false && <><span className={`gm-year game-builder-native-drop ${mapping.year ? 'is-mapped' : ''}`} {...nativeDrop('year')}>{displayValue(year, 'Год')}</span></>}{visibility.ageRating !== false && <><span className={`gm-year gm-year--age game-builder-native-drop ${mapping.ageRating ? 'is-mapped' : ''}`} {...nativeDrop('ageRating')}>{displayValue(ageRating, 'Возраст')}</span></>}</p>
                 {visibility.genres !== false && <div className={`gm-genres game-builder-native-drop ${mapping.genres ? 'is-mapped' : ''}`} {...nativeDrop('genres')}>{genres.length ? genres.map((genre) => <span className="gm-genre" key={genre}>{genre}</span>) : <span className="gm-genre">Жанры</span>}</div>}
               </div>
               {visibility.ratingKinopoisk !== false && <div className={`rating-badge game-builder-native-drop ${mapping.ratingKinopoisk ? 'is-mapped' : ''}`} {...nativeDrop('ratingKinopoisk')}><small>КП</small><strong>{ratingText(kinopoiskRating)}</strong></div>}
@@ -343,7 +343,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
             </div>
           </article>}
         </div>
-        <footer><span><Eye />Используется оригинальный кино-макет из игры · <code>{currentItem?.id}</code></span><div>{renderMediaUpload('posterUrl')}</div></footer>
+        <footer><span><Eye />Используется оригинальный кино-макет из игры, <code>{currentItem?.id}</code></span><div>{renderMediaUpload('posterUrl')}</div></footer>
       </section>
 
       <aside className="game-builder-mapping">
@@ -365,7 +365,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
     {preview && <section className="game-builder-import-preview">
       <header><div><span>Серверная проверка</span><h2>Импорт готов</h2><p>Новые и изменённые карточки попадут в рабочую версию. Публикация останется отдельным действием.</p></div><button onClick={() => { setPreview(null); setPreviewDocument(null) }}><X /></button></header>
       <div className="game-builder-import-stats"><article><strong>{preview.summary.total}</strong><span>всего</span></article><article className="is-create"><strong>{preview.summary.create}</strong><span>новых</span></article><article><strong>{preview.summary.update}</strong><span>обновлений</span></article><article><strong>{preview.summary.unchanged}</strong><span>без изменений</span></article><article className={preview.summary.invalid + preview.summary.conflict ? 'is-danger' : ''}><strong>{preview.summary.invalid + preview.summary.conflict}</strong><span>требуют внимания</span></article></div>
-      <div className="game-builder-import-list">{preview.items.slice(0, 80).map((item) => <article key={`${item.mode}:${item.id}`}><span className={`is-${item.status}`}>{item.status === 'create' || item.status === 'update' ? <Check /> : item.status === 'invalid' || item.status === 'conflict' ? <CircleAlert /> : <BadgeCheck />}</span><div><strong>{item.title}</strong><small>{item.id} · {MODE_LABEL[item.mode]}{item.changedFields.length ? ` · ${item.changedFields.join(', ')}` : ''}</small>{item.message && <p>{item.message}</p>}</div><b className={`is-${item.status}`}>{STATUS_LABEL[item.status]}</b></article>)}</div>
+      <div className="game-builder-import-list">{preview.items.slice(0, 80).map((item) => <article key={`${item.mode}:${item.id}`}><span className={`is-${item.status}`}>{item.status === 'create' || item.status === 'update' ? <Check /> : item.status === 'invalid' || item.status === 'conflict' ? <CircleAlert /> : <BadgeCheck />}</span><div><strong>{item.title}</strong><small>{item.id}, {MODE_LABEL[item.mode]}{item.changedFields.length ? `, ${item.changedFields.join(', ')}` : ''}</small>{item.message && <p>{item.message}</p>}</div><b className={`is-${item.status}`}>{STATUS_LABEL[item.status]}</b></article>)}</div>
       {preview.items.length > 80 && <p className="game-builder-import-more">Показаны первые 80 из {preview.items.length} карточек.</p>}
       <footer><button className="admin-btn admin-btn--secondary" onClick={() => { setPreview(null); setPreviewDocument(null) }}>Вернуться к схеме</button><button className="admin-btn admin-btn--secondary" onClick={onNavigateContent}><Braces />Открыть каталог</button><button className="admin-btn admin-btn--primary" disabled={applying || preview.summary.create + preview.summary.update === 0} onClick={() => void applyImport()}>{applying ? <LoaderCircle /> : <CloudUpload />}{applying ? 'Добавляем…' : `Добавить ${preview.summary.create + preview.summary.update} в рабочую версию`}</button></footer>
     </section>}

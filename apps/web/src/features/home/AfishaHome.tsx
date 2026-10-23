@@ -54,7 +54,7 @@ export function AfishaHome({ header, cards, state, onStart, onArchive, onRules }
       <section className="afisha-home__catalog" id="available-games" aria-labelledby="afisha-catalog-heading">
         <div className="afisha-home__section-head">
           <div><span className="afisha-home__eyebrow">Сегодня в программе</span><h2 id="afisha-catalog-heading">Выберите свою загадку</h2></div>
-          <span className="afisha-home__catalog-note">{cards.length} тем · новые ответы каждый день</span>
+          <span className="afisha-home__catalog-note">{cards.length} тем, новые ответы каждый день</span>
         </div>
         <div className="afisha-home__grid">{cards.map(({ id, content }) => <div key={id}>{content}</div>)}</div>
       </section>
