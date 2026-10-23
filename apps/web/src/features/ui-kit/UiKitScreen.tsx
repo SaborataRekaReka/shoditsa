@@ -5,6 +5,7 @@ import { ActionButton, BrandLogo, Modal, ScreenBack } from '../../components/app
 import { CategoryTicket } from '../../components/category-ticket/CategoryTicket'
 import { Mascot, type MascotPose } from '../../components/mascot/Mascot'
 import { ReferenceIcon } from '../../components/ui/ReferenceIcon'
+import { UserAvatar } from '../../components/ui/UserAvatar'
 import { QuestOptionGroup, QuestSwitch } from '../../components/ui/QuestPrimitives'
 import { APPLICATION_DESIGN } from '../../app/application-design'
 import { BottomSheet } from '../../components/ui/BottomSheet'
@@ -331,6 +332,7 @@ export default function UiKitScreen() {
             <SectionTitle index="02a" title="Заголовки страниц" description="Название сверху, описание под ним, действия справа. Один размер для основных разделов." component="PageHeading, Tooltip" />
             <div className="ui-kit-specimen">
               <PageHeading level={2} title="Архив" description="Выбирай загадку по дате или продолжай начатую партию." />
+              <div className="ui-kit-button-row" aria-label="Аватары аккаунта"><UserAvatar name="Алекс" /><UserAvatar name="Алекс" club /><UserAvatar name="Алекс" size="large" club /><span>Золотая рамка со звездой для участников Клуба</span></div>
               <Tooltip label="Обновить список">{(tooltip, id) => <ActionButton variant="secondary" {...tooltip} aria-describedby={id}>Наведи или выбери Tab</ActionButton>}</Tooltip>
             </div>
           </section>

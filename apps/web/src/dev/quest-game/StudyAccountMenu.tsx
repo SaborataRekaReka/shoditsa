@@ -9,6 +9,7 @@ import './study-account.css'
 import type { MeResponse } from '@shoditsa/contracts'
 import { queryKeys } from '../../api/client'
 import { useStudyAccountCache } from './study-account-cache'
+import { useStudyClubActive } from './use-study-club'
 
 type Props = {
   Glyph: ComponentType<{ name: GlyphName; size?: number; className?: string }>
@@ -22,6 +23,7 @@ type Props = {
 export function StudyAccountMenu({ Glyph, placement = 'header', profileHref = '/profile', onProfile, onSettings, onOpen }: Props) {
   const account = useStudyAccountCache<MeResponse>(queryKeys.me)
   const signedIn = !!account?.user && !account.user.isAnonymous
+  const hasClub = useStudyClubActive() && signedIn
   const name = signedIn ? account.user.name || 'Игрок' : 'Гость'
   const [open, setOpen] = useState(false)
   const [compact, setCompact] = useState(false)
@@ -83,7 +85,7 @@ export function StudyAccountMenu({ Glyph, placement = 'header', profileHref = '/
   }
   return <div className={`study-account study-account--${placement}`} data-account-compact={compact || undefined} ref={root}>
     <button ref={trigger} className="study-account-trigger" type="button" aria-label={`Меню аккаунта${placement === 'rail' ? ' слева' : ''}: ${name}`} aria-haspopup="menu" aria-expanded={open} aria-controls={open ? id : undefined} onClick={() => { if (!open) onOpen?.(); setOpen(value => !value) }} onKeyDown={event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); event.stopPropagation(); onOpen?.(); setOpen(true) } }}>
-      <UserAvatar className="study-account-avatar" name={signedIn ? account.user.name : null} src={signedIn ? account.user.avatarUrl : null} /><span className="study-account-name"><strong>{name}</strong>{placement === 'rail' && <small>Твой аккаунт</small>}</span><ChevronDown size={16} aria-hidden="true" />
+      <UserAvatar className="study-account-avatar" club={hasClub} name={signedIn ? account.user.name : null} src={signedIn ? account.user.avatarUrl : null} /><span className="study-account-name"><strong>{name}</strong>{placement === 'rail' && <small>{hasClub ? 'Участник Клуба' : 'Твой аккаунт'}</small>}</span><ChevronDown size={16} aria-hidden="true" />
     </button>
     {open && <div className="study-account-popover" id={id} ref={menu} role="menu" aria-label="Аккаунт" onKeyDown={keys}>
       <div className="study-account-intro"><div><strong>{signedIn ? name : 'Твой аккаунт'}</strong><p>{signedIn ? 'Профиль, настройки и результаты игр.' : 'Войди, чтобы сохранять прогресс и продолжать игры на любом устройстве.'}</p></div></div>

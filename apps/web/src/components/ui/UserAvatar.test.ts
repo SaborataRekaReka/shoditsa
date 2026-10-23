@@ -15,4 +15,13 @@ describe('account avatar', () => {
     expect(renderToStaticMarkup(createElement(UserAvatar, { name: 'Алекс Бренейзе', src: 'javascript:alert(1)' }))).toContain('АБ')
     expect(renderToStaticMarkup(createElement(UserAvatar))).toContain('<svg')
   })
+  it('adds the club frame only for the active membership variant, including portrait fallbacks', () => {
+    const plain = renderToStaticMarkup(createElement(UserAvatar, { name: 'Алекс' }))
+    const club = renderToStaticMarkup(createElement(UserAvatar, { name: 'Алекс', club: true }))
+    expect(plain).not.toContain('user-avatar--club')
+    expect(plain).not.toContain('user-avatar__club-star')
+    expect(club).toContain('user-avatar--club')
+    expect(club).toContain('user-avatar__club-star')
+    expect(club).toContain('А')
+  })
 })

@@ -74,6 +74,7 @@ import { CATEGORY_TICKET_CONFIG } from './components/category-ticket/category-ti
 import { HOME_HERO_COPY, HOME_PUZZLE_COPY } from './app/home-copy'
 import { ArcGameCarousel } from './features/home/ArcGameCarousel'
 import { ActionButton, AppFooter, AppHeader, Modal, PROFILE_OPEN_EVENT } from './components/app-shell/AppShell'
+import { QuestButton } from './components/ui/QuestPrimitives'
 import { HorizontalScrollLane } from './components/horizontal-scroll-lane/HorizontalScrollLane'
 import { GameArtifactSeoDetails, HomeSeoContent } from './components/seo-content/SeoContent'
 import {
@@ -1710,7 +1711,7 @@ function TitleScreen({ mode, variantKey, setVariantKey, period, setPeriod, date,
       : GAME_MODE_MANIFEST[mode].periodPolicy === 'year'
         ? <PeriodControl mode={mode} value={period} freePlayArmed={freePlayArmed} onChange={setPeriod} periodUnlockCostValue={periodUnlockCostValue} onStartFreePlay={onStartFreePlay} hasActiveFreePlay={hasActiveFreePlay} freePlayCostValue={freePlayCostValue} freePlayShortage={freePlayShortage} freePlayLaunchesToday={freePlayLaunchesToday} clubFreePlay={clubFreePlay} wallet={wallet} unlockedPeriods={unlockedPeriods} completedPeriods={completedPeriods} />
         : mode === 'diagnosis' && hasAnamnesis && referencePreview
-          ? <ActionButton variant="secondary" className="play-button" onClick={onReadAnamnesis}><ClipboardList />Прочитать анамнез</ActionButton>
+          ? <QuestButton kind="outline" size="compact" className="game-launch-controls__secondary" onClick={onReadAnamnesis}><ClipboardList size={22} aria-hidden="true" />Прочитать анамнез</QuestButton>
           : undefined
   const launchControls = <GameLaunchControls
     mode={mode}
