@@ -1467,3 +1467,28 @@ export const svoyakAnalyticsOutbox = pgTable('svoyak_analytics_outbox', {
   id: uuid().primaryKey().references(() => svoyakResults.id), roomCode: text('room_code').notNull(), payload: jsonb().notNull(),
   createdAt: timestamp('created_at', {withTimezone:true}).notNull().defaultNow(), processedAt: timestamp('processed_at', { withTimezone: true }),
 })
+
+export const mailingCampaigns = pgTable('mailing_campaigns', {
+  id: text().primaryKey(), subject: text().notNull(), contentHash: text('content_hash').notNull(),
+  status: text().notNull().default('draft'), consentSource: text('consent_source'),
+  createdBy: uuid('created_by').references(() => user.id, { onDelete: 'set null' }),
+  consentBy: uuid('consent_by').references(() => user.id, { onDelete: 'set null' }),
+  preparedAt: timestamp('prepared_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  nextSendAt: timestamp('next_send_at', { withTimezone: true }).notNull().defaultNow(), lastError: text('last_error'),
+}, table => [check('mailing_campaign_status_check', sql`${table.status} in ('draft','sending','paused','completed')`)])
+export const mailingRecipients = pgTable('mailing_recipients', {
+  id: uuid().primaryKey(), campaignId: text('campaign_id').notNull().references(() => mailingCampaigns.id),
+  userId: uuid('user_id').references(() => user.id, { onDelete: 'set null' }),
+  email: text().notNull(), emailHash: text('email_hash').notNull(), kind: text().notNull(), status: text().notNull().default('queued'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  claimedAt: timestamp('claimed_at', { withTimezone: true }), finishedAt: timestamp('finished_at', { withTimezone: true }), errorCode: text('error_code'),
+}, table => [
+  uniqueIndex('mailing_recipient_once_idx').on(table.campaignId, table.emailHash, table.kind),
+  index('mailing_recipient_queue_idx').on(table.campaignId, table.status, table.createdAt),
+  check('mailing_recipient_status_check', sql`${table.status} in ('queued','sending','accepted','failed','unknown','suppressed')`),
+  check('mailing_recipient_kind_check', sql`${table.kind} in ('campaign','test')`),
+])
+export const mailingSuppressions = pgTable('mailing_suppressions', {
+  emailHash: text('email_hash').primaryKey(), createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+})

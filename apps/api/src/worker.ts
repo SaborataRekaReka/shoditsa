@@ -24,6 +24,7 @@ import { ApiError } from './lib/errors.js'
 import { reconcileCommerceOrders } from './modules/commerce/service.js'
 import { handleDanetkiJob } from './modules/danetki/worker.js'
 import { runContentRetention, runGameLifecycleCleanup } from './modules/maintenance/service.js'
+import { runMailingWorker } from './modules/mailings/service.js'
 import { rollupClientEventRetention } from './modules/stats/analytics-rollup-service.js'
 import { contentDuplicateGroups, isAllowedInRegularGame } from '@shoditsa/game-core'
 import {
@@ -1348,5 +1349,8 @@ const work = async () => {
   }
 }
 
-for (const signal of ['SIGINT', 'SIGTERM'] as const) process.on(signal, () => { stopping = true })
-work().catch((error) => { console.error(error); process.exitCode = 1 }).finally(async () => database.client.end())
+const mailingAbort = new AbortController()
+for (const signal of ['SIGINT', 'SIGTERM'] as const) process.on(signal, () => { stopping = true; mailingAbort.abort() })
+Promise.all([work(), runMailingWorker(db, config, mailingAbort.signal)])
+  .catch((error) => { stopping = true; mailingAbort.abort(); console.error(error); process.exitCode = 1 })
+  .finally(async () => database.client.end())

@@ -35,6 +35,8 @@ COPY --from=builder --chown=shoditsa:shoditsa /app/packages/database/migrations 
 COPY --from=builder --chown=shoditsa:shoditsa /app/scripts scripts
 COPY --from=builder --chown=shoditsa:shoditsa /app/data data
 COPY --from=builder --chown=shoditsa:shoditsa /app/release-content release-content
+COPY --chown=shoditsa:shoditsa docs/communications/autumn-2026 release-mailings/autumn-2026
+ENV MAILING_CONTENT_ROOT=/app/release-mailings/autumn-2026
 USER shoditsa
 EXPOSE 3001
 CMD ["node", "apps/api/dist/server.js"]

@@ -53,6 +53,7 @@ import { archiveCalendar } from './modules/archive/calendar.js'
 import { registerCommerceAdminRoutes } from './modules/commerce/admin-routes.js'
 import { registerPackRoutes } from './modules/packs/routes.js'
 import { registerSupportRoutes } from './modules/support/routes.js'
+import { registerMailingRoutes } from './modules/mailings/routes.js'
 import { startPackSession } from './modules/packs/service.js'
 import { registerPrivateGameRoutes } from './modules/private-games/routes.js'
 import { getDanetkiSession, loadDanetkiFeatureFlags, startDanetkiSession } from './modules/danetki/service.js'
@@ -532,6 +533,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   await registerCommerceAdminRoutes(app, { db, auth, config })
   registerPackRoutes(app, db, auth, config)
   registerSupportRoutes(app, config)
+  registerMailingRoutes(app, { db, config, auth })
   registerPrivateGameRoutes(app, { db, auth, config })
   registerDanetkiRoutes(app, { db, auth, config, realtimeMetrics: danetkiRealtimeMetrics })
   registerDanetkiAdminRoutes(app, { db, auth, config })
