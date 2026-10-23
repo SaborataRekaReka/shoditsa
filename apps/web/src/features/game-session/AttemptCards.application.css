@@ -77,8 +77,12 @@ html[data-local-study='session'] .study-session[data-public-theme='quest-study']
 html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-studio__logo { background: var(--quest-bg); border-color: var(--quest-line); color: var(--quest-text); font: 700 14px/1 var(--quest-font); }
 html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-studio__meta small { color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); letter-spacing: 0; text-transform: none; }
 html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-studio__meta strong { color: var(--quest-text); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score--compact { display: flex; gap: 10px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score--compact > strong { align-items: center; gap: 10px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score--compact .dx-score__count--exact { color: var(--quest-green); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score--compact .dx-score__count--partial { color: var(--quest-gold); }
 @container (max-width: 420px) {
-  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding-inline: 12px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score:not(.dx-score--compact) { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding-inline: 12px; }
   html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar { grid-column: 1 / -1; grid-row: 2; }
   html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score > strong { grid-column: 2; grid-row: 1; }
   html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -96,4 +100,7 @@ html[data-local-study='session'] .study-session[data-public-theme='quest-study']
   html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference .clue-tile__top > span:first-child { font-size: 11px; overflow-wrap: normal; }
   html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference:not(.clue-country) .reference-clue-state { position: absolute; bottom: 10px; right: 10px; }
   html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference:not(.clue-country) > strong { padding-right: 24px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-head { grid-template-columns: 64px minmax(0, 1fr); gap: 6px 12px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-head__art { width: 64px; height: 64px; grid-row: span 2; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-head__icd { display: inline-flex; align-items: baseline; gap: 6px; justify-self: start; min-width: 0; padding: 0; border: 0; }
 }

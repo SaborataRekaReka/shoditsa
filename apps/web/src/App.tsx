@@ -13,6 +13,7 @@ import {
   BarChart3,
   CalendarDays,
   Check,
+  Minus,
   ChevronLeft,
   ChevronRight,
   CircleHelp,
@@ -639,14 +640,14 @@ const toConflictPairs = (reasons: string[], normalizedItem: MusicNormalizedEvide
   return out
 }
 
-function AttemptScore({ matchedCount, matchedFields, partialFields, totalFields, isCorrectAttempt }: { matchedCount: number; matchedFields: number; partialFields: number; totalFields: number; isCorrectAttempt: boolean }) {
+function AttemptScore({ matchedCount, matchedFields, partialFields, totalFields, isCorrectAttempt, compact = false }: { matchedCount: number; matchedFields: number; partialFields: number; totalFields: number; isCorrectAttempt: boolean; compact?: boolean }) {
   const tone = matchedCount === 0 && partialFields === 0 ? 'miss' : isCorrectAttempt || matchedFields > 0 ? 'match' : 'partial'
   const label = `Точных совпадений: ${matchedFields} из ${totalFields}; частичных: ${partialFields}`
 
-  return <div className={`dx-score dx-score--${tone}`} aria-label={label}>
+  return <div className={`dx-score dx-score--${tone}${compact ? ' dx-score--compact' : ''}`} aria-label={label}>
     <span>Сходится</span>
     <div className="dx-score__bar">{Array.from({ length: totalFields }, (_, i) => <i key={i} className={i < matchedFields ? 'exact' : i < matchedFields + partialFields ? 'partial' : ''} />)}</div>
-    <strong className="dx-score__counts"><span className="dx-score__count dx-score__count--exact"><b>{matchedCount}</b> <small>точно</small></span>{partialFields > 0 && <span className="dx-score__count dx-score__count--partial"><b>{partialFields}</b> <small>частично</small></span>}</strong>
+    <strong className="dx-score__counts"><span className="dx-score__count dx-score__count--exact" title={`Точных совпадений: ${matchedCount}`} role={compact ? 'img' : undefined} aria-label={compact ? `Точных совпадений: ${matchedCount}` : undefined}>{compact && <Check size={15} aria-hidden="true" />}<b>{matchedCount}</b>{!compact && <small>точно</small>}</span>{partialFields > 0 && <span className="dx-score__count dx-score__count--partial" title={`Частичных совпадений: ${partialFields}`} role={compact ? 'img' : undefined} aria-label={compact ? `Частичных совпадений: ${partialFields}` : undefined}>{compact && <Minus size={15} aria-hidden="true" />}<b>{partialFields}</b>{!compact && <small>частично</small>}</span>}</strong>
   </div>
 }
 const alignSystemTooltip = (iconEl: HTMLElement | null) => {
@@ -2606,7 +2607,7 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
 
   return <article className="attempt-card attempt-card--dx">
     <div className="dx-head">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
+      <span className="dx-head__art" aria-hidden="true"><Poster item={item} className="dx-head__image" /></span>
       <div className="dx-head__identity">
         <span className="attempt-label">Попытка {index + 1}</span>
         <h2>{item.titleRu}</h2>
@@ -2615,7 +2616,7 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
       <div className="dx-head__icd"><small>МКБ</small><strong>{icdValue}</strong></div>
     </div>
 
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} compact />
 
     {bodySystemsHint && <DxSystemIcons hint={bodySystemsHint} />}
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}

@@ -23,7 +23,7 @@ html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ass
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .assist-reveal-card > p { font-size: 14px; line-height: 1.65; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title { margin: 4px 3px 13px; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title span { font: 700 23px var(--reference-game-font); text-transform: none; letter-spacing: -.025em; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title strong { min-width: 30px; padding: 6px 10px; border-radius: 50%; background: var(--reference-game-accent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title strong { min-width: 0; padding: 0; border-radius: 0; background: transparent; color: var(--reference-game-muted); font-variant-numeric: tabular-nums; }
 @media (max-width: 719px) {
   html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading { gap: 15px; margin-bottom: 20px; padding-bottom: 20px; }
   html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading h1 { font-size: clamp(31px, 7.8vw, 43px); }
