@@ -32,7 +32,7 @@ describe('mailing error handling and approved content', () => {
   })
   it('loads the approved CID assets and requires a personal unsubscribe in both alternatives', async () => {
     const content = await loadMailingContent()
-    expect(content.attachments.map(a => a.cid)).toEqual(['shoditsa-logo', 'shoditsa-territory'])
+    expect(content.attachments.map(a => a.cid)).toEqual(['shoditsa-logo', 'shoditsa-svoyak', 'shoditsa-territory'])
     expect(content.attachments.every(a => a.content.length > 1000)).toBe(true)
     expect(content.html).toContain('href="{{unsubscribeUrl}}"')
     expect(content.text).toContain('{{unsubscribeUrl}}')
@@ -55,7 +55,7 @@ describe('mailing error handling and approved content', () => {
     expect(message.text).toContain(link)
     expect(message.headers['List-Unsubscribe']).toContain(`<${link}>`)
     expect(message.headers['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click')
-    expect(message.attachments).toHaveLength(2)
+    expect(message.attachments).toHaveLength(3)
     expect(message.disableFileAccess && message.disableUrlAccess).toBe(true)
   })
 })

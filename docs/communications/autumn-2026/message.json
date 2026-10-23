@@ -21,6 +21,13 @@
       "contentDisposition": "inline"
     },
     {
+      "filename": "svoyak.png",
+      "path": "assets/svoyak.png",
+      "cid": "shoditsa-svoyak",
+      "contentType": "image/png",
+      "contentDisposition": "inline"
+    },
+    {
       "filename": "territory.png",
       "path": "assets/territory.png",
       "cid": "shoditsa-territory",
