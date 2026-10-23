@@ -17,26 +17,33 @@ const mappingPath = 'apps/web/src/components/title-poster/diagnosis-artwork.json
 const mapping = JSON.parse(await readFile(mappingPath, 'utf8'))
 const seen = new Set()
 const audit = []
-for (const entry of [...manifest.entries].sort((a, b) => a.id.localeCompare(b.id))) {
+for (const entry of manifest.entries) {
   if (!/^dx_[a-z0-9_]+$/.test(entry.id) || seen.has(entry.id)) throw new Error('Invalid or duplicate ID: ' + entry.id)
   seen.add(entry.id)
-  const selected = basename(entry.image)
-  const original = await readFile(resolve(source, 'assets', selected))
-  // Web delivery export only: preserve the selected artwork and its alpha.
-  const data = await sharp(original).resize(512, 512, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toBuffer()
-  const metadata = await sharp(data).metadata()
-  if (metadata.width !== 512 || metadata.height !== 512 || !metadata.hasAlpha) throw new Error('Invalid web export: ' + entry.id)
-  const sha256 = hash(data)
-  const file = entry.id + '.' + sha256.slice(0, 12) + '.webp'
-  if (mapping[entry.id] && mapping[entry.id] !== file) throw new Error('Refusing to replace published artwork: ' + entry.id)
-  try {
-    await writeFile(resolve(output, file), data, { flag: 'wx' })
-  } catch (error) {
-    if (error.code !== 'EEXIST' || hash(await readFile(resolve(output, file))) !== sha256) throw error
-  }
-  mapping[entry.id] = file
-  audit.push({ id: entry.id, selected, sourceSha256: hash(original), file, sha256, bytes: data.length, width: metadata.width, height: metadata.height, hasAlpha: metadata.hasAlpha })
 }
+const queue = [...manifest.entries]
+await Promise.all(Array.from({ length: Math.min(8, queue.length) }, async () => {
+  while (queue.length) {
+    const entry = queue.shift()
+    const selected = basename(entry.image)
+    const original = await readFile(resolve(source, 'assets', selected))
+    // Web delivery export only: preserve the selected artwork and its alpha.
+    const data = await sharp(original).resize(512, 512, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toBuffer()
+    const metadata = await sharp(data).metadata()
+    if (metadata.width !== 512 || metadata.height !== 512 || !metadata.hasAlpha) throw new Error('Invalid web export: ' + entry.id)
+    const sha256 = hash(data)
+    const file = entry.id + '.' + sha256.slice(0, 12) + '.webp'
+    if (mapping[entry.id] && mapping[entry.id] !== file) throw new Error('Refusing to replace published artwork: ' + entry.id)
+    try {
+      await writeFile(resolve(output, file), data, { flag: 'wx' })
+    } catch (error) {
+      if (error.code !== 'EEXIST' || hash(await readFile(resolve(output, file))) !== sha256) throw error
+    }
+    mapping[entry.id] = file
+    audit.push({ id: entry.id, selected, sourceSha256: hash(original), file, sha256, bytes: data.length, width: metadata.width, height: metadata.height, hasAlpha: metadata.hasAlpha })
+  }
+}))
+audit.sort((a, b) => a.id.localeCompare(b.id))
 await writeFile(mappingPath, JSON.stringify(Object.fromEntries(Object.entries(mapping).sort(([a], [b]) => a.localeCompare(b))), null, 2) + '\n')
 await writeFile(resolve(qa, 'asset-export.json'), JSON.stringify({ count: audit.length, totalBytes: audit.reduce((sum, item) => sum + item.bytes, 0), entries: audit }, null, 2) + '\n')
 console.log(JSON.stringify({ exported: audit.length, published: Object.keys(mapping).length, totalBytes: audit.reduce((sum, item) => sum + item.bytes, 0) }))
