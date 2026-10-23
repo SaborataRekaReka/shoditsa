@@ -8,6 +8,7 @@ import './styles.css'
 import { initClientEvents } from './app/client-events'
 import { applyRuntimeSeo } from './app/seo'
 import { initReleaseUpdateWatcher } from './app/release-update'
+import { initPwa } from './app/pwa'
 import { applyPublicPresentation, PRESENTATION_PREVIEW } from './app/local-presentation'
 import { APPLICATION_DESIGN } from './app/application-design'
 import { canonicalApplicationHref } from './features/application/routes'
@@ -32,6 +33,7 @@ initClientEvents()
 initReleaseUpdateWatcher()
 }
 applyRuntimeSeo()
+initPwa()
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 if (APPLICATION_DESIGN) root.render(<RoutePending />)

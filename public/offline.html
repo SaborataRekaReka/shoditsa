@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#715fb3" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Нет подключения — Сходится!</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, sans-serif; background: #fdfcfd; color: #211f26; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: 24px; }
+    main { width: min(100%, 440px); text-align: center; }
+    img { border-radius: 24px; }
+    h1 { font-size: clamp(24px, 6vw, 32px); }
+    p { line-height: 1.6; }
+    button, a { min-height: 48px; padding: 12px 20px; border-radius: 14px; font: inherit; display: inline-flex; align-items: center; justify-content: center; }
+    button { border: 0; background: #715fb3; color: white; cursor: pointer; }
+    a { color: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #9cc5af; outline-offset: 4px; }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    @media (prefers-color-scheme: dark) { :root { background: #1a191b; color: #fdfcfd; } }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="/pwa/icon-192.png" width="96" height="96" alt="Сходится!" />
+    <h1>Пока нет подключения</h1>
+    <p>Для игр нужен интернет. Проверь подключение и попробуй ещё раз.</p>
+    <div class="actions"><button type="button" onclick="location.reload()">Попробовать снова</button><a href="/">На главную</a></div>
+  </main>
+</body>
+</html>
