@@ -135,12 +135,12 @@ html[data-quest-tone='dark'] .study-club-hero { background: var(--color-bg); }
 html[data-quest-tone='dark'] .club-sky__edge { fill: var(--color-bg); }
 
 /* Broad comparison cells stay neutral; state lives in the edge and symbol. */
-html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card {
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card:where(:not(.comparison-attempt)) {
   background: var(--color-surface);
   border-width: 1px;
   border-color: var(--color-line);
 }
-html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-list > .attempt-card:first-of-type { border-color: var(--violet-7); }
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-list > .attempt-card:where(:not(.comparison-attempt)):first-of-type { border-color: var(--violet-7); }
 html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group):is(.match, .partial, .close, .miss) {
   background: var(--color-surface-2);
   border: 1px solid var(--color-line);

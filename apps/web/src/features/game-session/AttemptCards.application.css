@@ -1,8 +1,8 @@
 /* Card anatomy and semantic colours for the shared application skin. */
 /* Appearance roles allow dark cards to keep their colour in small markers. */
-html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card { border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 16px; background: var(--quest-bg); color: var(--quest-text); box-shadow: none; }
-html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-list > .attempt-card:first-of-type { border-color: var(--quest-purple); }
-html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card { container-type: inline-size; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card:where(:not(.comparison-attempt)) { border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 16px; background: var(--quest-bg); color: var(--quest-text); box-shadow: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-list > .attempt-card:where(:not(.comparison-attempt)):first-of-type { border-color: var(--quest-purple); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card:where(:not(.comparison-attempt)) { container-type: inline-size; }
 html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__header { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; grid-template-areas: 'poster identity rating'; align-items: center; gap: 16px; padding: 18px; border-bottom: 1px solid var(--quest-line); }
 html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__number { display: none; }
 html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__header > :is(img, .poster-fallback) { grid-area: poster; width: 64px; height: 90px; border-radius: 10px; object-fit: cover; }

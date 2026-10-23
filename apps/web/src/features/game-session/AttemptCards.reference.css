@@ -1,8 +1,8 @@
 /* Public reference appearance. Scoped at the document root, including portal previews. */
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-list { margin-top: 26px; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card { margin-bottom: 18px; border-color: var(--reference-game-line); border-radius: 22px; color: var(--reference-game-ink); background: var(--reference-game-white); box-shadow: 0 3px 14px color-mix(in srgb, var(--color-shadow) 1.5686%, transparent); }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card:hover { border-color: #cec6b8; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card h2, .gm-head__identity h2, .dx-head__identity h2, .kpop-card__identity h2) { font: 700 24px/1.15 var(--reference-game-font); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card:where(:not(.comparison-attempt)) { margin-bottom: 18px; border-color: var(--reference-game-line); border-radius: 22px; color: var(--reference-game-ink); background: var(--reference-game-white); box-shadow: 0 3px 14px color-mix(in srgb, var(--color-shadow) 1.5686%, transparent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card:where(:not(.comparison-attempt)):hover { border-color: #cec6b8; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card:where(:not(.comparison-attempt)) h2, .gm-head__identity h2, .dx-head__identity h2, .kpop-card__identity h2) { font: 700 24px/1.15 var(--reference-game-font); letter-spacing: -.025em; text-transform: none; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card__number { color: var(--reference-game-muted); font: 700 16px var(--reference-game-font); }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-label { color: var(--reference-game-muted); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card__header, .gm-head, .dx-head, .kpop-card__header) { border-bottom-color: var(--reference-game-line); }
@@ -49,13 +49,13 @@ html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .pos
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .kpop-label-mark { background: var(--reference-game-white); color: var(--reference-game-ink); }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .answer-card__summary { background: var(--match-exact-bg); color: var(--reference-game-match-ink); }
 @media (max-width: 719px) {
-  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card h2, .gm-head__identity h2, .dx-head__identity h2, .kpop-card__identity h2) { font-size: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card:where(:not(.comparison-attempt)) h2, .gm-head__identity h2, .dx-head__identity h2, .kpop-card__identity h2) { font-size: 20px; }
   html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile { padding: 10px; min-height: 80px; }
   html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile > strong { font-size: 14px; }
   html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile__top span { font-size: 12px; }
 }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-list { margin-top: 23px; }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card { margin-bottom: 18px; border-radius: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card:where(:not(.comparison-attempt)) { margin-bottom: 18px; border-radius: 20px; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-clue-grid { gap: 9px; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main :is(.attempt-card__header, .gm-head, .dx-head, .kpop-card__header) { padding: 17px; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile { border-radius: 12px; }
