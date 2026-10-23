@@ -904,17 +904,11 @@
 }
 
 .dx-system-icon__glyph {
-  width: 23px;
-  height: 23px;
+  width: 36px;
+  height: 36px;
   display: block;
   object-fit: contain;
-  opacity: .92;
-  filter: brightness(0);
-}
-
-.dx-system-icon.miss .dx-system-icon__glyph {
-  opacity: .86;
-  filter: brightness(0) invert(.86);
+  opacity: 1;
 }
 
 .dx-system-icon__tooltip {

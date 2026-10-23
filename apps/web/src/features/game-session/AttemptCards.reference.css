@@ -35,7 +35,6 @@ html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hin
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.rating-badge strong, .gm-rank__val strong, .dx-head__icd strong, .dx-score > strong b, .dx-systems__head small, .dx-cloud__head small, .gm-studio__logo, .kpop-card__generation strong) { font-family: var(--reference-game-font); font-weight: 700; }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-system-icon.match { background: var(--match-exact-bg); color: var(--reference-game-match-ink); }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-system-icon.partial { background: var(--match-partial-bg); color: var(--reference-game-close-ink); }
-html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-system-icon.miss .dx-system-icon__glyph,
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--game .dx-chip.miss .dx-chip__icon { filter: brightness(0); }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-chip.miss { color: var(--reference-game-muted); background: var(--color-surface-2); }
 html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-score { background: var(--color-surface-2); }

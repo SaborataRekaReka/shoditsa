@@ -40,7 +40,7 @@ describe('published diagnosis illustrations', () => {
     expect(diagnosisArtworkUrl({ ...diagnosis, mode: 'movie' })).toBeNull()
     const html = renderToStaticMarkup(createElement(TitlePoster, { item: { ...diagnosis, id: 'dx_new_diagnosis' } }))
     expect(html).toContain('poster-fallback--diagnosis')
-    expect(html).toContain('diagnosis-systems/nervous.svg')
+    expect(html).toContain('diagnosis-systems/illustrated-v1/nervous.')
     expect(html).not.toContain('/images/diagnoses/mascot-v1/')
   })
   it('renders the selected illustration with a descriptive alternative and preserves caller classes', () => {

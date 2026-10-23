@@ -1,4 +1,7 @@
 import { publicAssetUrl } from '../../app/public-asset'
+import systemIllustrations from './diagnosis-system-illustrations.json'
+
+const systemArtwork = (key: keyof typeof systemIllustrations) => publicAssetUrl(`images/diagnosis-systems/illustrated-v1/${systemIllustrations[key]}`)
 
 const normalizeText = (value: string) => value
   .normalize('NFKD')
@@ -11,20 +14,35 @@ const normalizeText = (value: string) => value
 export const normalizeDiagnosisSystemKey = (value: string) => normalizeText(value)
 
 export const diagnosisSystemIconByKey = new Map<string, string>([
-  ['дыхательная система', publicAssetUrl('images/diagnosis-systems/respiratory.svg')],
-  ['пищеварительная система', publicAssetUrl('images/diagnosis-systems/digestive.svg')],
-  ['психика и поведение', publicAssetUrl('images/diagnosis-systems/mental.svg')],
-  ['зубы и полость рта', publicAssetUrl('images/diagnosis-systems/dental.svg')],
-  ['мочевыделительная система', publicAssetUrl('images/diagnosis-systems/urinary.svg')],
-  ['нервная система', publicAssetUrl('images/diagnosis-systems/nervous.svg')],
-  ['органы зрения', publicAssetUrl('images/diagnosis-systems/vision.svg')],
-  ['органы слуха', publicAssetUrl('images/diagnosis-systems/hearing.svg')],
-  ['кожа и подкожная клетчатка', publicAssetUrl('images/diagnosis-systems/skin.svg')],
-  ['костно мышечная система', publicAssetUrl('images/diagnosis-systems/musculoskeletal.svg')],
-  ['кровь и иммунная система', publicAssetUrl('images/diagnosis-systems/blood-immune.svg')],
-  ['репродуктивная система', publicAssetUrl('images/diagnosis-systems/reproductive.svg')],
-  ['сердечно сосудистая система', publicAssetUrl('images/diagnosis-systems/cardiovascular.svg')],
-  ['эндокринная система', publicAssetUrl('images/diagnosis-systems/endocrine.svg')],
+  ['дыхательная система', systemArtwork('respiratory')],
+  ['пищеварительная система', systemArtwork('digestive')],
+  ['психика и поведение', systemArtwork('mental')],
+  ['зубы и полость рта', systemArtwork('dental')],
+  ['мочевыделительная система', systemArtwork('urinary')],
+  ['нервная система', systemArtwork('nervous')],
+  ['органы зрения', systemArtwork('vision')],
+  ['органы слуха', systemArtwork('hearing')],
+  ['кожа и подкожная клетчатка', systemArtwork('skin')],
+  ['костно мышечная система', systemArtwork('musculoskeletal')],
+  ['кровь и иммунная система', systemArtwork('blood-immune')],
+  ['репродуктивная система', systemArtwork('reproductive')],
+  ['сердечно сосудистая система', systemArtwork('cardiovascular')],
+  ['эндокринная система', systemArtwork('endocrine')],
+  ['глаза', systemArtwork('vision')],
+  ['зрительная система', systemArtwork('vision')],
+  ['слуховая система', systemArtwork('hearing')],
+  ['внутреннее ухо', systemArtwork('hearing')],
+  ['кожа', systemArtwork('skin')],
+  ['подкожная клетчатка', systemArtwork('skin')],
+  ['ногти', systemArtwork('skin')],
+  ['опорно двигательная система', systemArtwork('musculoskeletal')],
+  ['иммунная система', systemArtwork('blood-immune')],
+  ['кроветворная система', systemArtwork('blood-immune')],
+  ['лимфатическая система', systemArtwork('blood-immune')],
+  ['психическое здоровье', systemArtwork('mental')],
+  ['почки', systemArtwork('urinary')],
+  ['зубочелюстная система', systemArtwork('dental')],
+  ['вегетативная нервная система', systemArtwork('nervous')],
 ])
 
-export const defaultDiagnosisSystemIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
+export const defaultDiagnosisSystemIcon = systemArtwork('general')
