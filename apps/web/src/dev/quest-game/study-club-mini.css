@@ -1,0 +1,54 @@
+.qg-app .study-club-mini { position: relative; display: block; overflow: hidden; isolation: isolate; min-height: 145px; margin: 22px 0 0; padding: 18px 14px; border: 1px solid color-mix(in srgb, var(--color-focus) 12%, var(--quest-line)); border-radius: 17px; color: var(--color-on-promo); background: radial-gradient(180% 160% at 3% 3%, var(--color-promo-glow-end), var(--color-promo-glow-middle) 48%, var(--color-promo-glow-start)), var(--color-promo-base); }
+.qg-app button.study-club-mini { width: 100%; text-align: left; cursor: pointer; }
+.study-club-mini::before { content: ''; position: absolute; z-index: -1; inset: -70%; background: conic-gradient(from 30deg, transparent, color-mix(in srgb, var(--color-focus) 12%, transparent), transparent 55%); animation: club-mini-glow 15s linear infinite; }
+.study-club-mini > span { position: relative; z-index: 2; display: block; max-width: 122px; }
+.study-club-mini strong { display: block; font: 800 17px/1.22 var(--quest-heading); }
+.study-club-mini small { display: block; margin-top: 8px; font-size: 11px; line-height: 1.45; }
+.study-club-mini b { display: flex; align-items: center; gap: 4px; margin-top: 13px; color: var(--color-focus); font-size: 11px; }
+.study-club-mini > img { position: absolute; right: -16px; bottom: -8px; width: 99px; height: 120px; object-fit: contain; animation: club-mini-float 5s ease-in-out infinite; }
+.qg-app .study-club-mini--specials { background: radial-gradient(150% 150% at 0 0, var(--color-lilac), var(--color-peach) 60%, var(--color-yellow)); }
+.qg-app .study-club-mini--friends { background: radial-gradient(150% 150% at 0 0, var(--color-blue), var(--color-lilac) 55%, var(--color-mint)); }
+.study-club-mini--specials > img, .study-club-mini--friends > img { right: -5px; bottom: 4px; width: 80px; height: 88px; transform-origin: bottom right; }
+.qg-rail[data-study-left='collapsed'] > .study-club-mini { min-height: 62px; padding: 0; border-radius: 14px; }
+.qg-rail[data-study-left='collapsed'] .study-club-mini > span { display: none; }
+.qg-rail[data-study-left='collapsed'] .study-club-mini > img { right: 0; bottom: -4px; width: 58px; height: 63px; }
+.study-club-mini--friends > img { right: 0; bottom: 5px; width: 84px; height: 84px; animation: none; }
+.qg-rail[data-study-left='collapsed'] .study-club-mini--friends > img { top: 50%; left: 50%; right: auto; bottom: auto; width: 52px; height: 52px; transform: translate(-50%, -50%); }
+@keyframes club-mini-float { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-5px) rotate(3deg); } }
+@keyframes club-mini-glow { to { transform: rotate(360deg); } }
+
+.study-club-mini--club::before {
+  inset: -45%;
+  background:
+    radial-gradient(ellipse at 25% 25%, var(--color-promo-glow-start), transparent 65%),
+    radial-gradient(ellipse at 80% 70%, var(--color-promo-glow-end), transparent 65%),
+    linear-gradient(135deg, var(--color-promo-glow-middle), var(--color-promo-glow-start) 50%, var(--color-promo-glow-end));
+  opacity: .85;
+  animation: club-mini-flow 16s ease-in-out infinite;
+}
+.study-club-mini--club::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -55%;
+  background: conic-gradient(from 45deg, var(--color-promo-glow-start), var(--color-promo-glow-middle), var(--color-promo-glow-end), var(--color-promo-glow-middle), var(--color-promo-glow-start));
+  opacity: 0;
+  pointer-events: none;
+  animation: club-mini-glow 6s linear infinite;
+  transition: opacity .6s ease;
+}
+.study-club-mini--club:focus-visible::after { opacity: .85; }
+.study-club-mini--club > img { animation: none; }
+@media (hover: hover) {
+  .study-club-mini--club:hover::after { opacity: .85; }
+}
+@keyframes club-mini-flow {
+  0%, 100% { transform: translate3d(-5%, -5%, 0) rotate(-8deg) scale(1.02); }
+  35% { transform: translate3d(9%, -2%, 0) rotate(7deg) scale(1.08); }
+  70% { transform: translate3d(-3%, 8%, 0) rotate(-4deg) scale(1.04); }
+}
+@media (max-width: 699px) { .qg-app .study-club-mini { display: none; } }
+@media (prefers-reduced-motion: reduce) { .study-club-mini::before, .study-club-mini > img { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .study-club-mini--club::before, .study-club-mini--club::after { animation: none; transition: none; }
+}

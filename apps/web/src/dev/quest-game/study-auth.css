@@ -1,0 +1,63 @@
+html[data-quest-skin='shoditsa'] { background: var(--quest-bg); color: var(--quest-text); }
+.study-auth-page { min-height: 100dvh; font-family: var(--quest-font); }
+.study-auth-page, .study-auth-page * { box-sizing: border-box; }
+body:has(.study-auth-page) { margin: 0; }
+.study-auth-header { max-width: 1200px; margin: 0 auto; min-height: 96px; padding: 22px 38px; display: flex; align-items: center; gap: 23px; }
+.study-auth-header a { text-decoration: none; }
+.study-auth-back { color: var(--quest-muted); display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; flex: none; }
+.study-auth-back:hover { background: var(--quest-blue-wash); }
+.study-auth-wordmark { color: var(--quest-text); font: 700 39px/1 var(--font-script); letter-spacing: -1.3px; }
+.study-auth-switch { margin-left: auto; color: var(--quest-blue); border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 13px; padding: 13px 20px; font: 800 12px/1.3 var(--quest-heading); text-transform: uppercase; letter-spacing: .6px; text-align: center; }
+.study-auth-switch:hover { background: var(--quest-blue-wash); }
+.study-auth-admin { display: flex; gap: 8px; align-items: center; margin-left: auto; color: var(--quest-muted); font-size: 13px; }
+.login-page.study-auth { --login-bg: var(--quest-bg); --login-paper: var(--quest-bg); --login-ink: var(--quest-text); --login-muted: var(--quest-muted); --login-line: var(--quest-line); background: var(--quest-bg); min-height: calc(100dvh - 96px); overflow: visible; }
+.study-auth .login-main { width: min(100% - 40px, 410px); min-height: 0; padding: 15px 0 48px; display: block; }
+.study-auth .login-card { display: block; min-height: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.study-auth .login-art-panel, .study-auth .login-back { display: none; }
+.study-auth .login-form-column { display: block; padding: 0; background: transparent; }
+.study-auth .login-form-wrap { width: 100%; }
+.study-auth .ui-page-heading { text-align: center; }
+.study-auth-mascot { display: block; width: 96px; height: 96px; object-fit: contain; margin: 0 auto 15px; transform: rotate(-5deg); }
+.study-auth .login-card h1 { color: var(--quest-text); font: 800 30px/1.25 var(--quest-heading); letter-spacing: -.8px; text-align: center; }
+.study-auth .login-description { max-width: 340px; margin: 13px auto 29px; text-align: center; color: var(--quest-muted); font-size: 15px; line-height: 1.65; }
+.study-auth .login-email-section { display: grid; gap: 18px; }
+.study-auth .login-field { display: grid; gap: 8px; margin: 0; }
+.study-auth .login-field label { font: 800 13px/1.3 var(--quest-heading); color: var(--quest-text); }
+.study-auth .login-field-heading { display: flex; align-items: center; justify-content: space-between; min-height: 24px; }
+.study-auth .login-field input:not([type='checkbox']) { display: block; width: 100%; min-height: 54px; padding: 13px 16px; border: 2px solid var(--quest-line); border-radius: 13px; background: var(--quest-surface); color: var(--quest-text); font: 500 16px/1.5 var(--quest-font); box-shadow: none; outline: none; }
+.study-auth .login-field input::placeholder { color: var(--quest-muted); font-weight: 400; }
+.study-auth .login-field input:focus { border-color: var(--quest-blue); background: var(--quest-bg); outline: 2px solid var(--quest-blue-wash); }
+.study-auth .login-field input[aria-invalid='true'] { border-color: var(--quest-red); }
+.study-auth .login-input-wrap { position: relative; }
+.study-auth .login-input-wrap:has(.login-password-toggle) input { padding-right: 54px; }
+.study-auth .login-password-toggle { position: absolute; display: grid; place-items: center; top: 0; bottom: 0; right: 5px; width: 44px; min-width: 0; height: 44px; min-height: 0; margin: auto 0; padding: 0; background: transparent; border: 0; box-shadow: none; color: var(--quest-muted); }
+.study-auth .login-password-toggle:hover:not(:disabled) { color: var(--color-focus); background: var(--color-surface-2); }
+.study-auth .login-field input:not([type='checkbox']):hover:not(:disabled) { border-color: var(--color-focus); }
+.study-auth .login-password-toggle > svg { width: 21px; height: 21px; }
+.study-auth .login-form .login-submit { width: 100%; min-height: 54px; display: flex; align-items: center; justify-content: center; padding: 13px 18px; margin: 6px 0 0; border: 0; border-bottom: 5px solid var(--color-action-hover); border-radius: 14px; background: var(--color-action); color: var(--color-on-action); box-shadow: none; font: 800 14px/1.4 var(--quest-heading); text-transform: uppercase; letter-spacing: .7px; cursor: pointer; }
+.study-auth .login-form .login-submit:hover { background: var(--color-action-hover); box-shadow: none; transform: none; }
+.study-auth .login-form .login-submit:active { transform: translateY(3px); border-bottom-width: 2px; }
+.study-auth :is(.login-forgot, .login-register-line a, .login-register-line button, .login-secondary-link) { color: var(--quest-blue); border: 0; background: transparent; box-shadow: none; font-family: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
+.study-auth .login-forgot { padding: 0 0 0 8px; font-size: 12px; }
+.study-auth .login-register-line { border-top: 2px solid var(--quest-line); padding-top: 16px; margin-top: 24px; color: var(--quest-muted); font-size: 13px; }
+.study-auth .login-field-hint { color: var(--quest-muted); font-size: 12px; }
+.study-auth .login-field-error { color: var(--quest-red); font-size: 12px; }
+.study-auth .login-consent { grid-template-columns: 20px minmax(0, 1fr); gap: 9px; }
+.study-auth .login-consent input[type='checkbox'] { width: 20px; height: 20px; accent-color: var(--quest-blue); }
+.study-auth .login-consent label { color: var(--quest-muted); font-size: 12px; line-height: 1.6; }
+.study-auth .login-consent a { color: var(--quest-blue); }
+.study-auth .login-error, .study-auth .login-notice { padding: 13px 15px; border: 2px solid var(--quest-line); border-radius: 13px; background: var(--quest-red-wash); color: var(--quest-text); font-size: 13px; line-height: 1.6; }
+.study-auth .login-legal-footer { max-width: 660px; padding: 0 24px 24px; gap: 0 18px; }
+.study-auth .login-legal-footer :is(a, button) { color: var(--quest-muted); font: 400 11px/1.5 var(--quest-font); }
+.study-auth-page :is(a, button):focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 3px; }
+@media (max-width: 599px) {
+  .study-auth-header { min-height: 82px; padding: 18px 16px; gap: 9px; }
+  .study-auth-back { width: 36px; }
+  .study-auth-wordmark { font-size: 29px; }
+  .study-auth-switch { padding: 12px; font-size: 10px; max-width: 130px; }
+  .study-auth .login-main { width: min(100% - 40px, 400px); padding-top: 18px; padding-bottom: 32px; }
+  .study-auth .login-card h1 { font-size: 27px; }
+  .study-auth .login-description { margin-bottom: 26px; font-size: 14px; }
+  .study-auth-admin { font-size: 11px; }
+}
+@media (prefers-reduced-motion: no-preference) { .study-auth-mascot { animation: study-auth-hello .5s ease-out both; } @keyframes study-auth-hello { from { opacity: 0; transform: translateY(9px) rotate(-12deg); } to { opacity: 1; transform: translateY(0) rotate(-5deg); } } }

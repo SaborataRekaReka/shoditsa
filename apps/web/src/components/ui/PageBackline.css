@@ -1,0 +1,5 @@
+.ui-page-backline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; min-height: 44px; gap: 4px 16px; margin-bottom: 10px; color: var(--quest-muted); font-size: 12px; }
+.ui-page-backline > :is(a, button) { display: inline-flex; align-items: center; gap: 9px; width: auto; min-height: 44px; padding: 0; border: 0; background: transparent; box-shadow: none; color: var(--quest-muted); font: inherit; font-weight: 700; text-decoration: none; text-transform: none; white-space: nowrap; cursor: pointer; }
+.ui-page-backline > :is(a, button):hover { color: var(--color-focus); background: transparent; transform: none; box-shadow: none; }
+.ui-page-backline > :is(a, button):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; border-radius: 4px; }
+@media (max-width: 699px) { .ui-page-backline { margin-bottom: 4px; font-size: 11px; } }

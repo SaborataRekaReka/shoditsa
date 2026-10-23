@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-10-15",
+  "tool": "built-in image_gen",
+  "purpose": "Identity-preserving hero poses of the user-approved green furry alien-cat mascot",
+  "sourceReference": "C:/Users/brene/AppData/Local/Temp/codex-clipboard-d124e60a-25a1-4700-b426-5d4055e97cdf.png",
+  "referenceRole": "Exact character identity, proportions, palette and illustration style; cream background, decorative symbols and ground shadow removed",
+  "transparentBackground": true,
+  "conversion": "sharp.webp({ quality: 90, alphaQuality: 100 }); no cropping, resizing, alpha modification or other raster edits",
+  "assets": [
+    {
+      "name": "think-v1",
+      "prompt": "Use case: identity-preserve. Input image 1 is the exact approved character identity and drawing style reference. Create a new full-body pose of THIS SAME lime-green furry alien cat, not a different mascot. Preserve the reference proportions and chubbiness: oversized broad fluffy cat head, compact round chubby torso, short sturdy legs and rounded cat paws, bushy fluffy tail, triangular cat ears, and exactly TWO long thin green antennae ending in large round bulb tips with pale yellow-green highlights. Preserve the distinctive narrow sly black almond-shaped eyes with tiny white glossy highlights, tiny olive-green nose and simple friendly cat-mouth curves. Preserve thick near-black ink outlines, pointed fur tufts, smooth light lime/yellow-green fills and soft painterly green shading. The character must remain 2D illustrated, same soft furry shape language, same palette and personality as the input. No clothing, no shoes, no extra eyes, no accessories, no words, no letters, no logo, no symbols around it. Remove the input's cream backdrop, ground oval, pink heart and yellow decoration rays. Background must be real zero-alpha transparency, including spaces between antennae/limbs/tail; no paper rectangle, no checkerboard, no ground, no cast shadow, no glow or halo. Full-body centered square composition, everything including both round antenna tips, paws and tail visible, with approximately 12% clear transparent safety margins on all sides. Pose: thoughtful and puzzling, one front paw gently touches the chin and the other rests on the belly, the head tilts slightly, weight comfortably on both hind paws. Keep the same narrow sly friendly eyes and fluffy compact body; a small curious expression, not sad or angry.",
+      "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f50-4ac5-7ef1-9103-11db656e469a/exec-4ed7d7c4-0c2a-45cc-ad16-537a849424b2.png",
+      "original": "think-v1.png",
+      "web": "think-v1.webp",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "webpBytes": 120112
+    },
+    {
+      "name": "welcome-v1",
+      "prompt": "Use case: identity-preserve. Input image 1 is the exact approved character identity and drawing style reference. Create a new full-body pose of THIS SAME lime-green furry alien cat, not a different mascot. Preserve the reference proportions and chubbiness: oversized broad fluffy cat head, compact round chubby torso, short sturdy legs and rounded cat paws, bushy fluffy tail, triangular cat ears, and exactly TWO long thin green antennae ending in large round bulb tips with pale yellow-green highlights. Preserve the distinctive narrow sly black almond-shaped eyes with tiny white glossy highlights, tiny olive-green nose and simple friendly cat-mouth curves. Preserve thick near-black ink outlines, pointed fur tufts, smooth light lime/yellow-green fills and soft painterly green shading. The character must remain 2D illustrated, same soft furry shape language, same palette and personality as the input. No clothing, no shoes, no extra eyes, no accessories, no words, no letters, no logo, no symbols around it. Remove the input's cream backdrop, ground oval, pink heart and yellow decoration rays. Background must be real zero-alpha transparency, including spaces between antennae/limbs/tail; no paper rectangle, no checkerboard, no ground, no cast shadow, no glow or halo. Full-body centered square composition, everything including both round antenna tips, paws and tail visible, with approximately 12% clear transparent safety margins on all sides. Pose: standing comfortably and welcoming the viewer, one front paw lifted in a friendly open-paw wave beside the face, the other front paw relaxed against the body. Gentle cheerful cat smile and the same narrow sly friendly eyes. Keep the chubby body proportions and fluffy tail of the reference.",
+      "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f50-4ac5-7ef1-9103-11db656e469a/exec-8c9036a5-7b41-4e5d-afde-f5d491e557bb.png",
+      "original": "welcome-v1.png",
+      "web": "welcome-v1.webp",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "webpBytes": 127422
+    }
+  ],
+  "visualInspection": "Both generated outputs visually inspected. Same narrow shiny almond eyes, two long round-tip antennae, lime fluffy chubby body, triangular cat ears and fluffy tail. Full body and antenna tips visible. Thinking pose has paw near chin; welcoming pose has raised paw. No text, logo, scene or ground shadow."
+}

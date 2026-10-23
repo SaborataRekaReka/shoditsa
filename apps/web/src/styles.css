@@ -1,9 +1,11 @@
 @import './styles/tokens.css';
+@import './styles/reference-tokens.css';
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/screens.css';
 @import './features/daily-progress/daily-progress.css';
 @import './styles/utilities.css';
+@import './styles/static-fallback.css';
 
 .server-brand { font-family: var(--font-display, sans-serif); font-size: 1.4rem; font-weight: 900; color: var(--ink, #171717); }
 .server-lobby { width: min(760px, calc(100% - 32px)); margin: 48px auto; padding: clamp(24px, 5vw, 56px); border: 1px solid rgba(24,24,24,.12); border-radius: 28px; color: var(--color-ink); background: rgba(255,255,255,.92); box-shadow: var(--shadow-tile); display: grid; gap: 22px; }
@@ -44,3 +46,5 @@
 @media (min-width: 1080px) {
   .category-grid.category-grid--active { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* Appearance roles are shared by every public route. */

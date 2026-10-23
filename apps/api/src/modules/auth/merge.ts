@@ -13,6 +13,17 @@ export const mergeAnonymousAccount = async (db: Database, anonymousUserId: strin
       order by id
       for update`)
     await tx.execute(sql`select set_config('shoditsa.account_merge', 'on', true)`)
+    // Room capabilities survive the guest becoming a permanent account. Move
+    // both the ownership row and the pinned private snapshot before guest deletion.
+    await tx.execute(sql`update svoyak_members set user_id=${targetUserId}::uuid where user_id=${anonymousUserId}::uuid`)
+    await tx.execute(sql`
+      update svoyak_rooms set revision=revision+1,updated_at=now(),
+        snapshot=jsonb_set(jsonb_set(snapshot,'{members}',(
+          select jsonb_agg(case when member->>'userId'=${anonymousUserId}::text
+            then jsonb_set(member,'{userId}',to_jsonb(${targetUserId}::text)) else member end)
+          from jsonb_array_elements(snapshot->'members') member
+        )),'{revision}',to_jsonb(revision+1))
+      where snapshot @> ${JSON.stringify({ members: [{ userId: anonymousUserId }] })}::jsonb`)
     // Completion writes the live session before its fact row. Take locks in the
     // same order to avoid introducing a fact-row/live-session lock inversion.
     // The user locks above block new FK inserts while ownership is transferred.

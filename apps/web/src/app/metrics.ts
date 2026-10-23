@@ -1,3 +1,4 @@
+import { PRESENTATION_PREVIEW } from './local-presentation'
 type RefactorMetric = {
   name: string
   value: number
@@ -229,6 +230,7 @@ export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
 }
 
 export const initMetrika = () => {
+  if (PRESENTATION_PREVIEW) return
   if (typeof window === 'undefined' || storedAnalyticsConsent() !== 'accepted' || window.__SHODITSA_METRIKA_INITIALIZED__) return
   const entry = readAnalyticsEntry()
   const stub: MetrikaStub = (window.ym as MetrikaStub | undefined) ?? ((...args: unknown[]) => {
@@ -338,6 +340,7 @@ export const initMetrikaDataLayer = () => {
 }
 
 export const trackMetrikaGoal = (goal: string, meta?: Record<string, unknown>) => {
+  if (PRESENTATION_PREVIEW) return
   if (!canUseMetrika()) return
   const params = normalizeMetrikaParams({ ...(meta ?? {}), ...consentedAnalyticsEntryParams() })
   try {
@@ -373,6 +376,7 @@ export const trackConfirmedAuthOutcome = (
 }
 
 export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {
+  if (PRESENTATION_PREVIEW) return
   if (!canUseMetrika()) return
   const params = normalizeMetrikaParams({ screen, ...(meta ?? {}), ...consentedAnalyticsEntryParams() })
   const virtualUrl = `${canonicalAnalyticsPath(window.location.pathname)}#${screen}`

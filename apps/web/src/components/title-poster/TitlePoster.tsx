@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Music2 } from 'lucide-react'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
+import { ThemedArtwork } from '../ui/ThemedArtwork'
 import { canUseAsArtistPortrait } from '../../game'
 import { searchMediaAlt } from '../../game/search-presentation'
 import type { TitleItem } from '../../types'
@@ -35,7 +36,7 @@ export function TitlePoster({ item, className = '' }: { item: TitleItem; classNa
   const ModeIcon = MODE_PRESENTATION[item.mode].icon
 
   return portraitSource && !failed
-    ? <img className={className} src={portraitSource} alt={searchMediaAlt(item)} onError={() => setFailed(true)} />
+    ? <ThemedArtwork className={className} src={portraitSource} alt={searchMediaAlt(item)} onError={() => setFailed(true)} />
     : <div className={`${className} poster-fallback${item.mode === 'diagnosis' ? ' poster-fallback--diagnosis' : ''}`} role="img" aria-label={searchMediaAlt(item)}>
       {item.mode === 'music'
         ? <><Music2 /><span>{initials || '♪'}</span></>

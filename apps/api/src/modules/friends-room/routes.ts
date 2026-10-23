@@ -77,9 +77,12 @@ const authorizedUser = async (request: Parameters<typeof getRequestUser>[0], dep
 }
 
 export const registerFriendsRoomRoutes = (app: FastifyInstance, deps: Deps) => {
-  app.get('/api/v1/friends/rooms', async (request) => {
+  app.get('/api/v1/friends/rooms', {
+    schema: { querystring: Type.Object({ scope: Type.Optional(Type.Union([Type.Literal('current'), Type.Literal('recent')])) }, { additionalProperties: false }) },
+  }, async (request) => {
     const user = await authorizedUser(request, deps)
-    return { rooms: await listFriendsRooms(deps.db, user.id) }
+    const { scope = 'current' } = request.query as { scope?: 'current' | 'recent' }
+    return { rooms: await listFriendsRooms(deps.db, user.id, scope) }
   })
 
   app.post('/api/v1/friends/rooms', {

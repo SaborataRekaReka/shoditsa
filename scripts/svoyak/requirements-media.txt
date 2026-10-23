@@ -1,0 +1,4 @@
+-r requirements-semantic.txt
+opencv-python==4.11.0.86
+faster-whisper==1.2.1
+ctranslate2==4.7.2

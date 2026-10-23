@@ -1,0 +1,48 @@
+/* Brand palette and fonts come from reference-tokens; this file assigns roles. */
+html[data-public-theme='quest-study'][data-quest-skin='shoditsa'],
+[data-public-theme='quest-study'][data-quest-skin='shoditsa'][data-quest-tone='light'],
+html[data-local-study='session'],
+html[data-local-study='app'],
+html[data-local-study='club'] {
+  color-scheme: light;
+  --quest-font: var(--font-body);
+  --quest-heading: var(--font-entry);
+  --quest-bg: var(--color-entry-bg);
+  --quest-surface: var(--color-bg);
+  --quest-line: var(--color-line);
+  --quest-text: var(--color-ink);
+  --quest-muted: var(--color-muted);
+  --quest-dim: var(--color-muted-2);
+  --quest-green: var(--color-success-ink);
+  --quest-green-edge: var(--color-primary-border);
+  --quest-green-wash: var(--color-mint);
+  --quest-blue: var(--color-focus);
+  --quest-blue-edge: var(--color-focus);
+  --quest-blue-wash: var(--color-lilac);
+  --quest-blue-line: var(--color-focus);
+  --quest-gold: var(--color-accent-ink);
+  --quest-gold-edge: var(--color-accent-border);
+  --quest-gold-wash: var(--match-partial-bg);
+  --quest-orange: var(--color-accent-ink);
+  --quest-purple: var(--color-lilac);
+  --quest-purple-strong: var(--color-focus);
+  --quest-purple-pale: var(--color-paper);
+  --quest-red: var(--color-danger);
+  --quest-red-wash: var(--color-coral);
+  --quest-on-fill: var(--color-on-action);
+  --quest-on-banner: var(--color-ink);
+  --quest-white: var(--color-entry-bg);
+  --quest-scrim: var(--color-overlay);
+  --shg-action-edge: var(--color-action-hover);
+  --shg-art-ink: var(--color-ink);
+  --shg-art-cream: var(--color-paper);
+  --shg-art-mint: var(--color-mint);
+  --shg-art-lime: #c9ed72;
+  --shg-art-lilac: var(--color-lilac);
+  --shg-art-purple: var(--color-focus);
+  --shg-art-yellow: var(--color-yellow);
+  --shg-art-peach: var(--color-peach);
+  --shg-art-coral: var(--color-coral);
+  --shg-art-blue: var(--color-blue);
+}
+

@@ -1437,3 +1437,33 @@ export const auditLog = pgTable('audit_log', {
   index('audit_log_action_created_idx').on(table.action, table.createdAt),
   check('audit_log_result_check', sql`${table.result} in ('success','failure')`),
 ])
+// Svoyak is a separate room engine; private snapshots never enter the public catalog.
+export const svoyakContentRevisions = pgTable('svoyak_content_revisions', {
+  id: text().primaryKey(), status: text().notNull(), catalog: jsonb().notNull(), provenance: jsonb().notNull(), createdAt: timestamp('created_at', {withTimezone:true}).notNull().defaultNow(),
+}, table => [
+  uniqueIndex('svoyak_one_active_revision').on(table.status).where(sql`${table.status}='active'`),
+  check('svoyak_revision_status_check', sql`${table.status} in ('ready','active','retired','withdrawn')`),
+])
+export const svoyakQuestions = pgTable('svoyak_questions', {
+  revisionId: text('revision_id').notNull().references(() => svoyakContentRevisions.id), id: text().notNull(),
+  contentHash: text('content_hash').notNull(), payload: jsonb().notNull(), approved: boolean().notNull().default(true),
+}, table => [primaryKey({ columns: [table.revisionId, table.id] })])
+export const svoyakRooms = pgTable('svoyak_rooms', {
+  code: text().primaryKey(), revision: integer().notNull(), creatorUserId: uuid('creator_user_id').notNull().references(() => user.id, {onDelete:'cascade'}),
+  snapshot: jsonb().notNull(), createdAt: timestamp('created_at', {withTimezone:true}).notNull().defaultNow(), updatedAt: timestamp('updated_at', {withTimezone:true}).notNull().defaultNow(), expiresAt: timestamp('expires_at', { withTimezone: true }).notNull().default(sql`now()+interval '7 days'`),
+}, table => [index('svoyak_room_expiry_idx').on(table.expiresAt), check('svoyak_room_code_check', sql`${table.code} ~ '^[A-F0-9]{6}$'`)])
+export const svoyakMembers = pgTable('svoyak_members', {
+  roomCode: text('room_code').notNull().references(() => svoyakRooms.code, { onDelete: 'cascade' }), memberId: uuid('member_id').notNull(),
+  userId: uuid('user_id').notNull().references(() => user.id, {onDelete:'cascade'}), lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(), leftAt: timestamp('left_at', { withTimezone: true }),
+}, table => [primaryKey({ columns: [table.roomCode, table.memberId] }), index('svoyak_member_user_idx').on(table.userId, table.lastSeenAt)])
+export const svoyakAnswerEvents = pgTable('svoyak_answer_events', {
+  roomCode: text('room_code').notNull().references(() => svoyakRooms.code, { onDelete: 'cascade' }), eventId: uuid('event_id').notNull(), payload: jsonb().notNull(), createdAt: timestamp('created_at', {withTimezone:true}).notNull().defaultNow(),
+}, table => [primaryKey({ columns: [table.roomCode, table.eventId] })])
+export const svoyakResults = pgTable('svoyak_results', {
+  id: uuid().primaryKey(), roomCode: text('room_code').notNull().references(() => svoyakRooms.code, { onDelete: 'cascade' }),
+  libraryRevision: text('library_revision').notNull().references(() => svoyakContentRevisions.id), payload: jsonb().notNull(), createdAt: timestamp('created_at', {withTimezone:true}).notNull().defaultNow(),
+})
+export const svoyakAnalyticsOutbox = pgTable('svoyak_analytics_outbox', {
+  id: uuid().primaryKey().references(() => svoyakResults.id), roomCode: text('room_code').notNull(), payload: jsonb().notNull(),
+  createdAt: timestamp('created_at', {withTimezone:true}).notNull().defaultNow(), processedAt: timestamp('processed_at', { withTimezone: true }),
+})

@@ -7,6 +7,12 @@ it('opens only a known archive section from a public deep link', () => {
 })
 
 describe('typed player routes', () => {
+  it('preserves support, blog list and article paths during app navigation', () => {
+    for (const path of ['/support', '/blog', '/blog/support-and-blog', '/blog/missing-entry']) {
+      expect(pathnameForPlayerRoute(playerRouteFromPathname(path))).toBe(path)
+    }
+    expect(playerRouteFromPathname('/blog/support-and-blog/')).toEqual({ screen: 'blog-post', blogSlug: 'support-and-blog' })
+  })
   it('round-trips every canonical mode through title and local-play routes', async () => {
     const { PLAYABLE_MODE_IDS } = await import('@shoditsa/contracts')
     for (const mode of PLAYABLE_MODE_IDS) {

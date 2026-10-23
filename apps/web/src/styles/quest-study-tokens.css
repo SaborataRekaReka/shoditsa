@@ -1,0 +1,58 @@
+/* Isolated, explicitly requested Duolingo study. Never imported by the live app. */
+html[data-public-theme='quest-study']:not([data-quest-skin='shoditsa']) {
+  color-scheme: dark;
+  --quest-font: 'Reference Nunito', sans-serif;
+  --quest-bg: #131f24;
+  --quest-surface: #202f36;
+  --quest-line: #37464f;
+  --quest-text: #f1f7fb;
+  --quest-muted: #afbdc5;
+  --quest-dim: #52656d;
+  --quest-green: #93d333;
+  --quest-green-edge: #6ca326;
+  --quest-green-wash: #213c25;
+  --quest-blue: #49c0f8;
+  --quest-blue-edge: #1899d6;
+  --quest-blue-wash: #203c4b;
+  --quest-blue-line: #3f85a7;
+  --quest-gold: #ffc800;
+  --quest-gold-edge: #e4a400;
+  --quest-gold-wash: #44341d;
+  --quest-orange: #ffab33;
+  --quest-purple: #ce82ff;
+  --quest-purple-strong: #a653dc;
+  --quest-purple-pale: #e9ccfb;
+  --quest-red: #ee5555;
+  --quest-red-wash: #47282b;
+  --quest-on-fill: #131f24;
+  --quest-on-banner: #131f24;
+  --quest-white: #fff;
+  --quest-scrim: #0009;
+  --color-primary: var(--quest-green);
+  --color-focus: var(--quest-blue);
+  --color-text: var(--quest-text);
+  --color-muted: var(--quest-muted);
+  --color-line-strong: var(--quest-line);
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --ease: ease;
+}
+html[data-public-theme='quest-study']:not([data-quest-skin='shoditsa'])[data-quest-tone='light'] {
+  color-scheme: light;
+  --quest-bg: #fff;
+  --quest-surface: #f7f7f7;
+  --quest-line: #e5e5e5;
+  --quest-text: #4b4b4b;
+  --quest-muted: #777;
+  --quest-dim: #afafaf;
+  --quest-green: #58cc02;
+  --quest-green-edge: #58a700;
+  --quest-green-wash: #d7ffb8;
+  --quest-blue: #1cb0f6;
+  --quest-blue-edge: #1899d6;
+  --quest-blue-wash: #ddf4ff;
+  --quest-blue-line: #84d8ff;
+  --quest-gold-wash: #fff4cc;
+  --quest-red-wash: #ffdfdf;
+  --quest-on-fill: #fff;
+}

@@ -43,7 +43,7 @@
 
 .danetki-outcome .result-primary-actions { margin-top: 1px; }
 .danetki-outcome .result-persistence { margin-top: 0; }
-.danetki-outcome .danetki-registration-offer { background: color-mix(in srgb, var(--color-primary) 10%, var(--color-paper)); }
+
 
 .danetki-outcome__alternatives { padding: 12px 0 2px; border-top: 1px solid var(--color-paper-line); }
 .danetki-outcome__alternatives > span { color: var(--color-paper-muted); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }

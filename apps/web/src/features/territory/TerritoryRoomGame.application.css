@@ -1,0 +1,84 @@
+html[data-public-theme='quest-study'] .territory-room-game {
+  --territory-player-light: var(--color-mint); --territory-player-deep: var(--color-lilac); --territory-neutral: var(--quest-surface); --territory-target: var(--quest-blue);
+  width: 100%; height: auto; min-height: 0; max-height: none; padding: 0; border: 0; overflow: visible; scroll-margin-top: 80px;
+  display: flex; flex-direction: column; gap: 20px; color: var(--quest-text); background: none; font-family: var(--quest-font);
+}
+html[data-public-theme='quest-study'] .territory-room-game::before { display: none; }
+html[data-public-theme='quest-study'] .territory-hud { order: 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+html[data-public-theme='quest-study'] .territory-turn { grid-column: 1 / -1; grid-row: 1; min-height: 50px; padding: 10px 16px; border: 2px solid var(--quest-line); border-radius: 16px; background: var(--quest-bg); box-shadow: none; gap: 8px; font-family: var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-turn > span { color: var(--quest-muted); font: 700 12px/1.4 var(--quest-font); letter-spacing: 0; text-transform: none; }
+html[data-public-theme='quest-study'] .territory-turn > :is(strong,time,b) { color: var(--quest-text); font: 800 20px/1.3 var(--quest-heading); }
+html[data-public-theme='quest-study'] .territory-turn > :is(strong,time) small { color: var(--quest-muted); font: 500 12px/1.3 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-turn > i { height: 20px; margin-inline: 7px; background: var(--quest-line); }
+html[data-public-theme='quest-study'] .territory-turn > svg { color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-turn > time.is-urgent { color: var(--quest-red); animation: none; }
+html[data-public-theme='quest-study'] .territory-player { min-height: 78px; padding: 12px; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 18px; clip-path: none; box-shadow: none; background: var(--quest-bg); grid-template-columns: 40px minmax(0,1fr); gap: 10px; text-align: left; }
+html[data-public-theme='quest-study'] .territory-player.is-current { border-color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-player--light { background: var(--territory-player-light); }
+html[data-public-theme='quest-study'] .territory-player--deep { background: var(--territory-player-deep); }
+html[data-public-theme='quest-study'] .territory-player__crest { grid-column: 1; grid-row: 1 / 3; width: 40px; height: 44px; border: 2px solid var(--quest-green); border-radius: 14px; background: var(--quest-bg); color: var(--quest-green); box-shadow: 0 3px 0 var(--quest-green); font: 900 21px/1 var(--quest-heading); }
+html[data-public-theme='quest-study'] .territory-player--right .territory-player__crest { border-color: var(--quest-blue); color: var(--quest-blue); background: var(--quest-bg); box-shadow: 0 3px 0 var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-player__copy { grid-column: 2; grid-row: 1; gap: 3px; }
+html[data-public-theme='quest-study'] .territory-player__copy > small { display: block; color: var(--quest-muted); font-size: 11px; }
+html[data-public-theme='quest-study'] .territory-player__copy > strong { color: var(--quest-text); font: 800 14px/1.3 var(--quest-heading); text-transform: none; text-shadow: none; letter-spacing: 0; }
+html[data-public-theme='quest-study'] .territory-player__copy > strong b { display: none; }
+html[data-public-theme='quest-study'] .territory-player__score { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; grid-column: 2; grid-row: 2; margin-top: 0; color: var(--quest-muted); font: 700 12px/1.4 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-player__score > strong { color: var(--quest-text); font: 900 22px/1.2 var(--quest-heading); }
+html[data-public-theme='quest-study'] .territory-player__score > strong small { font: 600 11px/1.3 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-question-panel { order: 1; width: 100%; min-height: 0; padding: 24px; margin: 0; display: grid; grid-template-columns: minmax(0,1fr); gap: 18px; border: 2px solid var(--quest-line); border-bottom-width: 5px; border-radius: 22px; clip-path: none; background: var(--quest-bg); box-shadow: none; color: var(--quest-text); }
+html[data-public-theme='quest-study'] .territory-question-panel::before, html[data-public-theme='quest-study'] .territory-question-panel::after { display: none; }
+html[data-public-theme='quest-study'] .territory-question-panel > * { grid-column: 1; grid-row: auto; min-width: 0; order: 0; }
+html[data-public-theme='quest-study'] .territory-question-panel__confirm { position: static; }
+html[data-public-theme='quest-study'] .territory-question-panel__kicker { color: var(--quest-blue); font: 800 12px/1.5 var(--quest-font); letter-spacing: 0; text-transform: none; }
+html[data-public-theme='quest-study'] .territory-question-panel h2 { max-width: none; margin: 8px 0; color: var(--quest-text); font: 800 24px/1.35 var(--quest-heading); letter-spacing: -.3px; text-transform: none; }
+html[data-public-theme='quest-study'] .territory-question-panel p { color: var(--quest-muted); font: 400 13px/1.6 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-question-panel__source { color: var(--quest-muted); font: 400 11px/1.5 var(--quest-font); margin-top: 12px; }
+html[data-public-theme='quest-study'] .territory-question-panel__source a { color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-option.ui-control { min-height: 58px; padding: 12px; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 14px; color: var(--quest-text); background: var(--quest-bg); box-shadow: none; font: 700 15px/1.4 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-option.ui-control:hover:not(:disabled) { border-color: var(--quest-blue); background: var(--quest-blue-wash); transform: none; }
+html[data-public-theme='quest-study'] .territory-option.ui-control.is-own { border-color: var(--quest-blue); color: var(--quest-blue); background: var(--quest-blue-wash); box-shadow: none; }
+html[data-public-theme='quest-study'] .territory-option > i { width: 21px; height: 21px; flex-basis: 21px; border: 2px solid var(--quest-line); background: var(--quest-bg); box-shadow: none; }
+html[data-public-theme='quest-study'] .territory-option.is-own > i { border-color: var(--quest-blue); background: var(--quest-blue); box-shadow: inset 0 0 0 4px var(--quest-blue-wash); }
+html[data-public-theme='quest-study'] .territory-option.ui-control.is-correct { border-color: var(--quest-green); background: var(--quest-green-wash); color: var(--quest-green); }
+html[data-public-theme='quest-study'] .territory-option.ui-control.is-wrong { border-color: var(--quest-red); background: var(--quest-red-wash); color: var(--quest-red); }
+html[data-public-theme='quest-study'] .territory-option.ui-control.is-closest { border-color: var(--quest-blue); background: var(--quest-blue-wash); color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-option.ui-control:disabled:not(.is-own):not(.is-correct):not(.is-wrong):not(.is-closest) { opacity: 1; color: var(--quest-muted); background: var(--quest-surface); }
+html[data-public-theme='quest-study'] .territory-option:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 4px; }
+html[data-public-theme='quest-study'] .territory-question-panel__action { width: 100%; }
+html[data-public-theme='quest-study'] .territory-question-panel__status { justify-content: flex-start; color: var(--quest-muted); font: 600 13px/1.6 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-question-panel__status > svg { color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-countdown { text-align: center; padding: 12px; }
+html[data-public-theme='quest-study'] .territory-countdown > span { color: var(--quest-muted); font: 700 14px/1.5 var(--quest-font); letter-spacing: 0; text-transform: none; }
+html[data-public-theme='quest-study'] .territory-countdown > strong { display: block; margin: 8px 0; color: var(--quest-blue); font: 900 56px/1.2 var(--quest-heading); }
+html[data-public-theme='quest-study'] .territory-finished { display: grid; gap: 18px; }
+html[data-public-theme='quest-study'] .territory-finished > * { order: 0; }
+html[data-public-theme='quest-study'] .territory-status-feed { order: 2; width: 100%; margin: 0; padding: 0 4px; min-height: 0; color: var(--quest-muted); font: 400 13px/1.6 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-status-feed :is(svg,strong) { color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .territory-map-disclosure { order: 3; min-width: 0; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 20px; background: var(--quest-bg); }
+html[data-public-theme='quest-study'] .territory-map-disclosure > summary { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 16px 20px; cursor: pointer; list-style: none; color: var(--quest-blue); font: 800 15px/1.4 var(--quest-font); }
+html[data-public-theme='quest-study'] .territory-map-disclosure > summary::-webkit-details-marker { display: none; }
+html[data-public-theme='quest-study'] .territory-map-disclosure > summary > svg { width: 21px; height: 21px; }
+html[data-public-theme='quest-study'] .territory-map-disclosure > summary > small { margin-left: auto; font: 500 12px/1.5 var(--quest-font); color: var(--quest-muted); }
+html[data-public-theme='quest-study'] .territory-map-disclosure > summary::after { content: '+'; font-size: 23px; }
+html[data-public-theme='quest-study'] .territory-map-disclosure[open] > summary::after { content: '−'; }
+html[data-public-theme='quest-study'] .territory-map-disclosure > summary:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 3px; border-radius: 18px; }
+html[data-public-theme='quest-study'] .territory-room-game--capture .territory-question-panel { padding: 16px 20px; gap: 8px; border-color: color-mix(in srgb, var(--quest-blue) 40%, var(--quest-line)); background: var(--quest-blue-wash); }
+html[data-public-theme='quest-study'] .territory-room-game--capture .territory-question-panel h2 { font-size: 22px; }
+html[data-public-theme='quest-study'] .territory-room-game--capture .territory-status-feed { display: none; }
+html[data-public-theme='quest-study'] .room-play:has(.territory-room-game) { max-width: 900px; margin-inline: auto; }
+html[data-public-theme='quest-study'] .room-play:has(.territory-room-game) > .ui-page-heading { margin-bottom: 16px; }
+html[data-public-theme='quest-study'] .territory-hud { gap: 8px; }
+html[data-public-theme='quest-study'] .territory-turn { min-height: 38px; padding: 7px 12px; }
+@container application-content (max-width: 460px) {
+  html[data-public-theme='quest-study'] .territory-map-disclosure > summary { padding: 12px; font-size: 14px; }
+  html[data-public-theme='quest-study'] .territory-map-disclosure > summary > small { font-size: 11px; }
+}
+@container application-content (max-width: 450px) {
+  html[data-public-theme='quest-study'] .territory-room-game { gap: 16px; }
+  html[data-public-theme='quest-study'] .territory-player { grid-template-columns: 30px minmax(0,1fr); gap: 7px; padding: 10px 8px; border-radius: 14px; }
+  html[data-public-theme='quest-study'] .territory-player__crest { width: 30px; height: 36px; font-size: 17px; border-radius: 11px; }
+  html[data-public-theme='quest-study'] .territory-player__copy > strong { font-size: 12px; }
+  html[data-public-theme='quest-study'] .territory-question-panel { padding: 20px 16px; }
+  html[data-public-theme='quest-study'] .territory-question-panel h2 { font-size: 21px; }
+  html[data-public-theme='quest-study'] .territory-question-panel__actions { grid-template-columns: minmax(0,1fr); }
+}

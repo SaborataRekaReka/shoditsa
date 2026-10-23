@@ -47,7 +47,9 @@
   font-family: inherit;
 }
 
-.ui-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+/* Keep legacy specificity isolated; public field variants must own their border and error state. */
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .ui-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.ui-input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"])),
 .ui-textarea,
 .ui-select {
   width: 100%;
@@ -63,6 +65,13 @@
 .ui-textarea {
   min-height: 96px;
   resize: vertical;
+}
+
+/* Untoned public fields still need a visible boundary on light form surfaces. */
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) :where(.ui-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), .ui-textarea, .ui-select) {
+  color: var(--color-ink);
+  border-color: var(--color-line-strong);
+  background: var(--color-surface-2);
 }
 
 .ui-input--dark,
@@ -107,6 +116,7 @@
 .ui-field__hint { color: var(--color-muted); }
 .ui-field__error { color: var(--color-danger); }
 
+
 @media (prefers-reduced-motion: reduce) {
   .ui-control,
   .ui-input,
@@ -116,6 +126,7 @@
 
 /* Canonical component styles extracted from the legacy global screen sheet. */
 .ui-button {
+  text-decoration: none;
   min-height: 48px;
   padding: 0 18px;
   border: 1px solid transparent;
@@ -141,6 +152,11 @@
 .ui-button--secondary:hover,
 .ui-button--ghost:hover { background: var(--color-surface-2); border-color: var(--color-line-strong); }
 .ui-button--ghost { color: var(--color-muted); background: transparent; border-color: var(--color-line); }
+[data-public-theme='quest-study'] .ui-button { min-height: 48px; border-radius: 12px; color: var(--quest-text); background: var(--quest-bg); border-color: var(--quest-line); box-shadow: none; font-family: var(--quest-font); text-transform: none; }
+[data-public-theme='quest-study'] .ui-button--primary { color: var(--color-on-action); background: var(--color-action); border-color: var(--color-action); }
+[data-public-theme='quest-study'] .ui-button:hover { transform: none; box-shadow: none; background: var(--quest-surface); }
+[data-public-theme='quest-study'] .ui-button--primary:hover { background: var(--color-action-hover); }
+[data-public-theme='quest-study'] .ui-input:where(:not([type='checkbox']):not([type='radio']):not([type='range'])) { min-height: 48px; border: 2px solid var(--quest-line); border-radius: 12px; background: var(--quest-bg); color: var(--quest-text); font-family: var(--quest-font); }
 .ui-button--paper.ui-button--secondary {
   color: var(--color-ink);
   background: color-mix(in srgb, var(--color-paper) 78%, white);
@@ -171,3 +187,52 @@
   outline: 3px solid color-mix(in srgb, var(--color-primary) 72%, white);
   outline-offset: 3px;
 }
+
+/* Theme variants belong to the primitive, independent of the current screen. */
+[data-quest-skin='shoditsa'] :is(.ui-input, .ui-textarea)::placeholder { color: var(--color-muted); opacity: 1; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button {
+  border-radius: var(--radius-pill); font-family: var(--font-body); font-size: 14px;
+  font-weight: 700; letter-spacing: 0; text-transform: none; white-space: normal;
+  line-height: 1.35; padding-block: 12px; box-shadow: none;
+}
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--primary { background: var(--color-action); border-color: var(--color-action); color: var(--color-on-action); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button.ui-button--compact { min-height: 46px; padding: 9px 14px; border-radius: 12px; font-size: 13px; font-weight: 500; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--primary:hover:not(:disabled) { background: var(--color-action-hover); border-color: var(--color-action-hover); box-shadow: none; transform: translateY(-1px); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--secondary { color: var(--color-ink); background: var(--color-surface); border-color: var(--color-line-strong); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--hint { color: var(--color-ink); background: var(--color-yellow); border-color: var(--color-accent-border); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--hint:hover:not(:disabled) { background: color-mix(in srgb, var(--color-yellow), var(--color-accent) 8%); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--danger { color: var(--color-danger); background: var(--match-miss-bg); border-color: color-mix(in srgb, var(--color-danger) 20%, var(--color-line)); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-icon-button { border-radius: var(--radius-pill); background: var(--color-surface); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-text-button { font-family: var(--font-body); font-size: 14px; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ui-input--dark, .ui-textarea--dark, .ui-select--dark) { color: var(--color-ink); background: var(--color-surface); border-color: var(--color-line-strong); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ui-input, .ui-textarea, .ui-select)[aria-invalid='true'] { border-color: var(--color-danger); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-field > label { font: 500 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ui-field__hint, .ui-field__error) { font-size: 13px; line-height: 1.5; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ui-control, .ui-input, .ui-textarea, .ui-select):focus-visible { outline-color: var(--color-focus); }
+[data-quest-skin='shoditsa'] .ui-button--hint { color: var(--color-focus); background: var(--color-lilac); border-color: var(--color-line-strong); }
+[data-quest-skin='shoditsa'] .ui-button--hint:hover:not(:disabled) { color: var(--color-focus); background: var(--color-surface-3); border-color: var(--color-focus); transform: none; }
+
+/* A rounded field with a quiet fill and a stronger lower edge, shared by filters. */
+.ui-input.ui-input--soft:not([type='checkbox']):not([type='radio']):not([type='range']),
+.ui-select.ui-select--soft {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 54px;
+  height: 54px;
+  padding: 12px 16px;
+  border: 2px solid var(--ui-field-border, var(--quest-line, var(--color-line)));
+  border-bottom-width: 4px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--quest-line, var(--color-line)) 18%, var(--quest-bg, var(--color-entry-bg)));
+  color: var(--ui-field-ink, var(--quest-text, var(--color-text)));
+  font: 700 16px/1.4 var(--quest-font, var(--font-body));
+  color-scheme: inherit;
+}
+.ui-select-shell { display: block; position: relative; min-width: 0; }
+.ui-select.ui-select--soft { appearance: none; padding-right: 48px; cursor: pointer; }
+.ui-select-shell > svg { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); pointer-events: none; color: var(--quest-muted, var(--color-muted)); }
+:is(.ui-input.ui-input--soft, .ui-select.ui-select--soft):hover:not(:disabled) { --ui-field-border: color-mix(in srgb, var(--quest-line, var(--color-line)) 65%, var(--quest-muted, var(--color-muted))); }
+:is(.ui-input.ui-input--soft, .ui-select.ui-select--soft):focus-visible:not(:disabled) { --ui-field-border: var(--color-focus); outline: 3px solid color-mix(in srgb, var(--color-focus) 22%, transparent); outline-offset: 2px; }
+:is(.ui-input.ui-input--soft, .ui-select.ui-select--soft):disabled { --ui-field-ink: var(--quest-muted, var(--color-muted)); opacity: .6; cursor: default; }
+:is(.ui-input.ui-input--soft, .ui-select.ui-select--soft)[aria-invalid='true']:not(:disabled) { --ui-field-border: var(--color-danger); }

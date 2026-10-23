@@ -1,6 +1,10 @@
 import { useEffect, useRef, type HTMLAttributes, type ReactNode } from 'react'
 import './DialogSurface.css'
 
+export function DialogTitle({ className = '', ...props }: HTMLAttributes<HTMLHeadingElement>) {
+  return <h2 className={`ui-dialog-title ${className}`.trim()} {...props} />
+}
+
 const dialogFocusableSelector = [
   'a[href]',
   'button:not([disabled])',
@@ -32,6 +36,7 @@ export function useDialogFocusTrap<T extends HTMLElement>(open: boolean, onClose
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
+        event.stopPropagation()
         onCloseRef.current()
         return
       }

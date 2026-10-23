@@ -1,0 +1,508 @@
+{
+  "movie": [
+    {
+      "title": "Амели",
+      "src": "./data/libraries/movies/img/kp_341/poster.webp"
+    },
+    {
+      "title": "Интерстеллар",
+      "src": "./data/libraries/movies/img/kp_258687/poster.webp"
+    },
+    {
+      "title": "Отель «Гранд Будапешт»",
+      "src": "./data/libraries/movies/img/kp_683999/poster.webp"
+    },
+    {
+      "title": "Матрица",
+      "src": "./data/libraries/movies/img/kp_301/poster.webp"
+    },
+    {
+      "title": "Ла-Ла Ленд",
+      "src": "./data/libraries/movies/img/kp_841081/poster.webp"
+    },
+    {
+      "title": "Назад в будущее",
+      "src": "./data/libraries/movies/img/kp_476/poster.webp"
+    },
+    {
+      "title": "Гарри Поттер и философский камень",
+      "src": "./data/libraries/movies/img/kp_689/poster.webp"
+    },
+    {
+      "title": "Король Лев",
+      "src": "./data/libraries/movies/img/kp_2360/poster.webp"
+    },
+    {
+      "title": "Начало",
+      "src": "./data/libraries/movies/img/kp_447301/poster.webp"
+    },
+    {
+      "title": "1+1",
+      "src": "./data/libraries/movies/img/kp_535341/poster.webp"
+    },
+    {
+      "title": "Унесённые призраками",
+      "src": "./data/libraries/movies/img/kp_370/poster.webp"
+    },
+    {
+      "title": "Титаник",
+      "src": "./data/libraries/movies/img/kp_2213/poster.webp"
+    },
+    {
+      "title": "Достучаться до небес",
+      "src": "./data/libraries/movies/img/kp_32898/poster.webp"
+    },
+    {
+      "title": "Дюна",
+      "src": "./data/libraries/movies/img/kp_2882/poster.webp"
+    },
+    {
+      "title": "Шоу Трумана",
+      "src": "./data/libraries/movies/img/kp_4541/poster.webp"
+    }
+  ],
+  "series": [
+    {
+      "title": "Энн",
+      "src": "./data/libraries/series/img/kp_1009510/poster.webp"
+    },
+    {
+      "title": "Война и мир",
+      "src": "./data/libraries/series/img/kp_38898/poster.webp"
+    },
+    {
+      "title": "Поднятая целина",
+      "src": "./data/libraries/series/img/kp_43046/poster.webp"
+    },
+    {
+      "title": "Председатель",
+      "src": "./data/libraries/series/img/kp_43231/poster.webp"
+    },
+    {
+      "title": "Руслан и Людмила",
+      "src": "./data/libraries/series/img/kp_42147/poster.webp"
+    },
+    {
+      "title": "Узник замка Иф",
+      "src": "./data/libraries/series/img/kp_42549/poster.webp"
+    },
+    {
+      "title": "Цыган",
+      "src": "./data/libraries/series/img/kp_42361/poster.webp"
+    },
+    {
+      "title": "Щит и меч",
+      "src": "./data/libraries/series/img/kp_43732/poster.webp"
+    },
+    {
+      "title": "Битва за Москву",
+      "src": "./data/libraries/series/img/kp_46138/poster.webp"
+    },
+    {
+      "title": "Гамлет",
+      "src": "./data/libraries/series/img/kp_44457/poster.webp"
+    },
+    {
+      "title": "Д`Артаньян и три мушкетера",
+      "src": "./data/libraries/series/img/kp_44076/poster.webp"
+    },
+    {
+      "title": "Сибириада",
+      "src": "./data/libraries/series/img/kp_43783/poster.webp"
+    }
+  ],
+  "anime": [
+    {
+      "title": "Атака титанов",
+      "src": "./data/libraries/animes/img/shiki_16498/poster.webp"
+    },
+    {
+      "title": "Тетрадь смерти",
+      "src": "./data/libraries/animes/img/shiki_1535/poster.webp"
+    },
+    {
+      "title": "Стальной алхимик: Братство",
+      "src": "./data/libraries/animes/img/shiki_5114/poster.webp"
+    },
+    {
+      "title": "Ванпанчмен",
+      "src": "./data/libraries/animes/img/shiki_30276/poster.webp"
+    },
+    {
+      "title": "Клинок, рассекающий демонов",
+      "src": "./data/libraries/animes/img/shiki_38000/poster.webp"
+    },
+    {
+      "title": "Мастера Меча Онлайн",
+      "src": "./data/libraries/animes/img/shiki_11757/poster.webp"
+    },
+    {
+      "title": "Моя геройская академия",
+      "src": "./data/libraries/animes/img/shiki_31964/poster.webp"
+    },
+    {
+      "title": "Охотник х Охотник (2011)",
+      "src": "./data/libraries/animes/img/shiki_11061/poster.webp"
+    },
+    {
+      "title": "Наруто",
+      "src": "./data/libraries/animes/img/shiki_20/poster.webp"
+    },
+    {
+      "title": "Токийский гуль",
+      "src": "./data/libraries/animes/img/shiki_22319/poster.webp"
+    },
+    {
+      "title": "Твоё имя",
+      "src": "./data/libraries/animes/img/shiki_32281/poster.webp"
+    },
+    {
+      "title": "Магическая битва",
+      "src": "./data/libraries/animes/img/shiki_40748/poster.webp"
+    }
+  ],
+  "game": [
+    {
+      "title": "Tetris",
+      "src": "./data/libraries/games/img/tgdb_65556/poster.webp"
+    },
+    {
+      "title": "Super Mario 64",
+      "src": "./data/libraries/games/img/tgdb_216/poster.webp"
+    },
+    {
+      "title": "The Legend of Zelda: Ocarina of Time",
+      "src": "./data/libraries/games/img/tgdb_133332/poster.webp"
+    },
+    {
+      "title": "Final Fantasy VII",
+      "src": "./data/libraries/games/img/tgdb_68681/poster.webp"
+    },
+    {
+      "title": "Metal Gear Solid",
+      "src": "./data/libraries/games/img/tgdb_196/poster.webp"
+    },
+    {
+      "title": "Super Mario World",
+      "src": "./data/libraries/games/img/tgdb_136/poster.webp"
+    },
+    {
+      "title": "Chrono Trigger",
+      "src": "./data/libraries/games/img/tgdb_67935/poster.webp"
+    },
+    {
+      "title": "The Legend of Zelda: A Link to the Past",
+      "src": "./data/libraries/games/img/tgdb_1318/poster.webp"
+    },
+    {
+      "title": "Street Fighter II",
+      "src": "./data/libraries/games/img/tgdb_108260/poster.webp"
+    },
+    {
+      "title": "Super Metroid",
+      "src": "./data/libraries/games/img/tgdb_83385/poster.webp"
+    },
+    {
+      "title": "Super Mario Bros.",
+      "src": "./data/libraries/games/img/tgdb_126692/poster.webp"
+    },
+    {
+      "title": "Super Mario Bros. 3",
+      "src": "./data/libraries/games/img/tgdb_112/poster.webp"
+    }
+  ],
+  "city": [
+    {
+      "title": "Нью-Йорк"
+    },
+    {
+      "title": "Сан-Хосе",
+      "src": "./images/cities/flags/us.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Сиэтл"
+    },
+    {
+      "title": "Мельбурн",
+      "src": "./images/cities/flags/au.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Сидней",
+      "src": "./images/cities/flags/au.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Бостон",
+      "src": "./images/cities/flags/us.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Сан-Франциско",
+      "src": "./images/cities/flags/us.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Лос-Анджелес"
+    },
+    {
+      "title": "Вашингтон, округ Колумбия",
+      "src": "./images/cities/flags/us.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Даллас",
+      "src": "./images/cities/flags/us.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Торонто",
+      "src": "./images/cities/flags/ca.svg",
+      "fit": "contain"
+    },
+    {
+      "title": "Мюнхен",
+      "src": "./images/cities/flags/de.svg",
+      "fit": "contain"
+    }
+  ],
+  "music": [
+    {
+      "title": "The Beatles",
+      "src": "https://i.scdn.co/image/ab67616100005174119b61b35985e3b957c5ecb7"
+    },
+    {
+      "title": "Элвис Пресли",
+      "src": "https://i.scdn.co/image/ab676161000051749a93e273380982dff84c0d7c"
+    },
+    {
+      "title": "Майкл Джексон",
+      "src": "https://i.scdn.co/image/ab67616100005174997cc9a4aec335d46c9481fd"
+    },
+    {
+      "title": "Мадонна",
+      "src": "https://i.scdn.co/image/ab67616100005174ed2208b41d49ebd24687985b"
+    },
+    {
+      "title": "Queen",
+      "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Queen_A_Night_At_The_Opera_(1975_Elektra_publicity_photo_02).jpg"
+    },
+    {
+      "title": "The Rolling Stones",
+      "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Rolling_Stones_bow_post-show_22_May_2018_in_London_(41437870275).jpg"
+    },
+    {
+      "title": "ABBA",
+      "src": "https://commons.wikimedia.org/wiki/Special:FilePath/ABBA_-_TopPop_1974_5.png"
+    },
+    {
+      "title": "Дэвид Боуи",
+      "src": "https://i.scdn.co/image/ab67616100005174b78f77c5583ae99472dd4a49"
+    },
+    {
+      "title": "Принс",
+      "src": "https://i.scdn.co/image/ab67616100005174adf109a73dae96653131b023"
+    },
+    {
+      "title": "Боб Дилан",
+      "src": "https://i.scdn.co/image/ab67616100005174791742524609864273747ef5"
+    },
+    {
+      "title": "Элтон Джон",
+      "src": "https://i.scdn.co/image/ab676161000051740dc33a1c53bb58a84b45d6a7"
+    },
+    {
+      "title": "Уитни Хьюстон",
+      "src": "https://commons.wikimedia.org/wiki/Special:FilePath/Whitney_Houston_(cropped3).JPEG"
+    }
+  ],
+  "diagnosis": [
+    {
+      "title": "ОРВИ"
+    },
+    {
+      "title": "Грипп"
+    },
+    {
+      "title": "COVID-19"
+    },
+    {
+      "title": "Острый тонзиллит"
+    },
+    {
+      "title": "Острый бронхит"
+    },
+    {
+      "title": "Пневмония"
+    },
+    {
+      "title": "Бронхиальная астма"
+    },
+    {
+      "title": "Аллергический ринит"
+    },
+    {
+      "title": "Гастрит"
+    },
+    {
+      "title": "Язвенная болезнь"
+    },
+    {
+      "title": "Острый аппендицит"
+    },
+    {
+      "title": "Острый панкреатит"
+    }
+  ],
+  "animal": [
+    {
+      "title": "Лев",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Lion_in_masai_mara.jpg"
+    },
+    {
+      "title": "Волк",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/6/68/Eurasian_wolf_2.jpg"
+    },
+    {
+      "title": "Кошка",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Cat_grooming.jpg"
+    },
+    {
+      "title": "Обыкновенная лисица",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Fox_at_the_British_Wildlife_Centre%2C_Newchapel%2C_Surrey_-_geograph.org.uk_-_2221750.jpg"
+    },
+    {
+      "title": "Кабан",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/7/77/Wildschwein%2C_N%C3%A4he_Pulverstampftor.jpg"
+    },
+    {
+      "title": "Жираф",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Rothschild%27s_giraffe_%28Giraffa_camelopardalis_rothschildi%29_-_Murchison_Falls_National_Park.jpg"
+    },
+    {
+      "title": "Домовый воробей",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/9/9b/House_sparrow_male_in_Prospect_Park_%2853532%29.jpg"
+    },
+    {
+      "title": "Сорока",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/2/22/Eurasian_magpie_%2810860%29.jpg"
+    },
+    {
+      "title": "Домашний бык",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/4/40/Bulgarian_gray_cattle.jpg"
+    },
+    {
+      "title": "Снегирь",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/d/de/Bullfinch_male.jpg"
+    },
+    {
+      "title": "Обыкновенный скворец",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/0/06/Toulouse_-_Sturnus_vulgaris_-_2012-02-26_-_2.jpg"
+    },
+    {
+      "title": "Грач",
+      "src": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Corvus_frugilegus_-Dartmoor%2C_Devon%2C_England-8.jpg"
+    }
+  ],
+  "book": [
+    {
+      "title": "Илиада",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/P._Oxy._221.jpg"
+    },
+    {
+      "title": "Энеида",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Vergilius_Vaticanus_f45v_-_Sibylle_conduit_%C3%89n%C3%A9e_et_Achates_au_temple_d%27Apollon.jpg"
+    },
+    {
+      "title": "Божественная комедия",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Dante_Domenico_di_Michelino.jpg"
+    },
+    {
+      "title": "Потерянный рай",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Houghton_EC65.M6427P.1667aa_-_Paradise_Lost%2C_1667.jpg"
+    },
+    {
+      "title": "Кентерберийские рассказы",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Canterbury_Tales.png"
+    },
+    {
+      "title": "Шахнаме",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/The_Court_of_Gayumars_%28Cropped%29.jpg"
+    },
+    {
+      "title": "Евгений Онегин",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Eugene_Onegin_book_edition.jpg"
+    },
+    {
+      "title": "Капитанская дочка",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Captain%27s_Daughter_1837.jpg"
+    },
+    {
+      "title": "Герой нашего времени",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Geroy_nashego_vremeni.png"
+    },
+    {
+      "title": "Горе от ума",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Woe_from_Wit_01_%28Kardovsky%29.jpg"
+    },
+    {
+      "title": "Мёртвые души",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Dead_Souls_%28novel%29_Nikolai_Gogol_1842_title_page.jpg"
+    },
+    {
+      "title": "Ревизор",
+      "src": "https://commons.wikimedia.org/wiki/Special:Redirect/file/%D0%A0%D0%B5%D0%B2%D0%B8%D0%B7%D0%BE%D1%80_%28%D0%9D%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B9_%D0%93%D0%BE%D0%B3%D0%BE%D0%BB%D1%8C%29_%D0%BF%D0%B5%D1%80%D0%B2%D0%BE%D0%B5_%D0%B8%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5.jpg"
+    }
+  ],
+  "character": [
+    {
+      "title": "Шерлок Холмс",
+      "src": "/images/characters/portraits/sherlock-holmes.webp"
+    },
+    {
+      "title": "Алиса",
+      "src": "/images/characters/portraits/alice.webp"
+    },
+    {
+      "title": "Зевс",
+      "src": "/images/characters/portraits/zeus.webp"
+    },
+    {
+      "title": "Граф Дракула",
+      "src": "/images/characters/portraits/count-dracula.webp"
+    },
+    {
+      "title": "Локи",
+      "src": "/images/characters/portraits/loki.webp"
+    },
+    {
+      "title": "Робин Гуд",
+      "src": "/images/characters/portraits/robin-hood.webp"
+    },
+    {
+      "title": "Илья Муромец",
+      "src": "/images/characters/portraits/ilya-muromets.webp"
+    },
+    {
+      "title": "Тор",
+      "src": "/images/characters/portraits/thor.webp"
+    },
+    {
+      "title": "Аладдин",
+      "src": "/images/characters/portraits/aladdin.webp"
+    },
+    {
+      "title": "Капитан Немо",
+      "src": "/images/characters/portraits/captain-nemo.webp"
+    },
+    {
+      "title": "Кощей Бессмертный",
+      "src": "/images/characters/portraits/koschei-the-deathless.webp"
+    },
+    {
+      "title": "Афина",
+      "src": "/images/characters/portraits/athena.webp"
+    }
+  ]
+}

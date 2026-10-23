@@ -58,3 +58,48 @@
 @media (max-width: 560px) {
   .friends-intro-benefits { grid-template-columns: 1fr; }
 }
+
+.friends-welcome { min-width: 0; width: 100%; color: var(--quest-text); padding: 0 0 32px; }
+.friends-welcome__heading { display: grid; grid-template-columns: minmax(0, 1fr) 160px; align-items: center; gap: 15px 25px; }
+.friends-welcome__heading > div { min-width: 0; }
+.friends-welcome__eyebrow { display: block; color: var(--quest-muted); font-size: 12px; margin-bottom: 10px; }
+.qg-app .friends-welcome h1 { margin: 0; font: 800 34px/1.2 var(--quest-heading); letter-spacing: -.7px; }
+.friends-welcome__heading p { grid-column: 1; max-width: 48ch; margin: 0; color: var(--quest-muted); font-size: 14px; line-height: 1.75; }
+.friends-welcome__heading figure { grid-column: 2; grid-row: 1 / 3; margin: 0; width: 160px; height: 160px; border-radius: 50%; background: var(--quest-blue-wash); }
+.friends-welcome__heading img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.friends-welcome__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; list-style: none; padding: 0; margin: 28px 0; }
+.friends-welcome__facts li { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 10px; row-gap: 4px; align-items: center; padding: 17px 14px; border: 1px solid var(--quest-line); border-radius: 14px; }
+.friends-welcome__facts svg { grid-row: span 2; }
+.friends-welcome__facts strong { font: 800 20px/1.2 var(--quest-heading); }
+.friends-welcome__facts span { color: var(--quest-muted); font-size: 11px; line-height: 1.4; }
+.friends-welcome__access { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 17px; padding: 24px; border-radius: 18px; background: color-mix(in srgb, var(--quest-gold-wash) 65%, var(--quest-bg)); }
+.qg-app .friends-welcome__access h2 { margin: 0; font: 800 21px/1.3 var(--quest-heading); }
+.friends-welcome__access p { color: var(--quest-muted); font-size: 14px; line-height: 1.7; margin: 10px 0 18px; }
+.friends-welcome__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; }
+.friends-welcome__actions > .quest-button { font-size: 11px; }
+.friends-welcome__steps { margin-top: 32px; }
+.qg-app .friends-welcome__steps > h2 { font: 800 23px/1.3 var(--quest-heading); margin: 0 0 20px; }
+.friends-welcome__steps ol { display: grid; gap: 20px; list-style: none; padding: 0; margin: 0; }
+.friends-welcome__steps li { display: flex; align-items: flex-start; gap: 15px; }
+.friends-welcome__steps li > b { flex: none; display: grid; place-items: center; width: 33px; height: 33px; border-radius: 11px; background: var(--quest-blue-wash); color: var(--quest-blue); font-size: 14px; }
+.qg-app .friends-welcome__steps h3 { font: 700 15px/1.4 var(--quest-heading); margin: 0 0 5px; }
+.friends-welcome__steps p { color: var(--quest-muted); font-size: 13px; line-height: 1.65; margin: 0; }
+@media (max-width: 699px) {
+  .friends-welcome__heading { grid-template-columns: minmax(0, 1fr) 90px; gap: 12px; }
+  .friends-welcome__heading figure { grid-row: 1; width: 90px; height: 90px; }
+  .qg-app .friends-welcome h1 { font-size: 29px; }
+  .friends-welcome__eyebrow { font-size: 10px; }
+  .friends-welcome__heading p { grid-column: 1 / -1; max-width: none; font-size: 13px; line-height: 1.7; }
+  .friends-welcome__facts { gap: 7px; margin-block: 23px; }
+  .friends-welcome__facts li { grid-template-columns: minmax(0, 1fr); padding: 13px 9px; gap: 8px; }
+  .friends-welcome__facts svg { grid-row: auto; width: 30px; height: 30px; }
+  .friends-welcome__facts strong { font-size: 18px; }
+  .friends-welcome__facts span { font-size: 10px; }
+  .friends-welcome__access { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 20px 16px; }
+  .friends-welcome__access > svg { width: 40px; height: 40px; }
+  .friends-welcome__access > div { display: contents; }
+  .qg-app .friends-welcome__access h2 { font-size: 19px; }
+  .friends-welcome__access p { grid-column: 1 / -1; font-size: 12px; margin: 0; }
+  .friends-welcome__actions { grid-column: 1 / -1; align-items: stretch; flex-direction: column; gap: 8px; }
+  .friends-welcome__actions > .quest-button { font-size: 10px; padding-inline: 12px; }
+}

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ApiClientError, api, queryKeys } from '../api/client'
 
 export const SERVER_RUNTIME = import.meta.env.MODE !== 'yandex'
+const referenceApiPreview = import.meta.env.DEV && import.meta.env.VITE_REFERENCE_API === '1'
 
 const createOrReadSession = async () => {
   try {
@@ -23,7 +24,10 @@ export const ensureServerSession = () => {
 }
 
 export const useServerRuntime = () => {
-  const me = useQuery({ queryKey: queryKeys.me, queryFn: ensureServerSession, enabled: SERVER_RUNTIME, retry: 1 })
+  const me = useQuery({
+    queryKey: queryKeys.me, queryFn: ensureServerSession, enabled: SERVER_RUNTIME,
+    retry: (failureCount, error) => !(referenceApiPreview && error instanceof ApiClientError && error.status === 401) && failureCount < 1,
+  })
   const meta = useQuery({ queryKey: ['meta'], queryFn: api.meta, enabled: SERVER_RUNTIME, retry: 1 })
   const dashboard = useQuery({ queryKey: queryKeys.dashboard, queryFn: api.dashboard, enabled: SERVER_RUNTIME && me.isSuccess, retry: 1 })
   return {

@@ -1,0 +1,356 @@
+/* Shared room states retain the same multiplayer controls and server transitions. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room-page {
+  --room-paper: var(--reference-game-white);
+  --room-paper-2: var(--reference-game-paper);
+  --room-ink: var(--reference-game-ink);
+  --friends-night: var(--reference-game-canvas);
+  --friends-paper: var(--reference-game-paper);
+  --friends-paper-muted: var(--reference-game-muted);
+  --friends-green: var(--reference-game-match-ink);
+  color: var(--reference-game-ink);
+  background: var(--reference-game-canvas);
+  font-family: var(--reference-game-font);
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room.game-screen-shell.game-shell { width: min(var(--content-width), calc(100% - 2 * var(--content-gutter))); padding: 28px 0 48px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room :is(h1, h2, h3) { color: var(--reference-game-ink); font-family: var(--reference-game-font); font-weight: 800; line-height: 1.12; letter-spacing: -.035em; text-transform: none; text-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-invite h1, .room-directory__heading h1, .room-lobby__intro h1) { font-size: clamp(34px, 4.5vw, 60px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-panel, .room-directory, .room-lobby, .room-projector, .room-ticket, .room-activity, .room-final__ticket, .room-intermission__card, .room-danetki-dialog) { border: 1px solid var(--reference-game-line); border-radius: 23px; color: var(--reference-game-ink); background: var(--reference-game-white); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-invite, .room-directory__heading, .room-lobby__intro) { color: var(--reference-game-ink); background: var(--reference-game-lilac); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-lobby__intro, .room-projector, .room-final__ticket, .room-ticket)::before,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-invite, .room-invite__mark, .room-lobby__intro, .room-final__ticket, .room-ticket, .room-ticket__stub)::after { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite { min-height: 480px; border-radius: 25px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__body { padding: clamp(28px, 4.5vw, 64px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__mark { background: var(--reference-game-yellow); color: var(--reference-game-ink); border-right: 1px solid var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite.is-territory .room-invite__mark { background: var(--reference-game-mint); color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite.is-territory .room-invite__mark > svg { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__body > p { font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby__intro { min-height: 0; padding: clamp(28px, 4vw, 56px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby__settings { min-height: 0; padding: clamp(28px, 4vw, 56px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby__intro h1 { margin-block: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby__intro > p { color: var(--color-text-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-lobby-community__members article > i, .room-participants__avatar, .room-players i:not(.room-icon), .room-answers i:not(.room-icon)) { color: var(--color-art-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community { background: var(--reference-game-white); box-shadow: none; border-radius: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-connection, .room-kicker, .room-settings-heading span, .room-lobby legend, .room-panel > span, .room-activity > span, .room-ai-host > span, .room-participants > header > div > span) { color: var(--reference-game-muted); font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-settings-heading strong, .room-panel--code > strong, .room-pack-options header strong, .room-podium article strong) { color: var(--reference-game-ink); font-family: var(--reference-game-font); font-weight: 700; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-settings-heading { border-color: var(--reference-game-line); border-bottom-style: solid; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-alert { color: var(--reference-game-miss-ink); background: var(--reference-game-coral); border-color: var(--reference-game-line); border-radius: 15px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-state { min-height: min(600px, calc(100dvh - 180px)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-state__spinner { border-color: var(--reference-game-line); border-top-color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-directory-card, .room-directory__create, .room-danetki__brief, .room-danetki__rules article, .room-pack-options > section, .room-rule-grid fieldset > div, .room-progress > div, .room-waiting-host) { border-color: var(--reference-game-line); border-radius: 16px; background: var(--reference-game-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card { padding: 14px; gap: 12px 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-directory-card__body h2, .room-directory__create > div strong, .room-danetki__brief h2, .room-danetki__rules strong, .room-territory-lobby__brief h2, .room-danetki-progress small b, .room-activity article strong, .room-players strong, .room-answers article strong) { color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-directory-card__body p, .room-directory-card__body small, .room-danetki__brief p, .room-danetki__rules small, .room-pack-options header small, .room-shuffle small, .room-shuffle em, .room-rounds > small, .room-rounds__scale, .room-progress small, .room-players small) { color: var(--reference-game-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-directory-card__body > span, .room-directory__create > div span, .room-danetki__brief span, .room-danetki__rules .room-icon, .room-progress strong, .room-panel--code__finished) { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-pack-options button, .room-rule-grid button) { border-color: var(--reference-game-line); border-radius: 12px; color: var(--reference-game-ink); background: var(--reference-game-white); font-family: var(--reference-game-font); font-weight: 600; text-transform: none; letter-spacing: 0; box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-pack-options button.is-active, .room-rule-grid button.is-active, .room-shuffle.is-active) { color: var(--reference-game-ink); border-color: var(--reference-game-ink); background: var(--reference-game-lilac); box-shadow: inset 0 0 0 1px var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-shuffle { color: var(--reference-game-ink); border-color: var(--reference-game-line); background: var(--reference-game-paper); border-radius: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-shuffle em { border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-rounds output { color: var(--reference-game-ink); background: var(--reference-game-yellow); border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-rounds input::-webkit-slider-runnable-track { background: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-rounds input::-moz-range-track { background: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-rounds input:focus-visible { outline-color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-mode-picker button { border-radius: 15px; border-color: var(--reference-game-line); background: var(--color-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-mode-picker img { padding: 8px 10px 27px; object-fit: contain; object-position: center; filter: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-mode-picker button::after { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-mode-picker button:hover img { transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-mode-picker button span { color: var(--color-ink); font: 700 14px var(--reference-game-font); text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-mode-picker button.is-active { border-color: var(--reference-game-ink); box-shadow: 0 0 0 2px var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__poster { background: var(--color-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__poster img { padding: 8px 8px 30px; object-fit: contain; object-position: center; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__poster::after { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__poster span { right: 4px; left: 4px; bottom: 6px; color: var(--color-ink); font-size: 12px; line-height: 1.25; text-align: center; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-code-card { background: var(--reference-game-white); box-shadow: none; border: 1px solid var(--reference-game-line); border-radius: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-code-card > span { color: var(--reference-game-muted); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-code-card > strong { color: var(--reference-game-ink); font-family: var(--font-mono); font-size: clamp(25px, 3vw, 34px); font-weight: 400; letter-spacing: .04em; text-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room__columns { grid-template-columns: 220px minmax(0, 1fr) 250px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-chat form { background: var(--reference-game-paper); border-color: var(--reference-game-line); border-radius: 13px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-chat p.is-you { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__header { background: var(--reference-game-coral); border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__header h1 { font-size: clamp(30px, 3vw, 44px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__header > div:first-child > span { color: var(--reference-game-miss-ink); font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__host { background: var(--reference-game-white); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-projector__case > span, .room-projector__protocol > header > span, .room-projector__starters > span, .room-projector__outcome-lead > span, .room-projector__solution > span) { color: var(--color-muted); font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-projector__case p, .room-projector__protocol article p, .room-projector__outcome p) { font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-projector__host strong, .room-projector__protocol article strong, .room-projector__actions > span, .room-projector__outcome > footer p) { font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-projector__host small, .room-projector__case > small, .room-projector__protocol > header small, .room-projector__protocol article time, .room-projector__system, .room-projector__typing) { color: var(--color-muted); font-size: 12px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-projector__protocol, .room-projector__actions, .room-projector__outcome, .room-projector__outcome-stats) { border-block-style: solid; border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__protocol { border-top-width: 1px; border-bottom-width: 1px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-projector__actions, .room-projector__outcome) { border-bottom: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__protocol article { max-width: 88%; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__protocol article > div { padding: 12px 14px; border-radius: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__composer textarea { font-size: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__solution { border-left-width: 1px; border-radius: 16px; background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__outcome-stats strong { font: 700 27px/1.2 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__outcome-stats small { font-size: 12px; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ai-host strong { color: var(--reference-game-ink); font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants > header > p .room-icon,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__status,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__list > article:is(.is-current, .is-resolver) .room-participants__status small { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__list > article:is(.is-current, .is-resolver) { background: color-mix(in srgb, var(--reference-game-mint) 55%, transparent); box-shadow: inset 3px 0 0 var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-danetki-dialog-backdrop { background: color-mix(in srgb, var(--reference-game-ink) 40%, transparent); backdrop-filter: blur(5px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-danetki-dialog h2 { color: var(--reference-game-ink); font: 800 28px/1.15 var(--reference-game-font); text-transform: none; letter-spacing: -.025em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-danetki-dialog p { color: var(--reference-game-muted); font-size: 13px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__body { padding: 28px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket { grid-template-columns: minmax(110px, 22%) minmax(0, 1fr); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__stub { display: grid; place-items: center; padding: 16px; border-radius: 22px 0 0 22px; background: var(--reference-game-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__stub img { height: auto; max-height: 230px; object-fit: contain; object-position: center; filter: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-ticket__meta, .room-ticket__question > span, .room-reveal__copy > span, .room-reveal__facts small, .room-answer.is-submitted small) { font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-progress strong, .room-invite__mark, .room-directory-card__poster span, .room-territory-lobby__seats article > i, .room-mode-picker button em, .room-answer input, .room-answer__suggestions button, .room-chat input) { font-family: var(--font-body); text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community form { grid-template-columns: minmax(0, 1fr) 44px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community form button { min-width: 44px; width: 44px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-answer input { font-size: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-answer__suggestions button { font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-hints span, .room-reveal__facts strong, .room-reveal p, .room-ticket__foot > span, .room-reveal__waiting) { font-size: 14px; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__foot { flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket h1 { font-size: clamp(30px, 4vw, 48px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__question h2 { font-size: clamp(21px, 2.4vw, 28px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-answer { border-color: var(--reference-game-line); border-radius: 18px; background: var(--reference-game-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-answer:focus-within { border-color: var(--reference-game-ink); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-reveal__facts strong { min-width: 0; overflow: visible; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-ticket__foot > span, .room-reveal__facts small, .room-reveal p) { color: var(--color-text-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-reveal__facts > span { background: var(--color-surface-2); border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-reveal__facts strong { color: var(--color-text); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-score-breakdown > span { color: var(--match-exact-ink); background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-score-breakdown > strong, .room-score-breakdown b) { color: var(--match-exact-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-answer__suggestions { background: var(--reference-game-white); border-color: var(--reference-game-line); border-radius: 15px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-countdown { border-color: var(--reference-game-line); border-radius: 23px; background: var(--reference-game-lilac); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-countdown strong { color: var(--reference-game-ink); font-family: var(--reference-game-font); font-weight: 900; text-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-countdown p { color: var(--reference-game-muted); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-activity article { border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-podium article { color: var(--reference-game-ink); background: var(--reference-game-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-podium .place-1 { background: var(--reference-game-yellow); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-podium .place-3 { background: var(--reference-game-coral); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final { min-height: min(690px, calc(100dvh - 150px)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__ticket { width: min(660px, 100%); padding: clamp(28px, 4vw, 48px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__ticket h1 { margin-block: 10px; font-size: clamp(32px, 5vw, 52px); overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__ticket :is(.room-final__eyebrow, .room-final__label) { display: block; color: var(--color-muted); font: 500 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__ticket .room-final__score { color: var(--color-primary); font-size: 18px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__standings { margin-block: 28px; border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__standings article { min-height: 54px; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; padding: 10px 4px; border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__standings article :is(span, strong) { font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__standings article strong { font-variant-numeric: tabular-nums; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__ticket article i { width: 28px; height: 28px; color: var(--reference-game-ink); background: var(--reference-game-yellow); font: 700 14px var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-final__actions, .room-final__new-room) { display: grid; gap: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__new-room { gap: 8px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final__note { margin: 0; color: var(--color-muted); font-size: 14px; line-height: 1.5; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__body::before {
+  display: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__mark img {
+  padding: 20px;
+  object-fit: contain;
+  filter: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__facts {
+  border-block-style: solid;
+  border-color: var(--color-line);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__facts strong {
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite__facts small {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__map-art {
+  background: var(--color-mint);
+  color: var(--color-primary);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__body > span,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory__create > div span {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__body h2 {
+  white-space: normal;
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__body p,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory-card__body small {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory__create {
+  border-style: solid;
+  border-color: var(--color-line);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-directory__create > div strong {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__chat {
+  border-top-style: solid;
+  border-color: var(--color-line);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__chat p,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__chat p strong,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-chat p,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-chat p strong {
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__chat > small,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__members article small,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__members article strong em {
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby-community__members article strong {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__brief {
+  border-left-width: 1px;
+  background: var(--color-paper);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__brief span,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats small {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__brief p,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats strong {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats em,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__rules small {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__rules strong {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats article,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__rules article {
+  background: var(--color-surface);
+  padding: 14px;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats article > i.is-light {
+  background-color: var(--color-mint);
+  border-color: var(--color-primary-border);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats article > i.is-deep {
+  background-color: var(--color-lilac);
+  color: var(--color-ink);
+  border-color: var(--color-focus);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-territory-lobby__seats article.is-ready em {
+  color: var(--color-primary);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants > header > p {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__identity > strong {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__identity > strong em {
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__identity > small,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-participants__status small {
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ai-host small {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-countdown > span {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-muted);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-state p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-reveal__poster {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--color-line);
+  border-radius: var(--radius-sm);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__empty p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__starters button {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1180px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room__columns { grid-template-columns: 200px minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-lobby { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 800px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room.game-screen-shell.game-shell { padding-top: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite { min-height: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .friends-room__columns { display: flex; }
+}
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-invite { margin: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.room-lobby__intro, .room-lobby__settings, .room-directory__heading, .room-final__ticket) { padding: 25px 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__body { padding: 23px 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-pack-options > section { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__stub { height: 120px; border-radius: 22px 22px 0 0; padding: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-ticket__stub img { width: auto; max-width: 100%; height: 96px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-final { min-height: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__protocol article { max-width: 100%; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .room-projector__outcome-stats > span { padding-inline: 8px; }
+}

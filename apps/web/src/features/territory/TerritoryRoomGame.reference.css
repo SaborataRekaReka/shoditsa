@@ -1,0 +1,108 @@
+/* Team colours keep both the stripe/dot identity and all legal/selected/siege states. */
+html[data-public-theme='reference'] .territory-room-game {
+  --territory-player-light: var(--color-mint);
+  --territory-player-deep: var(--color-lilac);
+  --territory-banner-light: var(--reference-game-mint);
+  --territory-banner-deep: var(--reference-game-lilac);
+  --territory-neutral: var(--color-surface-2);
+  --territory-target: var(--color-accent);
+  --territory-map-ink: var(--color-muted);
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--reference-game-line);
+  border-radius: 26px;
+  color: var(--reference-game-ink);
+  background: var(--reference-game-paper);
+  font-family: var(--reference-game-font);
+}
+html[data-public-theme='reference'] .territory-room-game::before { display: none; }
+html[data-public-theme='reference'] .territory-hud { min-height: 0; padding: 0; grid-template-columns: minmax(0, 1fr) minmax(220px, .9fr) minmax(0, 1fr); gap: 18px; }
+html[data-public-theme='reference'] .territory-player { min-height: 78px; padding: 12px; gap: 10px; border: 1px solid transparent; border-radius: 18px; color: var(--reference-game-ink); clip-path: none; box-shadow: none; background-image: none; }
+html[data-public-theme='reference'] .territory-player.is-current { border-color: var(--color-ink); box-shadow: none; }
+html[data-public-theme='reference'] .territory-player__crest { border-color: var(--reference-game-match-ink); background-color: var(--territory-player-light); color: var(--reference-game-ink); box-shadow: none; font-family: var(--reference-game-font); }
+html[data-public-theme='reference'] .territory-player--right .territory-player__crest { border-color: var(--color-focus); background-color: var(--territory-player-deep); color: var(--reference-game-ink); }
+html[data-public-theme='reference'] .territory-player__copy > strong { color: var(--reference-game-ink); font: 700 clamp(15px, 1.6vw, 23px)/1.2 var(--reference-game-font); text-transform: none; letter-spacing: -.02em; text-shadow: none; }
+html[data-public-theme='reference'] .territory-turn { min-height: 68px; padding: 0 14px; gap: 7px; border-color: var(--reference-game-line); border-radius: 18px; background: var(--reference-game-white); font-family: var(--reference-game-font); box-shadow: none; }
+html[data-public-theme='reference'] .territory-turn > span { color: var(--reference-game-muted); font-size: 12px; letter-spacing: 0; text-transform: none; }
+html[data-public-theme='reference'] .territory-turn > :is(strong, time, b) { color: var(--reference-game-ink); font: 700 20px/1 var(--reference-game-font); }
+html[data-public-theme='reference'] .territory-turn > strong small,
+html[data-public-theme='reference'] .territory-turn > time small { color: var(--reference-game-muted); }
+html[data-public-theme='reference'] .territory-turn > i { margin-inline: 5px; background: var(--reference-game-line); }
+html[data-public-theme='reference'] .territory-turn > time.is-urgent { color: var(--reference-game-miss-ink); }
+html[data-public-theme='reference'] .territory-status-feed { width: 100%; min-height: 32px; padding: 0 10px; color: var(--reference-game-muted); font-size: 13px; line-height: 1.5; }
+html[data-public-theme='reference'] .territory-status-feed :is(svg, strong) { color: var(--reference-game-match-ink); }
+html[data-public-theme='reference'] .territory-question-panel { width: 100%; min-height: 0; margin: 0; padding: 24px; border-color: var(--reference-game-line); border-radius: 21px; color: var(--reference-game-ink); background: var(--reference-game-white); grid-template-columns: minmax(0, .9fr) minmax(0, 1.3fr) minmax(150px, .5fr); gap: 22px; clip-path: none; box-shadow: none; }
+html[data-public-theme='reference'] .territory-question-panel::before,
+html[data-public-theme='reference'] .territory-question-panel::after { display: none; }
+html[data-public-theme='reference'] .territory-question-panel__kicker { color: var(--reference-game-muted); font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html[data-public-theme='reference'] .territory-question-panel h2 { color: var(--reference-game-ink); font: 800 clamp(21px, 2.2vw, 28px)/1.2 var(--reference-game-font); letter-spacing: -.025em; }
+html[data-public-theme='reference'] .territory-question-panel :is(p, .territory-question-panel__source, .territory-question-panel__status) { color: var(--reference-game-muted); }
+html[data-public-theme='reference'] .territory-question-panel__source a { color: var(--reference-game-match-ink); }
+html[data-public-theme='reference'] .territory-option.ui-control,
+html[data-public-theme='reference'] .territory-question-panel__actions > div.territory-option { min-height: 55px; padding: 10px 13px; border: 1px solid var(--reference-game-line); border-radius: 13px; color: var(--reference-game-ink); background: var(--reference-game-paper); font-family: var(--reference-game-font); font-size: 14px; box-shadow: none; }
+html[data-public-theme='reference'] .territory-option.ui-control:hover:not(:disabled) { border-color: var(--reference-game-ink); background: var(--reference-game-lilac); transform: none; }
+html[data-public-theme='reference'] .territory-option.ui-control.is-own { border-color: var(--reference-game-ink); background: var(--reference-game-lilac); box-shadow: inset 3px 0 0 var(--reference-game-ink); }
+html[data-public-theme='reference'] .territory-option.is-own > i { border-color: var(--reference-game-ink); background: var(--reference-game-ink); }
+html[data-public-theme='reference'] .territory-option.ui-control.is-correct,
+html[data-public-theme='reference'] .territory-question-panel__actions > div.territory-option.is-correct { border-color: var(--color-primary-border); background: var(--reference-game-mint); }
+html[data-public-theme='reference'] .territory-option.ui-control.is-closest,
+html[data-public-theme='reference'] .territory-question-panel__actions > div.territory-option.is-closest { border-color: var(--color-accent-border); background: var(--reference-game-yellow); }
+html[data-public-theme='reference'] .territory-option.ui-control.is-wrong,
+html[data-public-theme='reference'] .territory-question-panel__actions > div.territory-option.is-wrong { border-color: var(--color-line-strong); background: var(--reference-game-coral); }
+html[data-public-theme='reference'] .territory-question-panel__action.ui-button { min-width: 0; min-height: 58px; }
+html[data-public-theme='reference'] .territory-question-panel__status > svg { color: var(--reference-game-match-ink); }
+html[data-public-theme='reference'] .territory-finished :is(h2, strong) { color: var(--reference-game-ink); font-family: var(--reference-game-font); text-transform: none; }
+html[data-public-theme='reference'] .territory-countdown > span { color: var(--reference-game-muted); font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html[data-public-theme='reference'] .territory-countdown > strong { margin-block: 12px; color: var(--reference-game-ink); font: 800 52px/1.1 var(--font-body); font-variant-numeric: tabular-nums; }
+html[data-public-theme='reference'] .territory-question-panel p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+html[data-public-theme='reference'] .territory-question-panel__source {
+  font-size: 12px;
+  line-height: 1.5;
+}
+html[data-public-theme='reference'] .territory-question-panel__status {
+  font-size: 14px;
+  line-height: 1.5;
+}
+html[data-public-theme='reference'] .territory-option > i {
+  border-color: var(--color-line-strong);
+  box-shadow: none;
+}
+@media (max-width: 1180px) {
+  html[data-public-theme='reference'] .territory-hud { gap: 12px; grid-template-columns: minmax(0, 1fr) minmax(190px, .9fr) minmax(0, 1fr); }
+  html[data-public-theme='reference'] .territory-player { grid-template-columns: 48px minmax(0, 1fr); }
+  html[data-public-theme='reference'] .territory-player--right { grid-template-columns: minmax(0, 1fr) 48px; }
+  html[data-public-theme='reference'] .territory-player__crest { width: 48px; height: 48px; }
+  html[data-public-theme='reference'] .territory-question-panel { grid-template-columns: minmax(0, 1fr) 170px; }
+  html[data-public-theme='reference'] .territory-question-panel__copy { grid-column: 1 / -1; }
+  html[data-public-theme='reference'] .territory-question-panel__confirm,
+  html[data-public-theme='reference'] .territory-question-panel__status { grid-column: 2; grid-row: 2; }
+  html[data-public-theme='reference'] .territory-question-panel__status--wide { grid-column: 1 / -1; }
+}
+@media (max-width: 719px) {
+  html[data-public-theme='reference'] .territory-room-game { padding: 12px; gap: 12px; border-radius: 20px; }
+  html[data-public-theme='reference'] .territory-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  html[data-public-theme='reference'] .territory-turn { min-height: 50px; grid-column: 1 / -1; grid-row: 1; }
+  html[data-public-theme='reference'] .territory-player { min-height: 60px; padding: 8px; grid-template-columns: 34px minmax(0, 1fr); gap: 7px; border-radius: 13px; background-image: none; }
+  html[data-public-theme='reference'] .territory-player--right { grid-template-columns: minmax(0, 1fr) 34px; }
+  html[data-public-theme='reference'] .territory-player__crest { width: 34px; height: 34px; font-size: 15px; }
+  html[data-public-theme='reference'] .territory-player__copy > strong { font-size: 13px; }
+  html[data-public-theme='reference'] .territory-question-panel { padding: 17px 13px; gap: 13px; grid-template-columns: minmax(0, 1fr); }
+  html[data-public-theme='reference'] .territory-question-panel__copy,
+  html[data-public-theme='reference'] .territory-question-panel__actions,
+  html[data-public-theme='reference'] .territory-question-panel__confirm,
+  html[data-public-theme='reference'] .territory-question-panel__status { grid-column: 1; grid-row: auto; }
+  html[data-public-theme='reference'] .territory-question-panel__actions { order: 2; }
+  html[data-public-theme='reference'] .territory-question-panel__confirm { position: static; order: 3; }
+  html[data-public-theme='reference'] .territory-question-panel__status { order: 4; }
+  html[data-public-theme='reference'] .territory-status-feed { padding-inline: 3px; font-size: 13px; line-height: 1.5; }
+}
+@media (max-width: 389px) {
+  html[data-public-theme='reference'] .territory-question-panel__actions { grid-template-columns: minmax(0, 1fr); }
+}

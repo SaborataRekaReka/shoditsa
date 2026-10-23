@@ -15,7 +15,7 @@ import {
 import { ApiClientError, api, queryKeys } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
-import { ControlButton, DialogSurface, TextInput } from '../../components/ui'
+import { ActionButton, ControlButton, DialogSurface, IconButton, TextInput } from '../../components/ui'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { checkoutDestination } from './checkout-flow'
 import './CommercialShell.css'
@@ -47,6 +47,7 @@ const priceLabel = (product: CommerceProduct) => new Intl.NumberFormat('ru-RU', 
 }).format(product.priceMinor / 100)
 
 type TipCheckoutTriggerProps = {
+  variant?: 'card' | 'compact'
   className?: string
   placement?: string
   initialOpen?: boolean
@@ -55,6 +56,7 @@ type TipCheckoutTriggerProps = {
 }
 
 export function TipCheckoutTrigger({
+  variant = 'card',
   className = '',
   placement = 'victory_tip',
   initialOpen = false,
@@ -139,9 +141,9 @@ export function TipCheckoutTrigger({
                 <span>Цифровой сувенир</span>
                 <h2 id="tip-modal-title">Выберите жетон кассиру</h2>
               </div>
-              <ControlButton onClick={close} disabled={Boolean(pendingProductId)} aria-label="Закрыть">
+              <IconButton onClick={close} disabled={Boolean(pendingProductId)} label="Закрыть">
                 <X />
-              </ControlButton>
+              </IconButton>
             </header>
             <p className="tip-modal__lead">
               Это настоящая покупка памятного цифрового жетона. После оплаты он останется в личном кабинете и увеличит счётчик поддержки кассира.
@@ -191,18 +193,28 @@ export function TipCheckoutTrigger({
       )
     : null
 
+  const openTipDialog = () => {
+    setError('')
+    setOpen(true)
+  }
+
   return <>
-    <ControlButton
+    {variant === 'compact' ? <ActionButton
+      type="button"
+      variant="ghost"
+      className={className}
+      onClick={openTipDialog}
+    >
+      <Heart aria-hidden="true" />
+      {label}
+    </ActionButton> : <ControlButton
       className={`tip-checkout-trigger ${className}`.trim()}
-      onClick={() => {
-        setError('')
-        setOpen(true)
-      }}
+      onClick={openTipDialog}
     >
       <Heart className="tip-checkout-trigger__heart" />
       <span><strong>{label}</strong><small>{hint}</small></span>
       <ChevronRight />
-    </ControlButton>
+    </ControlButton>}
     {modal}
   </>
 }

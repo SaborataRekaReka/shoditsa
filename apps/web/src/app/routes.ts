@@ -2,7 +2,7 @@ import { isPlayableModeId, type PlayableModeId } from '@shoditsa/contracts'
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
 import { isDanetkiCollectionSlug, type DanetkiCollectionSlug } from '../features/danetki/danetki-collections'
 
-export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-catalog' | 'danetki-story' | 'danetki-join' | 'friends-intro' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal'
+export type PlayerScreen = 'hub' | 'title' | 'game' | 'danetki' | 'danetki-catalog' | 'danetki-story' | 'danetki-join' | 'friends-intro' | 'friends-room' | 'rewatch' | 'review' | 'profile' | 'leaderboard' | 'club' | 'purchase-return' | 'specials' | 'special' | 'create-game' | 'legal' | 'support' | 'blog' | 'blog-post'
 
 export type PlayerRouteState = {
   screen: PlayerScreen
@@ -13,6 +13,7 @@ export type PlayerRouteState = {
   inviteToken?: string
   danetkiSlug?: string
   danetkiCollection?: DanetkiCollectionSlug
+  blogSlug?: string
 }
 
 const decodedSegment = (value: string) => {
@@ -27,6 +28,11 @@ export const playerRouteFromPathname = (pathname: string): PlayerRouteState => {
   const normalized = `/${pathname}`.replace(/\/{2,}/g, '/').replace(/\/$/, '') || '/'
   if (normalized === '/archive') return { screen: 'rewatch' }
   if (normalized === '/profile') return { screen: 'profile' }
+  if (normalized === '/leaderboard') return { screen: 'leaderboard' }
+  if (normalized === '/support') return { screen: 'support' }
+  if (normalized === '/blog') return { screen: 'blog' }
+  const blogMatch = normalized.match(/^\/blog\/([^/]+)$/)
+  if (blogMatch) return { screen: 'blog-post', blogSlug: decodedSegment(blogMatch[1]) }
   if (normalized === '/club') return { screen: 'club' }
   if (normalized === '/specials') return { screen: 'specials' }
   if (normalized === '/partners' || normalized === '/create-a-game') return { screen: 'create-game' }
@@ -81,7 +87,10 @@ export const playerRouteFromLocation = (pathname: string, search = ''): PlayerRo
     : route
 }
 
-export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken, danetkiSlug, danetkiCollection }: PlayerRouteState) => {
+export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalDocument, inviteToken, danetkiSlug, danetkiCollection, blogSlug }: PlayerRouteState) => {
+  if (screen === 'support') return '/support'
+  if (screen === 'blog') return '/blog'
+  if (screen === 'blog-post' && blogSlug) return `/blog/${encodeURIComponent(blogSlug)}`
   if (screen === 'danetki') return '/games/danetki'
   if (screen === 'danetki-catalog') return danetkiCollection ? `/danetki/${danetkiCollection}` : '/danetki'
   if (screen === 'danetki-story' && danetkiSlug) return `/danetki/${encodeURIComponent(danetkiSlug)}`
@@ -94,6 +103,7 @@ export const pathnameForPlayerRoute = ({ screen, mode, sessionId, packId, legalD
   if (screen === 'game' && mode) return `/play/${encodeURIComponent(mode)}`
   if (screen === 'rewatch') return '/archive'
   if (screen === 'profile') return '/profile'
+  if (screen === 'leaderboard') return '/leaderboard'
   if (screen === 'club') return '/club'
   if (screen === 'specials') return '/specials'
   if (screen === 'special') return packId ? `/specials/${encodeURIComponent(packId)}` : '/specials'

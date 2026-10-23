@@ -1,0 +1,9 @@
+.room-creation-footer { position: sticky; z-index: 5; bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px 20px; padding: 16px; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 18px; background: var(--quest-bg); }
+.room-creation-footer__info { display: grid; gap: 5px; min-width: 0; flex: 1 1 220px; }
+.room-creation-footer__info strong { font: 800 14px/1.4 var(--quest-heading); color: var(--quest-text); }
+.room-creation-footer__info span { display: flex; align-items: center; gap: 7px; font-size: 12px; line-height: 1.5; color: var(--quest-muted); }
+.room-creation-footer__info svg { flex: none; color: var(--quest-blue); }
+.room-creation-footer__info small { color: var(--quest-muted); font-size: 11px; line-height: 1.5; }
+.room-creation-footer__action { display: flex; flex: 0 1 auto; }
+@container application-content (max-width: 520px) { .room-creation-footer { gap: 12px; padding: 13px; } .room-creation-footer__info { flex-basis: 100%; } .room-creation-footer__action { flex: 1 1 100%; } .room-creation-footer__action > * { width: 100%; } }
+@media (max-width: 699px) { .room-creation-footer { bottom: calc(78px + env(safe-area-inset-bottom)); } }

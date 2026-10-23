@@ -1,0 +1,2 @@
+.ui-tooltip { position: fixed; z-index: var(--z-menu, 130); display: block; max-width: min(240px, calc(100vw - 100px)); padding: 9px 12px; border-radius: 8px; background: var(--color-action); color: var(--color-on-action); box-shadow: 0 3px 10px #0002; font: 500 13px/1.35 var(--font-body); letter-spacing: normal; text-transform: none; white-space: nowrap; transform: translateY(-50%); }
+.ui-tooltip::before { content: ''; position: absolute; left: -4px; top: calc(50% - 4px); width: 8px; height: 8px; background: inherit; transform: rotate(45deg); }

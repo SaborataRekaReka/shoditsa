@@ -1,0 +1,62 @@
+/* Shared application frame for local and server guessing games. */
+html[data-local-study='session'] body { background: var(--quest-bg); }
+html[data-local-study='session'] .app.app--game { width: 100%; max-width: none; margin: 0; padding: 0; background: var(--quest-bg); }
+html[data-local-study='session'] .app > .reference-footer { display: none; }
+.study-session { color: var(--quest-text); background: var(--quest-bg); font: 400 15px/1.5 var(--quest-font); }
+.study-session-skip { position: fixed; top: -90px; left: 24px; z-index: 100; padding: 12px 20px; background: var(--quest-bg); border: 2px solid var(--quest-blue); border-radius: 10px; }
+.study-session-skip:focus { top: 16px; }
+.study-session-main { position: relative; min-width: 0; }
+.study-session-aside .qg-card { padding: 20px; margin-bottom: 18px; }
+.study-session-help ul { display: grid; gap: 16px; list-style: none; padding: 0; margin: 20px 0; }
+.study-session-help li { display: flex; align-items: center; gap: 12px; }
+.study-session-help strong { display: block; font-size: 14px; }
+.study-session-help small { display: block; font-size: 12px; font-weight: 400; color: var(--quest-muted); margin-top: 2px; }
+.study-match { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; border: 1px solid transparent; border-radius: 10px; }
+.study-match--exact { color: var(--quest-green); background: var(--quest-green-wash); border-color: color-mix(in srgb, var(--quest-green) 25%, var(--quest-green-wash)); }
+.study-match--partial { color: var(--quest-gold); background: var(--quest-gold-wash); border-color: color-mix(in srgb, var(--quest-gold) 22%, var(--quest-gold-wash)); }
+.study-match--miss { color: var(--quest-red); background: color-mix(in srgb, var(--quest-red-wash) 28%, var(--quest-bg)); border-color: color-mix(in srgb, var(--quest-red-wash) 65%, var(--quest-bg)); }
+.study-match--direction { width: 24px; height: 24px; border-radius: 7px; color: var(--quest-muted); background: var(--quest-bg); border-color: var(--quest-line); }
+.study-match-directions { display: flex; flex-direction: column; align-items: center; flex: 0 0 36px; gap: 3px; }
+.study-match--direction .reference-match-symbol { width: 16px; height: 16px; }
+.study-session-help > .quest-button { width: 100%; }
+
+html[data-local-study='session'] .study-session .game-heading { display: flex; align-items: center; min-height: 112px; padding: 20px 24px; gap: 16px; margin: 0 0 20px; border: 0; border-radius: 16px; background: color-mix(in srgb, var(--quest-purple) 55%, var(--quest-bg)); box-shadow: none; animation: none; }
+html[data-local-study='session'] .study-session .game-heading > div:first-child { flex: 1; min-width: 0; }
+html[data-local-study='session'] .study-session .game-heading__kicker { color: var(--quest-muted); font-size: 11px; font-weight: 500; }
+html[data-local-study='session'] .study-session .game-heading h1 { margin: 5px 0; color: var(--quest-text); font: 800 28px/1.2 var(--quest-heading); letter-spacing: -.5px; text-transform: none; }
+html[data-local-study='session'] .study-session .game-heading p { margin: 0; color: var(--quest-muted); font: 400 12px/1.5 var(--quest-font); }
+html[data-local-study='session'] .study-session .reference-session-visual { flex: 0 0 76px; width: 76px; height: 80px; justify-content: center; }
+html[data-local-study='session'] .study-session .reference-session-note { display: none; }
+html[data-local-study='session'] .study-session .reference-session-art { flex-basis: 76px; width: 76px; height: 80px; margin: 0; object-fit: contain; transform: none; }
+html[data-local-study='session'] .study-session .progress-row { padding: 0; margin-bottom: 18px; border: 0; background: transparent; box-shadow: none; }
+html[data-local-study='session'] .study-session .search-area--sticky { position: relative; top: auto; margin: 0; padding: 20px 20px 8px; border: 2px solid var(--quest-purple); border-bottom-width: 4px; border-radius: 16px; background: var(--quest-bg); box-shadow: none; }
+html[data-local-study='session'] .study-session .empty-card { display: flex; align-items: flex-start; gap: 14px; padding: 22px 8px; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+html[data-local-study='session'] .study-session .empty-card__icon { display: grid; place-items: center; flex: 0 0 44px; height: 44px; border-radius: 13px; background: var(--quest-gold-wash); color: var(--quest-text); }
+html[data-local-study='session'] .study-session .empty-card__icon > svg { width: 24px; height: 24px; }
+html[data-local-study='session'] .study-session .empty-card > div:nth-child(2) { flex: 1; min-width: 0; }
+html[data-local-study='session'] .study-session .empty-card h2 { margin: 0; font: 700 17px/1.4 var(--quest-heading); letter-spacing: 0; }
+html[data-local-study='session'] .study-session .empty-card p { color: var(--quest-muted); font: 400 14px/1.6 var(--quest-font); margin: 5px 0 0; }
+html[data-local-study='session'] .study-session .attempt-list { margin-top: 24px; }
+html[data-local-study='session'] .study-session .section-title { align-items: center; gap: 12px; margin-bottom: 14px; }
+html[data-local-study='session'] .study-session .section-title > span { color: var(--quest-text); font: 800 21px/1.3 var(--quest-heading); letter-spacing: -.3px; text-transform: none; }
+html[data-local-study='session'] .study-session .section-title > strong { color: var(--quest-muted); font: 600 13px/1.5 var(--quest-font); }
+html[data-local-study='session'] .study-session :is(.result-card, .assist-reveal-card, .final-choice-panel) { border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 16px; box-shadow: none; }
+html[data-local-study='session'] .study-session .result-card :is(h2, h3) { font-family: var(--quest-heading); font-weight: 800; }
+html[data-local-study='session'] :is(.modal-head h2, .ui-dialog h2, .hint-modal h2) { font-family: var(--quest-heading); font-weight: 800; text-transform: none; }
+
+@media (max-width: 1000px) { .study-session .qg-right { display: block; margin-top: 24px; } }
+@media (max-width: 699px) {
+  .study-session .study-header { margin-inline: -16px; }
+  html[data-local-study='session'] .study-session .game-heading { min-height: 104px; padding: 16px; gap: 12px; margin-bottom: 16px; }
+  html[data-local-study='session'] .study-session .game-heading h1 { font-size: 25px; }
+  html[data-local-study='session'] .study-session .reference-session-visual,
+  html[data-local-study='session'] .study-session .reference-session-art { flex-basis: 60px; width: 60px; height: 68px; }
+  html[data-local-study='session'] .study-session .search-area--sticky { padding: 14px 12px 6px; }
+  html[data-local-study='session'] .study-session .empty-card { gap: 12px; padding: 20px 4px; }
+}
+@media (max-width: 359px) {
+  .study-session .study-header { margin-inline: -13px; }
+  html[data-local-study='session'] .study-session .game-heading h1 { font-size: 22px; }
+  html[data-local-study='session'] .study-session .reference-session-visual,
+  html[data-local-study='session'] .study-session .reference-session-art { flex-basis: 48px; width: 48px; height: 58px; }
+}

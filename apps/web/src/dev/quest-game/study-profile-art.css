@@ -1,0 +1,3 @@
+.study-profile-icon { display: inline-block; flex: none; }
+.study-settings-icon { display: block; flex: none; object-fit: contain; }
+.study-profile-illustration { display: block; width: 168px; height: 112px; object-fit: contain; margin: 0 auto 18px; }

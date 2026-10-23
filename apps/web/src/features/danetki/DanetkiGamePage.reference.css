@@ -1,0 +1,92 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-recommendations { border-radius: 24px; box-shadow: none; background: var(--reference-game-white); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-recommendations__header h2 { font: 800 clamp(26px, 3vw, 36px)/1.15 var(--reference-game-font); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-recommendation-card__copy strong { font-family: var(--reference-game-font); font-weight: 700; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session { background: var(--color-bg); color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-main.game-screen-shell.game-shell { width: min(var(--content-width), calc(100% - 2 * var(--content-gutter))); max-width: var(--content-width); padding: 32px 0 64px; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-mini-ticket { border-color: var(--color-line); background: var(--color-coral); box-shadow: none; transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief { padding: 24px; border: 1px solid var(--color-line); border-radius: 22px; background: var(--match-miss-bg); color: var(--color-ink); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief > header > span { color: var(--color-danger); font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief > header strong { color: var(--color-muted); font: 400 13px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief > p { margin-block: 18px 20px; color: var(--color-ink); font: 500 clamp(19px, 2.3vw, 24px)/1.5 var(--font-body); letter-spacing: 0; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-starter-questions { padding: 0; border-color: var(--color-line); border-radius: 15px; background: transparent; border: 0; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-starter-questions > span { color: var(--color-muted); font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief > footer { border-color: var(--color-line); color: var(--color-muted); font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status { color: var(--color-primary); font: 500 12px/1.5 var(--font-body); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status i { background: var(--color-primary); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status--offline,
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status--error { color: var(--color-danger); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status--offline i,
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status--error i { background: var(--color-danger); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-status--reconnecting i { background: var(--color-accent); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-room-summary > strong { color: var(--color-ink); font: 700 19px/1.2 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-question-count { color: var(--color-muted); border-color: var(--color-line); background: var(--color-surface); font: 500 13px/1.3 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-room-summary > small { font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-connection { color: var(--color-accent-ink); border-color: var(--color-accent-border); background: var(--match-partial-bg); font-size: 12px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-connection--offline { color: var(--match-miss-ink); border-color: color-mix(in srgb, var(--match-miss-ink) 20%, var(--match-miss-bg)); background: var(--match-miss-bg); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-turn { color: var(--color-accent); background: var(--match-partial-bg); border-color: var(--color-accent-border); font: 500 12px/1.4 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-turn.is-current { color: var(--color-primary); background: var(--match-exact-bg); border-color: var(--color-primary-border); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-messages { padding: 20px; border: 0; border-radius: 0; background: var(--color-paper); scrollbar-color: var(--color-line-strong) transparent; border-top: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-empty { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-empty svg { color: var(--color-focus); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__bubble { --danetki-bubble-fill: var(--color-surface); color: var(--color-ink); box-shadow: none; padding: 12px 14px; border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--danetki-bubble-fill); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-ai.is-yes .danetki-message__bubble { --danetki-bubble-fill: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-ai.is-no .danetki-message__bubble { --danetki-bubble-fill: var(--match-miss-bg); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-mine .danetki-message__bubble { --danetki-bubble-fill: var(--color-lilac); color: var(--color-ink); box-shadow: none; background: var(--danetki-bubble-fill); border-color: transparent; border-radius: var(--radius-md); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__author { color: var(--color-primary); letter-spacing: 0; font-size: 13px; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-mine .danetki-message__author { color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__bubble time,
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__bubble header small,
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-mine .danetki-message__bubble time,
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-mine .danetki-message__bubble header small { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__avatar { border-color: var(--color-line); background: var(--color-yellow); color: var(--color-ink); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-system { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-system.is-solution { background: var(--match-partial-bg); color: var(--color-accent); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-waiting { border-color: var(--color-line); background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-typing > span:last-child { border-color: var(--color-line); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-typing i { background: var(--color-focus); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-composer { border: 0; border-radius: 0; background: transparent; box-shadow: none; padding: 0; gap: 10px; align-items: center; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-dialog-backdrop { background: var(--color-overlay); backdrop-filter: blur(5px); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-dialog { border: 1px solid var(--color-line); border-radius: 24px; color: var(--color-ink); background: var(--color-surface); box-shadow: var(--shadow-floating); border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-dialog h2 { color: var(--color-ink); font: 800 28px/1.2 var(--font-body); letter-spacing: -.02em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-dialog p { color: var(--color-muted); line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome { --danetki-outcome-accent: var(--color-mint); padding: 24px; gap: 20px; border-color: var(--color-line); border-radius: 22px; background: var(--color-surface); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome--lost { --danetki-outcome-accent: var(--color-yellow); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__copy h2 { font: 900 clamp(27px, 3.8vw, 37px)/1.1 var(--font-body); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) :is(.danetki-outcome__copy > span, .danetki-outcome__alternatives > span) { color: var(--color-muted); font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__metrics { border-color: var(--color-line); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__metrics article + article { border-color: var(--color-line); border-left-style: solid; border-top-style: solid; border-top-width: 0; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__metrics strong { font-family: var(--font-body); font-weight: 700; text-transform: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__metrics small { font-size: 13px; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__alternatives a { padding: 13px; background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__alternatives small { font-size: 13px; line-height: 1.5; white-space: normal; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-investigation { padding: 0; border: 1px solid var(--color-line); border-radius: var(--radius-lg); color: var(--color-ink); background: var(--color-surface); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-investigation::before,
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-investigation::after { display: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-room-toolbar { border-color: var(--color-line); color: var(--color-ink); background: var(--color-surface); padding: 18px 20px; gap: 12px; flex-wrap: wrap; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-members small { font-size: 13px; text-transform: none; font-weight: 400; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message.is-ai .danetki-message__bubble { background: var(--danetki-bubble-fill); color: var(--color-ink); border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__bubble::after { display: none; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-typing { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-system { color: var(--color-muted); font-size: 13px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-system time { color: var(--color-muted); font-size: 12px; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-starter-question { justify-content: flex-start; text-align: left; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-new-messages { display: flex; position: relative; z-index: 3; margin: -48px auto 12px; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-composer__input { width: 100%; min-width: 0; min-height: 52px; height: 52px; max-height: 180px; resize: vertical; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-composer-actions { flex-wrap: wrap; gap: 10px; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-composer-actions > :last-child { margin-left: auto; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-composer__send { width: 48px; min-width: 48px; height: 48px; flex-shrink: 0; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__bubble p { font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-host-retry { margin-left: auto; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-main.game-screen-shell.game-shell { padding: 22px 0 40px; }
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief { padding: 20px 16px; border-radius: 18px; }
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-case-brief > p { font-size: 19px; }
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-messages { padding-inline: 14px; }
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-room-summary > strong { font-size: 17px; }
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-page--session .danetki-message__bubble p { font-size: 15px; line-height: 1.65; }
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome { padding: 18px; gap: 18px; }
+}
+@media (max-width: 620px) {
+  html:is([data-public-theme='reference'], [data-quest-skin='shoditsa']) .danetki-outcome__metrics article + article { border-top-width: 1px; }
+}

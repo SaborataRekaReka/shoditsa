@@ -1,0 +1,148 @@
+/* GameResult owns its answer, reward summary and supporting details.
+   Shared actions and account prompts are styled by their own components. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card {
+  padding: var(--space-5);
+  gap: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: none;
+  font: 400 14px/1.5 var(--font-body);
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card:is(.won, .lost) { border: 1px solid var(--color-line); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__hero { align-items: start; gap: var(--space-5); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__poster { border-color: var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface-2); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy { padding: 0; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-verdict {
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--match-exact-ink);
+  background: var(--match-exact-bg);
+  font: 600 14px/1.4 var(--font-body);
+  letter-spacing: 0;
+  text-transform: none;
+  box-shadow: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card.won .result-verdict { transform: none; animation: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card.lost .result-verdict { color: var(--match-miss-ink); background: var(--match-miss-bg); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy > h2 {
+  margin: 12px 0 6px;
+  font: 700 clamp(26px, 2.7vw, 34px)/1.2 var(--font-body);
+  letter-spacing: -.025em;
+  text-wrap: pretty;
+  text-transform: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy > p { color: var(--color-muted); font-size: 14px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-tags { margin: 10px 0 0; gap: 6px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-tags i {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  color: var(--color-muted);
+  background: var(--color-surface-2);
+  font: 400 14px/1.5 var(--font-body);
+  white-space: normal;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy > strong {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--color-ink);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card.lost .result-card__copy > strong { background: transparent; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards { border: 0; border-radius: var(--radius-md); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article {
+  min-height: 88px;
+  padding: var(--space-4);
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article + article { border-left: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards :is(.result-reward--tickets, .result-reward--score) { background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article > span { width: 24px; height: 24px; border-radius: 0; color: var(--color-muted); background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article > span svg { width: 21px; height: 21px; stroke-width: 1.7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article strong { color: var(--color-ink); font: 700 22px/1.3 var(--font-body); text-transform: none; animation: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article small { overflow: visible; color: var(--color-muted); font: 400 14px/1.5 var(--font-body); text-overflow: clip; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-route-track { height: 4px; margin-top: 6px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-route-track b { background: var(--color-line-strong); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-route-track b.is-complete { background: var(--match-exact-ink); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations { padding: 0; border: 0; border-radius: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations > header { margin-bottom: var(--space-3); gap: var(--space-3); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations > header strong { font: 700 20px/1.3 var(--font-body); text-transform: none; letter-spacing: -.02em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations > div { gap: var(--space-3); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations__copy strong { font: 700 18px/1.35 var(--font-body); text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations button { border-color: var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations__art { border: 0; background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations__art img { padding: 8px; object-fit: contain; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations__copy { padding: var(--space-3); gap: 6px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.result-recommendations > header span, .result-recommendations > header small, .result-recommendations__copy i) { color: var(--color-muted); font: 400 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations__copy small { font: 400 14px/1.5 var(--font-body); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-score { padding: var(--space-3); border-radius: var(--radius-sm); background: var(--color-surface-2); font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-score strong { color: var(--match-exact-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-award strong { font: 700 17px/1.3 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-award--claimed { font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reward-breakdown { border-color: var(--color-line); border-radius: var(--radius-sm); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reward-breakdown summary { min-height: 50px; padding: 10px var(--space-4); gap: var(--space-3); font: 500 14px/1.5 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reward-breakdown summary:hover,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reward-breakdown[open] summary { background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reward-breakdown ul { padding: var(--space-2) var(--space-4) var(--space-4); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reward-breakdown li { padding-block: 6px; gap: var(--space-3); font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-utility { gap: 4px var(--space-4); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-utility > a { min-height: 44px; font-size: 14px; }
+
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card { padding: var(--space-4); gap: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__hero { gap: var(--space-4); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy > h2 { font-size: 24px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article { padding: var(--space-3); grid-template-columns: minmax(0, 1fr); align-content: start; gap: 6px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article > span { display: none; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article strong { font-size: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-recommendations > header { align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__hero { grid-template-columns: 64px minmax(0, 1fr); gap: var(--space-3); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__poster { width: 64px; height: 92px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy > h2 { font-size: 22px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-tags { display: flex; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card__copy > p { display: block; overflow: visible; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article { min-height: 0; grid-template-columns: 24px minmax(0, 1fr); align-items: start; gap: var(--space-3); text-align: left; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article > span { display: grid; margin-top: 3px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article + article { border-left: 0; border-top: 1px solid var(--color-line); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-rewards article > div { grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 4px var(--space-3); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-route-track { grid-column: 1 / -1; max-width: 108px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .result-card { margin-top: 0; }
+
+/* A single celebration, shared by all ten quizzes and their special packs. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration {
+  gap: 16px;
+  padding: 28px clamp(16px, 3vw, 40px) 20px;
+  background: var(--color-surface);
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration > * { width: 100%; max-width: 560px; justify-self: center; min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 0; overflow: visible; border: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { min-height: 66px; padding: 4px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 0; background: transparent; text-align: center; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > span { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article > div { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 5px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article strong { font-size: 24px; font-weight: 850; line-height: 1.15; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article small { font-size: 12px; line-height: 1.3; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards :is(.result-reward--tickets, .result-reward--score) { background: transparent; border: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards :is(.result-reward--tickets, .result-reward--score) strong { color: var(--color-accent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-route-track { width: 86px; max-width: 100%; margin-top: 4px; }
+@media (max-width: 480px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration { padding: 20px 14px 14px; gap: 14px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article { padding: 6px; min-height: 60px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .result-card--celebration .result-rewards article strong { font-size: 21px; }
+}

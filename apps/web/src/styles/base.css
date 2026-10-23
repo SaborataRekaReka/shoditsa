@@ -7,3 +7,25 @@ button, a { color: inherit; }
 button { cursor: pointer; }
 button, a, select { transition: transform .22s var(--ease), background-color .22s ease, border-color .22s ease, color .22s ease, opacity .22s ease; }
 button:active { transform: translateY(1px); }
+
+/* Shared route loading and failure states must exist before lazy game CSS. */
+.loading { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--color-muted); font-size: 12px; }
+.loading--error { width: min(100%, 520px); min-height: calc(100vh - 72px); margin: 0 auto; padding: 32px 18px; flex-direction: column; color: var(--color-text); text-align: center; }
+.loading--error > svg { width: 36px; height: 36px; color: var(--color-accent); }
+.loading--error h1 { margin: 8px 0 0; font: 500 30px/1.05 Oswald, sans-serif; text-transform: uppercase; }
+.loading--error p { max-width: 410px; margin: 0; color: var(--color-muted); font-size: 12px; line-height: 1.55; }
+.loading--error > div { margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.loading--error .ui-button { min-height: 44px; }
+.loading--compact { min-height: 160px; padding: 24px 16px; text-align: center; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) body { min-width: 0; font-family: var(--font-body); color: var(--color-text); line-height: 1.5; }
+:where([data-public-theme='reference']) :where(h1, h2, h3, h4) { font-family: var(--font-display); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(button, a, input, select, textarea):focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app { padding-bottom: 0; background: var(--color-bg); }
+/* The photographic backdrop belongs to the legacy game, never the new shell. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app::before,
+html[data-public-theme='quest-study'] .app::before { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .loading { color: var(--color-text); font-family: var(--font-body); font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .loading--error { gap: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .loading--error h1 { font: 800 clamp(26px, 5vw, 32px)/1.2 var(--font-display); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .loading--error p { font-size: 14px; line-height: 1.7; }

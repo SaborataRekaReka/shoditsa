@@ -1,0 +1,4 @@
+.game-composer-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.game-composer-header > .ui-segmented-progress { flex: 1; min-width: 0; }
+.game-composer-header > .quest-button { flex: none; }
+@media (max-width: 420px) { .game-composer-header { flex-wrap: wrap; gap: 10px; } .game-composer-header > .ui-segmented-progress { flex-basis: 100%; } }

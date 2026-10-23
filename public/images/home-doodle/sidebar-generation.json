@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-10-15",
+  "tool": "built-in image_gen",
+  "purpose": "Reference game-page header and sidebar mascot variants",
+  "sourceReferences": [
+    "public/images/home-doodle/anime.webp",
+    "C:/Users/brene/AppData/Local/Temp/codex-clipboard-79086afd-58ee-4346-bebf-80d72cdc0384.png"
+  ],
+  "transparentBackground": true,
+  "assets": [
+    {
+      "name": "anime-hero",
+      "prompt": "Use case: identity-preserve. Asset type: transparent PNG doodle mascot for a Russian daily guessing game website hero. Input image 1 is the existing mascot whose identity and illustration style must be preserved; input image 2 is the intended website reference and pose guide ONLY. Create a single standalone cutout of the SAME happy golden-yellow and white cat, now front-facing from the upper chest upward, its TWO WHITE FRONT PAWS resting at the same bottom level on an imaginary invisible edge. Large pointy golden ears with pink interiors, broad white cheeks and muzzle, round black eyes each with a bold white four-point star, tiny black nose, open smiling mouth with pink tongue, three black whiskers on each side. Match the reference mascot's thick slightly irregular hand-drawn black outlines, warm pale yellow fills and subtle paper/grain texture. The cat is eager, warm and playful. Add only three short black hand-drawn excitement strokes above its head. Compose head and paws together filling most of a square canvas with a small transparent safety margin; no cropping of ears, whiskers or paws. Background must be genuinely transparent alpha. No frame, no physical ledge, no website screenshot, no writing, no extra props, no heart, no shadow or ground, no watermark. Preserve the exact face design and color palette of input image 1, change the pose only.",
+      "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f50-4ac5-7ef1-9103-11db656e469a/exec-09a3f420-81cc-4003-be57-68446b9c70cc.png",
+      "original": "anime-hero.png",
+      "web": "anime-hero.webp",
+      "width": 1254,
+      "height": 1254,
+      "hasAlpha": true,
+      "conversion": "sharp.webp({ quality: 88, alphaQuality: 100 }); no cropping or resizing"
+    },
+    {
+      "name": "sleeping-cat",
+      "prompt": "Use case: identity-preserve. Asset type: transparent PNG doodle mascot for a daily guessing game website sidebar countdown. Input image 1 is the existing mascot whose identity, palette and bold hand-drawn illustration style must be preserved; input image 2 is the webpage composition guide, especially the small sleeping cat next to the countdown. Create one standalone cutout of the SAME golden-yellow and white cat, sleeping curled into a compact horizontal oval, body toward the right, head at the lower-left tucked on white front paws and gently angled toward the right; its golden tail curls around the body on the right. Relaxed closed black-line eyes, tiny black nose, golden ears with pink interiors, white muzzle/chest/paws. Thick slightly irregular black ink outlines, warm pale golden fill, very subtle paper/grain texture, friendly flat doodle style. Three small black hand-drawn 'z' sleep marks rising diagonally above the cat, matching the reference. Keep the entire animal and sleep marks visible, large within the canvas with only small transparent margins. Background must be genuinely transparent alpha. No scene, no cushion, no ground, no frame, no website UI, no other text except three small z marks, no watermark. Preserve the mascot character identity and warm yellow/white/black palette.",
+      "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f50-4ac5-7ef1-9103-11db656e469a/exec-38374432-f1ff-4648-9fba-884b9714a328.png",
+      "original": "sleeping-cat.png",
+      "web": "sleeping-cat.webp",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "conversion": "sharp.webp({ quality: 88, alphaQuality: 100 }); no cropping or resizing"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-10-15T14:39:07.955Z",
+  "tool": "built-in image_gen.imagegen",
+  "intent": "identity-preserve",
+  "referenceImage": "C:/Users/brene/AppData/Local/Temp/codex-clipboard-d124e60a-25a1-4700-b426-5d4055e97cdf.png",
+  "transparentBackground": true,
+  "assets": [
+    {
+      "name": "club-v1",
+      "prompt": "Use case: identity-preserve.\nAsset type: transparent mascot illustration for a Russian puzzle-game website.\nInput image 1 is the exact character-identity and illustration-style reference.\nPrimary request: render this SAME lime-green furry alien cat in a new seated pose, holding a single golden admission ticket proudly in its two little front paws. The ticket has one simple five-point star emblem only, no text or numbers.\nIdentity invariants: chubby compact furry cat body; pointed cat ears; exactly TWO long green antennae with large rounded bulb tips; black shiny narrow almond/slit eyes with tiny white catchlights; tiny olive nose and whimsical curved smile; large fluffy tail; lime/chartreuse-green fur with soft yellow-green highlights and darker olive-green tufts. Thick black hand-drawn outlines. Keep the reference's face shape, eye shape, antennae proportions, fur texture and charming slightly mischievous personality. This is not a different cat, not a round yellow mascot, not a human.\nPose and composition: seated, full body, feet and tail entirely visible, holding the golden ticket in front of the belly. Both antenna tips fully inside the frame. Center the complete character on a square canvas and leave at least 12% clear transparent padding around the outermost silhouette in every direction.\nStyle: same polished hand-drawn 2D cartoon illustration as reference, soft fur shading within clean bold black contours, bright lime green dominant palette.\nBackground: genuinely transparent RGBA alpha; no backdrop, no paper texture, no floor, no ground shadow.\nConstraints: exactly one character and one admission ticket. No letters, numbers, typography, logos, watermark, additional decorations or objects. Do not crop any body part or antenna.",
+      "source": "C:/Users/brene/.codex/generated_images/01a13f4f-e56e-7f33-809c-206626be640b/exec-00390913-0052-4331-a841-24199b9988e8.png",
+      "outputs": [
+        "public/images/mascot/club-v1.png",
+        "public/images/mascot/club-v1.webp"
+      ],
+      "processing": "PNG copied unchanged; WebP encoded using sharp({ quality: 90, alphaQuality: 100, effort: 6 }), preserving dimensions and alpha. No resizing, recolouring, trimming or background removal.",
+      "validation": {
+        "width": 1254,
+        "height": 1254,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "visibleBoundsAlphaOver8": {
+          "minX": 152,
+          "minY": 76,
+          "maxX": 1004,
+          "maxY": 1173
+        },
+        "review": "Identity, full-body pose, two antennae, tail, ticket star or celebration marks checked visually. No clipping, letters or backdrop. Generator supplied about 5–6% vertical transparent margin rather than the requested 12%; artwork left unchanged.",
+        "sourcePngSha256": "b437a2d61d5793ac1ca87b79dc82841c7f94cdc71bf43e711b0e1df7118862be",
+        "originalPngUnchanged": true,
+        "alphaPixelsChangedInWebp": 0,
+        "pngBytes": 935452,
+        "webpBytes": 129084
+      }
+    },
+    {
+      "name": "celebrate-v1",
+      "prompt": "Use case: identity-preserve.\nAsset type: transparent celebration mascot illustration for a Russian puzzle-game website.\nInput image 1 is the exact character-identity and illustration-style reference.\nPrimary request: render this SAME lime-green furry alien cat celebrating a solved puzzle, with both little front paws raised joyfully, a whimsical happy smile, and a buoyant proud full-body stance. Include only one small coral heart and a few short warm yellow celebration rays near its head, matching the reference's simple decorative marks.\nIdentity invariants: chubby compact furry cat body; pointed cat ears; exactly TWO long green antennae with large rounded bulb tips; black shiny narrow almond/slit eyes with tiny white catchlights; tiny olive nose and whimsical curved smile; large fluffy tail; lime/chartreuse-green fur with soft yellow-green highlights and darker olive-green tufts. Thick black hand-drawn outlines. Keep the reference's face shape, eye shape, antennae proportions, fur texture and charming slightly mischievous personality. This is not a different cat, not a round yellow mascot, not a human.\nPose and composition: full body, both front paws raised in celebration, feet and tail entirely visible. Both antenna tips fully inside the frame. Center the entire character and small heart/rays on a square canvas, leaving at least 12% clear transparent padding around every outermost element.\nStyle: same polished hand-drawn 2D cartoon illustration as reference, soft fur shading within clean bold black contours, bright lime green dominant palette.\nBackground: genuinely transparent RGBA alpha; no backdrop, no paper texture, no floor, no ground shadow.\nConstraints: exactly one character. Only the small coral heart and a few yellow rays may accompany it. No other objects, confetti, letters, numbers, typography, logos or watermark. Do not crop any body part or antenna.",
+      "source": "C:/Users/brene/.codex/generated_images/01a13f4f-e56e-7f33-809c-206626be640b/exec-d3d9d666-50e4-4fe8-9f57-08614600ddbc.png",
+      "outputs": [
+        "public/images/mascot/celebrate-v1.png",
+        "public/images/mascot/celebrate-v1.webp"
+      ],
+      "processing": "PNG copied unchanged; WebP encoded using sharp({ quality: 90, alphaQuality: 100, effort: 6 }), preserving dimensions and alpha. No resizing, recolouring, trimming or background removal.",
+      "validation": {
+        "width": 1254,
+        "height": 1254,
+        "alphaRange": [
+          0,
+          255
+        ],
+        "visibleBoundsAlphaOver8": {
+          "minX": 168,
+          "minY": 66,
+          "maxX": 1103,
+          "maxY": 1186
+        },
+        "review": "Identity, full-body pose, two antennae, tail, ticket star or celebration marks checked visually. No clipping, letters or backdrop. Generator supplied about 5–6% vertical transparent margin rather than the requested 12%; artwork left unchanged.",
+        "sourcePngSha256": "c7b7b90b027a697463cefd7239b1b352890eae7802811d07f3acce0ab3f44062",
+        "originalPngUnchanged": true,
+        "alphaPixelsChangedInWebp": 0,
+        "pngBytes": 927028,
+        "webpBytes": 139768
+      }
+    }
+  ]
+}

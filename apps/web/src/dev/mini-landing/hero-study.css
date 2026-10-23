@@ -1,0 +1,49 @@
+@font-face { font-family: 'Hero Study Inter'; src: url('/fonts/hero-study/inter.ttf') format('truetype'); font-style: normal; font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Hero Study Manrope'; src: url('/fonts/hero-study/manrope.ttf') format('truetype'); font-style: normal; font-weight: 200 800; font-display: swap; }
+@font-face { font-family: 'Hero Study Golos'; src: url('/fonts/hero-study/golostext.ttf') format('truetype'); font-style: normal; font-weight: 400 900; font-display: swap; }
+
+.hero-study-controls { width: min(100% - 64px, 1000px); margin: 18px auto 20px; padding: 14px 18px; border: 1px solid #e6e1ec; border-radius: 14px; background: #fff; }
+.hero-study-controls__heading { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.mini-landing .hero-study-controls h2 { font-size: 14px; line-height: 1.4; letter-spacing: 0; }
+.hero-study-controls output { font-size: 11px; color: #756584; }
+.hero-study-controls__heading > a { margin-left: auto; font-size: 11px; color: #6a6176; }
+.hero-study-controls__heading > a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.hero-study-controls fieldset { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.hero-study-controls fieldset + fieldset { margin-top: 8px; }
+.hero-study-controls legend { float: left; width: 122px; padding: 0; font-size: 11px; line-height: 32px; color: #726d79; }
+.hero-study-controls__options { display: flex; flex-wrap: wrap; gap: 6px; }
+.hero-study-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 32px; padding: 5px 12px; border: 1px solid #e7e3ed; border-radius: 8px; background: #fff; color: #403a49; font-size: 12px; line-height: 20px; }
+.hero-study-controls button > span { font: 400 10px/1.4 var(--font-body); color: #897a98; }
+.hero-study-controls button[aria-pressed='true'] { border-color: #9b88b9; background: #f1ecfa; }
+.hero-study-controls button:hover { border-color: #b4a2c9; }
+.hero-study-controls [data-font-sample='inter'] { font-family: 'Hero Study Inter', sans-serif; }
+.hero-study-controls [data-font-sample='manrope'] { font-family: 'Hero Study Manrope', sans-serif; }
+.hero-study-controls [data-font-sample='golos'] { font-family: 'Hero Study Golos', sans-serif; }
+
+.mini-landing--hero-study .mini-header, .mini-landing--hero-study .mini-back { display: none; }
+.mini-landing--hero-study [data-hero-font='inter'] { --hero-study-font: 'Hero Study Inter', sans-serif; }
+.mini-landing--hero-study [data-hero-font='manrope'] { --hero-study-font: 'Hero Study Manrope', sans-serif; }
+.mini-landing--hero-study [data-hero-font='golos'] { --hero-study-font: 'Hero Study Golos', sans-serif; }
+.mini-landing--hero-study .mini-hero__lead { font: 400 15.5px/1.65 var(--hero-study-font); font-optical-sizing: auto; letter-spacing: 0; color: #49424f; text-wrap: pretty; }
+.mini-landing--hero-study .mini-hero__info, .mini-landing--hero-study .mini-hero__eyebrow { font-size: 12px; line-height: 1.5; }
+.mini-landing--hero-study .mini-hero__info strong { font-size: 13px; }
+.mini-landing--hero-study .mini-hero__eyebrow { margin-bottom: 12px; color: #6a5b7a; }
+.mini-hero__eyebrow > span { display: inline-flex; align-items: center; gap: 7px; }
+.mini-landing--hero-study .mini-hero__info--split { justify-content: space-between; gap: 10px 18px; }
+
+@media (max-width: 650px) {
+  .hero-study-controls { width: calc(100% - 40px); padding: 12px; margin-top: 12px; margin-bottom: 14px; }
+  .hero-study-controls__heading { flex-wrap: wrap; gap: 5px 10px; margin-bottom: 10px; }
+  .hero-study-controls__heading > a { font-size: 10px; }
+  .hero-study-controls legend { float: none; width: 100%; line-height: 1.5; margin-bottom: 5px; }
+  .hero-study-controls fieldset { display: block; }
+  .hero-study-controls fieldset + fieldset { margin-top: 10px; }
+  .hero-study-controls__options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; width: 100%; }
+  .hero-study-controls button { flex-direction: column; gap: 0; min-height: 44px; padding: 4px; font-size: 11px; line-height: 1.4; }
+  .mini-landing--hero-study .mini-hero__lead { font-size: 14px; }
+  .mini-landing--hero-study .mini-hero__info, .mini-landing--hero-study .mini-hero__eyebrow { font-size: 11px; }
+}
+@media (max-width: 370px) {
+  .hero-study-controls { width: calc(100% - 32px); }
+  .hero-study-controls__heading > a { margin-left: 0; }
+}

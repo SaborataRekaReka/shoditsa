@@ -1,0 +1,10 @@
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report { border-color: var(--color-line); color: var(--color-ink); font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report form { padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-md); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report fieldset { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-4); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report legend { margin-bottom: var(--space-3); font-size: 16px; font-weight: 700; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report label { font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report__thanks { color: var(--match-exact-ink); font-size: 14px; line-height: 1.5; }
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report fieldset { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .content-report form > button { width: 100%; }
+}

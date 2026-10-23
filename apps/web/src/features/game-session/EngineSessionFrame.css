@@ -1,0 +1,27 @@
+/* The App controller may own a session frame, rather than live inside one. */
+.app.app--game:has(> .application-frame) { width: 100%; max-width: none; margin: 0; padding: 0; background: var(--quest-bg); }
+.engine-session-guide ol { display: grid; gap: 16px; list-style: none; counter-reset: game-step; padding: 0; margin: 20px 0; }
+.engine-session-guide li { counter-increment: game-step; display: flex; gap: 12px; color: var(--quest-muted); font-size: 14px; line-height: 1.5; }
+.engine-session-guide li::before { content: counter(game-step); display: grid; place-items: center; flex: 0 0 28px; height: 28px; border-radius: 9px; color: var(--color-focus); background: var(--color-primary-soft); font-weight: 800; }
+.engine-session-guide > .quest-button { width: 100%; }
+html[data-quest-skin='shoditsa'] .application-frame .application-session-main { width: 100%; max-width: none; min-height: 0; margin: 0; padding: 0 0 24px; background: transparent; color: var(--quest-text); }
+.application-session-main > .game-screen-shell__content { width: 100%; max-width: none; }
+.application-session-status { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.engine-session-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 22px; margin-bottom: 24px; border-radius: 20px; background: var(--color-primary-soft); }
+.engine-session-heading > div { min-width: 0; }
+.engine-session-heading p { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 8px; font-size: 12px; color: var(--quest-muted); }
+.engine-session-heading h1 { margin: 0 0 6px; font: 900 clamp(26px, 2.5vw, 32px)/1.15 var(--quest-font); color: var(--quest-text); letter-spacing: -.025em; }
+.engine-session-heading > div > span { color: var(--quest-muted); font-size: 14px; line-height: 1.5; }
+.engine-session-heading > img { width: 84px; height: 84px; flex: 0 0 84px; object-fit: contain; }
+/* Long account names must fit the sidebar instead of covering the game heading. */
+.application-frame .study-right-header-slot .study-header-controls { width: 100%; min-width: 0; }
+.application-frame .study-right-header-slot .study-account--header { min-width: 0; flex: 0 1 auto; }
+.application-frame .study-right-header-slot .study-account-trigger { width: auto; max-width: 100%; min-width: 0; }
+.application-frame .study-right-header-slot .study-account-trigger > span { min-width: 0; overflow: hidden; }
+.application-frame .study-right-header-slot .study-account-trigger strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.application-frame .study-right-header-slot .study-account-trigger > :is(svg, img) { flex-shrink: 0; }
+@media (max-width: 600px) {
+  .engine-session-heading { padding: 18px 16px; gap: 12px; margin-bottom: 22px; }
+  .engine-session-heading > img { width: 60px; height: 60px; flex-basis: 60px; }
+  .engine-session-heading > div > span { font-size: 13px; }
+}

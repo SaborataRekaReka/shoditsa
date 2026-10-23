@@ -45,6 +45,8 @@ const sourceChecks = [
       ['medical-chart guide integration', /<GameArtifactSeoDetails\s+mode="diagnosis"\s*\/>/],
       ['home guide integrated with hero ticket', /hub-hero-ticket[^]*<DailyProgressStub[^]*<HomeSeoContent/],
       ['city attempts keep their five-meter rank profile', /function CityRankProfile[^]*CITY_RANK_METRICS\.map[^]*city-rank-meter__track[^]*role="progressbar"[^]*<b style=\{\{ width:/],
+      ['Connections sessions retain common application chrome', /<EngineSessionFrame mode="connections"[^>]*><ConnectionsRenderer\b/],
+      ['Danetki sessions retain common application chrome', /<EngineSessionFrame mode="danetki"[^>]*><DanetkiRenderer\b/],
     ],
   },
   {
@@ -140,9 +142,9 @@ const sourceChecks = [
       ['static game HTML generation', /'seo',\s*'games',\s*`\$\{game\.mode\}\.html`/],
       ['registry-driven sitemap generation', /INDEXABLE_GAME_SEO/],
       ['server-rendered shared artifact disclosure', /renderArtifactDossier[^]*artifact-dossier ticket-dossier/],
-      ['server-rendered upper launch controls', /renderLaunchControls[^]*game-launch-controls/],
-      ['server-rendered home hero guide', /renderHomeFallback[^]*hub-hero-ticket[^]*hub-guide/],
-      ['server-rendered thematic artifact shells', /renderGameArtifactFallback[^]*renderAdmissionTicketFallback/],
+      ['server-rendered upper launch controls', /renderLaunchControls[^]*public-static-launch[^]*public-static-play/],
+      ['server-rendered current home and guide', /renderHomeFallback[^]*public-static-hero[^]*hub-guide/],
+      ['server-rendered current title and both artwork themes', /renderGameArtifactFallback[^]*public-static-art--light[^]*public-static-art--dark[^]*public-static-hero/],
     ],
   },
   {
@@ -243,7 +245,10 @@ const sourceChecks = [
     path: 'apps/web/src/features/private-games/CreateGameScreen.tsx',
     required: [
       ['shared corporate back control', /function CreateGameScreen[^]*<ScreenBack/],
-      ['shared corporate actions', /ui-button ui-button--primary corporate-hero__action[^]*<ActionButton[^]*type="submit"/],
+      ['shared corporate navigation primitive', /import\s*\{[^}]*\bActionLink\b[^}]*\}\s*from\s*['"]\.\.\/\.\.\/components\/ui['"]/],
+      ['shared corporate brief action and destination', /<ActionLink\b[^]*?variant="primary"[^]*?className="corporate-hero__action"[^]*?href="\/partners#brief"[^]*?>\s*Обсудить проект\s*<ArrowRight\s*\/>\s*<\/ActionLink>/],
+      ['shared corporate format action and destination', /<ActionLink\b[^]*?variant="secondary"[^]*?className="corporate-format-card__action"[^]*?href="\/partners#brief"[^]*?>Подобрать формат\s*<ArrowRight\s*\/>\s*<\/ActionLink>/],
+      ['shared corporate form submission', /<ActionButton\b[^]*?type="submit"[^]*?>[^]*?Обсудить проект[^]*?<\/ActionButton>/],
     ],
   },
   {

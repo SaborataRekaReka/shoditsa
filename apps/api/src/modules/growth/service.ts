@@ -93,10 +93,12 @@ export const growthReport = async (db: Database, days: number) => {
   const measurement = growthMeasurementWindow(from, to)
   const [sessions, accounts, commerce, events, firstFreeArchive, factsSetting, registrationBonusByMode] = await Promise.all([
     db.execute(sql`
-      with completed as (
-        select g.id, g.user_id, g.completed_at from game_session_facts g left join player_profiles p on p.user_id=g.user_id
+      with terminal as (
+        select g.id, g.user_id, g.completed_at, g.completion_status from game_session_facts g left join player_profiles p on p.user_id=g.user_id
         where g.mode='diagnosis' and g.kind in ('daily','archive','free_play')
           and g.completed_at >= ${from} and g.completed_at < ${to} and coalesce(p.role,'player') <> 'admin'
+      ), completed as (
+        select * from terminal where completion_status in ('won','lost')
       ), all_first_completed as (
         select distinct on (user_id) * from completed order by user_id, completed_at, id
       ), first_completed as (
@@ -110,19 +112,20 @@ export const growthReport = async (db: Database, days: number) => {
         where g.mode='diagnosis' and g."startedAt" >= ${from} and g."startedAt" < ${to} and coalesce(p.role,'player') <> 'admin'
       ) select
         (select count(*)::int from completed) as completions,
+        (select count(*)::int from terminal where completion_status='expired') as expired,
         (select count(*)::int from all_first_completed) as "firstCompleters",
         (select count(*)::int from first_completed) as "measuredCompleters",
         (select count(*)::int from repeats) as "repeatStarts",
-        (select count(*)::int from repeats where completed_at >= "startedAt" and completed_at < ${to}) as "repeatCompletions",
+        (select count(*)::int from repeats where completion_status in ('won','lost') and completed_at >= "startedAt" and completed_at < ${to}) as "repeatCompletions",
         (select count(distinct source_session_id)::int from repeats) as "repeatingCompleters",
         (select coalesce(jsonb_agg(to_jsonb(b) order by b."accessSource"),'[]'::jsonb) from (
           select coalesce(access_source,'unknown') as "accessSource", count(*)::int as "repeatStarts",
-            count(*) filter(where completed_at >= "startedAt" and completed_at < ${to})::int as "repeatCompletions",
+            count(*) filter(where completion_status in ('won','lost') and completed_at >= "startedAt" and completed_at < ${to})::int as "repeatCompletions",
             count(distinct source_session_id)::int as "repeatingCompleters"
           from repeats group by 1
         ) b) as "repeatByAccessSource",
         (select count(*)::int from activity where access_source='registration_bonus') as "bonusStarts",
-        (select count(*)::int from activity where access_source='registration_bonus' and completed_at < ${to}) as "bonusCompletions",
+        (select count(*)::int from activity where access_source='registration_bonus' and completion_status in ('won','lost') and completed_at >= "startedAt" and completed_at < ${to}) as "bonusCompletions",
         (select count(*)::int from activity where access_source='club' and "startedAt">=${measurement.from}) as "clubStarts"`),
     db.execute(sql`select
       (select count(*)::int from "user" u left join player_profiles p on p.user_id=u.id where not u.is_anonymous and u."createdAt">=${from} and u."createdAt"<${to} and coalesce(p.role,'player')<>'admin') as created,

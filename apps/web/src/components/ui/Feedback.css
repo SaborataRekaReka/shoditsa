@@ -68,3 +68,17 @@
   .ui-empty-state { grid-template-columns: 42px minmax(0, 1fr); }
   .ui-empty-state > :last-child:not(div) { grid-column: 1 / -1; width: 100%; }
 }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-alert { padding: var(--space-3) var(--space-4); gap: var(--space-3); align-items: start; font: 400 14px/1.6 var(--font-body); overflow-wrap: anywhere; box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-alert__icon { margin-top: 3px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-alert--success { border-color: var(--color-primary-border); background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-alert--warning { border-color: var(--color-accent-border); background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-alert--danger { border-color: color-mix(in srgb, var(--color-danger) 22%, var(--color-line)); background: var(--match-miss-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-status { padding: 4px 10px; font: 500 13px/1.4 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-status--success { border-color: transparent; background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-status--warning { border-color: transparent; background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-status--danger { border-color: transparent; background: var(--match-miss-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-empty-state { padding: var(--space-5); color: var(--color-ink); font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-empty-state__icon { color: var(--color-ink); background: var(--color-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-empty-state h2 { font: 700 21px/1.2 var(--font-body); letter-spacing: -.02em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-empty-state p { font-size: 14px; line-height: 1.6; }

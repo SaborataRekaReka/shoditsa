@@ -95,6 +95,76 @@ ensure_danetki_catalog_route() {
   fi
 }
 
+ensure_application_routes() {
+  local application_temp_path
+  application_temp_path="$(mktemp "${CONFIG_PATH}.application-routes.XXXXXX")"
+  if ! awk '
+    index($0, "# BEGIN SHODITSA_EXPLICIT_SPA_ROUTES") { in_application = 1 }
+    in_application && index($0, "location ~ ^/(archive|profile|") {
+      print "    location ~ ^/(archive|profile|login|register|lobby|leaderboard|quests|settings|support|blog)$ {"
+      private_routes = 1
+      next
+    }
+    in_application && index($0, "location ~ ^/(play/(") {
+      print "    location ~ ^/(play/(movie|series|anime|game|music|diagnosis|city|animal|book|character|connections)|sessions/[^/]+|review/music|purchase/return|danetki/join/[^/]+|specials/[^/]+|club/membership|blog/[^/]+)$ {"
+      nested_routes = 1
+      next
+    }
+    { print }
+    index($0, "# END SHODITSA_EXPLICIT_SPA_ROUTES") { in_application = 0 }
+    END { if (!private_routes || !nested_routes) exit 42 }
+  ' "$CONFIG_PATH" > "$application_temp_path"; then
+    rm -f "$application_temp_path"
+    echo "Could not locate the application route allow-list" >&2
+    return 1
+  fi
+  cp "$application_temp_path" "$CONFIG_PATH"
+  rm -f "$application_temp_path"
+}
+
+ensure_svoyak_routes() {
+  if grep -Fq 'location ~ "^/(games/svoyak|svoyak/' "$CONFIG_PATH"; then return 0; fi
+  local svoyak_temp_path
+  svoyak_temp_path="$(mktemp "${CONFIG_PATH}.svoyak-routes.XXXXXX")"
+  if ! awk '
+    /^[[:space:]]*location[[:space:]]*=[[:space:]]*\/games\/together[[:space:]]*\{/ && !injected {
+      print "    location ~ \"^/(games/svoyak|svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?))/?$\" {"
+      print "        try_files /index.html =404;"
+      print "        add_header X-Robots-Tag \"noindex, follow, noarchive\" always;"
+      print "        add_header Cache-Control \"no-cache\" always;"
+      print "    }"
+      print ""
+      injected = 1
+    }
+    { print }
+    END { if (!injected) exit 42 }
+  ' "$CONFIG_PATH" > "$svoyak_temp_path"; then rm -f "$svoyak_temp_path"; return 1; fi
+  cp "$svoyak_temp_path" "$CONFIG_PATH"
+  rm -f "$svoyak_temp_path"
+}
+
+ensure_public_trailing_slash_redirects() {
+  local shoditsa_roots shoditsa_root redirect_temp_path
+  mapfile -t shoditsa_roots < <(awk '$1 == "root" && ($2 == "/var/www/shoditsa;" || $2 == "/opt/shoditsa/current/web;") { sub(/;$/, "", $2); print $2 }' "$CONFIG_PATH")
+  if [ "${#shoditsa_roots[@]}" -ne 1 ]; then
+    echo "Expected one Shoditsa document root for the public redirect include" >&2
+    return 1
+  fi
+  shoditsa_root="${shoditsa_roots[0]}"
+  if grep -Fq "include $shoditsa_root/seo/public-trailing-slash.conf;" "$CONFIG_PATH"; then
+    return 0
+  fi
+  redirect_temp_path="$(mktemp "$CONFIG_PATH.public-redirects.XXXXXX")"
+  awk -v target_root="$shoditsa_root" '
+    { print }
+    $1 == "root" && $2 == target_root ";" {
+      print "    include " target_root "/seo/public-trailing-slash.conf;"
+    }
+  ' "$CONFIG_PATH" > "$redirect_temp_path"
+  cp "$redirect_temp_path" "$CONFIG_PATH"
+  rm -f "$redirect_temp_path"
+}
+
 if grep -Fq "$MARKER" "$CONFIG_PATH"; then
   # A host config may contain several virtual hosts (for example, Shoditsa
   # and Repeto). A legacy SPA fallback in another server block must not block
@@ -110,6 +180,9 @@ if grep -Fq "$MARKER" "$CONFIG_PATH"; then
   fi
   ensure_utility_seo_route
   ensure_danetki_catalog_route
+  ensure_application_routes
+  ensure_svoyak_routes
+  ensure_public_trailing_slash_redirects
   exit 0
 fi
 
@@ -189,3 +262,6 @@ END {
 cp "$TEMP_PATH" "$CONFIG_PATH"
 ensure_utility_seo_route
 ensure_danetki_catalog_route
+ensure_application_routes
+ensure_svoyak_routes
+ensure_public_trailing_slash_redirects

@@ -1,0 +1,29 @@
+.study-club-join { --club-motion-left: 72px; display: flex; flex-direction: column; min-height: 100dvh; }
+.study-club-join__body { width: min(100%, 560px); margin: auto; padding: 6px 24px max(18px, env(safe-area-inset-bottom)); }
+.study-club-join__comparison { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: 14px; line-height: 1.4; }
+.study-club-join__comparison th { font-weight: 500; }
+.study-club-join__comparison thead th { height: 45px; font-size: 12px; font-weight: 800; text-align: center; }
+.study-club-join__comparison thead th:first-child { width: 62%; }
+.study-club-join__comparison tbody th { height: 44px; padding: 8px 12px 8px 0; text-align: left; }
+.study-club-join__comparison td { padding: 8px 0; text-align: center; }
+.study-club-join__comparison td svg { display: block; margin: auto; }
+.study-club-join__comparison td:nth-child(2) { color: var(--color-muted); }
+.study-club-join__comparison tr:first-child td:nth-child(2) { color: var(--color-ink); }
+.study-club-join__comparison tr > :last-child { color: var(--color-focus); background: var(--color-club-column); }
+.study-club-join__comparison thead tr > :last-child { border-radius: 20px 20px 0 0; }
+.study-club-join__comparison tbody tr:last-child > :last-child { border-radius: 0 0 20px 20px; }
+.study-club-join__club-label { font: 800 16px/1 var(--quest-heading); }
+.study-club-join__plans { margin-top: 24px; }
+.study-club-join-actions { display: grid; gap: 6px; margin-top: 20px; }
+.study-club-join-actions > .quest-button { width: 100%; }
+.study-club-join__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 599px) {
+  .study-club-join__body { padding: 6px 20px max(12px, env(safe-area-inset-bottom)); }
+  .study-club-join__comparison { font-size: 13px; }
+  .study-club-join__comparison thead th:first-child { width: 58%; }
+  .study-club-join__comparison thead th { height: 40px; font-size: 10px; }
+  .study-club-join__comparison tbody th { height: 44px; padding: 6px 8px 6px 0; }
+  .study-club-join-actions { margin-top: 16px; }
+  .study-club-join-actions > .quest-button { font-size: 12px; }
+}
+

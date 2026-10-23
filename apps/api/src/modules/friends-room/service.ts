@@ -564,39 +564,41 @@ export const previewFriendsRoom = async (db: Database, code: string) => {
   }
 }
 
-export const listFriendsRooms = async (db: Database, userId: string): Promise<FriendsRoomSummary[]> => {
+export const listFriendsRooms = async (db: Database, userId: string, scope: 'current' | 'recent' = 'current'): Promise<FriendsRoomSummary[]> => {
   const entries = await db.select({
     room: friendsRooms,
     role: friendsRoomMembers.role,
     joinedAt: friendsRoomMembers.joinedAt,
+    leftAt: friendsRoomMembers.leftAt,
   }).from(friendsRoomMembers)
     .innerJoin(friendsRooms, eq(friendsRooms.id, friendsRoomMembers.roomId))
     .where(and(
       eq(friendsRoomMembers.userId, userId),
-      isNull(friendsRoomMembers.leftAt),
-      isNull(friendsRooms.closedAt),
+      ...(scope === 'current' ? [isNull(friendsRoomMembers.leftAt), isNull(friendsRooms.closedAt)] : []),
     ))
-    .orderBy(desc(friendsRooms.updatedAt))
-    .limit(1)
+    .orderBy(sql`(${friendsRoomMembers.leftAt} is null and ${friendsRooms.closedAt} is null) desc`, desc(friendsRooms.updatedAt))
+    .limit(scope === 'recent' ? 30 : 1)
 
   if (!entries.length) return []
-  const counts = await db.select({ roomId: friendsRoomMembers.roomId })
+  const counts = await db.select({
+    roomId: friendsRoomMembers.roomId,
+    participants: sql<number>`count(*)::int`,
+    players: sql<number>`count(*) filter (where ${friendsRoomMembers.leftAt} is null and (${friendsRooms.gameType} = 'territory' or ${connectedMemberCondition()}))::int`,
+  })
     .from(friendsRoomMembers)
-    .where(and(
-      inArray(friendsRoomMembers.roomId, entries.map((entry) => entry.room.id)),
-      isNull(friendsRoomMembers.leftAt),
-      ...(entries[0]?.room.gameType === 'territory' ? [] : [connectedMemberCondition()]),
-    ))
-  const playerCounts = new Map<string, number>()
-  for (const entry of counts) playerCounts.set(entry.roomId, (playerCounts.get(entry.roomId) ?? 0) + 1)
+    .innerJoin(friendsRooms, eq(friendsRooms.id, friendsRoomMembers.roomId))
+    .where(inArray(friendsRoomMembers.roomId, entries.map((entry) => entry.room.id)))
+    .groupBy(friendsRoomMembers.roomId)
+  const playerCounts = new Map(counts.map(entry => [entry.roomId, entry]))
 
-  return entries.map(({ room, role, joinedAt }) => ({
+  return entries.map(({ room, role, joinedAt, leftAt }) => ({
     id: room.id,
     code: room.code,
     gameType: room.gameType as FriendsRoomGameType,
     mode: room.mode as FriendsRoomSummary['mode'],
     packs: roomPacks(room),
-    players: playerCounts.get(room.id) ?? 0,
+    players: playerCounts.get(room.id)?.players ?? 0,
+    participantCount: playerCounts.get(room.id)?.participants ?? 0,
     capacity: roomCapacity(room.gameType as FriendsRoomGameType),
     phase: room.phase,
     currentRound: room.currentRound,
@@ -604,6 +606,8 @@ export const listFriendsRooms = async (db: Database, userId: string): Promise<Fr
     isHost: role === 'owner',
     joinedAt: joinedAt.toISOString(),
     updatedAt: room.updatedAt.toISOString(),
+    leftAt: leftAt?.toISOString() ?? null,
+    closedAt: room.closedAt?.toISOString() ?? null,
   }))
 }
 

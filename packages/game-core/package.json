@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./svoyak": "./src/svoyak/service.ts",
+    "./svoyak-mix": "./src/svoyak/mix.ts",
+    "./svoyak-bank": "./src/svoyak/bank.ts"
+  },
   "types": "./src/index.ts",
   "dependencies": {
     "@shoditsa/contracts": "*"

@@ -1,5 +1,6 @@
 import { Crown, Medal, Trophy, Users } from 'lucide-react'
 import type { PackLeaderboardEntry, PackLeaderboardResponse } from '@shoditsa/contracts'
+import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
 import './DtfLeaderboard.css'
 
 type DtfLeaderboardProps = {
@@ -49,15 +50,21 @@ function PlayerCell({ entry }: { entry: PackLeaderboardEntry }) {
     <span>
       <strong>{entry.displayName}</strong>
       <small><DtfBadge />{entry.isCurrentUser && <em>Вы</em>}</small>
+      {REFERENCE_PRESENTATION && <small className="dtf-leaderboard__mobile-progress">
+        Игры {entry.completedItems}/{entry.totalItems} · победы {entry.wins} · попытки {entry.totalAttempts || '—'}
+      </small>}
     </span>
   </div>
 }
 
 function LeaderboardRow({ entry, separated = false }: { entry: PackLeaderboardEntry; separated?: boolean }) {
   return <tr className={`${entry.isCurrentUser ? 'is-current' : ''}${separated ? ' is-separated' : ''}`.trim() || undefined}>
-    <td><span className={`dtf-leaderboard__rank dtf-leaderboard__rank--${Math.min(entry.rank, 4)}`}>{entry.rank <= 3 ? <Medal /> : '#'}{entry.rank}</span></td>
+    <td><span className={`dtf-leaderboard__rank dtf-leaderboard__rank--${Math.min(entry.rank, 4)}`}>{entry.rank <= 3 ? <Medal /> : !REFERENCE_PRESENTATION && '#'}{entry.rank}</span></td>
     <td><PlayerCell entry={entry} /></td>
-    <td className="dtf-leaderboard__progress"><b>{entry.completedItems}</b><small> / {entry.totalItems}</small></td>
+    <td className="dtf-leaderboard__progress">
+      <b>{entry.completedItems}</b><small> / {entry.totalItems}</small>
+      {REFERENCE_PRESENTATION && <span className="dtf-leaderboard__round-stats">Победы {entry.wins} · попытки {entry.totalAttempts || '—'}</span>}
+    </td>
     <td className="dtf-leaderboard__score"><b>{formatScore(entry.score)}</b></td>
   </tr>
 }
@@ -71,7 +78,7 @@ export function DtfLeaderboard({ data, loading = false, error = false }: DtfLead
     <header className="dtf-leaderboard__header">
       <div className="dtf-leaderboard__emblem" aria-hidden="true"><Trophy /></div>
       <div>
-        <span>DTF COMMUNITY · ОБЩИЙ ЗАЧЁТ</span>
+        <span>{REFERENCE_PRESENTATION ? 'Сообщество DTF · общий зачёт' : 'DTF COMMUNITY · ОБЩИЙ ЗАЧЁТ'}</span>
         <h2 id="dtf-leaderboard-title">Таблица игроков</h2>
         <p>+100 за завершённую игру · +50 за победу · +10 за каждую сохранённую попытку</p>
       </div>
@@ -82,17 +89,20 @@ export function DtfLeaderboard({ data, loading = false, error = false }: DtfLead
     {error && <div className="dtf-leaderboard__state dtf-leaderboard__state--error" role="alert">Таблица временно недоступна. Игра продолжит работать.</div>}
 
     {!loading && !error && <>
-      {top.length > 0 && <div className="dtf-leaderboard__podium">
+      {!REFERENCE_PRESENTATION && top.length > 0 && <div className="dtf-leaderboard__podium">
         {top.map((entry) => <PodiumCard key={entry.rank} entry={entry} />)}
       </div>}
 
       <div className="dtf-leaderboard__table-wrap">
-        <table>
+        <table aria-labelledby="dtf-leaderboard-title">
           <thead>
             <tr>
-              <th scope="col">Место</th>
-              <th scope="col">Ник и бейдж</th>
-              <th scope="col">Прогресс</th>
+              <th scope="col" aria-label="Место">
+                <span className="dtf-leaderboard__place-label">Место</span>
+                {REFERENCE_PRESENTATION && <span className="dtf-leaderboard__place-symbol" aria-hidden="true">№</span>}
+              </th>
+              <th scope="col">{REFERENCE_PRESENTATION ? 'Игрок' : 'Ник и бейдж'}</th>
+              <th scope="col">{REFERENCE_PRESENTATION ? 'Игры' : 'Прогресс'}</th>
               <th scope="col">Баллы</th>
             </tr>
           </thead>

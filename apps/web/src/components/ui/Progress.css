@@ -32,3 +32,27 @@
 .progress-track i { height: 5px; border-radius: 9px; background: var(--color-surface-3); }
 .progress-track i.used { background: var(--color-paper); }
 .progress-track i.current { background: var(--color-primary); }
+
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-block { padding: 14px 18px; background: var(--color-surface); border-color: var(--color-line); border-radius: var(--radius-md); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-copy { align-items: center; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-copy span { font-size: 13px; letter-spacing: 0; text-transform: none; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-copy strong { font: 700 16px var(--font-body); color: var(--color-ink); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-track { gap: 6px; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-track i { height: 7px; background: var(--color-surface-3); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-track i.used { background: var(--color-primary-border); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .progress-track i.current { background: var(--color-primary); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-linear-progress { gap: var(--space-2); font: 400 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-linear-progress__copy { flex-wrap: wrap; gap: 4px var(--space-3); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-linear-progress strong { font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-linear-progress > i { height: 6px; background: var(--color-line); }
+
+/* A compact progress header inside the guess composer. */
+[data-public-theme='quest-study'] .ui-segmented-progress--composer { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-copy { align-items: center; gap: 12px; margin-bottom: 10px; }
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-copy > span { color: var(--quest-text); font: 800 18px/1.3 var(--quest-heading); letter-spacing: 0; text-transform: none; }
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-copy strong,
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-copy strong > span { color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); letter-spacing: 0; text-transform: none; }
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-track { gap: 5px; }
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-track i { height: 6px; background: var(--quest-purple); }
+[data-public-theme='quest-study'] .ui-segmented-progress--composer .progress-track i.used { background: var(--quest-blue); }

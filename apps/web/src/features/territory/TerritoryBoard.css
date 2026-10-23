@@ -1,0 +1,124 @@
+/* A soft miniature landscape. Gameplay colour is carried by land, roofs and flags. */
+.territory-board {
+  --island-neutral: color-mix(in srgb, var(--color-art-paper) 86%, var(--color-art-gold));
+  --island-water: color-mix(in srgb, var(--color-mint) 45%, var(--color-blue));
+  --island-water-edge: color-mix(in srgb, var(--color-art-paper) 80%, transparent);
+  --island-cliff-light: color-mix(in srgb, var(--color-art-violet) 55%, var(--color-art-paper));
+  --island-cliff: color-mix(in srgb, var(--color-art-violet) 72%, var(--color-focus));
+  --island-sand: color-mix(in srgb, var(--color-art-paper) 72%, var(--color-art-gold));
+  --island-ground: color-mix(in srgb, var(--color-art-mint) 30%, var(--island-sand));
+  --island-leaf-light: color-mix(in srgb, var(--color-art-mint) 86%, var(--color-art-gold));
+  --island-leaf: color-mix(in srgb, var(--color-art-mint) 62%, var(--color-focus));
+  --island-ink: color-mix(in srgb, var(--color-art-ink) 75%, var(--color-focus));
+  padding: 0 18px 20px;
+  color: var(--quest-text);
+  font-family: var(--quest-font);
+}
+.territory-board__heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 4px 2px 12px; }
+.territory-board__heading h2 { margin: 0; font: 800 16px/1.4 var(--quest-font); }
+.territory-board__heading p { margin: 4px 0 0; color: var(--quest-muted); font-size: 12px; }
+.territory-board__heading .quest-button { flex-shrink: 0; }
+.territory-board__viewport { overflow-x: auto; overscroll-behavior-x: contain; border-radius: 24px; background: radial-gradient(ellipse at 50% 60%, var(--island-water) 18%, color-mix(in srgb, var(--island-water) 40%, transparent) 52%, transparent 74%); }
+.territory-board__viewport:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 2px; }
+.territory-board__scene { display: block; width: 100%; max-width: 740px; height: auto; margin: 0 auto; overflow: visible; }
+.territory-board.is-zoomed .territory-board__scene { width: 160%; min-width: 600px; max-width: none; }
+.territory-board__waterline { fill: none; stroke: var(--island-water-edge); stroke-width: 13; stroke-linejoin: round; opacity: .8; }
+.territory-board__waterline.is-outer { stroke-width: 36; opacity: .25; }
+.territory-board__island-shadow { fill: var(--island-ink); opacity: .18; }
+.territory-board__cliff { stroke: var(--island-cliff); stroke-width: 4; stroke-linejoin: round; }
+.territory-board__shore { fill: var(--island-sand); stroke: var(--island-sand); stroke-width: 13; stroke-linejoin: round; }
+.territory-board__ground { fill: var(--island-ground); }
+.territory-board__tile, .territory-board__tile-label {
+  --tile-face: var(--island-neutral);
+  --tile-top: color-mix(in srgb, var(--tile-face) 64%, var(--color-art-paper));
+  --tile-edge-light: color-mix(in srgb, var(--tile-face) 75%, var(--color-art-violet));
+  --tile-edge: color-mix(in srgb, var(--tile-face) 60%, var(--island-cliff));
+  --tile-roof: color-mix(in srgb, var(--tile-face) 65%, var(--color-focus));
+  cursor: default; outline: none;
+}
+.territory-board :is(.territory-board__tile,.territory-board__tile-label).is-mint { --tile-face: var(--color-art-mint); }
+.territory-board :is(.territory-board__tile,.territory-board__tile-label).is-violet { --tile-face: var(--color-art-violet); }
+.territory-board__labels { pointer-events: none; }
+.territory-board__tile-label { pointer-events: auto; }
+.territory-board__tile-label.is-legal { cursor: pointer; }
+.territory-board__piece { transition: transform 200ms cubic-bezier(.2,.8,.2,1); }
+.territory-board__tile-shadow { fill: var(--island-ink); opacity: .14; pointer-events: none; }
+.territory-board__tile-depth { stroke: var(--tile-edge); stroke-width: 1; stroke-linejoin: round; }
+.territory-board__tile-face { stroke: color-mix(in srgb, var(--tile-top) 70%, var(--color-art-paper)); stroke-width: 2.5; stroke-linejoin: round; transition: stroke 160ms, filter 160ms; }
+.territory-board__scenery { pointer-events: none; }
+.territory-board__object-shadow { fill: var(--island-ink); opacity: .13; }
+.territory-board__plaster { fill: var(--color-art-paper); }
+.territory-board__plaster-side { fill: color-mix(in srgb, var(--color-art-paper) 78%, var(--color-art-violet)); }
+.territory-board__roof { fill: var(--tile-roof); stroke: color-mix(in srgb, var(--tile-roof) 85%, var(--color-art-paper)); stroke-width: 1.5; stroke-linejoin: round; }
+.territory-board__roof-light { fill: none; stroke: color-mix(in srgb, var(--tile-face) 55%, var(--color-art-paper)); stroke-width: 3.5; stroke-linecap: round; }
+.territory-board__door, .territory-board__window { fill: color-mix(in srgb, var(--color-focus) 65%, var(--island-ink)); }
+.territory-board__window { opacity: .6; }
+.territory-board__pole-shadow { fill: none; stroke: var(--tile-roof); stroke-width: 6; stroke-linecap: round; }
+.territory-board__pole { fill: none; stroke: var(--color-art-paper); stroke-width: 3.5; stroke-linecap: round; }
+.territory-board__pennant { fill: var(--color-art-gold); stroke: color-mix(in srgb, var(--color-art-gold) 70%, var(--color-focus)); stroke-width: 1.2; transform-origin: 0 -40px; animation: territory-flag-breeze 4s ease-in-out infinite alternate; }
+.territory-board__flag.is-small .territory-board__pennant { fill: var(--tile-roof); }
+.territory-board__pennant-light { fill: none; stroke: var(--color-art-paper); stroke-width: 3; stroke-linecap: round; opacity: .55; }
+.territory-board__flag-ball { fill: var(--color-art-gold); }
+.territory-board__turret { transition: opacity 250ms; }
+.territory-board__turret.is-down { opacity: .25; }
+.territory-board__trunk { fill: none; stroke: color-mix(in srgb, var(--color-art-violet) 60%, var(--island-ink)); stroke-width: 5; stroke-linecap: round; }
+.territory-board__leaf-light { fill: none; stroke: var(--color-art-paper); stroke-width: 4; stroke-linecap: round; opacity: .4; }
+.territory-board__pebble { fill: var(--color-art-violet); opacity: .45; }
+.territory-board__value rect { fill: var(--color-art-paper); fill-opacity: .94; stroke: color-mix(in srgb, var(--tile-edge) 40%, transparent); stroke-width: 1; }
+.territory-board__value text { fill: var(--island-ink); text-anchor: middle; font: 800 17px/1 var(--quest-font); }
+.territory-board__plus { fill: none; stroke: var(--color-art-paper); stroke-width: 2; stroke-linecap: round; }
+.territory-board__tile.is-legal { cursor: pointer; }
+.territory-board__tile.is-legal .territory-board__tile-face { stroke: var(--color-focus); stroke-width: 3.5; filter: drop-shadow(0 0 5px var(--color-lilac)); }
+.territory-board__tile-label.is-legal .territory-board__value rect { fill: var(--color-focus); stroke: var(--color-focus); }
+.territory-board__tile-label.is-legal .territory-board__value text { fill: var(--color-art-paper); }
+.territory-board__tile:is(.is-selected,:focus-visible) .territory-board__piece,
+.territory-board__tile.is-legal:hover .territory-board__piece { transform: translateY(-5px); }
+.territory-board__tile:is(.is-selected,:focus-visible) .territory-board__tile-face { stroke: var(--quest-blue); stroke-width: 5; }
+.territory-board__tile.is-neighbor .territory-board__tile-face { stroke: color-mix(in srgb, var(--quest-blue) 48%, var(--tile-top)); }
+.territory-board__tile.is-under-siege .territory-board__tile-face { stroke: var(--quest-red); stroke-width: 4; }
+.territory-board__tile.is-celebrating .territory-board__piece { transform-box: fill-box; transform-origin: 50% 80%; animation: territory-land-bounce 650ms cubic-bezier(.2,.8,.2,1); }
+.territory-board__tile.is-celebrating .territory-board__scenery { animation: territory-new-home 650ms cubic-bezier(.2,.8,.2,1); }
+.territory-board__pending { fill: none; stroke: var(--quest-blue); stroke-width: 3; stroke-dasharray: 5 5; animation: territory-pending 1.5s linear infinite; }
+.territory-board__celebration { pointer-events: none; }
+.territory-board__capture-ring { fill: none; stroke: var(--color-art-gold); stroke-width: 5; animation: territory-capture-ring 800ms ease-out both; }
+.territory-board__spark { fill: var(--color-art-gold); animation: territory-spark 800ms ease-out both; }
+.territory-board__reward { fill: var(--color-focus); stroke: var(--color-art-paper); stroke-width: 5; paint-order: stroke fill; text-anchor: middle; font: 900 27px/1 var(--quest-font); animation: territory-reward 1200ms ease-out both; }
+.territory-board__legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px 18px; padding-top: 8px; color: var(--quest-muted); font: 600 11px/1.4 var(--quest-font); }
+.territory-board__legend > span { display: flex; align-items: center; gap: 6px; }
+.territory-board__legend i { width: 14px; height: 14px; border: 1px solid color-mix(in srgb, var(--island-ink) 30%, transparent); border-radius: 5px; }
+.territory-board__legend .is-mint { background: var(--color-art-mint); }
+.territory-board__legend .is-violet { background: var(--color-art-violet); }
+.territory-board__legend .is-neutral { background: var(--island-neutral); }
+.territory-board__legend > small { flex-basis: 100%; text-align: center; font-size: 11px; }
+.territory-board__announcement { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+html[data-quest-tone='dark'] .territory-board {
+  --island-water: color-mix(in srgb, var(--color-art-mint) 12%, var(--quest-bg));
+  --island-water-edge: color-mix(in srgb, var(--color-art-mint) 32%, transparent);
+  --island-neutral: color-mix(in srgb, var(--color-art-violet) 35%, var(--quest-bg));
+  --island-sand: color-mix(in srgb, var(--color-art-violet) 40%, var(--quest-bg));
+  --island-ground: color-mix(in srgb, var(--color-art-violet) 45%, var(--quest-bg));
+  --island-cliff-light: color-mix(in srgb, var(--color-art-violet) 58%, var(--quest-bg));
+  --island-cliff: color-mix(in srgb, var(--color-art-violet) 35%, var(--quest-bg));
+}
+html[data-quest-tone='dark'] .territory-board__tile.is-neutral { --tile-top: color-mix(in srgb, var(--tile-face) 85%, var(--color-art-paper)); }
+html[data-quest-tone='dark'] .territory-board__tile-label.is-legal .territory-board__value text { fill: var(--color-art-ink); }
+html[data-quest-tone='dark'] .territory-board__tile-label.is-legal .territory-board__plus { stroke: var(--color-art-ink); }
+@keyframes territory-land-bounce { 0% { transform: translateY(0) scale(1); } 18% { transform: translateY(3px) scale(1.02,.96); } 48% { transform: translateY(-9px) scale(.99,1.03); } 75% { transform: translateY(2px) scale(1.01,.99); } 100% { transform: translateY(0) scale(1); } }
+@keyframes territory-new-home { 0%,15% { opacity: .2; } 65%,100% { opacity: 1; } }
+@keyframes territory-capture-ring { from { transform: scale(.7); opacity: .9; } to { transform: scale(1.8); opacity: 0; } }
+@keyframes territory-spark { from { transform: translateY(0) scale(.4); opacity: 0; } 25% { opacity: 1; } to { transform: translateY(-32px) scale(.8); opacity: 0; } }
+@keyframes territory-reward { from { transform: translateY(4px); opacity: 0; } 20%,65% { opacity: 1; } to { transform: translateY(-46px); opacity: 0; } }
+@keyframes territory-flag-breeze { from { transform: skewY(-2deg) scaleX(.95); } to { transform: skewY(3deg) scaleX(1); } }
+@keyframes territory-pending { to { stroke-dashoffset: -40; } }
+@container application-content (max-width: 460px) {
+  .territory-board { padding: 0 6px 16px; }
+  .territory-board__heading { padding-inline: 6px; gap: 8px; }
+  .territory-board__heading h2 { font-size: 13px; }
+  .territory-board__heading p { font-size: 10px; }
+  .territory-board__heading .quest-button { padding-inline: 8px; font-size: 10px; }
+  .territory-board__legend { gap: 8px 12px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .territory-board *, .territory-board *::before { animation: none !important; transition: none !important; }
+  .territory-board__celebration { display: none; }
+}

@@ -46,7 +46,7 @@
 }
 .danetki-case-brief > p {
   margin: 15px 0 17px;
-  color: var(--color-paper);
+  color: var(--color-on-media);
   font: 500 clamp(20px, 3.2vw, 26px)/1.36 Oswald, sans-serif;
   letter-spacing: .005em;
 }
@@ -71,7 +71,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 7px;
 }
-.danetki-starter-questions .ui-button {
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-starter-questions .ui-button {
   min-height: 42px;
   padding: 8px 10px;
   border-color: color-mix(in srgb, var(--mode-danetki-brand) 50%, var(--color-line));
@@ -82,7 +82,7 @@
   font-size: 11px;
   line-height: 1.3;
 }
-.danetki-starter-questions .ui-button:hover:not(:disabled) {
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-starter-questions .ui-button:hover:not(:disabled) {
   border-color: var(--mode-danetki-brand);
   background: color-mix(in srgb, var(--mode-danetki-brand) 16%, var(--color-surface-2));
 }
@@ -116,8 +116,8 @@
 .danetki-host-status--offline i,
 .danetki-host-status--error i { background: var(--color-danger); box-shadow: none; }
 .danetki-host-status--reconnecting i { background: var(--color-accent); }
-.danetki-host-retry { margin-left: auto; color: var(--color-primary); }
-.danetki-host-retry svg { width: 14px; height: 14px; }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-host-retry { margin-left: auto; color: var(--color-primary); }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-host-retry svg { width: 14px; height: 14px; }
 
 .danetki-page--session .danetki-progress-row { margin-bottom: 12px; }
 .danetki-page--session .danetki-question-progress { margin: 0; }
@@ -371,7 +371,7 @@
   align-items: center;
   box-shadow: var(--shadow-paper);
 }
-.danetki-page--session .danetki-composer textarea {
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer textarea {
   width: 100%;
   min-height: 34px;
   max-height: 112px;
@@ -386,14 +386,14 @@
   font-weight: 600;
   line-height: 1.35;
 }
-.danetki-page--session .danetki-composer textarea:focus { border: 0; box-shadow: none; }
-.danetki-page--session .danetki-composer textarea::placeholder { color: #756e62; }
-.danetki-page--session .danetki-composer .danetki-composer__send {
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer textarea:focus { border: 0; box-shadow: none; }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer textarea::placeholder { color: #756e62; }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer .danetki-composer__send {
   width: 46px;
   height: 46px;
   min-height: 46px;
   padding: 0;
-  color: var(--color-paper);
+  color: var(--color-on-media);
   background: var(--mode-danetki-brand);
   border-color: color-mix(in srgb, var(--mode-danetki-brand) 74%, white);
   border-radius: 999px;
@@ -401,17 +401,17 @@
   display: grid;
   place-items: center;
 }
-.danetki-page--session .danetki-composer .danetki-composer__send:hover { background: color-mix(in srgb, var(--mode-danetki-brand) 84%, white); }
-.danetki-page--session .danetki-composer .danetki-composer__send:disabled { color: color-mix(in srgb, var(--color-paper) 76%, var(--mode-danetki-brand)); }
-.danetki-page--session .danetki-composer .danetki-composer__send svg { width: 22px; height: 22px; stroke-width: 2.6; }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer .danetki-composer__send:hover { background: color-mix(in srgb, var(--mode-danetki-brand) 84%, white); }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer .danetki-composer__send:disabled { color: color-mix(in srgb, var(--color-on-media) 76%, var(--mode-danetki-brand)); }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer .danetki-composer__send svg { width: 22px; height: 22px; stroke-width: 2.6; }
 .danetki-composer-actions {
   margin-top: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
-.danetki-composer-actions .ui-button:first-child { min-height: 38px; }
-.danetki-composer-actions .ui-button:last-child { min-height: 38px; margin-left: auto; color: var(--color-muted); }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-composer-actions .ui-button:first-child { min-height: 38px; }
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-composer-actions .ui-button:last-child { min-height: 38px; margin-left: auto; color: var(--color-muted); }
 
 .danetki-page--session .danetki-registration-offer { margin-top: 12px; }
 .danetki-page--session .danetki-outcome { margin-top: 12px; }
@@ -433,7 +433,7 @@
     scrollbar-width: none;
   }
   .danetki-starter-questions > div::-webkit-scrollbar { display: none; }
-  .danetki-starter-questions .ui-button { flex: 0 0 min(78vw, 280px); min-height: 46px; font-size: 12px; }
+  :where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-starter-questions .ui-button { flex: 0 0 min(78vw, 280px); min-height: 46px; font-size: 12px; }
   .danetki-case-brief > footer { align-items: flex-start; flex-direction: column; gap: 8px; }
   .danetki-page--session .danetki-progress-row .hint-trigger { flex-basis: 94px; }
   .danetki-page--session .danetki-room-summary > strong { font-size: 18px; }
@@ -444,8 +444,8 @@
   .danetki-page--session .danetki-message { max-width: 88%; }
   .danetki-page--session .danetki-search-area { top: 58px; padding: 7px; border-radius: 18px; }
   .danetki-page--session .danetki-composer { padding-left: 13px; }
-  .danetki-page--session .danetki-composer textarea { font-size: 16px; }
-  .danetki-composer-actions .ui-button { padding-inline: 10px; font-size: 11px; }
+  :where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-page--session .danetki-composer textarea { font-size: 16px; }
+  :where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-composer-actions .ui-button { padding-inline: 10px; font-size: 11px; }
 }
 
 @media (max-width: 420px) {
@@ -453,7 +453,7 @@
   .danetki-page--session .danetki-room-tools { gap: 5px; }
   .danetki-page--session .danetki-message { max-width: 94%; }
   .danetki-page--session .danetki-message__avatar { width: 28px; height: 28px; flex-basis: 28px; }
-  .danetki-composer-actions .ui-button:first-child { flex: 1; }
+  :where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .danetki-composer-actions .ui-button:first-child { flex: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

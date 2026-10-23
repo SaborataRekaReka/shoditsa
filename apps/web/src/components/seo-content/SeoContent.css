@@ -480,3 +480,249 @@
   .ticket-dossier__more > summary svg,
   .ticket-dossier__faq summary svg { animation: none; transition: none; }
 }
+
+/* Public presentation belongs to this component, including details on puzzle titles. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide { border: 1px solid var(--color-line); border-radius: var(--radius-lg); overflow: hidden; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide__summary { padding-inline: clamp(18px, 3vw, 30px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide__summary-title strong { font-size: 14px; font-weight: 700; letter-spacing: 0; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide__drawer { background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.hub-guide__intro > span, .hub-guide__game-links > span) { color: var(--color-muted); font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.hub-guide__intro p, .hub-guide__story p) { font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide__game-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 500; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.hub-guide, .seo-content, .ticket-search-summary, .ticket-dossier) { font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.hub-guide__intro h2, .seo-content__seal-symbol, .seo-content__preview-copy > h1, .seo-content__preview-copy > h2, .seo-content__story-mark, .seo-content__section-icon, .seo-content h3, .seo-content__guide h2, .seo-content__faq h2, .seo-content__route li strong, .ticket-search-summary h2, .ticket-dossier__intro h2, .ticket-dossier__intro h3, .ticket-dossier__guide h3, .ticket-dossier__guide h4, .ticket-dossier__faq h3, .ticket-dossier__faq h4, .ticket-dossier__collection h4, .ticket-dossier__rules h4, .ticket-dossier__rules li > strong, .ticket-dossier__section-icon, .ticket-dossier__route li strong) { font-family: var(--font-body); font-weight: 700; }
+/* All twelve game guides share a quiet editorial surface, regardless of mode. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-search-summary, .ticket-dossier) {
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary { --ticket-search-accent: var(--color-ink); padding: 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary > span { color: var(--color-muted); font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary h2 { margin: 10px 0 14px; font: 700 clamp(22px, 2.2vw, 28px)/1.25 var(--font-body); letter-spacing: -.025em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary > div { max-width: 78ch; gap: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary p { color: var(--color-muted); font-size: 15px; line-height: 1.7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary__related { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--color-line); align-items: baseline; gap: 4px 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary__related > span { color: var(--color-muted); font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary__related > div { gap: 0 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-search-summary > a, .ticket-search-summary__related a, .ticket-dossier__collection-links a, .ticket-dossier__links a) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 9px 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--color-ink);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-decoration-color: var(--color-line-strong);
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary > a { margin-top: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-search-summary > a:hover, .ticket-search-summary__related a:hover, .ticket-dossier__collection-links a:hover, .ticket-dossier__links a:hover) { border-color: transparent; color: var(--color-ink); background: transparent; text-decoration-color: currentColor; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-search-summary a, .ticket-dossier a, .ticket-dossier__more > summary, .ticket-dossier__faq summary):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 3px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier { --ticket-dossier-accent: var(--color-ink); --ticket-body-x: 24px; margin-top: 16px; container: game-info / inline-size; overflow: hidden; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary { min-height: 76px; padding-block: 16px; background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary-title { gap: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary-title > svg { width: 24px; height: 24px; color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary-title > span { gap: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary-title strong { font-size: 16px; font-weight: 700; line-height: 1.4; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary-title small { font-size: 14px; line-height: 1.45; letter-spacing: 0; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary:hover { background: var(--color-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__summary:focus-visible { box-shadow: inset 0 0 0 2px var(--color-focus); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier[open] > .ticket-dossier__summary { background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__chevron { width: 20px; height: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__drawer { padding: 28px var(--ticket-body-x); border-top-color: var(--color-line); border-radius: 0; background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__eyebrow, .ticket-dossier__collection span, .ticket-dossier__rules > header span, .ticket-dossier__guide header span, .ticket-dossier__faq > header span, .ticket-dossier__links > span) { color: var(--color-muted); font-size: 14px; font-weight: 400; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__eyebrow { margin-bottom: 10px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__intro :is(h2, h3) { font: 700 clamp(22px, 2.2vw, 28px)/1.25 var(--font-body); letter-spacing: -.025em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier p { max-width: 78ch; color: var(--color-muted); font-size: 15px; line-height: 1.7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__lead { margin-top: 14px !important; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__collection, .ticket-dossier__rules) { margin-top: 28px; padding: 24px 0 0; border: 0; border-top: 1px solid var(--color-line); border-radius: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__collection { grid-template-columns: 24px minmax(0, 1fr); gap: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__collection > svg, .ticket-dossier__rules > header > svg, .ticket-dossier__guide header > svg, .ticket-dossier__faq > header > svg) { width: 24px; height: 24px; color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__collection h4, .ticket-dossier__rules h4, .ticket-dossier__guide h3, .ticket-dossier__guide h4, .ticket-dossier__faq h3, .ticket-dossier__faq h4) { margin: 4px 0 0; font: 700 20px/1.3 var(--font-body); letter-spacing: -.015em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__collection p { margin-top: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__collection-links { margin-top: 8px; gap: 0 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__rules > header, .ticket-dossier__guide header, .ticket-dossier__faq > header) { align-items: center; gap: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__rules ol { margin-top: 20px; gap: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__rules li, .ticket-dossier__route li) { min-height: 34px; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; color: var(--color-muted); font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__rules li > strong, .ticket-dossier__route li strong) { width: 30px; height: 30px; border: 0; border-radius: 50%; color: var(--color-muted); background: var(--color-surface-2); font: 500 14px/1 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__rules li > span, .ticket-dossier__route li span) { padding-top: 2px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend { margin-top: 22px; gap: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend > span { padding: 0; border: 0; border-radius: 0; background: transparent; grid-template-columns: 16px minmax(0, 1fr); align-items: start; gap: 4px 9px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend i { width: 14px; height: 14px; margin-top: 3px; border: 1px solid var(--color-line-strong); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend i.match { background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend i.close { background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend i.miss { background: var(--match-miss-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend :is(b, small) { font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend b { font-weight: 600; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__rules > p { margin-top: 20px; padding-top: 0; border: 0; font-size: 15px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__guide { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-line); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__evidence, .ticket-dossier__route) { padding: 0; border: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__evidence ul, .ticket-dossier__route ol) { margin-top: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__evidence li { min-height: 34px; padding: 0; margin-bottom: 12px; gap: 10px; color: var(--color-muted); font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__evidence li svg { width: 18px; height: 18px; margin-top: 3px; color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__route ol { display: grid; gap: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.ticket-dossier__more, .ticket-dossier__faq, .ticket-dossier__links) { margin-top: 28px; border-top: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__more > summary { min-height: 56px; padding: 14px 0; color: var(--color-ink); font-size: 16px; font-weight: 600; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__more > summary svg { width: 20px; height: 20px; color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__story { padding: 0 0 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__story p + p { margin-top: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq { padding-top: 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq > div { margin-top: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq details { border-bottom: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq summary { min-height: 56px; padding: 14px 0; font-size: 15px; font-weight: 600; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq summary svg { width: 20px; height: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq p { padding: 0 28px 18px 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__links { padding-top: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__links > span { gap: 10px; color: var(--color-ink); font-size: 16px; font-weight: 600; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__links > span svg { width: 22px; height: 22px; color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__links > div { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 0 20px; }
+
+@container game-info (max-width: 620px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__guide { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__route { padding-top: 24px; border-top: 1px solid var(--color-line); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__legend { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-search-summary { padding: 20px 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier { --ticket-body-x: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__drawer { padding-block: 24px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__collection { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-dossier__faq p { padding-right: 0; }
+}
+
+/* Home-only guide: readable copy and useful navigation, without a spare grid row. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference { border-radius: var(--radius-lg); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference > .hub-guide__summary { min-height: 72px; padding: 18px 28px; color: var(--color-ink); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference > .hub-guide__summary:hover { background: var(--color-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference > .hub-guide__summary:focus-visible { box-shadow: inset 0 0 0 2px var(--color-focus); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__summary-title { gap: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__summary-title strong { font-size: 16px; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__summary-title > svg { width: 22px; height: 22px; color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__summary > small { font-size: 13px; letter-spacing: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__summary-chevron { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference > .hub-guide__drawer { padding: 28px; background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px 40px; align-items: start; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__intro { min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__intro h2 { margin: 0 0 16px; font: 700 clamp(22px, 2.1vw, 28px)/1.2 var(--font-body); letter-spacing: -.025em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__intro p,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__story p { color: var(--color-muted); font-size: 15px; line-height: 1.7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .hub-guide__story p + p { margin-top: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-navigation { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links { min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links h3 { margin: 0 0 10px; font: 700 17px/1.4 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links--stories > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links a { display: flex; align-items: center; min-height: 44px; padding: 9px 0; border-bottom: 1px solid var(--color-line); color: var(--color-ink); font-size: 14px; line-height: 1.45; text-decoration: none; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: 3px; }
+@media (max-width: 900px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-overview { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-navigation { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links--stories > div { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference > .hub-guide__summary { padding: 16px 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference > .hub-guide__drawer { padding: 22px 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links > div,
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hub-guide--reference .home-guide-links--stories > div { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; }
+}
+/* Reference starts use an open landing; the legacy dossier remains independent. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing { width: 100%; padding-top: 32px; border-top: 1px solid var(--color-line); color: var(--color-ink); font-family: var(--font-body); text-align: left; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing h2 { margin: 0 0 18px; font: 700 24px/1.25 var(--font-body); letter-spacing: -.025em; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing p { margin: 0; color: var(--color-muted); font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing a { color: var(--color-ink); text-underline-offset: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing a:focus-visible,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing summary:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__intro { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 48px; margin-bottom: 32px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__intro > header { max-width: 760px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__intro > header h2 { font-size: clamp(26px, 3vw, 34px); line-height: 1.15; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing .game-landing__lead { max-width: 56ch; color: var(--color-ink); font-size: 17px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search h2 { font-size: 20px; line-height: 1.35; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search p + p { margin-top: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search > a { display: inline-flex; align-items: center; min-height: 44px; gap: 8px; margin-top: 8px; font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search .ticket-search-summary__related { display: block; margin-top: 18px; padding: 0; border: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search .ticket-search-summary__related > span { color: var(--color-muted); font-size: 13px; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search .ticket-search-summary__related > div { display: flex; flex-wrap: wrap; gap: 0 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__search .ticket-search-summary__related a { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 0; border: 0; border-radius: 0; background: transparent; font-size: 14px; font-weight: 400; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__rules { padding: 28px; border-radius: var(--radius-lg); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__instructions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin: 22px 0 0; padding: 0; list-style: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__instructions > li { min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__instructions > li > span { display: block; margin-bottom: 12px; color: var(--color-muted); font: 400 14px/1.4 var(--font-mono); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend > span { display: flex; align-items: flex-start; gap: 9px; padding: 12px; border-radius: var(--radius-sm); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend > .is-match { color: var(--match-exact-ink); background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend > .is-close { color: var(--match-partial-ink); background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend > .is-miss { color: var(--match-miss-ink); background: var(--match-miss-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend > span > :first-child { flex: 0 0 18px; width: 18px; margin-top: 2px; text-align: center; font-size: 18px; line-height: 1; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend strong,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend small { display: block; font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend strong { margin-bottom: 2px; font-weight: 600; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__rule-notes { display: grid; gap: 8px; margin-top: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__rule-notes p { font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 32px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison > section { min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison ul,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison ol { margin: 0; padding-left: 22px; color: var(--color-muted); font-size: 15px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison li { padding-left: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison li + li { margin-top: 10px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__intro > header .game-landing__story { margin-top: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__story p + p { margin-top: 16px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq { margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 0 48px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq details { border-bottom: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing summary { list-style: none; cursor: pointer; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing summary::-webkit-details-marker { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; padding: 14px 0; font-size: 15px; font-weight: 500; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq summary > svg,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__method summary > svg { flex: 0 0 18px; width: 18px; height: 18px; color: var(--color-muted); transition: transform .15s ease; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing details[open] > summary > svg { transform: rotate(180deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq details > p { padding: 8px 24px 18px 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__method { margin-top: 32px; border-block: 1px solid var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__method summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 16px 0; font-size: 15px; font-weight: 500; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__method summary > span { display: inline-flex; align-items: center; gap: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__method > div { padding: 8px 0 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__method p { max-width: 90ch; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__sources { display: flex; flex-wrap: wrap; gap: 0 24px; margin-top: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__sources a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__collections { margin-top: 32px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games a { display: grid; grid-template-columns: 24px minmax(0, 1fr) 18px; align-items: center; gap: 12px; min-height: 68px; padding: 12px 0; border-bottom: 1px solid var(--color-line); font-size: 14px; line-height: 1.5; text-decoration: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games a > svg:last-child { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games a:hover > span { text-decoration: underline; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__collections > div { display: flex; flex-wrap: wrap; gap: 0 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__collections a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+@media (max-width: 800px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__intro { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison { gap: 28px; }
+}
+@media (max-width: 600px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing { padding-top: 24px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing h2 { font-size: 22px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__intro > header h2 { font-size: 26px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing .game-landing__lead { font-size: 16px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__rules { padding: 22px 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__instructions { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__instructions > li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__instructions > li > span { margin: 3px 0 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__legend { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__comparison { grid-template-columns: minmax(0, 1fr); gap: 28px; margin-top: 28px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq > div { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__faq details > p { padding-right: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games > div { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games a { grid-template-columns: 20px minmax(0, 1fr); align-items: start; gap: 8px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games a > svg:first-child { width: 20px; height: 20px; margin-top: 2px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing__games a > svg:last-child { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-landing summary > svg { transition: none; }
+}

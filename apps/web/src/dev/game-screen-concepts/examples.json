@@ -1,0 +1,675 @@
+[
+  {
+    "id": "shiki_20",
+    "title": "Наруто",
+    "original": "Naruto",
+    "year": 2002,
+    "poster": "./data/libraries/animes/img/shiki_20/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2002",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "220",
+        "status": "miss",
+        "direction": "down"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "23 мин",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Экшен, Приключения, Фэнтези, Боевые искусства, Сёнен",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Экшен",
+          "Фэнтези",
+          "Сёнен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "Studio Pierrot",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.02",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#9",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "PG-13",
+        "status": "miss",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_1535",
+    "title": "Тетрадь смерти",
+    "original": "Death Note",
+    "year": 2006,
+    "poster": "./data/libraries/animes/img/shiki_1535/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2006",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "37",
+        "status": "miss",
+        "direction": "down"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "23 мин",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Сверхъестественное, Триллер, Психологическое, Сёнен",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Сёнен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "Madhouse",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.62",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#2",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "R",
+        "status": "match",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_16498",
+    "title": "Атака титанов",
+    "original": "Shingeki no Kyojin",
+    "year": 2013,
+    "poster": "./data/libraries/animes/img/shiki_16498/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2013",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "25",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "24 мин",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Сёнен, Экшен, Драма, Триллер, Военное",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Экшен",
+          "Сёнен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "Wit Studio",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.57",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#1",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "R",
+        "status": "match",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_30276",
+    "title": "Ванпанчмен",
+    "original": "One Punch Man",
+    "year": 2015,
+    "poster": "./data/libraries/animes/img/shiki_30276/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2015",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "12",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "24 мин",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Сэйнэн, Экшен, Комедия, Пародия, Супер сила",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Экшен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "Madhouse",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.48",
+        "status": "close",
+        "direction": "up"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#4",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "R",
+        "status": "match",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_38000",
+    "title": "Клинок, рассекающий демонов",
+    "original": "Kimetsu no Yaiba",
+    "year": 2019,
+    "poster": "./data/libraries/animes/img/shiki_38000/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2019",
+        "status": "close",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "26",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "23 мин",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Экшен, Фэнтези, Исторический, Сёнен",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Экшен",
+          "Фэнтези",
+          "Сёнен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "ufotable",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.41",
+        "status": "close",
+        "direction": "up"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#5",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "R",
+        "status": "match",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_5114",
+    "title": "Стальной алхимик: Братство",
+    "original": "Fullmetal Alchemist: Brotherhood",
+    "year": 2009,
+    "poster": "./data/libraries/animes/img/shiki_5114/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2009",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "64",
+        "status": "miss",
+        "direction": "down"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "24 мин",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Сёнен, Экшен, Приключения, Драма, Фэнтези, Военное",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Экшен",
+          "Фэнтези",
+          "Сёнен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "Bones",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "9.11",
+        "status": "miss",
+        "direction": "down"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#3",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "R",
+        "status": "match",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_32281",
+    "title": "Твоё имя",
+    "original": "Kimi no Na wa.",
+    "year": 2016,
+    "poster": "./data/libraries/animes/img/shiki_32281/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2016",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "Фильм",
+        "status": "miss",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "1",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "106 мин",
+        "status": "miss",
+        "direction": "down"
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Драма, Сверхъестественное",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "CoMix Wave Films",
+        "status": "miss",
+        "direction": null,
+        "matchedValues": []
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.82",
+        "status": "miss",
+        "direction": "down"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#11",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "PG-13",
+        "status": "miss",
+        "direction": null
+      }
+    ]
+  },
+  {
+    "id": "shiki_44511",
+    "title": "Человек-бензопила",
+    "original": "Chainsaw Man",
+    "year": 2022,
+    "poster": "./data/libraries/animes/img/shiki_44511/poster.webp",
+    "hints": [
+      {
+        "key": "year",
+        "label": "Год",
+        "value": "2022",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "anime_kind",
+        "label": "Формат",
+        "value": "TV сериал",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "anime_status",
+        "label": "Статус",
+        "value": "Вышло",
+        "status": "match",
+        "direction": null
+      },
+      {
+        "key": "episodes",
+        "label": "Эпизоды",
+        "value": "12",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "runtime",
+        "label": "Длительность",
+        "value": "24 мин",
+        "status": "close",
+        "direction": "down"
+      },
+      {
+        "key": "genres",
+        "label": "Жанры",
+        "value": "Экшен, Фэнтези, Сёнен",
+        "status": "partial",
+        "direction": null,
+        "matchedValues": [
+          "Экшен",
+          "Фэнтези",
+          "Сёнен"
+        ]
+      },
+      {
+        "key": "studio",
+        "label": "Студия",
+        "value": "MAPPA",
+        "status": "match",
+        "direction": null,
+        "matchedValues": [
+          "MAPPA"
+        ]
+      },
+      {
+        "key": "shiki",
+        "label": "Shikimori",
+        "value": "8.43",
+        "status": "close",
+        "direction": "up"
+      },
+      {
+        "key": "rank",
+        "label": "Популярность",
+        "value": "#50",
+        "status": "miss",
+        "direction": "up"
+      },
+      {
+        "key": "age",
+        "label": "Возраст",
+        "value": "R",
+        "status": "match",
+        "direction": null
+      }
+    ]
+  }
+]

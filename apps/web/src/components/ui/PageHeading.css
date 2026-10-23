@@ -1,0 +1,13 @@
+.ui-page-heading.ui-page-heading { display: flex; align-items: flex-start; gap: 18px; min-width: 0; margin: 0 0 24px; padding: 0; color: var(--color-text); }
+.ui-page-heading__copy { flex: 1; min-width: 0; }
+.ui-page-heading.ui-page-heading .ui-page-heading__title { margin: 0; color: var(--color-text); font: 800 32px/1.2 var(--font-entry, var(--font-body)); letter-spacing: -.6px; text-transform: none; overflow-wrap: anywhere; }
+.ui-page-heading.ui-page-heading .ui-page-heading__description { margin: 8px 0 0; max-width: 65ch; color: var(--color-muted); font: 400 15px/1.6 var(--font-body); letter-spacing: normal; text-transform: none; }
+.ui-page-heading__actions { display: flex; flex: none; align-items: center; gap: 8px; min-height: 38px; }
+.ui-page-heading__illustration { display: grid; place-items: center; flex: none; width: 72px; height: 72px; }
+.ui-page-heading__illustration > :is(img, svg) { display: block; width: 100%; height: 100%; margin: 0; object-fit: contain; }
+@media (max-width: 699px) {
+  .ui-page-heading.ui-page-heading { gap: 12px; margin-bottom: 20px; }
+  .ui-page-heading.ui-page-heading .ui-page-heading__title { font-size: 28px; letter-spacing: -.4px; }
+  .ui-page-heading.ui-page-heading .ui-page-heading__description { font-size: 14px; }
+  .ui-page-heading__illustration { width: 56px; height: 56px; }
+}

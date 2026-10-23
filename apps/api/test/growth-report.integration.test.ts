@@ -8,7 +8,7 @@ import { growthReport } from '../src/modules/growth/service.js'
 describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () => {
   let database: ReturnType<typeof createDatabase> | undefined
   let before: GrowthReport
-  const users = [crypto.randomUUID(), crypto.randomUUID(), crypto.randomUUID()]
+  const users = [crypto.randomUUID(), crypto.randomUUID(), crypto.randomUUID(), crypto.randomUUID()]
   const firstFreeArchive = '2026-09-10T13:00:00.000Z'
   const report = (days = 7) => growthReport(database!.db, days) as Promise<GrowthReport>
 
@@ -27,6 +27,7 @@ describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () =
     await database.db.insert(playerProfiles).values(users.map((userId, index) => ({ userId, role: index === 2 ? 'admin' as const : 'player' as const })))
     const insertSession = async (userId: string, startedAt: string, options: {
       sourceSessionId?: string; accessSource?: string | null; completedAt?: string; mode?: 'diagnosis' | 'movie'
+      outcome?: 'won' | 'lost' | 'expired'
     } = {}) => {
       const id = crypto.randomUUID()
       await database!.db.insert(gameSessions).values({
@@ -34,13 +35,17 @@ describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () =
         period: 'all', puzzleDate: startedAt.slice(0, 10), revisionId: item.revisionId,
         answerItemVersionId: item.id, rulesVersion: 1, startedAt: new Date(startedAt),
         sourceSessionId: options.sourceSessionId, accessSource: options.accessSource,
-        status: options.completedAt ? 'won' : 'playing', completionType: options.completedAt ? 'direct_win' : null,
+        status: options.completedAt ? options.outcome ?? 'won' : 'playing',
+        completionType: options.completedAt ? options.outcome === 'expired' ? 'expired' : options.outcome === 'lost' ? 'attempts_exhausted' : 'direct_win' : null,
         completedAt: options.completedAt ? new Date(options.completedAt) : null,
       })
       return id
     }
     const source = await insertSession(users[0], '2026-09-09T10:00:00Z', { completedAt: '2026-09-09T11:00:00Z' })
-    await insertSession(users[1], '2026-09-10T08:00:00Z', { completedAt: '2026-09-10T09:00:00Z' })
+    // Expiry before a played result must not steal this player's first-completion cohort.
+    await insertSession(users[1], '2026-09-09T08:00:00Z', { completedAt: '2026-09-09T09:00:00Z', outcome: 'expired' })
+    const secondSource = await insertSession(users[1], '2026-09-10T08:00:00Z', { completedAt: '2026-09-10T09:00:00Z' })
+    await insertSession(users[3], '2026-09-08T08:00:00Z', { completedAt: '2026-09-08T09:00:00Z', outcome: 'expired' })
     for (const [hour, accessSource, finished] of [
       [10, 'tickets', true], [11, 'club', false], [12, 'registration_bonus', true],
       [13, 'free_archive', true], [14, null, false], [15, 'free_archive', false],
@@ -50,6 +55,13 @@ describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () =
         ...(finished ? { completedAt: `2026-09-10T${hour}:30:00Z` } : {}),
       })
     }
+    await insertSession(users[0], '2026-09-10T16:00:00Z', {
+      sourceSessionId: source, accessSource: 'registration_bonus', completedAt: '2026-09-10T16:30:00Z', outcome: 'expired',
+    })
+    await insertSession(users[0], '2026-09-10T17:00:00Z', {
+      sourceSessionId: source, accessSource: 'tickets', completedAt: '2026-09-10T17:30:00Z', outcome: 'lost',
+    })
+    await insertSession(users[1], '2026-09-10T18:00:00Z', { sourceSessionId: secondSource, accessSource: 'free_archive' })
     // Staff, other modes and the incomplete current UTC day must not enter the cohort or first-observed date.
     const adminSource = await insertSession(users[2], '2026-09-09T10:00:00Z', { completedAt: '2026-09-09T11:00:00Z' })
     await insertSession(users[2], '2026-09-09T12:00:00Z', { sourceSessionId: adminSource, accessSource: 'free_archive' })
@@ -71,7 +83,7 @@ describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () =
     const result = await report()
     expect(result.measurement).toEqual({
       from: '2026-09-08T00:00:00.000Z', coverage: 'partial',
-      definitionsVersion: 'linked-repeat-v3-episode-facts', offerVisibilityVersion: 'visible-v2',
+      definitionsVersion: 'linked-repeat-v4-played-outcomes', offerVisibilityVersion: 'visible-v2',
       episodeFacts: before.measurement.episodeFacts,
       freeArchiveFirstObservedAt: before.measurement.freeArchiveFirstObservedAt && before.measurement.freeArchiveFirstObservedAt < firstFreeArchive
         ? before.measurement.freeArchiveFirstObservedAt : firstFreeArchive,
@@ -81,24 +93,35 @@ describe('linked repeat report definitions (isolated PostgreSQL fixtures)', () =
 
   it('breaks down exactly the existing cohort; unknown stays explicit and unique completers are not additive', async () => {
     const result = await report()
-    expect(result.sessions.completions - before.sessions.completions).toBe(5)
+    expect(result.sessions.completions - before.sessions.completions).toBe(6)
     expect(result.sessions.firstCompleters - before.sessions.firstCompleters).toBe(2)
     expect(result.sessions.measuredCompleters! - before.sessions.measuredCompleters!).toBe(2)
-    expect(result.sessions.repeatStarts! - before.sessions.repeatStarts!).toBe(6)
-    expect(result.sessions.repeatCompletions! - before.sessions.repeatCompletions!).toBe(3)
-    expect(result.sessions.repeatingCompleters! - before.sessions.repeatingCompleters!).toBe(1)
+    expect(result.sessions.repeatStarts! - before.sessions.repeatStarts!).toBe(9)
+    expect(result.sessions.repeatCompletions! - before.sessions.repeatCompletions!).toBe(4)
+    expect(result.sessions.repeatingCompleters! - before.sessions.repeatingCompleters!).toBe(2)
     const rows = result.sessions.repeatByAccessSource!
     expect(rows.reduce((sum, row) => sum + row.repeatStarts, 0)).toBe(result.sessions.repeatStarts)
     expect(rows.reduce((sum, row) => sum + row.repeatCompletions, 0)).toBe(result.sessions.repeatCompletions)
-    for (const [accessSource, starts, completions] of [
-      ['tickets', 1, 1], ['club', 1, 0], ['registration_bonus', 1, 1], ['free_archive', 2, 1], ['unknown', 1, 0],
+    for (const [accessSource, starts, completions, completers] of [
+      ['tickets', 2, 2, 1], ['club', 1, 0, 1], ['registration_bonus', 2, 1, 1], ['free_archive', 3, 1, 2], ['unknown', 1, 0, 1],
     ] as const) {
       const row = rows.find((row) => row.accessSource === accessSource)!
       const old = before.sessions.repeatByAccessSource!.find((row) => row.accessSource === accessSource)
       expect(row.repeatStarts - (old?.repeatStarts ?? 0)).toBe(starts)
       expect(row.repeatCompletions - (old?.repeatCompletions ?? 0)).toBe(completions)
-      expect(row.repeatingCompleters - (old?.repeatingCompleters ?? 0)).toBe(1)
+      expect(row.repeatingCompleters - (old?.repeatingCompleters ?? 0)).toBe(completers)
     }
+  })
+
+  it('reports expiry separately, counts losses as played outcomes, and never completes an expired bonus', async () => {
+    const result = await report()
+    expect(result.sessions.expired - before.sessions.expired).toBe(3)
+    expect(result.sessions.bonusStarts - before.sessions.bonusStarts).toBe(2)
+    expect(result.sessions.bonusCompletions - before.sessions.bonusCompletions).toBe(1)
+    const bonus = result.registrationBonusByMode!.find((row) => row.mode === 'diagnosis')!
+    const old = before.registrationBonusByMode!.find((row) => row.mode === 'diagnosis')
+    expect(bonus.starts - (old?.starts ?? 0)).toBe(2)
+    expect(bonus.completions - (old?.completions ?? 0)).toBe(1)
   })
 
   it('keeps the first observed free-archive date when it falls outside the selected activity window', async () => {

@@ -1,0 +1,93 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls { align-items: stretch; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .qt-connected-launch .game-launch-controls { width: 100%; max-width: none; margin-inline: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .qt-connected-launch .game-launch-controls__play { font-size: 15px; font-weight: 900; letter-spacing: .65px; text-transform: uppercase; border-radius: 14px; box-shadow: 0 4px 0 var(--shg-action-edge); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .qt-connected-launch .game-launch-controls__play:active { box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .qt-connected-launch .game-option-trigger__value > strong { font-weight: 800; }
+@container quest-title (max-width: 520px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .qt-connected-launch .game-launch-controls { display: grid; grid-template-columns: 1fr; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .qt-connected-launch .game-launch-controls__action { order: 1; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact.is-action-only { grid-template-columns: minmax(0, 1fr); max-width: 230px; margin-inline: auto; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-launch-controls__action,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-launch-controls__option { min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-launch-controls__action > .ui-button { min-height: 46px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-option-trigger { min-height: 46px; border-radius: 12px; padding: 5px 11px; gap: 1px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-option-trigger__label { font-size: 10px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-option-trigger__label svg { width: 13px; height: 13px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact .game-option-trigger__value > strong { font-size: 13px; }
+@media (max-width: 370px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--compact { grid-template-columns: minmax(0, 1fr); }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls__action,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls__option { display: flex; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls__action > .ui-button { width: 100%; min-height: 56px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls__option > * { width: 100%; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-select { align-content: stretch; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger { min-height: 56px; padding: 6px 16px; gap: 2px; border-color: var(--color-line-strong); color: var(--color-ink); background: var(--color-surface); box-shadow: none; font: 400 14px/1.4 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger > span { padding-left: 0; line-height: inherit; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger:hover { background: var(--color-surface-2); border-color: var(--color-line-strong); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-select.is-open .game-option-trigger { border-color: var(--color-focus); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__label { color: var(--color-muted); font-size: 12px; font-weight: 400; line-height: 1.4; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__label svg { width: 20px; height: 20px; color: inherit; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__value { color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__value > strong { font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: 0; text-transform: none; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__value > svg:last-child { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-select.is-open .game-option-trigger__value > svg:last-child { transform: rotate(180deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__end { color: var(--color-muted); font: 400 12px/1.4 var(--font-body); font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-trigger__end svg { width: 14px; height: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--music .game-option-trigger.difficulty-trigger { border-color: var(--color-line-strong); color: var(--color-ink); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--music .game-option-trigger.difficulty-trigger:hover { border-color: var(--color-line-strong); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-launch-controls--music .ui-anchored-menu.is-open .game-option-trigger.difficulty-trigger { border-color: var(--color-focus); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-anchored-menu__surface.game-option-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  bottom: auto;
+  left: auto;
+  width: max(100%, min(340px, calc(100vw - 48px)));
+  min-width: 100%;
+  height: auto;
+  max-height: var(--ui-anchored-menu-max-height, 280px);
+  padding: 9px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--reference-game-line);
+  border-radius: 18px;
+  color: var(--reference-game-ink);
+  background: var(--reference-game-white);
+  box-shadow: 0 15px 40px color-mix(in srgb, var(--color-shadow) 12.1569%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transform: none;
+  animation: none;
+  z-index: 130;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-anchored-menu.opens-up .ui-anchored-menu__surface.game-option-menu { top: auto; bottom: calc(100% + 8px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-anchored-menu__surface.game-option-menu > * { flex: 0 0 auto; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-menu :is(.game-option, .difficulty-option, .period-option) { min-height: 48px; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-menu__head { color: var(--reference-game-muted); font: 500 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option__copy strong { font-size: 14px; font-weight: 500; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-menu .game-option__copy small { font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-menu .game-option__icon { color: var(--color-focus); background: var(--color-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option__status { font-size: 12px; font-weight: 500; letter-spacing: 0; line-height: 1.4; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-option-menu :is(.game-option.is-selected, .difficulty-option.active, .period-option.active) { border-color: var(--color-lilac); background: var(--color-lilac); }
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-anchored-menu__surface.game-option-menu,
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-anchored-menu.opens-up .ui-anchored-menu__surface.game-option-menu {
+    position: fixed;
+    top: auto;
+    right: 12px;
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    left: 12px;
+    width: auto;
+    min-width: 0;
+    max-height: min(62dvh, 420px);
+    padding: 12px;
+    border-radius: 22px;
+    z-index: 500;
+  }
+}

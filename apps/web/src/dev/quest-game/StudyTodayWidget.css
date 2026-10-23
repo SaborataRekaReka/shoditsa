@@ -1,0 +1,19 @@
+.hs-today { border: 2px solid var(--quest-line); border-radius: 20px; padding: 25px; background: var(--quest-bg); }
+.qg-app .hs-today h2 { font-size: 62px; line-height: 1; margin: 0 0 13px; letter-spacing: -2px; }
+.hs-today h2 > span { display: inline-block; margin-left: 9px; font-size: 18px; font-weight: 500; letter-spacing: -.5px; }
+.hs-today-icons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px 8px; margin: 23px 0 0; }
+.hs-today-game { position: relative; display: grid; place-items: center; justify-self: center; width: 52px; height: 52px; border-radius: 13px; }
+.hs-today-game:hover { background: var(--color-surface-2); }
+.hs-today-icons img { width: 42px; height: 42px; object-fit: contain; }
+.hs-today-marker { position: absolute; display: grid; place-items: center; right: -2px; bottom: -2px; min-width: 21px; height: 21px; padding-inline: 3px; border: 2px solid var(--quest-bg); border-radius: 999px; color: var(--quest-green); background: var(--quest-green-wash); font: 700 11px/1 var(--quest-font); }
+.hs-today-game--in-progress .hs-today-marker, .hs-today-game--club .hs-today-marker { color: var(--color-focus); background: var(--color-lilac); }
+.hs-today-game--club .hs-today-marker { font-size: 17px; }
+.hs-today-game--completed .hs-today-marker { color: var(--color-on-action); background: var(--quest-green); }
+.hs-today-game--online .hs-today-marker { color: var(--quest-muted); background: var(--color-surface-2); }
+.study-right-content > .hs-today { margin-bottom: 18px; }
+@media (max-width: 699px) {
+  .hs-today { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 9px 22px; padding: 20px; }
+  .qg-app .hs-today h2 { margin: 0; font-size: 43px; grid-row: 1; }
+  .hs-today h2 > span { display: block; margin: 5px 0 0; font-size: 13px; }
+  .hs-today-icons { grid-column: 1 / -1; margin: 10px 0 0; gap: 13px 8px; }
+}

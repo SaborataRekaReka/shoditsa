@@ -1,4 +1,5 @@
 .title-screen { position: relative; z-index: 1; }
+.game-screen-shell.title-screen.afisha-title-screen { width: min(100%, 1052px); padding-top: 24px; }
 .title-screen:has(.game-option-select.is-open) { z-index: 2; }
 .game-selector,
 .period-control {

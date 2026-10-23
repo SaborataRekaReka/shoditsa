@@ -1,0 +1,23 @@
+/* Load statically after base styles. Each file owns one public game surface. */
+@import '../../components/game-shell/GameScreenShell.reference.css';
+@import '../../components/game-shell/GamePageFrame.reference.css';
+@import '../game-session/GameSession.reference.css';
+@import '../game-session/AttemptCards.reference.css';
+@import '../game-session/CharacterAttempt.reference.css';
+@import '../game-session/GameAttempt.reference.css';
+@import '../game-session/FinalChoicePanel.reference.css';
+@import '../../components/search-combobox/SearchCombobox.reference.css';
+@import '../game-session/GameMatchStrip.reference.css';
+@import '../../components/game-launch-controls/GameLaunchControls.reference.css';
+@import '../result/GameResult.reference.css';
+@import '../player-modals/PlayerModalViews.reference.css';
+@import '../economy/EconomyView.reference.css';
+@import '../content-report/ContentReport.reference.css';
+@import '../title/TitleScreen.reference.css';
+
+@import '../danetki/DanetkiGamePage.reference.css';
+@import '../danetki/DanetkiCatalogPage.reference.css';
+@import '../friends-room/FriendsRoomIntroScreen.reference.css';
+@import '../friends-room/FriendsRoomScreen.reference.css';
+@import '../territory/TerritoryRoomGame.reference.css';
+@import '../challenge/ChallengeInvite.reference.css';

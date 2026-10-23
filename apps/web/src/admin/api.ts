@@ -178,6 +178,7 @@ export type ConnectionsRoundAdminItem = {
   titleRu: string
   contentStatus: string | null
   allowedInGame: boolean
+  scheduledEver: boolean
   payload: Record<string, unknown>
   issues: Array<{ severity: 'error' | 'warning'; code: string; path: string; message: string }>
 }
@@ -301,6 +302,9 @@ export const adminApi = {
     hints: Array<{ checkpoint: number; count: number }>
     guesses: Array<{ result: string; count: number }>
     scheduledAhead: number
+    contiguousScheduledDays: number
+    reserveTarget: number
+    reserveWarning: boolean
     nearestGap: string
     openReports: number
     launchDate: string | null

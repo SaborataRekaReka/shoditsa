@@ -1,0 +1,149 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading { align-items: center; margin-bottom: 26px; padding: 5px 0 23px; border-bottom: 1px solid var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading__kicker { color: var(--reference-game-muted); font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading h1 { margin: 10px 0 10px; color: var(--reference-game-ink); font: 900 clamp(33px, 4.4vw, 53px)/1.05 var(--reference-game-font); letter-spacing: -.04em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading p { font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mini-ticket { width: 82px; height: 86px; padding: 12px; border: 0; border-radius: 13px; color: var(--reference-game-ink); background: var(--reference-game-accent); box-shadow: none; transform: rotate(4deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mini-ticket > span { font: 700 29px/1 var(--reference-game-script); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mini-ticket small { margin-left: 3px; font: 500 12px var(--reference-game-font); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading:has(.reference-session-art) { position: relative; min-height: 164px; margin-bottom: 22px; padding: 24px 30px; border: 0; border-radius: 25px; background: color-mix(in srgb, var(--reference-game-accent) 58%, var(--reference-game-paper)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading:has(.reference-session-art) > div:first-child { position: relative; z-index: 1; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-session-art { display: block; flex: 0 0 145px; width: 145px; height: 135px; object-fit: contain; transform: rotate(3deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-trigger { flex-basis: 130px; padding: 10px 16px; border-radius: 18px; gap: 5px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-toolbar { gap: 9px; margin-bottom: 17px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mode-tabs { background: var(--color-surface-2); border: 0; border-radius: 999px; padding: 5px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mode-tabs button { border-radius: 999px; font-weight: 500; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mode-tabs button.active { color: var(--reference-game-white); background: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card { padding: 23px; border: 1px solid var(--reference-game-line); border-radius: 23px; background: color-mix(in srgb, var(--reference-game-accent) 42%, var(--reference-game-white)); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card__icon { color: var(--reference-game-ink); background: var(--reference-game-white); border-radius: 50%; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card h2 { font: 700 22px/1.2 var(--reference-game-font); letter-spacing: -.02em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card p { font-size: 14px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .assist-reveal-card { padding: 17px 19px; border: 1px solid var(--color-accent-border); border-radius: 16px; background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .assist-reveal-card > span { color: var(--reference-game-close-ink); font-size: 13px; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .assist-reveal-card > p { font-size: 14px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title { margin: 4px 3px 13px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title span { font: 700 23px var(--reference-game-font); text-transform: none; letter-spacing: -.025em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title strong { min-width: 30px; padding: 6px 10px; border-radius: 50%; background: var(--reference-game-accent); }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading { gap: 15px; margin-bottom: 20px; padding-bottom: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading h1 { font-size: clamp(31px, 7.8vw, 43px); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading__kicker { font-size: 12px; white-space: normal; line-height: 1.5; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading p { font-size: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading:has(.reference-session-art) { min-height: 140px; padding: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-session-art { flex-basis: 100px; width: 100px; height: 110px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mini-ticket { width: 66px; height: 75px; padding: 10px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mini-ticket > span { font-size: 25px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-trigger { flex-basis: 110px; font-size: 12px; padding: 9px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card { padding: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card h2 { font-size: 19px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .empty-card__icon { width: 42px; height: 42px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .section-title span { font-size: 21px; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading h1 { font-size: 30px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-heading:has(.reference-session-art) { padding: 17px; gap: 9px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-session-art { flex-basis: 80px; width: 80px; height: 95px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .mini-ticket { width: 58px; height: 70px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-trigger { flex-basis: 95px; font-size: 11px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading {
+  height: auto;
+  min-height: 184px;
+  margin: 0 0 16px;
+  padding: 22px 28px;
+  gap: 14px;
+  border: 0;
+  border-radius: 23px;
+  background: color-mix(in srgb, var(--reference-game-accent) 55%, var(--reference-game-paper));
+  align-items: center;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading > div:first-child { flex: 1 1 auto; min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading__kicker { font-size: 13px; font-weight: 400; white-space: normal; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading h1 { margin: 10px 0 13px; font-size: clamp(38px, 4vw, 58px); line-height: 1.04; letter-spacing: -.045em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading p { max-width: 460px; font-size: 13px; line-height: 1.45; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-visual {
+  flex: 0 0 375px;
+  width: 375px;
+  min-width: 0;
+  height: 140px;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-note {
+  flex: 0 1 166px;
+  max-width: 166px;
+  padding: 0 5px 8px;
+  color: var(--reference-game-ink);
+  font: 700 29px/1 var(--reference-game-script);
+  white-space: pre-line;
+  text-align: center;
+  transform: rotate(-8deg);
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-note > span { display: inline-block; margin-left: 4px; font: 400 22px/1 Arial, sans-serif; transform: rotate(8deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-art { flex: 0 0 200px; width: 200px; height: 187px; max-width: 100%; align-self: flex-end; margin-bottom: -22px; object-fit: contain; transform: rotate(3deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .progress-row { gap: 12px; margin-bottom: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .hint-trigger { flex-basis: 150px; font-size: 13px; border-radius: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .empty-card { margin-top: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .section-title { margin-bottom: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .section-title span { font-size: 25px; }
+@media (max-width: 1250px) and (min-width: 981px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading { min-height: 175px; padding: 22px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading h1 { font-size: 45px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-visual { flex-basis: 220px; width: 220px; gap: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-note { flex-basis: 110px; max-width: 110px; padding: 11px 7px; font-size: 22px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-art { flex-basis: 115px; width: 115px; height: 145px; }
+}
+@media (max-width: 980px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading { min-height: 184px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-visual { flex-basis: 300px; width: 300px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-note { flex-basis: 144px; max-width: 144px; font-size: 25px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-art { flex-basis: 150px; width: 150px; height: 155px; }
+}
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading { min-height: 160px; padding: 21px; gap: 10px; margin-bottom: 16px; border-radius: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading h1 { margin-block: 9px; font-size: clamp(32px, 5.4vw, 41px); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading__kicker { font-size: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading p { font-size: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-visual { flex-basis: 190px; width: 190px; height: 124px; gap: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-note { flex-basis: 94px; max-width: 94px; padding: 10px 5px; font-size: 19px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-art { flex-basis: 100px; width: 100px; height: 125px; align-self: center; margin-bottom: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .progress-row { gap: 9px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .hint-trigger { flex-basis: 110px; padding: 10px; font-size: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .section-title span { font-size: 22px; }
+}
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading { min-height: 154px; padding: 19px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-visual { flex-basis: 100px; width: 100px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-note { display: none; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-art { flex-basis: 100px; width: 100px; height: 124px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading h1 { font-size: clamp(29px, 7.3vw, 38px); }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .game-heading { padding: 16px; gap: 8px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-visual { flex-basis: 75px; width: 75px; height: 104px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .reference-session-art { flex-basis: 75px; width: 75px; height: 104px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .game-heading h1 { font-size: 29px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .hint-trigger { flex-basis: 94px; font-size: 11px; padding-inline: 8px; }
+}
+
+/* Hint content belongs to the session; the dialog surface stays in components/ui. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__head > span { color: var(--color-muted); font: 500 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal h2 { font: 700 26px/1.2 var(--font-body); letter-spacing: -.02em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.hint-modal > p, .hint-modal__state p) { font-size: 14px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__options { gap: var(--space-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__options > button { padding: var(--space-3); border-radius: var(--radius-sm); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__options > button:hover:not(:disabled) { background: var(--color-surface-2); transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__options > button strong { font-size: 15px; line-height: 1.4; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__options > button small { font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__options > button > i { color: var(--color-muted); font: 500 16px/1.4 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__later { font: 500 14px/1.5 var(--font-body); text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__reveal { padding: var(--space-4); border: 0; background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__reveal > span { font-size: 14px; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal__reveal > p { font-size: 15px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .animal-media-hint > small { font-size: 13px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .animal-media-hint__silhouette,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-modal .animal-media-hint__silhouette { border-color: var(--color-line); background: var(--color-surface-2); }

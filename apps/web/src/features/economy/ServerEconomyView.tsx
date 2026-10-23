@@ -9,7 +9,7 @@ import { trackClientEvent } from '../../app/client-events'
 import { CheckoutButton } from '../commerce/CheckoutButton'
 import { emptyAttendanceStats } from '../../storage'
 import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
-import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
+import { ActionButton, InlineAlert, StatsGrid, TextInput } from '../../components/ui'
 
 const ledgerReasonLabel = (reason: string) => reason === 'game-completion'
   ? 'Награда за сеанс'
@@ -95,12 +95,14 @@ export function ServerEconomyView() {
   }, [bundleIds])
 
   return <div className="economy-view">
-    <div className="stats-grid stats-grid--economy">
+    {serverRuntime.loading ? <p className="modal-lead" role="status">Загружаем баланс…</p>
+      : serverRuntime.error ? <InlineAlert tone="danger">{apiErrorMessage(serverRuntime.error)}</InlineAlert>
+      : <StatsGrid variant="economy">
       <div><strong>{wallet.balance}</strong><span>сейчас</span></div>
       <div><strong>{wallet.lifetimeEarned}</strong><span>всего</span></div>
       <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
       <div><strong>+{nextBonus}</strong><span>на {nextAt}-й день</span></div>
-    </div>
+    </StatsGrid>}
     <div className="economy-note"><Ticket /><p>Билеты открывают дополнительные периоды и свободные игры. Все списания и начисления подтверждает сервер.</p></div>
     {ticketBundles.length > 0 && <section className="ticket-bundles">
       <header><span><Ticket /> Наборы билетов</span><small>Разовая покупка без подписки</small></header>
@@ -113,15 +115,15 @@ export function ServerEconomyView() {
     <p className="modal-lead">Баланс и история сохраняются в серверном профиле. Для гостя они привязаны к текущей гостевой сессии; после регистрации прогресс можно сохранить в аккаунте.</p>
     <form className="ticket-promo" onSubmit={submitPromoCode}>
       <div className="ticket-promo__copy"><span><Ticket /> Промокод</span><small>Код проверяется на сервере</small></div>
-      <div className="ticket-promo__row"><TextInput value={promoCode} onChange={(event) => { setPromoCode(event.target.value); promoKeyRef.current = null; setPromoMessage('') }} placeholder="Промокод" autoComplete="off" /><ControlButton type="submit" disabled={promo.isPending}>{promo.isPending ? 'Проверяем…' : 'Активировать'}</ControlButton></div>
-      {promoMessage && <p>{promoMessage}</p>}
+      <div className="ticket-promo__row"><TextInput aria-label="Промокод" value={promoCode} onChange={(event) => { setPromoCode(event.target.value); promoKeyRef.current = null; setPromoMessage('') }} placeholder="Промокод" autoComplete="off" /><ActionButton type="submit" disabled={promo.isPending}>{promo.isPending ? 'Проверяем…' : 'Активировать'}</ActionButton></div>
+      {promoMessage && <InlineAlert tone={promo.isError ? 'danger' : promo.isSuccess ? 'success' : 'neutral'}>{promoMessage}</InlineAlert>}
     </form>
     <h3 className="subheading">Как начисляется</h3>
     <div className="economy-rules"><span><strong>+{rules.rewards.completion}</strong> завершить сеанс</span><span><strong>+{rules.rewards.win}</strong> угадать ответ</span><span><strong>+1–{rules.rewards.efficiency.upTo3Attempts}</strong> за эффективность</span><span><strong>+{rules.rewards.firstGame}</strong> первая игра дня</span><span><strong>+{rules.rewards.route3}</strong> маршрут из 3 режимов</span><span><strong>+{rules.rewards.fullRoute}</strong> полный маршрут</span></div>
     <p className="modal-lead">Серия растёт за первую завершённую игру дня и больше не умножает каждую награду. Следующий одноразовый бонус: +{nextBonus} на {nextAt}-й день серии.</p>
     <h3 className="subheading">История билетов</h3>
     {ledger.isLoading
-      ? <p className="modal-lead">Загружаем историю…</p>
+      ? <p className="modal-lead" role="status">Загружаем историю…</p>
       : ledger.isError
         ? <InlineAlert tone="danger" className="server-error">{apiErrorMessage(ledger.error)}</InlineAlert>
         : ledger.data?.items.length

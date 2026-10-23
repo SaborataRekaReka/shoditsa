@@ -1,11 +1,13 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { TerritoryPublicSnapshot } from '@shoditsa/contracts'
 import { Check, Clock3, Crosshair, LoaderCircle, Map, RotateCcw } from 'lucide-react'
-import { ActionButton, ControlButton, InlineAlert } from '../../components/ui'
+import { ControlButton, InlineAlert } from '../../components/ui'
+import { RoomActionButton as ActionButton } from '../rooms/RoomActionButton'
 import { deterministicClientEventId } from '../../app/client-events'
 import { TerritoryBoard } from './TerritoryBoard'
 import { trackTerritoryEvent } from './territory-analytics'
 import './TerritoryRoomGame.css'
+import './TerritoryRoomGame.application.css'
 
 export type TerritoryRoomGameProps = {
   snapshot: TerritoryPublicSnapshot
@@ -175,6 +177,7 @@ function TerritoryPlayerHud({
   </span>
   const score = <span className="territory-player__score">
     <span className="territory-room-game__sr-only">{player.territoryCount} {territoryWord(player.territoryCount)}, стоимость {player.territoryValueTotal} {pointsWord(player.territoryValueTotal)}</span>
+    <strong aria-hidden="true">{player.territoryCount} <small>{territoryWord(player.territoryCount)}</small></strong>
     <small aria-hidden="true">{player.territoryValueTotal} оч.</small>
   </span>
   return <div className={`territory-player territory-player--${seat === 0 ? 'light' : 'deep'}${seat === 1 ? ' territory-player--right' : ''}${currentActorUserId === player.userId ? ' is-current' : ''}`}>
@@ -237,7 +240,7 @@ function QuestionPanel({
         disabled={busy || answered || expired || !selectedOptionId}
       >
         {pendingOptionId && <LoaderCircle aria-hidden="true" />}
-        {answered ? pendingOptionId ? 'ОТПРАВЛЯЕМ…' : 'ОТВЕТ ПРИНЯТ' : expired ? 'ВРЕМЯ ВЫШЛО' : 'ОТВЕТИТЬ'}
+        {answered ? pendingOptionId ? 'Отправляем…' : 'Ответ принят' : expired ? 'Время вышло' : 'Ответить'}
       </ActionButton>
     </div>
   </>
@@ -293,7 +296,7 @@ function CapturePanel({ snapshot, currentMemberId, pendingCellId, busy }: {
       <span className="territory-question-panel__kicker">Право на захват</span>
       <h2>{isActor ? 'Выберите территорию на карте' : 'Соперник выбирает территорию'}</h2>
       <p>{isActor
-        ? 'Янтарным контуром отмечены доступные земли. Обычная территория перейдёт сразу, а атака столицы запустит осаду трёх башен.'
+        ? 'Контуром отмечены доступные земли. Обычная территория перейдёт сразу, а атака столицы запустит осаду трёх башен.'
         : 'Карта обновится одновременно у обоих игроков после выбора.'}</p>
     </div>
     <div className="territory-question-panel__status territory-question-panel__status--wide" role="status">
@@ -349,6 +352,7 @@ export function TerritoryRoomGame({
   const currentActorUserId = capture?.actorUserId ?? null
   const legalCellIds = capture?.actorUserId === currentMemberId ? capture.legalCellIds : []
   const capturedCellId = snapshot.reveal?.capturedCellId ?? null
+  const playRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setSelectedOptionId(null)
@@ -422,7 +426,7 @@ export function TerritoryRoomGame({
   }
 
   const captureCell = async (cellId: string) => {
-    if (actionBusy || snapshot.phase !== 'capture' || snapshot.capture.actorUserId !== currentMemberId || !snapshot.capture.legalCellIds.includes(cellId)) return
+    if (actionBusy || secondsLeft === 0 || snapshot.phase !== 'capture' || snapshot.capture.actorUserId !== currentMemberId || !snapshot.capture.legalCellIds.includes(cellId)) return
     setPendingCellId(cellId)
     try {
       await onCapture(cellId)
@@ -465,11 +469,12 @@ export function TerritoryRoomGame({
   const feed = statusFeedCopy(snapshot, currentMemberId, Boolean(pendingOptionId))
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }))
+    if (snapshot.phase !== 'question' && snapshot.phase !== 'capture') return
+    const frame = window.requestAnimationFrame(() => playRef.current?.scrollIntoView({ block: 'start', behavior: 'auto' }))
     return () => window.cancelAnimationFrame(frame)
-  }, [snapshot.matchNumber])
+  }, [snapshot.matchNumber, snapshot.duelNumber, snapshot.phase])
 
-  return <section className={`territory-room-game territory-room-game--${snapshot.phase} territory-room-game--you-${currentPlayerSeat === 1 ? 'deep' : 'light'}`} aria-label="Матч «Захват»">
+  return <section ref={playRef} className={`territory-room-game territory-room-game--${snapshot.phase} territory-room-game--you-${currentPlayerSeat === 1 ? 'deep' : 'light'}`} aria-label="Матч «Захват»">
     <header className="territory-hud">
       <TerritoryPlayerHud player={snapshot.players[0]} seat={0} currentMemberId={currentMemberId} currentActorUserId={currentActorUserId} />
       <div className="territory-turn" aria-label={`${centerLabel}. ${siegePhase ? `Осталось башен: ${siegeTowersRemaining ?? 'неизвестно'}.` : `Ход ${snapshot.duelNumber} из ${snapshot.maxDuels}.`} Матч номер ${snapshot.matchNumber}.`}>
@@ -482,25 +487,6 @@ export function TerritoryRoomGame({
       </div>
       <TerritoryPlayerHud player={snapshot.players[1]} seat={1} currentMemberId={currentMemberId} currentActorUserId={currentActorUserId} />
     </header>
-
-    <TerritoryBoard
-      map={snapshot.map}
-      ownership={snapshot.ownership}
-      players={snapshot.players}
-      currentMemberId={currentMemberId}
-      legalCellIds={legalCellIds}
-      selectedCellId={pendingCellId}
-      capturedCellId={capturedCellId}
-      capitalTowers={snapshot.siege.towersRemaining}
-      siegeTargetCellId={snapshot.siege.active?.targetCellId ?? null}
-      disabled={actionBusy}
-      onCapture={(cellId) => void captureCell(cellId)}
-    />
-
-    <div className="territory-status-feed" role="status" aria-live="polite">
-      <Crosshair aria-hidden="true" />
-      <span><strong>{feed.lead}</strong>{feed.text}</span>
-    </div>
 
     <section className="territory-question-panel" aria-label="Состояние текущей дуэли">
       {snapshot.phase === 'countdown' && <div className="territory-countdown">
@@ -524,6 +510,28 @@ export function TerritoryRoomGame({
       {snapshot.phase === 'finished' && <FinishedPanel snapshot={snapshot} currentMemberId={currentMemberId} busy={actionBusy} onRematch={() => void requestRematch()} />}
       {error && <InlineAlert className="territory-question-panel__error" tone="danger">{error}</InlineAlert>}
     </section>
+
+    <div className="territory-status-feed" role="status" aria-live="polite">
+      <Crosshair aria-hidden="true" />
+      <span><strong>{feed.lead}</strong>{feed.text}</span>
+    </div>
+
+    <details className="territory-map-disclosure" open={snapshot.phase === 'capture' || snapshot.phase === 'finished' || snapshot.phase === 'countdown' || snapshot.phase === 'reveal' && Boolean(capturedCellId)}>
+      <summary><Map aria-hidden="true" /><span>Карта захвата</span><small>{snapshot.phase === 'capture' ? snapshot.capture.actorUserId === currentMemberId ? 'Твой ход' : 'Ход соперника' : `${snapshot.map.cellCount} территорий`}</small></summary>
+      <TerritoryBoard
+        map={snapshot.map}
+        ownership={snapshot.ownership}
+        players={snapshot.players}
+        currentMemberId={currentMemberId}
+        legalCellIds={legalCellIds}
+        selectedCellId={pendingCellId}
+        capturedCellId={capturedCellId}
+        capitalTowers={snapshot.siege.towersRemaining}
+        siegeTargetCellId={snapshot.siege.active?.targetCellId ?? null}
+        disabled={actionBusy || snapshot.phase === 'capture' && secondsLeft === 0}
+        onCapture={(cellId) => void captureCell(cellId)}
+      />
+    </details>
 
     <span className="territory-room-game__sr-only" aria-live="polite">
       {snapshot.phase === 'capture'

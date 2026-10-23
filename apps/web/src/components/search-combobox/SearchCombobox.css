@@ -92,3 +92,23 @@
 @media (min-width: 720px) {
   .suggestions { top: 96px; }
 }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-search-combobox .suggestions [role='option'] > span:only-child { grid-column: 1 / -1; }
+
+/* The application skin is owned here, alongside the search control. */
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox { position: relative; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box { min-height: 60px; grid-template-columns: 20px minmax(0, 1fr) 46px; padding: 5px 6px 5px 14px; gap: 8px; border: 2px solid var(--quest-line); border-radius: 12px; background: var(--quest-bg); box-shadow: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box.selected { grid-template-columns: 20px minmax(0, 1fr) 18px 46px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box:focus-within { border-color: var(--quest-blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--quest-blue) 12%, transparent); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box input { color: var(--quest-text); font: 400 16px/1.5 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box input::placeholder { color: var(--quest-muted); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box > button { width: 46px; height: 46px; color: var(--color-on-action); background: var(--color-action); border: 0; border-bottom: 3px solid var(--color-action-hover); border-radius: 10px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box > button:disabled { opacity: 1; filter: none; color: var(--quest-blue); background: var(--quest-purple); border-color: color-mix(in srgb, var(--quest-blue) 20%, var(--quest-purple)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .suggestions { top: calc(100% + 8px); border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 14px; background: var(--quest-bg); box-shadow: 0 8px 24px color-mix(in srgb, var(--quest-text) 8%, transparent); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .suggestions button { border-bottom-color: var(--quest-line); color: var(--quest-text); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .suggestions button:is(:hover, .is-active) { background: var(--quest-purple); box-shadow: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .suggestions strong { font: 700 14px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .suggestions small { color: var(--quest-muted); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .suggestions em { color: var(--quest-text); font: 700 16px var(--quest-font); }
+@media (max-width: 420px) {
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .ui-search-combobox .search-box { padding-left: 10px; gap: 6px; }
+}

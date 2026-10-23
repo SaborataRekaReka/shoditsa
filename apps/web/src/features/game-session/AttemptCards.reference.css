@@ -1,0 +1,157 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-list { margin-top: 26px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card { margin-bottom: 18px; border-color: var(--reference-game-line); border-radius: 22px; color: var(--reference-game-ink); background: var(--reference-game-white); box-shadow: 0 3px 14px color-mix(in srgb, var(--color-shadow) 1.5686%, transparent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card:hover { border-color: #cec6b8; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card h2, .gm-head__identity h2, .dx-head__identity h2, .kpop-card__identity h2) { font: 700 24px/1.15 var(--reference-game-font); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card__number { color: var(--reference-game-muted); font: 700 16px var(--reference-game-font); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-label { color: var(--reference-game-muted); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card__header, .gm-head, .dx-head, .kpop-card__header) { border-bottom-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card__header > img, .gm-head__art, .kpop-card__portrait) { border-radius: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile { min-height: 81px; padding: 12px; border: 1px solid var(--reference-game-line); border-radius: 13px; color: var(--reference-game-ink); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile.match,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.dx-attr, .gm-studio, .gm-rank, .kpop-label-plate, .kpop-card__generation, .city-rank-meter, .people-group).match,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .city-rank-meter--match { background: var(--match-exact-bg); border-color: color-mix(in srgb, var(--match-exact-ink) 20%, var(--match-exact-bg)); color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile:is(.close, .partial),
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.dx-attr, .gm-rank, .kpop-card__generation, .people-group):is(.close, .partial),
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .city-rank-meter--close { background: var(--match-partial-bg); border-color: color-mix(in srgb, var(--match-partial-ink) 20%, var(--match-partial-bg)); color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile.miss,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.dx-attr, .gm-studio, .people-group, .dx-system-icon).miss { background: var(--match-miss-bg); border-color: color-mix(in srgb, var(--match-miss-ink) 20%, var(--match-miss-bg)); color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile.unknown { background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile__top { opacity: 1; color: var(--reference-game-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile__top span { overflow: visible; font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; text-overflow: clip; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile > strong { margin-block: 9px 5px; font-size: 15px; font-weight: 700; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile > small { color: var(--reference-game-muted); opacity: 1; font-size: 12px; font-weight: 400; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile.match .clue-tile__top { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile:is(.close, .partial) .clue-tile__top { color: var(--reference-game-close-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile.miss .clue-tile__top { color: var(--reference-game-miss-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.clue-genre-list span, .clue-token-list span) { border-color: #0000001c; background: color-mix(in srgb, var(--color-surface) 50.1961%, transparent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.clue-token-list span.is-match, .dx-chip.match, .gm-genre.match, .gm-year.match, .game-match-strip__tag) { background: var(--match-exact-bg); border-color: color-mix(in srgb, var(--match-exact-ink) 20%, var(--match-exact-bg)); color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .people-group { padding: 12px; border-radius: 13px; background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .people-group__head :is(span, small) { font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-person > strong { color: var(--reference-game-muted); font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-person__portrait > span { font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-person.matched > strong { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .hint-person.matched .hint-person__portrait { border-color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.rating-badge strong, .gm-rank__val strong, .dx-head__icd strong, .dx-score > strong b, .dx-systems__head small, .dx-cloud__head small, .gm-studio__logo, .kpop-card__generation strong) { font-family: var(--reference-game-font); font-weight: 700; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-system-icon.match { background: var(--match-exact-bg); color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-system-icon.partial { background: var(--match-partial-bg); color: var(--reference-game-close-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-system-icon.miss .dx-system-icon__glyph,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--game .dx-chip.miss .dx-chip__icon { filter: brightness(0); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-chip.miss { color: var(--reference-game-muted); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-score { background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-attr__label { font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .dx-attr__val { font-size: 15px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.dx-cloud__head, .dx-systems__head) span { font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--kpop { --kpop-cyan: #427589; --kpop-magenta: #916080; background: var(--reference-game-white); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--kpop::before { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .kpop-card__generation { background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .kpop-card__identity p b { color: var(--kpop-magenta); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .poster-fallback.kpop-card__portrait { background: var(--reference-game-lilac); color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .kpop-label-mark { background: var(--reference-game-white); color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .answer-card__summary { background: var(--match-exact-bg); color: var(--reference-game-match-ink); }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.attempt-card h2, .gm-head__identity h2, .dx-head__identity h2, .kpop-card__identity h2) { font-size: 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile { padding: 10px; min-height: 80px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile > strong { font-size: 14px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .clue-tile__top span { font-size: 12px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-list { margin-top: 23px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card { margin-bottom: 18px; border-radius: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-clue-grid { gap: 9px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main :is(.attempt-card__header, .gm-head, .dx-head, .kpop-card__header) { padding: 17px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile { border-radius: 12px; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main :is(.attempt-card__header, .gm-head, .dx-head, .kpop-card__header) { padding: 13px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header {
+  grid-template-columns: 26px 116px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 15px;
+  padding: 16px 20px;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header > img,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header > .poster-fallback { width: 116px; height: 142px; border-radius: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card__number { align-self: start; padding-top: 4px; font-size: 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card__identity h2 { font-size: 24px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-label { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .gm-head__sub { margin-top: 7px; font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .gm-genres { margin-top: 12px; gap: 7px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .gm-genre { padding: 5px 10px; font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .rating-badge { align-self: start; padding: 9px 11px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .rating-badge strong { font-size: 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .dx-score { padding: 11px 20px; background: #fffefd; border-block: 1px solid #f0ece6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .dx-score > span { text-transform: none; letter-spacing: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .dx-score > span { font-weight: 500; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-profile__heading > span { font: 600 14px/1.5 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-profile__heading > small,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-meter__comparison { font: 400 12px/1.5 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-meter__label { font: 500 13px/1.4 var(--font-body); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-meter > strong { font: 600 14px/1.4 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-meter__comparison { flex-wrap: wrap; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-meter { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .city-rank-meter__label { min-height: 2.8em; overflow-wrap: normal; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid { grid-template-areas: none; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 17px 20px 20px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid > .clue-tile { grid-area: auto; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid > .people-group { grid-area: auto; grid-column: span 2; min-height: 114px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference { position: relative; display: flex; flex-direction: column; gap: 9px; padding: 13px 15px 15px; min-height: 92px; border: 1px solid #e8e3dc; border-radius: 12px; background: #f7f5f1; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference.match { background: var(--match-exact-bg); border-color: color-mix(in srgb, var(--match-exact-ink) 20%, var(--match-exact-bg)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference:is(.close, .partial) { background: var(--match-partial-bg); border-color: color-mix(in srgb, var(--match-partial-ink) 20%, var(--match-partial-bg)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference.miss { background: var(--match-miss-bg); border-color: color-mix(in srgb, var(--match-miss-ink) 20%, var(--match-miss-bg)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference .clue-tile__top { position: static; display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 23px; padding: 0; color: #746c67; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference .clue-tile__top > span:first-child { min-width: 0; font-size: 12px; font-weight: 400; line-height: 1.3; letter-spacing: 0; text-transform: none; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference > strong { margin: 0; color: #252320; font-size: 16px; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference :is(.clue-genre-list, .clue-token-list) { min-width: 0; margin: 0; gap: 5px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference :is(.clue-genre-list, .clue-token-list) > span { max-width: 100%; padding: 5px 7px; border: 1px solid #dcd8cf; border-radius: 7px; color: #524c46; background: color-mix(in srgb, var(--color-surface) 60%, transparent); font-size: 12px; font-weight: 500; line-height: 1.35; white-space: normal; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference .clue-token-list > span.is-match { border-color: color-mix(in srgb, var(--match-exact-ink) 20%, var(--match-exact-bg)); color: var(--match-exact-ink); background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference .clue-token-list svg { flex: 0 0 12px; stroke-width: 2; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state { position: static; display: inline-grid; place-items: center; flex: 0 0 23px; width: 23px; height: 23px; border: 1px solid #dcd7ce; border-radius: 7px; background: #ffffff66; color: #78726a; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state svg { width: 15px; height: 15px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state--match { color: var(--match-exact-ink); border-color: color-mix(in srgb, var(--match-exact-ink) 20%, var(--match-exact-bg)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state--close,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state--partial { color: var(--match-partial-ink); border-color: color-mix(in srgb, var(--match-partial-ink) 20%, var(--match-partial-bg)); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state--miss { color: var(--match-miss-ink); border-color: color-mix(in srgb, var(--match-miss-ink) 20%, var(--match-miss-bg)); }
+@media (min-width: 720px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .dx-score > span { font-size: 13px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .dx-score > strong small { font-size: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .dx-score__bar i { height: 8px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .dx-score__bar i.exact { background: var(--match-exact-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .dx-score__bar i.partial { background: var(--match-partial-ink); }
+@media (max-width: 1199px) and (min-width: 720px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid > .people-group { grid-column: 1 / -1; }
+}
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header { grid-template-columns: 22px 68px minmax(0, 1fr) auto; gap: 8px; padding: 14px 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header > img,
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header > .poster-fallback { width: 68px; height: 98px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card__identity h2 { font-size: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .gm-head__sub { font-size: 11px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .gm-genre { padding: 4px 7px; font-size: 10px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .rating-badge { padding: 7px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .rating-badge strong { font-size: 16px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .dx-score { padding-inline: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-clue-grid > .people-group { grid-column: 1 / -1; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference { padding: 11px 12px 13px; min-height: 86px; gap: 7px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference > strong { font-size: 14px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .clue-tile--reference .clue-tile__top > span:first-child { font-size: 11px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state { flex-basis: 21px; width: 21px; height: 21px; border-radius: 6px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-clue-state svg { width: 13px; height: 13px; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header {
+    grid-template-columns: 68px minmax(0, 1fr);
+    grid-template-areas: 'number rating' 'poster identity';
+    align-items: start;
+    gap: 10px 12px;
+  }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__number { grid-area: number; align-self: center; padding-top: 0; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header > img,
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__header > .poster-fallback { grid-area: poster; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__identity { grid-area: identity; align-self: start; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .attempt-card__identity h2 { overflow-wrap: anywhere; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .attempt-card--screen .rating-badge { grid-area: rating; justify-self: end; display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; }
+}

@@ -1,0 +1,86 @@
+.qt-hero {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  margin-bottom: 32px;
+  border: 1px solid var(--quest-line);
+  border-radius: 26px;
+  background: var(--quest-bg);
+  color: var(--quest-text);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--quest-line) 55%, transparent);
+}
+.qt-hero-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  min-height: 314px;
+  padding: 30px 32px 26px;
+  overflow: hidden;
+  border-radius: 25px 25px 0 0;
+  background: radial-gradient(ellipse at 100% 0, color-mix(in srgb, var(--qt-cover) 46%, transparent), transparent 65%);
+}
+.qt-hero-copy { position: relative; z-index: 2; min-width: 0; }
+.qt-hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  margin-bottom: 20px;
+  color: var(--quest-muted);
+  font: 700 12px/1.5 var(--quest-font);
+}
+.qt-hero-kicker > span { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--quest-green); }
+.qt-hero-copy h1 {
+  max-width: 13ch;
+  margin: 0;
+  color: var(--quest-text);
+  font: 800 clamp(32px, 5.4cqi, 50px)/1.08 var(--quest-heading);
+  letter-spacing: -1.6px;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.qt-hero-copy > p { max-width: 37ch; margin: 17px 0 0; color: var(--quest-muted); font: 400 15px/1.7 var(--quest-font); }
+.qt-hero-scene { position: relative; justify-self: center; width: 100%; max-width: 286px; aspect-ratio: 1; margin: 0; user-select: none; }
+.qt-hero-halo { position: absolute; inset: 17% 2% 3% 5%; border: 1px solid color-mix(in srgb, var(--qt-cover-accent) 14%, transparent); border-radius: 48% 52% 42% 58%; background: color-mix(in srgb, var(--qt-cover) 65%, var(--quest-bg)); transform: rotate(-9deg); }
+.qt-hero-halo::after { content: ''; position: absolute; inset: -15%; border: 1px dashed color-mix(in srgb, var(--quest-muted) 22%, transparent); border-radius: 50%; }
+.qt-hero-mascot { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: contain; transform: rotate(-3deg); }
+.qt-hero-topic { position: absolute; z-index: 2; right: -12px; bottom: -3px; display: grid; place-items: center; width: 88px; aspect-ratio: 1; padding: 9px; border: 1px solid var(--quest-line); border-radius: 24px; background: var(--quest-bg); box-shadow: 0 4px 0 color-mix(in srgb, var(--quest-line) 65%, transparent); transform: rotate(9deg); }
+.qt-hero-topic > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.qt-hero-launch { display: grid; gap: 12px; padding: 22px 28px 24px; border-top: 1px solid var(--quest-line); border-radius: 0 0 25px 25px; background: color-mix(in srgb, var(--quest-surface) 48%, var(--quest-bg)); }
+.qt-hero-launch .qt-launch { grid-template-columns: minmax(0,220px) minmax(0,240px); gap: 12px; }
+.qt-hero-launch .qt-launch--single { grid-template-columns: minmax(0,220px); }
+.qt-hero-launch .qt-local-note { max-width: none; margin: 0; color: var(--quest-muted); font: 400 12px/1.65 var(--quest-font); }
+.qt-hero-launch .qt-connected-extra { font-size: 13px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .qt-hero-mascot, .qt-hero-topic { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+  .qt-hero:has(.quest-button--primary:not(:disabled):hover) .qt-hero-mascot { transform: translateY(-4px) rotate(0); }
+  .qt-hero:has(.quest-button--primary:not(:disabled):hover) .qt-hero-topic { transform: translateY(-3px) rotate(4deg); }
+}
+@container quest-title (max-width: 620px) {
+  .qt-hero-stage { min-height: 280px; padding: 26px 24px 24px; gap: 12px; }
+  .qt-hero-copy h1 { font-size: 36px; letter-spacing: -1.1px; }
+  .qt-hero-copy > p { font-size: 14px; line-height: 1.65; }
+  .qt-hero-topic { right: -5px; width: 74px; border-radius: 20px; }
+  .qt-hero-launch { padding: 20px 22px 22px; }
+}
+@container quest-title (max-width: 440px) {
+  .qt-hero-launch .qt-launch { grid-template-columns: minmax(0,240px); }
+  .qt-hero-launch .qt-launch > .quest-button--primary { width: min(100%,220px); }
+  .qt-hero { border-radius: 22px; margin-bottom: 28px; }
+  .qt-hero-stage { grid-template-columns: minmax(0, 1fr) 116px; align-items: start; gap: 0; min-height: 0; padding: 22px 20px 24px; }
+  .qt-hero-copy { display: contents; }
+  .qt-hero-kicker { grid-column: 1 / -1; margin-bottom: 18px; font-size: 11px; }
+  .qt-hero-copy h1 { grid-column: 1 / -1; grid-row: 2; max-width: none; padding: 0; font-size: 32px; letter-spacing: -1px; overflow-wrap: normal; }
+  .qt-hero-copy > p { align-self: center; grid-column: 1; grid-row: 3; max-width: none; margin-top: 18px; padding-right: 10px; font-size: 14px; }
+  .qt-hero-scene { grid-column: 2; grid-row: 3; align-self: center; width: 116px; margin-top: 18px; }
+  .qt-hero-topic { width: 47px; right: -1px; bottom: -2px; padding: 5px; border-radius: 14px; box-shadow: 0 2px 0 var(--quest-line); }
+  .qt-hero-launch { padding: 18px 20px 20px; border-radius: 0 0 21px 21px; }
+}
+@container quest-title (max-width: 330px) {
+  .qt-hero-stage { grid-template-columns: minmax(0, 1fr) 96px; padding-inline: 16px; }
+  .qt-hero-scene { width: 96px; }
+  .qt-hero-copy h1 { font-size: 28px; }
+  .qt-hero-launch { padding-inline: 16px; }
+}

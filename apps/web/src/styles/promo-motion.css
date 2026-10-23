@@ -1,0 +1,118 @@
+/* Shared violet / mint aurora. Static gradients move as compositor layers;
+ * no background-position, blur or layout properties are animated. */
+html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero),
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini {
+  --promo-canvas: #e9ddff;
+  --promo-fold: #c1a5f1;
+  --promo-light: #faf7ff;
+  --promo-orchid: #d5b8f0;
+  --promo-mint: #b6e8d9;
+  --promo-heading: #292136;
+  --promo-copy: #3d2e50;
+  --promo-link: #493075;
+  --promo-sheen-opacity: .7;
+  position: relative;
+  isolation: isolate;
+  /* Decorative layers must not turn the banner into a focus-scroll container. */
+  overflow: clip;
+  background: linear-gradient(122deg, var(--promo-canvas) 8%, var(--promo-fold) 48%, var(--promo-canvas) 88%);
+  color: var(--promo-heading);
+  border-color: #c6b4e5;
+}
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.rating-join, .hs-promo-hero),
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] .qg-app .study-club-mini {
+  --promo-canvas: #241c38;
+  --promo-fold: #473876;
+  --promo-light: #6250a0;
+  --promo-orchid: #51305d;
+  --promo-mint: #235651;
+  --promo-heading: #eeeef0;
+  --promo-copy: #e2ddfe;
+  --promo-link: #e2ddfe;
+  --promo-sheen-opacity: .72;
+  border-color: var(--violet-7);
+}
+/* The home cover keeps clear violet / mint color instead of a white veil. */
+html[data-quest-skin='shoditsa'] .hs-promo-hero {
+  --promo-canvas: #dbc2ff;
+  --promo-fold: #b88bf2;
+  --promo-light: #eee0ff;
+  --promo-orchid: #ce8bf0;
+  --promo-mint: #70e5cc;
+  --promo-heading: #29183d;
+  --promo-sheen-opacity: .3;
+  --promo-sheen-active: .42;
+  border-color: color-mix(in oklab, var(--promo-fold) 65%, var(--promo-canvas));
+  background: linear-gradient(118deg in oklch, var(--promo-canvas) 0%, var(--promo-fold) 52%, var(--promo-mint) 100%);
+}
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] .hs-promo-hero {
+  --promo-canvas: #30205e;
+  --promo-fold: #6241ad;
+  --promo-light: #a479ef;
+  --promo-orchid: #743cb5;
+  --promo-mint: #0d6c65;
+  --promo-heading: #f8f3ff;
+  --promo-sheen-opacity: .28;
+  --promo-sheen-active: .34;
+  border-color: color-mix(in oklab, var(--promo-fold) 70%, var(--promo-mint));
+}
+html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero)::before,
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -30% -20%;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  pointer-events: none;
+  /* Each glow fades out entirely inside its layer, so a moving edge can never show. */
+  background: radial-gradient(ellipse 25% 40% at 72% 44%, var(--promo-mint), transparent 100%), radial-gradient(ellipse 28% 40% at 30% 55%, var(--promo-orchid), transparent 100%);
+  opacity: 1;
+  transform: translate3d(-12%, 8%, 0) rotate(-12deg) scale(1.08);
+  animation: promo-satin-flow 6s ease-in-out infinite alternate;
+}
+html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero)::after,
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -35% -30%;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 30% 44% at 38% 50%, var(--promo-light) 0%, color-mix(in oklab, var(--promo-light) 70%, transparent) 35%, transparent 100%), radial-gradient(ellipse 22% 26% at 76% 68%, var(--promo-mint), transparent 100%);
+  opacity: var(--promo-sheen-opacity);
+  transform: translate3d(35%, -12%, 0) rotate(12deg);
+  animation: promo-satin-sheen 5s ease-in-out infinite alternate;
+  transition: opacity .45s ease;
+}
+html[data-quest-skin='shoditsa'] .hs-promo-hero:focus-within,
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini:focus-visible { --promo-sheen-opacity: var(--promo-sheen-active, .86); }
+@media (hover: hover) {
+  html[data-quest-skin='shoditsa'] .hs-promo-hero:hover,
+  html[data-quest-skin='shoditsa'] .qg-app .study-club-mini:hover { --promo-sheen-opacity: var(--promo-sheen-active, .86); }
+}
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini { animation-delay: -5s; }
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::before { animation-delay: -5s; }
+html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::after { animation-delay: -8s; }
+html[data-quest-skin='shoditsa'] .rating-join h3 { color: var(--promo-heading); }
+html[data-quest-skin='shoditsa'] .rating-join p,
+html[data-quest-skin='shoditsa'] .study-club-mini small { color: var(--promo-copy); }
+html[data-quest-skin='shoditsa'] .study-club-mini b { color: var(--promo-link); }
+html[data-quest-skin='shoditsa'] .rating-join__art { z-index: 1; }
+@keyframes promo-satin-flow {
+  from { transform: translate3d(-12%, 8%, 0) rotate(-12deg) scale(1.08); }
+  to { transform: translate3d(13%, -10%, 0) rotate(14deg) scale(1.18); }
+}
+@keyframes promo-satin-sheen {
+  from { transform: translate3d(35%, -12%, 0) rotate(12deg); }
+  to { transform: translate3d(-35%, 12%, 0) rotate(-14deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero)::before,
+  html[data-quest-skin='shoditsa'] :is(.rating-join, .hs-promo-hero)::after,
+  html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::before,
+  html[data-quest-skin='shoditsa'] .qg-app .study-club-mini::after { animation: none; transition: none; }
+}

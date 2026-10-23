@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-10-15T14:55:42.099Z",
+  "tool": "built-in image_gen.imagegen",
+  "useCase": "identity-preserve",
+  "referenceImage": "C:/Users/brene/AppData/Local/Temp/codex-clipboard-d124e60a-25a1-4700-b426-5d4055e97cdf.png",
+  "transparentBackground": true,
+  "name": "hero-scene-v1",
+  "prompt": "Use case: identity-preserve.\nAsset type: compact transparent illustrated hero scene for a cheerful puzzle-game homepage.\nInput image 1: exact approved character identity and illustration-style reference.\nPrimary request: show this SAME lime-green furry alien cat sitting thoughtfully, solving a little riddle, with one front paw at its chin and the other holding one small ivory card bearing a single hand-drawn black question-mark symbol. Beside the seated cat is a small stack of exactly three books with pastel lavender, buttery yellow and soft mint covers. The book spines are blank. Keep the scene very simple: only the cat, three books and one question card.\nIdentity invariants: the reference's chubby compact furry body, oversized broad fluffy cat head, triangular pointed cat ears, exactly TWO long green antennae with round bulb tips, narrow slanted glossy black almond eyes with tiny white catchlights, tiny olive nose, whimsical friendly cat smile, rounded cat paws and fluffy tail. Preserve the face shape, relative proportions, lime/chartreuse fur, soft yellow-green highlights, darker olive fur tufts, thick near-black hand-drawn outline, and reference's soft 2D illustrated shading. Do not substitute a yellow blob, ordinary domestic cat or different creature.\nPose: seated comfortably, feet and tail visible, a gentle curious head tilt and expressive thoughtful face. One paw gently touching the chin, the other holding the question card upright near the belly. The books stand as a low stack to one side and remain secondary to the character.\nComposition: approximately square airy scene, full silhouette of both antenna tips, all paws, tail and books entirely inside the canvas. Leave generous empty transparent space around the whole group. Keep the scene readable as a medium-size homepage illustration. No character cropping.\nBackground: genuinely transparent RGBA alpha, including gaps between antennae and around props. No room, floor, ground, scenery, paper backdrop, oval shadow, glow or checkerboard.\nConstraints: one character, one question card and one stack of three books only. No extra objects, decorative marks, hearts, rays, floating bubbles, crowds, clothes, shoes, furniture or scenery. No words, letters, numbers, logos or watermark. The single drawn question-mark symbol on the card is the only permitted mark. Keep the atmosphere warm, curious and playful.",
+  "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f4f-e56e-7f33-809c-206626be640b/exec-50780626-383b-4947-93de-3ac71c7a3967.png",
+  "outputs": [
+    "public/images/mascot/hero-scene-v1.png",
+    "public/images/mascot/hero-scene-v1.webp"
+  ],
+  "postprocessing": "PNG copied unchanged. WebP conversion only with Sharp: quality 90, alphaQuality 100, effort 6. No crop, resizing, padding, recolouring, background removal or retouching.",
+  "visualInspection": "Inspected generated image: the same lime-green furry alien cat sits thoughtfully with one paw by its chin and one holding a single question-mark card. Exactly three blank pastel books beside it; full antennae, paws and fluffy tail remain visible. No text, background, additional objects or extra characters.",
+  "validation": {
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1066837,
+    "webpBytes": 148454,
+    "sourcePngSha256": "44001019adebe1e6a624683cfb91608781316c8f577226263f4e2b3c642a78b7",
+    "alphaPixelsChangedInWebp": 0,
+    "fullyTransparentPixels": 823661,
+    "visibleBoundsAlphaOver8": {
+      "minX": 63,
+      "minY": 65,
+      "maxX": 1195,
+      "maxY": 1182
+    }
+  }
+}

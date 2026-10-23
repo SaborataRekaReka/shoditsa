@@ -1,0 +1,23 @@
+.study-club-plan-options { display: grid; gap: 17px; padding-top: 4px; }
+.study-club-plan-option { position: relative; min-width: 0; scroll-margin-top: 95px; }
+.study-club-plan-option > .quest-button { display: flex; align-items: center; gap: 15px; width: 100%; padding: 19px; }
+.study-club-radio { display: grid; place-items: center; flex: none; width: 25px; height: 25px; border: 2px solid var(--quest-line); border-radius: 50%; color: var(--quest-blue); background: var(--quest-bg); }
+.study-club-plan-option .is-selected .study-club-radio { border-color: var(--quest-blue); }
+.study-club-plan-name { flex: 1; min-width: 0; text-align: left; }
+.study-club-plan-name strong { display: block; font: 800 17px/1.3 var(--quest-heading); }
+.study-club-plan-name small, .study-club-plan-price small { display: block; margin-top: 6px; color: var(--quest-muted); font: 400 12px/1.4 var(--quest-font); }
+.study-club-plan-price { flex: none; text-align: right; }
+.study-club-plan-price strong { display: block; font: 800 20px/1.2 var(--quest-heading); }
+.study-club-discount { position: absolute; z-index: 1; top: -10px; right: 14px; padding: 2px 8px; border: 2px solid var(--color-primary-border); border-radius: 7px; background: var(--color-mint); color: var(--color-success-ink); font-size: 10px; font-weight: 700; line-height: 1.4; }
+@media (max-width: 699px) {
+  .study-club-plan-option > .quest-button { gap: 10px; padding: 18px 13px; }
+  .study-club-plan-name strong { font-size: 15px; }
+  .study-club-plan-price strong { font-size: 18px; }
+  .study-club-plan-name small, .study-club-plan-price small { font-size: 10px; }
+}
+@media (max-width: 359px) {
+  .study-club-radio { width: 21px; height: 21px; }
+  .study-club-plan-option > .quest-button { gap: 8px; padding-inline: 10px; }
+  .study-club-plan-name strong { font-size: 14px; }
+  .study-club-plan-price strong { font-size: 16px; }
+}

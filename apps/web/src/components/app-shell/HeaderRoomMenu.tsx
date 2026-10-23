@@ -3,6 +3,7 @@ import { ChevronDown, DoorOpen, Plus, Users } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { FriendsRoomListResponse, FriendsRoomSummary } from '@shoditsa/contracts'
 import { api, queryKeys } from '../../api/client'
+import { ActionButton, IconButton } from '../ui/UiControls'
 import {
   friendsRoomPhaseLabel,
   friendsRoomSummaryTitle,
@@ -15,6 +16,7 @@ export function HeaderRoomMenu({ onCreateRoom, rooms }: { onCreateRoom: () => vo
   const [open, setOpen] = useState(false)
   const [actionError, setActionError] = useState('')
   const wrapRef = useRef<HTMLDivElement>(null)
+  const menuTriggerRef = useRef<HTMLButtonElement>(null)
   const room = rooms[0]
   const isCurrentRoomPage = Boolean(room)
     && window.location.pathname === '/games/together'
@@ -38,21 +40,25 @@ export function HeaderRoomMenu({ onCreateRoom, rooms }: { onCreateRoom: () => vo
       if (!wrapRef.current?.contains(event.target as Node)) setOpen(false)
     }
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      event.stopPropagation()
+      setOpen(false)
+      menuTriggerRef.current?.focus()
     }
     window.addEventListener('pointerdown', closeOnOutsideClick)
-    window.addEventListener('keydown', closeOnEscape)
+    document.addEventListener('keydown', closeOnEscape, true)
     return () => {
       window.removeEventListener('pointerdown', closeOnOutsideClick)
-      window.removeEventListener('keydown', closeOnEscape)
+      document.removeEventListener('keydown', closeOnEscape, true)
     }
   }, [open])
 
   if (!room) {
     return <div className="header-room-menu">
-      <button className="header-create-room" type="button" onClick={onCreateRoom}>
+      <ActionButton className="header-create-room" variant="secondary" onClick={onCreateRoom}>
         <Plus /><span>Создать комнату</span>
-      </button>
+      </ActionButton>
     </div>
   }
 
@@ -64,17 +70,17 @@ export function HeaderRoomMenu({ onCreateRoom, rooms }: { onCreateRoom: () => vo
 
   return <div className="header-room-menu" ref={wrapRef}>
     <div className="header-room-active" role="group" aria-label="Текущая комната">
-      <button className={`header-return-room${isCurrentRoomPage ? ' is-current' : ''}`} type="button" onClick={returnToRoom} aria-current={isCurrentRoomPage ? 'page' : undefined}>
+      <ActionButton className={`header-return-room${isCurrentRoomPage ? ' is-current' : ''}`} variant="secondary" onClick={returnToRoom} aria-current={isCurrentRoomPage ? 'page' : undefined}>
         <DoorOpen /><span>{isCurrentRoomPage ? `Комната ${room.code}` : 'Вернуться в комнату'}</span>
-      </button>
-      <button
+      </ActionButton>
+      <IconButton
+        ref={menuTriggerRef}
         className="header-return-room__menu"
-        type="button"
         onClick={() => setOpen((value) => !value)}
-        aria-label="Действия с текущей комнатой"
+        label="Действия с текущей комнатой"
         aria-haspopup="menu"
         aria-expanded={open}
-      ><ChevronDown /></button>
+      ><ChevronDown /></IconButton>
     </div>
     {open && <div className="header-room-dropdown" role="menu">
       <header><span>Текущая комната</span><strong>{room.code}</strong></header>
@@ -87,13 +93,13 @@ export function HeaderRoomMenu({ onCreateRoom, rooms }: { onCreateRoom: () => vo
         </span>
       </div>
       {actionError && <p className="header-room-dropdown__error" role="alert">{actionError}</p>}
-      <button
+      <ActionButton
         className="header-room-dropdown__leave-current"
-        type="button"
+        variant="danger"
         role="menuitem"
         disabled={leave.isPending}
         onClick={() => { setActionError(''); leave.mutate(room.id) }}
-      ><DoorOpen /><span><strong>{leave.isPending ? 'Выходим…' : 'Покинуть комнату'}</strong><small>После этого можно создать новую</small></span></button>
+      ><DoorOpen /><span><strong>{leave.isPending ? 'Выходим…' : 'Покинуть комнату'}</strong><small>После этого можно создать новую</small></span></ActionButton>
     </div>}
   </div>
 }

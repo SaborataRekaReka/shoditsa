@@ -1,20 +1,17 @@
-import { useState, type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import type { FinalChoiceCandidateSnapshot, FinalChoiceSnapshot, PackLeaderboardResponse } from '@shoditsa/contracts'
-import {
-  ArrowUpRight,
-  Check,
-  Copy,
-  DoorOpen,
-  Infinity,
-  PackageOpen,
-  Play,
-  SlidersHorizontal,
-  Sparkles,
-  Ticket,
-  Trophy,
-} from 'lucide-react'
+import { ArrowUpRight, CalendarDays, Check, Copy, DoorOpen, Infinity, LoaderCircle, PackageOpen, Play, SlidersHorizontal, Lightbulb, Ticket, Trophy } from 'lucide-react'
 import { ActionButton, BrandLogo, Modal, ScreenBack } from '../../components/app-shell/AppShell'
 import { CategoryTicket } from '../../components/category-ticket/CategoryTicket'
+import { Mascot, type MascotPose } from '../../components/mascot/Mascot'
+import { ReferenceIcon } from '../../components/ui/ReferenceIcon'
+import { QuestOptionGroup, QuestSwitch } from '../../components/ui/QuestPrimitives'
+import { APPLICATION_DESIGN } from '../../app/application-design'
+import { BottomSheet } from '../../components/ui/BottomSheet'
+import { StudyClubJoinDialog } from '../../dev/quest-game/StudyClubJoinDialog'
+import { BrandLoader } from '../../components/app-shell/BrandLoader'
+import { BrandWordmark } from '../../components/app-shell/BrandWordmark'
+import { SelectionRow } from '../../components/ui/SelectionRow'
 import { CATEGORY_TICKET_CONFIG } from '../../components/category-ticket/category-ticket.config'
 import {
   GameLaunchControls,
@@ -26,7 +23,8 @@ import { SearchCombobox } from '../../components/search-combobox'
 import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
 import {
   EmptyState,
-  ControlButton,
+  PageHeading,
+  Tooltip,
   FormField,
   IconButton,
   InlineAlert,
@@ -39,6 +37,7 @@ import {
   TextButton,
   TextInput,
 } from '../../components/ui'
+import { ConnectionsTile, ConnectionsSolvedGroup, ConnectionsMistakes } from '../connections/ConnectionsBoardParts'
 import { publicAssetUrl } from '../../app/public-asset'
 import { GameResult } from '../result/GameResult'
 import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
@@ -47,14 +46,18 @@ import { ConnectionsResult, type ConnectionsSession } from '../connections/Conne
 import './UiKitScreen.css'
 
 const foundations = [
-  { token: '--color-bg', label: 'Фон', value: '#121512' },
-  { token: '--color-surface', label: 'Поверхность', value: '#1b1f1b' },
-  { token: '--color-surface-2', label: 'Поверхность 2', value: '#242924' },
-  { token: '--color-paper', label: 'Бумага', value: '#efe7d7' },
-  { token: '--color-paper-2', label: 'Бумага 2', value: '#ddd3bd' },
-  { token: '--color-primary', label: 'Основной', value: '#57b777' },
-  { token: '--color-accent', label: 'Акцент', value: '#d6a546' },
-  { token: '--color-danger', label: 'Ошибка', value: '#b85c56' },
+  { token: '--color-bg', label: 'Фон' },
+  { token: '--color-surface', label: 'Поверхность' },
+  { token: '--color-surface-2', label: 'Вложенная поверхность' },
+  { token: '--color-action', label: 'Основное действие' },
+  { token: '--color-text', label: 'Текст' },
+  { token: '--color-muted', label: 'Вторичный текст' },
+  { token: '--color-line', label: 'Граница' },
+  { token: '--color-lilac', label: 'Сиреневый акцент' },
+  { token: '--match-exact-bg', label: 'Совпадает' },
+  { token: '--match-partial-bg', label: 'Близко' },
+  { token: '--match-miss-bg', label: 'Не совпадает' },
+  { token: '--match-unknown-bg', label: 'Пока неизвестно' },
 ]
 
 const modeColors = [
@@ -67,11 +70,15 @@ const modeColors = [
   { token: '--mode-diagnosis-brand', label: 'Диагноз' },
   { token: '--mode-danetki-brand', label: 'Данетки' },
   { token: '--mode-connections-brand', label: 'Связи' },
+  { token: '--mode-animal-brand', label: 'Животные' },
+  { token: '--mode-book-brand', label: 'Книги' },
+  { token: '--mode-character-brand', label: 'Персонажи' },
 ]
 
 const sections = [
   ['foundation', 'Основа'],
   ['typography', 'Типографика'],
+  ['mascot', 'Персонаж'],
   ['actions', 'Действия'],
   ['controls', 'Контролы'],
   ['forms', 'Поля'],
@@ -202,13 +209,32 @@ function SectionTitle({ index, title, description, component }: {
 }
 
 export default function UiKitScreen() {
+  const [tokenValues, setTokenValues] = useState<Record<string, string>>({})
   const [launchMode, setLaunchMode] = useState<'period' | 'free'>('period')
   const [modalOpen, setModalOpen] = useState(false)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [clubOfferOpen, setClubOfferOpen] = useState(false)
+  const [selectedRow, setSelectedRow] = useState('daily')
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState<'daily' | 'archive'>('daily')
   const [finalChoiceSelection, setFinalChoiceSelection] = useState<string | null>('interstellar')
+  const [resultPreview, setResultPreview] = useState<'won' | 'lost'>('won')
+  const [accountPreview, setAccountPreview] = useState<'guest' | 'authenticated'>('guest')
   const [connectionsSelection, setConnectionsSelection] = useState<string[]>(['МАЙ'])
+  const [roundsPreview, setRoundsPreview] = useState(1)
+  const [adultPreview, setAdultPreview] = useState(true)
   const filteredExamples = searchExamples.filter((item) => item.title.toLocaleLowerCase('ru-RU').includes(searchQuery.toLocaleLowerCase('ru-RU')))
+
+  useEffect(() => {
+    const update = () => {
+      const styles = getComputedStyle(document.documentElement)
+      setTokenValues(Object.fromEntries(foundations.map(({ token }) => [token, styles.getPropertyValue(token).trim()])))
+    }
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-public-theme'] })
+    return () => observer.disconnect()
+  }, [])
 
   return <div className="ui-kit-screen">
     <header className="ui-kit-topbar">
@@ -231,9 +257,9 @@ export default function UiKitScreen() {
           <span><Ticket /> ПАСПОРТ СИСТЕМЫ</span>
           <strong>UI<br />01</strong>
           <dl>
-            <div><dt>Шрифты</dt><dd>2</dd></div>
-            <div><dt>Режимы</dt><dd>9</dd></div>
-            <div><dt>Кнопки</dt><dd>4</dd></div>
+            <div><dt>Шрифты</dt><dd>4</dd></div>
+            <div><dt>Режимы</dt><dd>12</dd></div>
+            <div><dt>Кнопки</dt><dd>5</dd></div>
           </dl>
         </aside>
       </section>
@@ -241,7 +267,7 @@ export default function UiKitScreen() {
       <div className="ui-kit-layout">
         <nav className="ui-kit-index" aria-label="Разделы UI-кита">
           <span>Содержание</span>
-          {sections.map(([id, label], index) => <a href={`#${id}`} key={id}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
+          {sections.map(([id, label], index) => <a href={`/ui-kit#${id}`} key={id}><i>{String(index + 1).padStart(2, '0')}</i>{label}</a>)}
           <p>Правила и компоненты должны обновляться одновременно.</p>
         </nav>
 
@@ -249,47 +275,95 @@ export default function UiKitScreen() {
           <section className="ui-kit-section" id="foundation">
             <SectionTitle index="01" title="Основа" description="Общие цветовые роли. Компоненты используют переменные, а не собственные значения." component="tokens.css" />
             <div className="ui-kit-swatches">
-              {foundations.map(({ token, label, value }) => <article key={token} className="ui-kit-swatch" style={{ '--swatch': `var(${token})` } as CSSProperties}>
+              {foundations.map(({ token, label }) => <article key={token} className="ui-kit-swatch" style={{ '--swatch': `var(${token})` } as CSSProperties}>
                 <i aria-hidden="true" />
                 <strong>{label}</strong>
                 <code>{token}</code>
-                <small>{value}</small>
+                <small>{tokenValues[token] || 'Значение текущей темы'}</small>
               </article>)}
             </div>
             <div className="ui-kit-mode-strip" aria-label="Цвета игровых режимов">
               {modeColors.map(({ token, label }) => <span key={token} style={{ '--mode-swatch': `var(${token})` } as CSSProperties}><i />{label}</span>)}
             </div>
+            <div className="ui-kit-modal-demo">
+              <div><span>Фирменный логотип</span><p>Исходный знак с плавным градиентом. Движение отключается системной настройкой.</p></div>
+              <BrandWordmark variant="compact" effect="iridescent" />
+            </div>
+            <div className="ui-kit-icon-sample">
+              <h3>Иконки · ReferenceIcon</h3>
+              <ul aria-label="Примеры смысловых иконок">
+                {([
+                  ['movie', 'Кино'], ['anime', 'Аниме'], ['animal', 'Животные'],
+                  ['book', 'Книги'], ['idea', 'Подсказка'], ['guide', 'Правила'],
+                ] as const).map(([name, label]) => <li key={name}><ReferenceIcon name={name} size={24} /><span>{label}</span></li>)}
+              </ul>
+              <p>ReferenceIcon — для смысловых акцентов режимов и подсказок. В стандартных элементах управления сохраняем Lucide. SVG наследует цвет текста; размер рядом с подписью — 20–24 px.</p>
+            </div>
           </section>
 
           <section className="ui-kit-section" id="typography">
-            <SectionTitle index="02" title="Типографика" description="Oswald отвечает за афишу и печатную иерархию. Manrope — за интерфейс и длинный текст." />
+            <SectionTitle index="02" title="Типографика" description="Nunito — основной текст и интерфейс. Manrope — заголовки игровых разделов. Caveat — рукописные акценты. PT Mono — загадки и технические значения." />
             <div className="ui-kit-type-grid">
               <article className="ui-kit-type-card ui-kit-type-card--display">
-                <span>Display · Oswald Medium</span>
-                <strong>АНИМЕ ДНЯ</strong>
-                <p>48 / 48 · uppercase</p>
+                <span>Заголовок · Nunito</span>
+                <strong>Маленькое открытие каждый день</strong>
+                <p>Обычный регистр, выразительный вес</p>
               </article>
               <article className="ui-kit-type-card ui-kit-type-card--body">
-                <span>Interface · Manrope</span>
+                <span>Интерфейс · Nunito</span>
                 <strong>Сверяйте подсказки после каждой попытки</strong>
                 <p>Основной текст остаётся спокойным и функциональным. Выделение строится на весе, размере и контрасте.</p>
+              </article>
+              <article className="ui-kit-type-card ui-kit-type-card--script">
+                <span>Акцент · Caveat</span>
+                <strong>Любопытство — уже половина разгадки</strong>
+                <p>Только для коротких заметок, не для правил и форм</p>
+              </article>
+              <article className="ui-kit-type-card ui-kit-type-card--mono">
+                <span>Данные · PT Mono</span>
+                <strong>03 / 10 · 12:45</strong>
+                <p>Числа, счётчики и небольшие значения</p>
               </article>
             </div>
           </section>
 
+          <section className="ui-kit-section" id="page-headings">
+            <SectionTitle index="02a" title="Заголовки страниц" description="Название сверху, описание под ним, действия справа. Один размер для основных разделов." component="PageHeading, Tooltip" />
+            <div className="ui-kit-specimen">
+              <PageHeading level={2} title="Архив" description="Выбирай загадку по дате или продолжай начатую партию." />
+              <Tooltip label="Обновить список">{(tooltip, id) => <ActionButton variant="secondary" {...tooltip} aria-describedby={id}>Наведи или выбери Tab</ActionButton>}</Tooltip>
+            </div>
+          </section>
+
+          <section className="ui-kit-section" id="mascot">
+            <SectionTitle index="03" title="Персонаж как акцент" description="Сцена на главной и герой клуба. Остальные позы — резерв набора, а не замена тематических иллюстраций и иконок." component="Mascot" />
+            <div className="ui-kit-mascot-grid">
+              {([
+                ['heroScene', 'Сцена главной'],
+                ['think', 'Размышляет'], ['welcome', 'Приветствует'], ['peek', 'Подглядывает'],
+                ['sleep', 'Отдыхает'], ['club', 'В клубе'], ['celebrate', 'Радуется'],
+              ] as [MascotPose, string][]).map(([pose, label]) => <figure key={pose}>
+                <Mascot pose={pose} width={240} height={240} loading="lazy" />
+                <figcaption>{label}</figcaption>
+              </figure>)}
+            </div>
+          </section>
+
           <section className="ui-kit-section" id="actions">
-            <SectionTitle index="03" title="Действия" description="Одна основная кнопка на уровень. Текст действия начинается с глагола." component="ActionButton" />
+            <SectionTitle index="04" title="Действия" description="Одна основная кнопка на уровень. Текст действия начинается с глагола." component="ActionButton" />
             <div className="ui-kit-specimen ui-kit-specimen--dark">
               <div className="ui-kit-specimen__label"><span>Варианты</span><code>min-height 48</code></div>
               <div className="ui-kit-button-row">
                 <ActionButton><Play /> Начать игру</ActionButton>
                 <ActionButton variant="secondary"><Copy /> Скопировать</ActionButton>
                 <ActionButton variant="ghost"><DoorOpen /> Выйти</ActionButton>
-                <ActionButton variant="hint"><Sparkles /> Открыть подсказку</ActionButton>
+                <ActionButton variant="hint"><Lightbulb /> Открыть подсказку</ActionButton>
                 <ActionButton variant="danger">Удалить</ActionButton>
               </div>
               <div className="ui-kit-button-row">
                 <ActionButton disabled><Play /> Недоступно</ActionButton>
+                <ActionButton disabled aria-busy="true"><LoaderCircle className="ui-kit-spinner" /> Сохраняем…</ActionButton>
+                <ActionButton variant="secondary">Продолжить незавершённую игру с длинным названием</ActionButton>
                 <IconButton label="Скопировать"><Copy /></IconButton>
                 <TextButton>Текстовое действие</TextButton>
                 <span className="ui-kit-annotation">Disabled объясняется соседним текстом, если причина неочевидна.</span>
@@ -298,7 +372,7 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="controls">
-            <SectionTitle index="04" title="Контролы запуска" description="Главное действие, настройка и контекстная ссылка образуют один геометрический ряд." component="GameLaunchControls" />
+            <SectionTitle index="05" title="Контролы запуска" description="Главное действие, настройка и контекстная ссылка образуют один геометрический ряд." component="GameLaunchControls" />
             <div className="ui-kit-specimen ui-kit-specimen--paper ui-kit-launch">
               <div className="ui-kit-specimen__label"><span>Бумажный контекст</span><code>56 px</code></div>
               <GameLaunchControls
@@ -323,10 +397,17 @@ export default function UiKitScreen() {
                 <p><strong>GameOptionAction</strong> — действие на бумаге, визуально связанное с настройками, но не открывающее список.</p>
               </div>
             </div>
+            <div className="ui-kit-specimen ui-kit-launch">
+              <div className="ui-kit-specimen__label"><span>Компактный запуск на стартовой странице</span><code>46 px · compact</code></div>
+              <GameLaunchControls mode="movie" density="compact"
+                action={<ActionButton size="compact"><Play />Начать игру</ActionButton>}
+                option={<GameOptionAction label="Период" labelIcon={<CalendarDays />} value="Все годы" endLabel={<><Ticket />15</>} onClick={() => setModalOpen(true)} />}
+              />
+            </div>
           </section>
 
           <section className="ui-kit-section" id="forms">
-            <SectionTitle index="05" title="Поля и поиск" description="Поля, подписи и поиск имеют единые состояния фокуса, ошибок и клавиатурной навигации." component="FormField · SearchCombobox" />
+            <SectionTitle index="06" title="Поля и поиск" description="Поля, подписи и поиск имеют единые состояния фокуса, ошибок и клавиатурной навигации." component="FormField · SearchCombobox" />
             <div className="ui-kit-specimen ui-kit-specimen--dark">
               <div className="search-area ui-kit-search">
                 <label htmlFor="ui-kit-search-input">Найти фильм или сериал</label>
@@ -348,6 +429,24 @@ export default function UiKitScreen() {
                 <div className="search-meta"><span>Минимум 2 символа</span><strong>Поиск по каталогу</strong></div>
               </div>
               <div className="ui-kit-form-grid">
+                {APPLICATION_DESIGN && <>
+                  <QuestOptionGroup label="Раунды" value={roundsPreview} options={[1, 2, 3].map(value => ({ value, label: String(value) }))} onChange={setRoundsPreview} />
+                  <FormField label="Компания"><QuestSwitch label="Контент 18+" checked={adultPreview} onChange={setAdultPreview} /></FormField>
+                  <QuestOptionGroup label="Время на вопрос, сек." value={30} options={[15, 30, 45, 60].map(value => ({ value, label: String(value) }))} onChange={() => {}} disabled />
+                  <FormField label="Недоступный переключатель"><QuestSwitch label="Контент 18+" checked={false} onChange={() => {}} disabled /></FormField>
+                </>}
+                <FormField label="Игра в архиве" htmlFor="ui-kit-soft-game">
+                  <SelectControl variant="soft" id="ui-kit-soft-game" defaultValue="movie"><option value="movie">Кино</option><option value="series">Сериалы</option></SelectControl>
+                </FormField>
+                <FormField label="По какое число" htmlFor="ui-kit-soft-date">
+                  <TextInput variant="soft" id="ui-kit-soft-date" type="date" defaultValue="2026-10-21" />
+                </FormField>
+                <FormField label="Дата с ошибкой" htmlFor="ui-kit-soft-date-error" error="Выбери прошедший день">
+                  <TextInput variant="soft" id="ui-kit-soft-date-error" type="date" defaultValue="2026-10-22" aria-invalid="true" />
+                </FormField>
+                <FormField label="Недоступный фильтр" htmlFor="ui-kit-soft-disabled">
+                  <SelectControl variant="soft" id="ui-kit-soft-disabled" disabled><option>Загружаем игры…</option></SelectControl>
+                </FormField>
                 <FormField label="Название команды" htmlFor="ui-kit-name" hint="До 40 символов">
                   <TextInput surface="paper" id="ui-kit-name" defaultValue="Полуночный сеанс" />
                 </FormField>
@@ -355,14 +454,21 @@ export default function UiKitScreen() {
                   <SelectControl surface="paper" id="ui-kit-mode" defaultValue="daily"><option value="daily">Ежедневная игра</option><option value="free">Свободная игра</option></SelectControl>
                 </FormField>
                 <FormField className="ui-kit-form-grid__wide" label="Сообщение" htmlFor="ui-kit-message" error="Добавьте хотя бы одно предложение">
-                  <TextArea surface="paper" id="ui-kit-message" rows={3} placeholder="Напишите сообщение…" />
+                  <TextArea surface="paper" id="ui-kit-message" rows={3} placeholder="Напишите сообщение…" aria-invalid="true" />
+                </FormField>
+                <FormField label="Данные загружаются" htmlFor="ui-kit-loading-field" hint="Поле станет доступно после загрузки">
+                  <TextInput id="ui-kit-loading-field" placeholder="Загружаем…" disabled aria-busy="true" />
+                </FormField>
+                <FormField label="Только для чтения" htmlFor="ui-kit-readonly-field">
+                  <TextInput id="ui-kit-readonly-field" value="player@example.com" readOnly />
                 </FormField>
               </div>
             </div>
           </section>
 
           <section className="ui-kit-section" id="tickets">
-            <SectionTitle index="06" title="Билеты" description="Главная продуктовая метафора: корешок, перфорация, бумага, печатная иерархия и режимный цвет." component="CategoryTicket · AdmissionTitleTicket" />
+            <SectionTitle index="07" title="Билеты прежнего интерфейса" description="Сохранённые компоненты для совместимости: корешок, перфорация и режимный цвет. Новые публичные экраны используют карточки reference-темы." component="CategoryTicket · AdmissionTitleTicket" />
+            <details className="ui-kit-legacy-examples"><summary>Показать исторические компоненты</summary>
             <div className="category-grid category-grid--active ui-kit-ticket-grid">
               <CategoryTicket {...movieTicket} poolCount={500} status="new" attempts={null} onClick={() => undefined} />
               <CategoryTicket {...seriesTicket} poolCount={500} status="active" attempts={4} onClick={() => undefined} />
@@ -382,10 +488,13 @@ export default function UiKitScreen() {
                 <p>Общий титульный билет хранит корешок, вырезы и структуру, а экран передаёт только содержание.</p>
               </AdmissionTitleTicket>
             </div>
+            </details>
           </section>
 
+
+
           <section className="ui-kit-section" id="final-choice">
-            <SectionTitle index="07" title="Последний выбор" description="Финальная сверка использует общий паттерн выбора одной карточки, клавиатурную радиогруппу и отдельное подтверждение открытия ответа." component="FinalChoicePanel" />
+            <SectionTitle index="08" title="Последний выбор" description="Финальная сверка использует общий паттерн выбора одной карточки, клавиатурную радиогруппу и отдельное подтверждение открытия ответа." component="FinalChoicePanel" />
             <FinalChoicePanel
               mode="movie"
               snapshot={finalChoiceFixture}
@@ -399,35 +508,24 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="connections">
-            <SectionTitle index="08" title="Связи" description="Состояния плиток, четыре уровня группы и счётчик ошибок. Выбор не зависит только от цвета и остаётся клавиатурно доступным." component="ConnectionsGrid" />
+            <SectionTitle index="09" title="Связи" description="Состояния плиток, четыре уровня группы и счётчик ошибок. Выбор не зависит только от цвета и остаётся клавиатурно доступным." component="ConnectionsGrid" />
             <div className="ui-kit-connections">
+              <div className="ui-kit-specimen__label"><span>Выбор слов</span><span>Нажмите на плитку</span></div>
               <div className="ui-kit-connections__tiles" aria-label="Состояния плитки">
-                {[
-                  ['МАЙ', 'default'],
-                  ['ЛАЙ', 'default'],
-                  ['ЧАЙ', 'default'],
-                  ['КРАЙ', 'disabled'],
-                ].map(([word, state]) => <ControlButton
+                {['МАЙ', 'ЛАЙ', 'ЧАЙ', 'КРАЙ'].map((word) => <ConnectionsTile
                   key={word}
-                  type="button"
-                  disabled={state === 'disabled'}
-                  className={connectionsSelection.includes(word) ? 'is-selected' : ''}
+                  label={word}
+                  disabled={word === 'КРАЙ'}
+                  selected={connectionsSelection.includes(word)}
+                  selectionNumber={connectionsSelection.indexOf(word) + 1}
                   onClick={() => setConnectionsSelection((current) => current.includes(word) ? current.filter((item) => item !== word) : [...current, word])}
-                >{word}<small>{state === 'disabled' ? 'disabled' : connectionsSelection.includes(word) ? 'selected' : 'default'}</small></ControlButton>)}
+                />)}
               </div>
+              <p className="ui-kit-annotation">Номер отмечает выбранное слово. «Край» показывает недоступное состояние.</p>
               <div className="ui-kit-connections__groups">
-                {[
-                  ['yellow', 'Оканчиваются на -АЙ', 'МАЙ · ЛАЙ · ЧАЙ · КРАЙ'],
-                  ['green', 'Можно открыть ключом', 'ДВЕРЬ · ЗАМОК · СЕЙФ · СУНДУК'],
-                  ['blue', 'Виды волн', 'ЗВУК · СВЕТ · ПРИЛИВ · РАДИО'],
-                  ['purple', 'Скрытая связь', 'ЧЕТЫРЕ СЛОВА'],
-                ].map(([color, title, words]) => <article key={color} className={`ui-kit-connections__group ui-kit-connections__group--${color}`}>
-                  <strong>{title}</strong><span>{words}</span>
-                </article>)}
+                {connectionsResultGroups.map((group) => <ConnectionsSolvedGroup key={group.color} {...group} />)}
               </div>
-              <div className="ui-kit-connections__mistakes">
-                <span>Ошибок осталось</span><i>×</i><i>×</i><i className="is-used">×</i><i className="is-used">×</i>
-              </div>
+              <ConnectionsMistakes used={2} />
             </div>
             <div className="ui-kit-connections-result">
               <div className="ui-kit-specimen__label">
@@ -452,11 +550,15 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="result-actions">
-            <SectionTitle index="09" title="Результат игры" description="Универсальная карточка ведёт от результата к награде, следующей игре и сохранению прогресса. На телефоне вторичные действия сворачиваются в один спокойный уровень." component="GameResult · ResultActionBar" />
+            <SectionTitle index="10" title="Результат игры" description="Универсальная карточка ведёт от результата к награде, следующей игре и сохранению прогресса. На телефоне вторичные действия сворачиваются в один спокойный уровень." component="GameResult · ResultActionBar" />
+            <div className="ui-kit-preview-controls">
+              <Tabs label="Исход игры" value={resultPreview} onChange={setResultPreview} items={[{ id: 'won', label: 'Победа' }, { id: 'lost', label: 'Ответ открыт' }]} />
+              <Tabs label="Состояние аккаунта" value={accountPreview} onChange={setAccountPreview} items={[{ id: 'guest', label: 'Гость' }, { id: 'authenticated', label: 'В аккаунте' }]} />
+            </div>
             <div className="ui-kit-result-action">
               <GameResult
                 mode="series"
-                won
+                won={resultPreview === 'won'}
                 attempts={4}
                 poster={<img src={publicAssetUrl('images/category-stubs/movie-stub.webp')} alt="Постер демонстрационного результата" />}
                 title="Джон Ф. Кеннеди: выстрелы в Далласе"
@@ -464,16 +566,16 @@ export default function UiKitScreen() {
                 tags={['триллер', 'драма', 'история']}
                 completedToday={4}
                 nextRewardText="До полного маршрута: ещё 6"
-                nextLabel="Играть дальше: кино"
+                nextLabel="Играть дальше: Кино"
                 nextActionLabel="Играть"
                 nextMode="movie"
                 configureLabel="Период / свободная игра"
                 award={{
-                  total: 11,
-                  base: 11,
+                  total: resultPreview === 'won' ? 11 : 3,
+                  base: resultPreview === 'won' ? 11 : 3,
                   completed: 2,
-                  win: 5,
-                  speed: 3,
+                  win: resultPreview === 'won' ? 5 : 0,
+                  speed: resultPreview === 'won' ? 3 : 0,
                   firstDaily: 1,
                   milestoneBonus: 0,
                   fullHouse: 0,
@@ -484,7 +586,7 @@ export default function UiKitScreen() {
                 streak={5}
                 copied={false}
                 telegramUrl="#"
-                accountState="guest"
+                accountState={accountPreview}
                 onNext={() => undefined}
                 onConfigure={() => undefined}
                 onChallenge={() => undefined}
@@ -494,14 +596,22 @@ export default function UiKitScreen() {
           </section>
 
           <section className="ui-kit-section" id="leaderboard">
-            <SectionTitle index="10" title="Таблица рейтинга" description="Рейтинг использует бумажную поверхность, режимный акцент и читаемую служебную типографику не меньше 10 px." component="DtfLeaderboard" />
+            <SectionTitle index="11" title="Таблица рейтинга" description="Общий компонент спецпоказов и результатов: светлая таблица, читаемые имена и баллы. На телефоне прогресс располагается под именем игрока." component="DtfLeaderboard" />
             <div className="ui-kit-leaderboard"><DtfLeaderboard data={leaderboardFixture} /></div>
           </section>
 
           <section className="ui-kit-section" id="feedback">
-            <SectionTitle index="11" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
+            <SectionTitle index="12" title="Состояния и обратная связь" description="Цвет усиливает смысл, но не заменяет текст или иконку. Прогресс и вкладки тоже являются общими компонентами." component="Feedback · Progress · Tabs" />
+            {APPLICATION_DESIGN && <BrandLoader inline />}
             <div className="ui-kit-feedback-grid">
               <InlineAlert tone="success"><strong>Подсказка открыта.</strong> Режиссёр также работал над известной научно-фантастической картиной.</InlineAlert>
+              <InlineAlert tone="danger"><strong>Не удалось сохранить.</strong> Длинное сообщение остаётся читаемым на телефоне и объясняет, что можно повторить действие без потери текущего прогресса.</InlineAlert>
+              <div className="ui-kit-match-samples" aria-label="Состояния сравнения">
+                <div data-state="exact"><strong>Совпадает</strong><span>Точное совпадение</span></div>
+                <div data-state="partial"><strong>Близко</strong><span>Частичное совпадение</span></div>
+                <div data-state="miss"><strong>Не совпадает</strong><span>Попробуйте другой вариант</span></div>
+                <div data-state="unknown"><strong>Пока неизвестно</strong><span>Недостаточно данных</span></div>
+              </div>
               <div className="ui-kit-status-list">
                 <StatusBadge tone="success">Готово</StatusBadge>
                 <StatusBadge tone="warning">Требует внимания</StatusBadge>
@@ -511,6 +621,7 @@ export default function UiKitScreen() {
             <div className="ui-kit-feedback-stack">
               <Tabs surface="dark" label="Пример навигации" value={activeTab} onChange={setActiveTab} items={[{ id: 'daily', label: 'Сегодня' }, { id: 'archive', label: 'Архив' }]} />
               <SegmentedProgress value={4} max={10} />
+              {APPLICATION_DESIGN && <SegmentedProgress variant="composer" value={4} max={10} label="Твоя версия" valueLabel="Попытка 5 из 10" ariaLabel="Использовано попыток: 4 из 10" />}
               <LinearProgress value={6} max={20} label="пройдено" />
               <EmptyState icon={<PackageOpen />} title="Здесь пока пусто" description="Когда появятся результаты, они будут собраны этим же компонентом." action={<ActionButton variant="secondary">Открыть игры</ActionButton>} />
             </div>
@@ -518,6 +629,28 @@ export default function UiKitScreen() {
               <div><span>Диалог</span><p>Модальные окна используют бумажную поверхность и сохраняют фокус внутри.</p></div>
               <ActionButton variant="secondary" onClick={() => setModalOpen(true)}>Открыть пример</ActionButton>
             </div>
+            <div className="ui-kit-modal-demo">
+              <div><span>Нижняя панель · BottomSheet</span><p>Короткая задача поверх текущего экрана. Содержимое прокручивается отдельно, действие остаётся снизу. Escape закрывает панель и возвращает фокус.</p></div>
+              <ActionButton variant="secondary" onClick={() => setSheetOpen(true)}>Открыть нижнюю панель</ActionButton>
+            </div>
+            <div className="ui-kit-modal-demo">
+              <div><span>Полноэкранный оффер</span><p>QuestTakeover, клубная кнопка и анимированная сцена. Пауза, Escape и возврат фокуса.</p></div>
+              <ActionButton variant="secondary" onClick={() => setClubOfferOpen(true)}>Открыть оффер Клуба</ActionButton>
+            </div>
+            <div className="ui-kit-feedback-stack" aria-label="Пример строк выбора">
+              <SelectionRow title="Сегодняшняя игра" description="Строка списка · выбранное состояние" selected={selectedRow === 'daily'} aria-pressed={selectedRow === 'daily'} onClick={() => setSelectedRow('daily')} />
+              <SelectionRow title="Прошлая игра с длинным названием, которое переносится на небольшом экране" description="SelectionRow · обычное состояние" selected={selectedRow === 'archive'} aria-pressed={selectedRow === 'archive'} onClick={() => setSelectedRow('archive')} />
+            </div>
+          </section>
+          <section className="ui-kit-section" id="poster-tickets" aria-label="Билеты-афиши">
+            <SectionTitle index="—" title="Билеты-афиши" description="Локальное направление «Афиша»: крупная иллюстрация, читаемое описание и три состояния игры." component="CategoryTicket · layout=poster" />
+            <details className="ui-kit-legacy-examples"><summary>Показать предыдущий вариант</summary>
+            <div className="ui-kit-poster-grid">
+              <CategoryTicket {...movieTicket} watermarkUrl={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')} layout="poster" poolCount={500} status="new" attempts={null} onClick={() => undefined} />
+              <CategoryTicket {...seriesTicket} watermarkUrl={publicAssetUrl('images/title-posters/series-ticket-poster.webp')} layout="poster" poolCount={500} status="active" attempts={4} onClick={() => undefined} />
+              <CategoryTicket {...movieTicket} watermarkUrl={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')} layout="poster" poolCount={500} status="completed" attempts={3} onClick={() => undefined} />
+            </div>
+            </details>
           </section>
         </div>
       </div>
@@ -525,6 +658,7 @@ export default function UiKitScreen() {
 
     <footer className="ui-kit-footer"><span>СХОДИТСЯ! · UI KIT</span><small>Живая система · 2026</small></footer>
 
+    {clubOfferOpen && <StudyClubJoinDialog onClose={() => setClubOfferOpen(false)} />}
     {modalOpen && <Modal title="Общий зачёт" onClose={() => setModalOpen(false)}>
       <p className="modal-lead">Это штатное модальное окно на бумажной поверхности. Оно закрывается по кнопке, клику вне окна или клавише Escape.</p>
       <div className="ui-kit-modal-paper">
@@ -532,5 +666,8 @@ export default function UiKitScreen() {
         <div><span>Место сегодня</span><strong>6 из 247</strong></div>
       </div>
     </Modal>}
+    {sheetOpen && <BottomSheet title="Следующая версия" description="Пример отдельной задачи в контексте игры." onClose={() => setSheetOpen(false)} footer={<ActionButton onClick={() => setSheetOpen(false)}>Готово</ActionButton>}>
+      <p>В нижней панели можно выбрать ответ, посмотреть историю или прочитать подсказку. Она использует общие шрифты, палитру и кнопки проекта.</p>
+    </BottomSheet>}
   </div>
 }

@@ -220,53 +220,6 @@
 .result-route-track b.is-complete { background: color-mix(in srgb, var(--result-mode-color, var(--color-primary)) 72%, var(--color-paper-line)); }
 .result-route-track b.is-current { animation: result-route-mark .55s .48s ease-out both; }
 
-.result-persistence {
-  padding: 10px 12px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 38%, var(--color-paper-line));
-  border-radius: 13px;
-  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-paper));
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-}
-
-.result-persistence__icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  color: var(--color-success-ink);
-  background: color-mix(in srgb, var(--color-primary) 30%, var(--color-paper));
-  display: grid;
-  place-items: center;
-}
-
-.result-persistence__icon svg { width: 17px; height: 17px; }
-.result-persistence__copy { min-width: 0; display: grid; gap: 2px; }
-.result-persistence__copy strong { font-size: 12px; line-height: 1.2; }
-.result-persistence__copy p { margin: 0; color: var(--color-paper-muted); font-size: 11px; line-height: 1.4; }
-
-.result-persistence > a {
-  min-height: 40px;
-  padding: 0 13px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 60%, var(--color-paper-line));
-  border-radius: 10px;
-  color: var(--color-success-ink);
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 800;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.result-persistence > a:hover { color: var(--color-ink); background: color-mix(in srgb, var(--color-primary) 16%, var(--color-paper)); }
-.result-persistence > a svg { width: 15px; height: 15px; }
-.result-persistence--saved { border-color: var(--color-paper-line); background: transparent; }
-
 .result-recommendations {
   padding: 12px;
   border: 1px solid var(--color-paper-line);
@@ -384,8 +337,8 @@
 }
 
 .result-utility > a,
-.result-utility .content-report > button,
-.result-utility .result-support {
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .content-report > button,
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support {
   min-height: 40px;
   border: 0;
   color: inherit;
@@ -399,16 +352,16 @@
 }
 
 .result-utility > a:hover,
-.result-utility .result-support:hover { color: var(--color-ink); background: transparent; box-shadow: none; transform: none; }
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support:hover { color: var(--color-ink); background: transparent; box-shadow: none; transform: none; }
 .result-utility > a svg { width: 14px; }
 .result-utility .content-report { border: 0; padding: 0; }
 .result-utility .content-report:has(form) { flex-basis: 100%; order: 5; }
-.result-utility .result-support { min-width: 0; padding: 0; display: inline-flex; grid-template-columns: none; }
-.result-utility .result-support > svg { width: 14px; height: 14px; }
-.result-utility .result-support > span { display: inline; }
-.result-utility .result-support strong { font-size: 11px; }
-.result-utility .result-support small,
-.result-utility .result-support > svg:last-child { display: none; }
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support { min-width: 0; padding: 0; display: inline-flex; grid-template-columns: none; }
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support > svg { width: 14px; height: 14px; }
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support > span { display: inline; }
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support strong { font-size: 11px; }
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support small,
+html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa']) .result-utility .result-support > svg:last-child { display: none; }
 
 @keyframes result-verdict-in {
   from { opacity: 0; transform: translateY(5px) scale(.82) rotate(-4deg); }
@@ -465,9 +418,6 @@
     white-space: normal;
   }
   .result-route-track { width: 100%; }
-  .result-persistence { grid-template-columns: 32px minmax(0, 1fr); padding: 11px; }
-  .result-persistence__icon { width: 32px; height: 32px; }
-  .result-persistence > a { grid-column: 2; width: fit-content; min-height: 44px; padding-inline: 12px; }
   .result-recommendations > header { align-items: flex-start; flex-direction: column; }
   .result-recommendations > div { grid-template-columns: 1fr; }
   .result-recommendations button { min-height: 86px; grid-template-columns: 76px minmax(0, 1fr); }

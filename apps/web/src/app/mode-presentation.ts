@@ -1,4 +1,4 @@
-import { BookOpen, Drama, Film, Gamepad2, MapPin, Music2, PawPrint, Sparkles, SquarePlus, Tv, type LucideIcon } from 'lucide-react'
+import { BookOpen, Drama, Film, Gamepad2, MapPin, Music2, PawPrint, Cat, SquarePlus, Tv, type LucideIcon } from 'lucide-react'
 import type { TitleMode } from '../types'
 import { publicAssetUrl } from './public-asset'
 
@@ -14,7 +14,7 @@ export type ModePresentation = {
 export const MODE_PRESENTATION: Record<TitleMode, ModePresentation> = {
   movie: { icon: Film, color: 'var(--mode-movie-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/movie-stub.webp'), description: 'Угадайте фильм по актёрам, жанрам, году и рейтингам.', emptyHint: 'После ответа появятся сравнения по году, жанрам, актёрам, стране и рейтингам.' },
   series: { icon: Tv, color: 'var(--mode-series-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/series-stub.webp'), description: 'Найдите сериал по создателям, касту и периоду.', emptyHint: 'После ответа появятся сравнения по периоду, создателям, касту и рейтингам.' },
-  anime: { icon: Sparkles, color: 'var(--mode-anime-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/anime-stub.webp'), description: 'Угадайте аниме по формату, студии и рейтингу.', emptyHint: 'После ответа появятся сравнения по формату, статусу, эпизодам, студии, сэйю и рейтингу Shikimori.' },
+  anime: { icon: Cat, color: 'var(--mode-anime-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/anime-stub.webp'), description: 'Угадайте аниме по формату, студии и рейтингу.', emptyHint: 'После ответа появятся сравнения по формату, статусу, эпизодам, студии, сэйю и рейтингу Shikimori.' },
   game: { icon: Gamepad2, color: 'var(--mode-game-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/game-stub.webp'), description: 'Угадайте видеоигру по описанию, жанрам и рейтингу.', emptyHint: 'После ответа появятся сравнения по году, месту в топе, жанрам, категориям Steam и рейтингу.' },
   city: { icon: MapPin, color: 'var(--mode-city-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/city-stub-v1.webp'), description: 'Найдите город по стране, населению, часовому поясу и рейтингам.', emptyHint: 'После ответа появятся сравнения по стране, континенту, языкам, населению, часовому поясу и рейтингам.' },
   music: { icon: Music2, color: 'var(--mode-music-brand)', watermarkUrl: publicAssetUrl('images/category-stubs/music-stub.webp'), description: 'Угадайте исполнителя по песне, стране, эпохе и жанрам.', emptyHint: 'После ответа появятся сравнения по стране, дебюту, типу артиста, составу, языку исполнения, карьере и жанрам.' },

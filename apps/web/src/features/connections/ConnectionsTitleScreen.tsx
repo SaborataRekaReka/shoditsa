@@ -1,14 +1,12 @@
 import { useEffect } from 'react'
-import { Play, RotateCcw, Trophy, Waypoints } from 'lucide-react'
-import { publicAssetUrl } from '../../app/public-asset'
-import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
-import { GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
+import { Play, RotateCcw, Trophy } from 'lucide-react'
+import { AppHeader } from '../../components/app-shell/AppShell'
+import { GameLaunchButton, GameLaunchControls } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
-import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket/TitleTicket'
-import { prettyDate } from '../../game'
-import { dayNumber } from '../../game/day-number'
-import './ConnectionsTitleScreen.css'
+import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
+import { ReferencePuzzleTitle } from '../title/ReferenceTitle'
 
 type ConnectionsTitleStatus = 'new' | 'active' | 'completed'
 
@@ -41,7 +39,7 @@ export function ConnectionsTitleScreen({
       ? { label: 'Посмотреть результат', icon: Trophy }
       : { label: 'Начать игру', icon: Play }
   const ActionIcon = action.icon
-  const canPlay = !busy
+  const canPlay = !busy && (!REFERENCE_PRESENTATION || SERVER_RUNTIME)
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -50,6 +48,7 @@ export function ConnectionsTitleScreen({
         event.preventDefault()
         onBack()
       } else if (event.key === 'Enter' && canPlay) {
+        if (event.target instanceof HTMLElement && event.target.closest('button, a, input, select, textarea, summary, [role="option"]')) return
         event.preventDefault()
         onPlay()
       }
@@ -60,51 +59,9 @@ export function ConnectionsTitleScreen({
 
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <GameScreenShell className="title-screen connections-title" variant="title" onBack={onBack}>
-      <section className="title-stage connections-title__stage">
-        <div className="title-game-mark">
-          <span aria-hidden="true"><Waypoints /></span>
-          <i>Игра дня · №{dayNumber(date)}</i>
-          <h1>Connections на русском</h1>
-        </div>
-        <time>{prettyDate(date)} · {new Date(`${date}T12:00:00+03:00`).getFullYear()}</time>
-        <p>Игра «Связи» онлайн бесплатно: объедините 16 слов в четыре группы по смыслу или форме</p>
-
-        <AdmissionTitleTicket
-          id="ticket-connections"
-          mode="connections"
-          className="connections-title__ticket"
-          posterUrl={publicAssetUrl('images/connections/connections-title-hero-v2.webp')}
-          stubLabel="ВХОД"
-          stubTitle="ОДИН"
-          stubMeta={`№ ${dayNumber(date)}`}
-          stubEnd={`${date.slice(8, 10)}.${date.slice(5, 7)}`}
-          details={<GameArtifactSeoDetails mode="connections" />}
-          eager
-        >
-          <TicketKicker title="Ежедневная загадка" detail="новая сетка в полночь" />
-          <h2 id="ticket-connections">Connections на русском: игра «Связи»</h2>
-          <p>Найдите четыре скрытые связи и соберите по четыре слова в каждую группу. Можно допустить <strong>4 ошибки</strong>.</p>
-          <div className="connections-title__facts" aria-label="Коротко о правилах">
-            <span><strong>16</strong> слов</span>
-            <span><strong>4</strong> группы</span>
-            <span><strong>4</strong> ошибки</span>
-          </div>
-          <p className="connections-title__promise">Бесплатно · без регистрации · новая сетка каждый день</p>
-          <GameLaunchControls
-            mode="connections"
-            action={<ActionButton
-              className={`play-button game-launch-controls__play ${!canPlay ? 'is-disabled' : ''}`}
-              onClick={onPlay}
-              disabled={!canPlay}
-            >
-              <ActionIcon className={status === 'active' ? 'play-button__replay-icon' : undefined} aria-hidden="true" />
-              {busy ? 'Открываем…' : action.label}
-              {canPlay && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
-            </ActionButton>}
-          />
-        </AdmissionTitleTicket>
-      </section>
+    <GameScreenShell className="title-screen reference-title-screen" variant="title" onBack={onBack} backLabel="Все игры">
+      <ReferencePuzzleTitle mode="connections" date={date} onRules={onRules} details={<GameArtifactSeoDetails mode="connections" />} launchControls={<GameLaunchControls mode="connections" action={<GameLaunchButton className="play-button game-launch-controls__play" disabled={!canPlay} onClick={onPlay}><ActionIcon />{busy ? 'Открываем…' : action.label}</GameLaunchButton>} />} extra={!SERVER_RUNTIME ? <p className="reference-online-note">В этом локальном просмотре доступно оформление. Решать «Связи» можно <a href="https://shoditsa.ru/games/connections" target="_blank" rel="noreferrer">на основном сайте ↗</a>.</p> : undefined} />
     </GameScreenShell>
   </>
+
 }

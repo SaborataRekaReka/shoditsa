@@ -1,0 +1,29 @@
+/* Sidebar composition belongs to the game page frame. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-layout {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  align-items: start;
+  gap: 18px;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-layout > .reference-game-sidebar { min-width: 0; width: 100%; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main > .reference-game-community { margin-top: 4px; }
+@media (min-width: 1600px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-layout { grid-template-columns: minmax(0, 1fr) 390px; gap: 22px; }
+}
+@media (max-width: 1250px) and (min-width: 981px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-layout { grid-template-columns: minmax(0, 1fr) 310px; gap: 18px; }
+}
+@media (max-width: 980px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+}
+
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-layout { --reference-game-mint: var(--match-exact-bg); --reference-game-coral: var(--match-miss-bg); --reference-game-yellow: var(--match-partial-bg); }

@@ -1,0 +1,5 @@
+/* Skin only: layout, sizing, spacing and responsive rules stay in quest-game.css. */
+[data-quest-skin='shoditsa'] body { font-weight: 400; }
+[data-quest-skin='shoditsa'] .qg-app :is(h1, h2, h3) { font-family: var(--quest-heading); font-weight: 800; }
+[data-quest-skin='shoditsa'] .qg-wordmark { font-family: var(--font-script); color: var(--quest-text) !important; }
+[data-quest-skin='shoditsa'] .qg-fact__check { color: var(--color-primary); background: var(--color-mint); }

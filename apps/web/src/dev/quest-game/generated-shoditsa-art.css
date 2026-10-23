@@ -1,0 +1,129 @@
+.shoditsa-chest__parts, .section-icon__parts { visibility: hidden; }
+.section-icon__gleam { opacity: 0; pointer-events: none; }
+html[data-quest-tone='dark'] .section-lobby__rays { stroke: #baa7ff; }
+
+/* Only navigation links start motion. Other uses of the same artwork stay still. */
+@media (prefers-reduced-motion: no-preference) {
+  .qg-nav-item {
+    --section-icon-active: 0;
+    --section-icon-rest: 1;
+    --section-icon-parts: hidden;
+    --section-icon-switch-delay: 360ms;
+    --section-icon-gleam: none;
+    --section-icon-blink: none;
+  }
+  .qg-nav-item:focus-visible {
+    --section-icon-active: 1;
+    --section-icon-rest: 0;
+    --section-icon-parts: visible;
+    --section-icon-switch-delay: 0s;
+    --section-icon-gleam: section-icon-gleam;
+    --section-icon-blink: section-lobby-blink;
+  }
+  .qg-nav-item :is(.shoditsa-chest__original, .section-icon__rest) {
+    opacity: var(--section-icon-rest);
+    transition: opacity 0s var(--section-icon-switch-delay);
+  }
+  .qg-nav-item :is(.shoditsa-chest__parts, .section-icon__parts) {
+    visibility: var(--section-icon-parts);
+    transition: visibility 0s var(--section-icon-switch-delay);
+  }
+  .qg-nav-item .shoditsa-chest__lid {
+    transform-origin: 1040px 610px;
+    transform: translateY(calc(-95px * var(--section-icon-active))) rotate(calc(9deg * var(--section-icon-active)));
+    transition: transform 360ms cubic-bezier(.22, .8, .25, 1);
+  }
+
+  /* Gamepad: the action buttons press at slightly different moments. */
+  .qg-nav-item .section-controller {
+    transform-origin: 640px 700px;
+    transform: translateY(calc(-18px * var(--section-icon-active))) rotate(calc(-3deg * var(--section-icon-active)));
+    transition: transform 360ms cubic-bezier(.22, .8, .25, 1);
+  }
+  .qg-nav-item .section-controller__purple {
+    transform-origin: 969px 601px;
+    transform: translateY(calc(12px * var(--section-icon-active))) scale(calc(1 - .13 * var(--section-icon-active)));
+    transition: transform 240ms ease;
+  }
+  .qg-nav-item .section-controller__yellow {
+    transform-origin: 797px 735px;
+    transform: translateY(calc(9px * var(--section-icon-active))) scale(calc(1 - .1 * var(--section-icon-active)));
+    transition: transform 240ms 65ms ease;
+  }
+
+  /* Archive: an extra clue card slides out of the existing stack. */
+  .qg-nav-item .section-archive__card {
+    transform-origin: 440px 650px;
+    transform: translate(calc(-15px * var(--section-icon-active)), calc(-100px * var(--section-icon-active))) rotate(calc(-5deg * var(--section-icon-active)));
+    transition: transform 360ms cubic-bezier(.22, .8, .25, 1);
+  }
+
+  /* The trophy lifts and catches one glint. */
+  .qg-nav-item .section-league {
+    transform-origin: 640px 1050px;
+    transform: translateY(calc(-55px * var(--section-icon-active))) scale(calc(1 + .04 * var(--section-icon-active)));
+    transition: transform 360ms cubic-bezier(.34, 1.4, .64, 1);
+  }
+  .qg-nav-item .section-icon__gleam { animation: var(--section-icon-gleam) 760ms ease-out both; }
+
+  /* The club medal swings from its top; the profile pass turns in place. */
+  .qg-nav-item .section-medal {
+    transform-origin: 640px 170px;
+    transform: rotate(calc(-9deg * var(--section-icon-active)));
+    transition: transform 460ms cubic-bezier(.34, 1.56, .64, 1);
+  }
+  .qg-nav-item .section-profile {
+    transform-origin: 640px 640px;
+    transform: translateY(calc(-18px * var(--section-icon-active))) rotate(calc(4deg * var(--section-icon-active)));
+    transition: transform 360ms cubic-bezier(.22, .8, .25, 1);
+  }
+  .qg-nav-item .section-profile__gleam { animation-delay: 70ms; }
+
+  /* Lobby friends lean together; the front character blinks once. */
+  .qg-nav-item :is(.section-lobby__left, .section-lobby__right, .section-lobby__front, .section-lobby__rays) {
+    transition: transform 360ms cubic-bezier(.34, 1.4, .64, 1);
+  }
+  .qg-nav-item .section-lobby__left {
+    transform-origin: 19px 62px;
+    transform: translateX(calc(1.5px * var(--section-icon-active))) rotate(calc(6deg * var(--section-icon-active)));
+  }
+  .qg-nav-item .section-lobby__right {
+    transform-origin: 61px 62px;
+    transform: translateX(calc(-1.5px * var(--section-icon-active))) rotate(calc(-6deg * var(--section-icon-active)));
+  }
+  .qg-nav-item .section-lobby__front {
+    transform-origin: 40px 70px;
+    transform: translateY(calc(-3px * var(--section-icon-active))) rotate(calc(-3deg * var(--section-icon-active)));
+  }
+  .qg-nav-item .section-lobby__rays {
+    transform-origin: 40px 11px;
+    transform: translateY(calc(-1px * var(--section-icon-active))) scale(calc(1 + .2 * var(--section-icon-active)));
+  }
+  .qg-nav-item .section-lobby__eyes {
+    transform-origin: 40px 34px;
+    animation: var(--section-icon-blink) 480ms ease both;
+  }
+}
+
+/* Touch navigation stays still after a tap gives a link sticky :hover. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .qg-nav-item:hover {
+    --section-icon-active: 1;
+    --section-icon-rest: 0;
+    --section-icon-parts: visible;
+    --section-icon-switch-delay: 0s;
+    --section-icon-gleam: section-icon-gleam;
+    --section-icon-blink: section-lobby-blink;
+  }
+}
+
+@keyframes section-icon-gleam {
+  0% { opacity: 0; transform: translateX(0); }
+  18%, 65% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(1550px); }
+}
+
+@keyframes section-lobby-blink {
+  0%, 15%, 60%, 100% { transform: scaleY(1); }
+  30%, 45% { transform: scaleY(.15); }
+}

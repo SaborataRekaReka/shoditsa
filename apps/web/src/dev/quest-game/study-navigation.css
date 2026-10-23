@@ -1,0 +1,32 @@
+/* Shared route transitions; the preview also loads this before first paint. */
+@view-transition { navigation: auto; }
+html { scrollbar-gutter: stable; }
+html[data-study-booting] #root { visibility: hidden; }
+html[data-study-js] [data-study-fallback] { display: none; }
+html[data-quest-skin='shoditsa'] { background: var(--color-entry-bg); }
+html[data-quest-skin='shoditsa'] .qg-rail { view-transition-name: study-navigation; }
+html[data-quest-skin='shoditsa'] .study-right-panel { view-transition-name: study-aside; }
+/* Route focus is an accessible reading position, not an interactive control. */
+.qg-app main[tabindex='-1']:focus { outline: none; }
+/* The player controls move between the sidebar and header; keep them in normal painting. */
+html[data-quest-skin='shoditsa'] .study-header { view-transition-name: none; }
+::view-transition { pointer-events: none; }
+::view-transition-group(*) { animation-duration: 180ms; animation-timing-function: ease-out; }
+::view-transition-old(root) { animation: study-page-out 140ms ease-out both; }
+::view-transition-new(root) { animation: study-page-in 180ms ease-out both; }
+::view-transition-old(study-navigation) { animation: none; opacity: 0; }
+::view-transition-new(study-navigation) { animation: none; }
+::view-transition-old(study-aside) { animation: study-page-out 120ms ease-out both; }
+::view-transition-new(study-aside) { animation: study-page-out 160ms ease-out reverse both; }
+.study-navigation-progress { position: fixed; z-index: 2001; inset: 0 0 auto; height: 3px; overflow: hidden; opacity: 0; pointer-events: none; animation: study-progress-reveal 1ms 220ms forwards; }
+.study-navigation-progress span { display: block; width: 35%; height: 100%; border-radius: 99px; background: var(--color-focus); animation: study-progress-travel 1.1s ease-in-out infinite; }
+@keyframes study-progress-reveal { to { opacity: 1; } }
+@keyframes study-progress-travel { from { transform: translateX(-100%); } to { transform: translateX(390%); } }
+@keyframes study-page-out { to { opacity: 0; } }
+@keyframes study-page-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  .study-navigation-progress { animation: none; opacity: 1; }
+  .study-navigation-progress span { animation: none; width: 100%; }
+}

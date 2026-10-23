@@ -1,13 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  Activity, AlertTriangle, Archive, ArrowLeft, ArrowUpDown, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug,
-  Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink,
-  Download, FileClock, FileJson, Filter, Grid2X2, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks,
-  LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload,
-  RotateCcw, Rows3, Save, Search, Settings2, ShieldCheck, SlidersHorizontal, Sparkles, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2,
-  UsersRound, WandSparkles, X,
-} from 'lucide-react'
+import { Activity, AlertTriangle, Archive, ArrowLeft, ArrowUpDown, BadgeCheck, Bot, Boxes, BriefcaseBusiness, Bug, Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, CircleDollarSign, CircleGauge, Clapperboard, Clock3, Copy, Database, Eye, ExternalLink, Download, FileClock, FileJson, Filter, Grid2X2, HeartPulse, History, Image as ImageIcon, KeyRound, LayoutDashboard, ListChecks, LayoutTemplate, LoaderCircle, LockKeyhole, Menu, MessageSquareText, MoreHorizontal, PanelRightClose, Play, Plus, RefreshCw, Rocket, Upload, RotateCcw, Rows3, Save, Search, Settings2, ShieldCheck, SlidersHorizontal, Lightbulb, SquarePen, Tags, Ticket, Trash2, UserRound, Volume2, UsersRound, Workflow, X } from 'lucide-react'
 import { CATALOG_HINT_COPY, CONTENT_MODE_IDS, GAME_MODE_MANIFEST, type AdminAcquisitionFunnelResponse, type AdminContentListItem, type AdminContentTag, type AdminDashboardResponse, type AdminTimelineEvent, type ContentMode } from '@shoditsa/contracts'
 import { publicAssetUrl } from '../app/public-asset'
 import { AdminApiError, adminApi, type AdminItemDetail } from './api'
@@ -627,7 +620,7 @@ function DashboardPage({ navigate, notify }: { navigate: (section: Section, id?:
         {dashboard.data.recentChanges.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentChanges.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('content', String(item.itemId))}><span><strong>{title(item.itemId)}</strong><small>{array(item.changedFields).join(', ') || 'Изменение карточки'} · {compactDate(item.updatedAt)}</small></span><Status value={item.source}>{String(item.source)}</Status></button> })}</div> : <Empty title="Изменений нет" text="Сохранённые правки появятся здесь." />}
       </section>
       <section className="admin-panel"><header><div><span>Автоматизация</span><h2>Последние запуски ИИ</h2></div><button onClick={() => navigate('pipelines')}>Пайплайны <ChevronRight /></button></header>
-        {dashboard.data.recentRuns.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentRuns.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('pipelines', String(item.id))}><span><strong>Музыка · {Number(item.itemsProcessed ?? 0)}/{Number(item.itemsTotal ?? 0)}</strong><small>{compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Запусков ещё нет" text="Музыкальный пайплайн можно запустить из каталога." icon={<WandSparkles />} />}
+        {dashboard.data.recentRuns.length ? <div className="admin-feed admin-feed--plain">{dashboard.data.recentRuns.map((raw) => { const item = record(raw); return <button key={String(item.id)} onClick={() => navigate('pipelines', String(item.id))}><span><strong>Музыка · {Number(item.itemsProcessed ?? 0)}/{Number(item.itemsTotal ?? 0)}</strong><small>{compactDate(item.createdAt)}</small></span><Status value={item.status} /></button> })}</div> : <Empty title="Запусков ещё нет" text="Музыкальный пайплайн можно запустить из каталога." icon={<Workflow />} />}
       </section>
     </div>
   </>
@@ -1272,7 +1265,7 @@ function ContentPreviewModal({
             <div className="admin-attempt-fields">{fields.length ? fields.map((entry) => <article className="admin-attempt-field" key={entry.label}><small>{entry.label}</small><strong>{entry.value}</strong></article>) : <p className="admin-attempt-fields__empty">Недостаточно игровых полей для предпросмотра попытки.</p>}</div>
           </section>
           {mode === 'animal' && <AnimalAudioPreview payload={payload} compact />}
-          <section className="assist-revealed"><article className="assist-reveal-card"><span><Sparkles /> Подсказка в игре</span><p>{hint}</p></article></section>
+          <section className="assist-revealed"><article className="assist-reveal-card"><span><Lightbulb /> Подсказка в игре</span><p>{hint}</p></article></section>
           <ContentCommentsPreview payload={payload} mode={mode} />
           <section className={`admin-content-preview-review is-${reviewStatus}`}>
             <label>
@@ -2496,7 +2489,7 @@ function ContentPage({ selectedId, navigate, notify }: { selectedId: string | nu
             <div className="admin-content-facet-grid">
               <label><span>Источник изменений</span><div><FileJson /><select value={source} onChange={(event) => { setSource(event.target.value); resetSelection() }}><option value="">Любой источник</option><option value="manual">Ручное</option><option value="ai_pipeline">AI пайплайн</option><option value="bulk">Массовое</option><option value="import">Импорт</option><option value="rollback">Откат</option><option value="report_fix">Фикс по репорту</option></select></div></label>
               <label><span>Пайплайн</span><div><Bot /><select value={pipelineFilter} onChange={(event) => { setPipelineFilter(event.target.value); resetSelection() }}><option value="">Любой пайплайн</option><option value="music">Музыка</option><option value="movie">Кино</option><option value="anime">Аниме</option><option value="normalization">Нормализация</option><option value="factcheck">Фактчек</option></select></div></label>
-              <label><span>Игровая подсказка</span><div><Sparkles /><select value={hintFilter} onChange={(event) => { setHintFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
+              <label><span>Игровая подсказка</span><div><Lightbulb /><select value={hintFilter} onChange={(event) => { setHintFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
               <label><span>Баг-репорты</span><div><Bug /><select value={reportsFilter} onChange={(event) => { setReportsFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть</option><option value="no">Нет</option></select></div></label>
               <label><span>Качество</span><div><AlertTriangle /><select aria-label="Фильтр качества" value={issuesFilter} onChange={(event) => { setIssuesFilter(event.target.value as "all" | "yes" | "no"); resetSelection() }}><option value="all">Не учитывать</option><option value="yes">Есть проблемы</option><option value="no">Без проблем</option></select></div></label>
             </div>
@@ -3391,7 +3384,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
   const runnableManualItems = readyItems + (includeExisting ? Number(previewSummary.existing ?? 0) : 0)
   const pipelineLabel = (key: unknown) => key === 'music' ? 'Музыка' : key === 'movie' ? 'Кино' : key === 'anime' ? 'Аниме' : key === 'normalization' ? 'Нормализация' : key === 'factcheck' ? 'Фактчек' : 'Пайплайн'
   const pipelineDetailTitle = (key: unknown) => key === 'music' ? 'Музыкальный пайплайн' : key === 'movie' ? 'Кино-пайплайн Кинопоиска' : key === 'anime' ? 'Аниме-пайплайн Shikimori' : key === 'normalization' ? 'Универсальная нормализация' : key === 'factcheck' ? 'Универсальный фактчек' : 'Контентный пайплайн'
-  const pipelineIcon = (key: unknown) => key === 'music' ? <WandSparkles /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Sparkles /> : key === 'factcheck' ? <BadgeCheck /> : <Bot />
+  const pipelineIcon = (key: unknown) => key === 'music' ? <Workflow /> : key === 'movie' ? <Clapperboard /> : key === 'anime' ? <Lightbulb /> : key === 'factcheck' ? <BadgeCheck /> : <Bot />
   const pipelinePulseText = (status: string) => status === 'queued' ? 'В очереди' : status === 'running' ? 'В работе' : 'Остановлен'
   const manualText = pipelineKey === 'music' ? artistText : pipelineKey === 'movie' ? movieText : animeText
   const setManualText = pipelineKey === 'music' ? setArtistText : pipelineKey === 'movie' ? setMovieText : setAnimeText
@@ -3783,7 +3776,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
               className="admin-btn admin-btn--secondary"
               onClick={() => openPipeline("anime")}
             >
-              <Sparkles />
+              <Lightbulb />
               Запустить аниме
             </button>
             <button
@@ -3797,7 +3790,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
               className="admin-btn admin-btn--secondary"
               onClick={() => openPipeline("music")}
             >
-              <WandSparkles />
+              <Workflow />
               Запустить музыку
             </button>
             <button
@@ -3822,11 +3815,11 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             >
               <div className="admin-pipeline-icon">
                 {pipeline.key === "music" ? (
-                  <WandSparkles />
+                  <Workflow />
                 ) : pipeline.key === "movie" ? (
                   <Clapperboard />
                 ) : pipeline.key === "anime" ? (
-                  <Sparkles />
+                  <Lightbulb />
                 ) : (
                   <Bot />
                 )}
@@ -3949,7 +3942,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
             <Empty
               title="Выберите запуск"
               text="Здесь появятся прогресс, фактическая стоимость, diff и решения по полям."
-              icon={<WandSparkles />}
+              icon={<Workflow />}
             />
           ) : (
             <>
@@ -4724,7 +4717,7 @@ function PipelinesPage({ selectedId, navigate, notify }: { selectedId: string | 
               <section className="assist-revealed">
                 <article className="assist-reveal-card">
                   <span>
-                    <Sparkles /> Подсказка в игре
+                    <Lightbulb /> Подсказка в игре
                   </span>
                   <p>{moderationHint}</p>
                 </article>
@@ -5768,7 +5761,7 @@ function IntegrationsPage({ notify }: { notify: (tone: Notice['tone'], text: str
   })
   return <><PageHead eyebrow="Зашифрованное хранилище" title="API-интеграции" description="Ключи платёжных, музыкальных и контентных сервисов в одном месте. Исходные секреты никогда не возвращаются в браузер." actions={<button className="admin-btn admin-btn--secondary" onClick={() => void integrations.refetch()}><RefreshCw />Обновить</button>} />
     <div className="admin-integration-banner"><ShieldCheck /><div><strong>AES-256-GCM · write-only</strong><p>После сохранения сервер показывает только маску и источник настройки. Секрет расшифровывается только на сервере непосредственно перед обращением к соответствующему API.</p></div></div>
-    <section className="admin-panel admin-portrait-test"><header><div><span>GPT Image 2 · low</span><h2>Тест портретов персонажей</h2></div><Status value={portraitTest.data?.status ?? 'neutral'}>{portraitTest.data?.status === 'completed' ? 'Готово' : portraitTest.data?.status === 'failed' ? 'Ошибка' : portraitTestId ? 'Генерация' : 'Не запускался'}</Status></header><p>Фирменный стиль «Сходится», 1024×1536. Один Холмс — около $0.005, тестовая серия из пяти — около $0.025, расширение из 50 — около $0.25, расширение из 330 — около $1.65 за вывод; ключ остаётся на сервере.</p><div className="admin-actions"><button className="admin-btn admin-btn--primary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать только Шерлока Холмса GPT Image 2 в качестве low? Оценка стоимости вывода: $0.005.')) startPortraitTest.mutate({ portraitId: 'sherlock-holmes' }) }}><WandSparkles />{startPortraitTest.isPending || portraitTest.data?.status === 'running' ? 'Генерация…' : 'Проверить Холмса · $0.005'}</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 5 тестовых портретов GPT Image 2 в качестве low? Оценка стоимости вывода: $0.025.')) startPortraitTest.mutate(undefined) }}>Сгенерировать тестовые 5</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 50 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $0.25 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-50' }) }}>Сгенерировать новые 50 · $0.25</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 330 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $1.65 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-330' }) }}>Сгенерировать новые 330 · $1.65</button></div>{portraitTest.data?.error && <p className="admin-portrait-test__error">{portraitTest.data.error}</p>}{portraitTest.data?.warning && <p>{portraitTest.data.warning}</p>}{portraitTest.data?.items.length ? <div className="admin-portrait-test__grid">{portraitTest.data.items.map((item) => <a key={item.id} href={item.url} target="_blank" rel="noreferrer"><img src={item.url} alt={item.title} /><span><strong>{item.title}</strong><small>{item.width}×{item.height} · {Math.ceil(item.bytes / 1024)} КБ · {item.storage === 'media' ? 'media' : 'память 1 ч.'}</small></span></a>)}</div> : null}</section>
+    <section className="admin-panel admin-portrait-test"><header><div><span>GPT Image 2 · low</span><h2>Тест портретов персонажей</h2></div><Status value={portraitTest.data?.status ?? 'neutral'}>{portraitTest.data?.status === 'completed' ? 'Готово' : portraitTest.data?.status === 'failed' ? 'Ошибка' : portraitTestId ? 'Генерация' : 'Не запускался'}</Status></header><p>Фирменный стиль «Сходится», 1024×1536. Один Холмс — около $0.005, тестовая серия из пяти — около $0.025, расширение из 50 — около $0.25, расширение из 330 — около $1.65 за вывод; ключ остаётся на сервере.</p><div className="admin-actions"><button className="admin-btn admin-btn--primary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать только Шерлока Холмса GPT Image 2 в качестве low? Оценка стоимости вывода: $0.005.')) startPortraitTest.mutate({ portraitId: 'sherlock-holmes' }) }}><Workflow />{startPortraitTest.isPending || portraitTest.data?.status === 'running' ? 'Генерация…' : 'Проверить Холмса · $0.005'}</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 5 тестовых портретов GPT Image 2 в качестве low? Оценка стоимости вывода: $0.025.')) startPortraitTest.mutate(undefined) }}>Сгенерировать тестовые 5</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 50 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $0.25 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-50' }) }}>Сгенерировать новые 50 · $0.25</button><button className="admin-btn admin-btn--secondary" disabled={startPortraitTest.isPending || portraitTest.data?.status === 'running'} onClick={() => { if (confirm('Сгенерировать 330 новых портретов персонажей GPT Image 2 в качестве low? Оценка стоимости вывода: $1.65 без возможных повторов.')) startPortraitTest.mutate({ portraitBatch: 'character-expansion-330' }) }}>Сгенерировать новые 330 · $1.65</button></div>{portraitTest.data?.error && <p className="admin-portrait-test__error">{portraitTest.data.error}</p>}{portraitTest.data?.warning && <p>{portraitTest.data.warning}</p>}{portraitTest.data?.items.length ? <div className="admin-portrait-test__grid">{portraitTest.data.items.map((item) => <a key={item.id} href={item.url} target="_blank" rel="noreferrer"><img src={item.url} alt={item.title} /><span><strong>{item.title}</strong><small>{item.width}×{item.height} · {Math.ceil(item.bytes / 1024)} КБ · {item.storage === 'media' ? 'media' : 'память 1 ч.'}</small></span></a>)}</div> : null}</section>
     <div className="admin-integrations-grid">{integrations.isLoading ? <Loading /> : integrations.data?.items.map((raw) => { const item = record(raw); const value = values[String(item.key)] ?? ''; const busy = save.isPending && save.variables?.key === item.key; return <section key={String(item.key)} className="admin-integration-card"><header><span><KeyRound /></span><div><small>{title(item.provider)}</small><h2>{title(item.title)}</h2></div><Status value={item.configured ? 'active' : item.required ? 'failed' : 'neutral'}>{item.configured ? 'Настроено' : item.required ? 'Обязательно' : 'Необязательно'}</Status></header><p>{title(item.description)}</p><div className="admin-integration-current"><span>Текущее значение</span><code>{item.maskedValue || 'Не задано'}</code><small>{item.source === 'admin' ? 'Сохранено в зашифрованном хранилище' : item.source === 'environment' ? 'Получено из переменной окружения' : 'Провайдер будет пропущен или использует публичный режим'}</small></div><label className="admin-field"><span>Новое значение</span><input type={item.secret ? 'password' : 'text'} autoComplete="new-password" value={value} onChange={(event) => setValues((current) => ({ ...current, [String(item.key)]: event.target.value }))} placeholder={item.configured ? 'Введите только для замены' : 'Вставьте значение'} /></label><footer><button className="admin-btn admin-btn--primary" disabled={!value.trim() || busy} onClick={() => save.mutate({ key: String(item.key), value: value.trim() })}><Save />Сохранить</button>{item.source === 'admin' && <button className="admin-btn admin-btn--secondary" onClick={() => remove.mutate(String(item.key))}><Trash2 />Удалить override</button>}</footer></section> })}</div>
   </>
 }
@@ -5836,7 +5829,7 @@ function DanetkiAdminPage({ notify }: { notify: (tone: Notice['tone'], text: str
 const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> = [
   { id: 'dashboard', label: 'Обзор', icon: LayoutDashboard }, { id: 'content', label: 'Карточки', icon: Boxes },
   { id: 'builder', label: 'Конструктор игры', icon: LayoutTemplate },
-  { id: 'reports', label: 'Баг-репорты', icon: Bug }, { id: 'pipelines', label: 'ИИ-пайплайны', icon: WandSparkles },
+  { id: 'reports', label: 'Баг-репорты', icon: Bug }, { id: 'pipelines', label: 'ИИ-пайплайны', icon: Workflow },
   { id: 'users', label: 'Пользователи', icon: UsersRound }, { id: 'events', label: 'События', icon: Activity },
   { id: 'quality', label: 'Контроль качества', icon: ListChecks }, { id: 'economy', label: 'Экономика', icon: CircleDollarSign },
   { id: 'commerce', label: 'Монетизация', icon: CircleDollarSign },

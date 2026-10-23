@@ -1,0 +1,8 @@
+.application-match-strip__toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; }
+.application-match-strip__toolbar > :only-child { margin-left: auto; }
+.application-match-strip__toolbar [aria-expanded='true'] > svg { transform: rotate(90deg); }
+.application-match-strip__panel { margin-top: 8px; }
+.application-match-strip__panel ul { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.application-match-strip__panel li { display: flex; gap: 5px; flex-wrap: wrap; padding: 7px 10px; border-radius: 10px; background: var(--quest-green-wash); color: var(--quest-green); font-size: 12px; }
+.application-match-strip__panel small { font-size: inherit; }
+.application-match-strip__panel p { margin: 0; font-size: 13px; color: var(--quest-muted); }

@@ -393,6 +393,13 @@
       "when": 1790502977300,
       "tag": "0055_registration_bonus_all_games",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1792746198088,
+      "tag": "0056_svoyak_production",
+      "breakpoints": true
     }
   ]
 }

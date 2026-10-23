@@ -1,3 +1,4 @@
+import { registerSvoyakRoutes } from './modules/svoyak/routes.js'
 import Fastify, { type FastifyReply } from 'fastify'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
@@ -51,6 +52,7 @@ import { registerCommerceRoutes } from './modules/commerce/routes.js'
 import { archiveCalendar } from './modules/archive/calendar.js'
 import { registerCommerceAdminRoutes } from './modules/commerce/admin-routes.js'
 import { registerPackRoutes } from './modules/packs/routes.js'
+import { registerSupportRoutes } from './modules/support/routes.js'
 import { startPackSession } from './modules/packs/service.js'
 import { registerPrivateGameRoutes } from './modules/private-games/routes.js'
 import { getDanetkiSession, loadDanetkiFeatureFlags, startDanetkiSession } from './modules/danetki/service.js'
@@ -63,6 +65,7 @@ import { registerConnectionsRoutes } from './modules/connections/routes.js'
 import { registerConnectionsAdminRoutes } from './modules/connections/admin-routes.js'
 import { loadGrowthPolicy } from './modules/growth/service.js'
 import { registerGrowthRoutes } from './modules/growth/routes.js'
+import { registerLeaderboardRoutes } from './modules/leaderboard/routes.js'
 
 type BuildOptions = { config: AppConfig; db?: Database; auth?: Auth }
 
@@ -147,6 +150,8 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     requestMetrics.set(route, current)
   })
   app.setErrorHandler((error, request, reply) => sendError(request, reply, error))
+  registerLeaderboardRoutes(app, db, auth)
+  registerSvoyakRoutes(app, { db, auth, config })
 
   app.get('/api/v1/health/live', { schema: { response: { 200: Type.Object({ status: Type.Literal('ok') }) } } }, async () => ({ status: 'ok' as const }))
   app.get('/api/v1/health/ready', async (_request, reply) => {
@@ -200,6 +205,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         connectionsHintsEnabled: config.connectionsHintsEnabled,
         connectionsLaunchDate: config.connectionsLaunchDate,
         territoryEnabled: config.territoryEnabled && territoryCount >= 80,
+        svoyakEnabled: config.svoyakEnabled,
       },
     }
   })
@@ -525,6 +531,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   await registerGrowthRoutes(app, { db, auth, config })
   await registerCommerceAdminRoutes(app, { db, auth, config })
   registerPackRoutes(app, db, auth, config)
+  registerSupportRoutes(app, config)
   registerPrivateGameRoutes(app, { db, auth, config })
   registerDanetkiRoutes(app, { db, auth, config, realtimeMetrics: danetkiRealtimeMetrics })
   registerDanetkiAdminRoutes(app, { db, auth, config })

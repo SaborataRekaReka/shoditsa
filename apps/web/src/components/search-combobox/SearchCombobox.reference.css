@@ -1,0 +1,124 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-area--sticky { margin: 16px 0; padding: 10px; top: 80px; border: 1px solid var(--reference-game-line); border-radius: 24px; background: var(--reference-game-paper); box-shadow: 0 8px 25px #25212a0a; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-area > label { margin: 1px 0 9px 6px; font-size: 12px; font-weight: 500; color: var(--reference-game-muted); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box { min-height: 62px; padding-left: 17px; border: 1px solid var(--color-line-strong); border-radius: 999px; background: var(--reference-game-white); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box:focus-within { border-color: #9b87c9; box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-lilac) 50.1961%, transparent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box input { font-family: var(--reference-game-font); font-size: 15px; font-weight: 400; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box input:focus-visible { outline: none; box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box input::placeholder { color: var(--reference-game-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box > button { border-radius: 50%; border-color: var(--reference-game-ink); background: var(--reference-game-ink); color: var(--reference-game-white); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box > button:hover:not(:disabled) { background: var(--color-action-hover); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box > button:disabled { color: var(--reference-game-muted); border-color: transparent; background: var(--color-surface-3); opacity: .7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-meta { margin: 11px 6px 1px; font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-meta strong { color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .suggestions { border-color: var(--reference-game-line); border-radius: 19px; background: var(--reference-game-white); box-shadow: 0 13px 35px color-mix(in srgb, var(--color-shadow) 7.8431%, transparent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .suggestions button { padding: 11px 14px; border-bottom-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .suggestions button:is(:hover, .is-active) { background: var(--reference-game-accent); box-shadow: inset 3px 0 0 var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .suggestions strong { font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .suggestions small { color: var(--reference-game-muted); font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .suggestions em { font: 700 14px var(--reference-game-font); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .sticky-composer__status { padding: 1px 6px 8px; font-size: 12px; font-weight: 400; letter-spacing: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .sticky-composer__status strong { color: var(--reference-game-ink); }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-area--sticky { top: 73px; padding: 8px; border-radius: 22px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box { min-height: 59px; padding-left: 13px; gap: 7px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box input { font-size: 16px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-meta { font-size: 10px; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .search-box input { font-size: 16px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-box { min-height: 64px; background: var(--reference-game-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-meta { margin-top: 12px; font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .sticky-composer__status { padding-bottom: 10px; font-size: 12px; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-box { min-height: 58px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-meta { font-size: 11px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .sticky-composer__status { font-size: 11px; }
+}
+@media (max-width: 560px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-meta { gap: 7px; flex-wrap: wrap; font-size: 10px; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .sticky-composer__status { font-size: 10px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky {
+  display: block;
+  margin-block: 16px 0;
+  padding: 12px 14px 0;
+  border: 1px solid #e2ddd5;
+  border-radius: 20px;
+  background: var(--color-surface);
+  box-shadow: 0 6px 20px #25212a07;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky > .sticky-composer__status { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky > .ui-search-combobox { position: relative; min-width: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box {
+  min-height: 60px;
+  padding: 5px 6px 5px 17px;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 48px;
+  gap: 11px;
+  align-items: center;
+  border: 1px solid #d9d3ca;
+  border-radius: 15px;
+  background: var(--color-paper);
+  color: #242126;
+  box-shadow: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box.selected { grid-template-columns: 22px minmax(0, 1fr) 18px 48px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box:focus-within { border-color: #a08cc6; box-shadow: 0 0 0 3px #e4dcf64d; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > svg:first-child { width: 20px; height: 20px; color: #77716c; stroke-width: 1.8; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #242126;
+  background: transparent;
+  font: 400 16px/1.4 var(--reference-game-font);
+  outline: none;
+  box-shadow: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box input::placeholder { color: #817a74; opacity: 1; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box .selected-check { width: 17px; height: 17px; color: #477858; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  color: var(--color-on-action);
+  background: #202023;
+  box-shadow: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > button:hover:not(:disabled) { background: #39333c; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > button:disabled { color: #a19a92; background: #ede9e2; opacity: 1; filter: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > button svg { width: 22px; height: 22px; stroke-width: 2; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .suggestions {
+  top: calc(100% + 8px);
+  right: 0;
+  bottom: auto;
+  left: 0;
+  max-height: min(346px, calc(100dvh - 210px));
+  border: 1px solid #e0d9d0;
+  border-radius: 15px;
+  background: var(--color-surface);
+  box-shadow: 0 14px 30px #25212a17;
+  z-index: 45;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky > .search-meta { margin: 0; padding: 0 3px 13px; color: #655e57; font-size: 12px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky > .search-meta strong { font-weight: 500; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky { margin-top: 13px; padding: 10px 10px 0; border-radius: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box { min-height: 56px; padding: 5px 5px 5px 12px; grid-template-columns: 18px minmax(0, 1fr) 44px; gap: 8px; border-radius: 13px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box.selected { grid-template-columns: 18px minmax(0, 1fr) 16px 44px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box input { font-size: 16px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > svg:first-child { width: 18px; height: 18px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky .search-box > button { width: 44px; height: 44px; border-radius: 10px; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-play-main .search-area--sticky { padding-inline: 8px; }
+}

@@ -1,0 +1,186 @@
+{
+  "title": "Вопросы с историей",
+  "source": "qa/svoyak-pilot-2026-10-21/adapted-selection.json",
+  "themes": [
+    {
+      "title": "Игры в деталях",
+      "description": "Города, герои и знакомые детали",
+      "art": "game",
+      "questions": [
+        {
+          "id": "adapted-games-100",
+          "question": "В какой игре находится Сити 17?",
+          "answer": "Half-Life 2",
+          "accepted_answers": [
+            "Half Life 2",
+            "Халф-Лайф 2",
+            "Халф лайф 2"
+          ],
+          "price": 100
+        },
+        {
+          "id": "adapted-games-200",
+          "question": "Как расшифровывается DBD?",
+          "answer": "Dead by Daylight",
+          "accepted_answers": [
+            "Дед бай Дейлайт",
+            "Дэд бай Дэйлайт"
+          ],
+          "price": 200
+        },
+        {
+          "id": "adapted-games-300",
+          "question": "Год выхода первой Crysis?",
+          "answer": "2007",
+          "accepted_answers": [
+            "2007 год",
+            "В 2007 году"
+          ],
+          "price": 300
+        },
+        {
+          "id": "adapted-games-400",
+          "question": "В каком хорроре живёт семья Бэйкер?",
+          "answer": "Resident Evil 7: Biohazard",
+          "accepted_answers": [
+            "Resident Evil 7",
+            "RE7",
+            "7",
+            "Седьмая",
+            "Обитель зла 7"
+          ],
+          "price": 400
+        },
+        {
+          "id": "adapted-games-500",
+          "question": "Главный герой «S.T.A.L.K.E.R.: Чистое небо»?",
+          "answer": "Шрам",
+          "accepted_answers": [
+            "Scar"
+          ],
+          "price": 500
+        }
+      ]
+    },
+    {
+      "title": "Кино в двух словах",
+      "description": "Узнайте фильм по странному пересказу",
+      "art": "movie",
+      "questions": [
+        {
+          "id": "adapted-movies-100",
+          "question": "Миллиардер дерётся с клоуном. (2008)",
+          "answer": "Тёмный рыцарь",
+          "accepted_answers": [
+            "Темный рыцарь",
+            "The Dark Knight"
+          ],
+          "price": 100
+        },
+        {
+          "id": "adapted-movies-200",
+          "question": "Художник выбрал удачную спутницу и неудачный корабль.",
+          "answer": "Титаник",
+          "accepted_answers": [
+            "Titanic",
+            "Титаник 1997"
+          ],
+          "price": 200
+        },
+        {
+          "id": "adapted-movies-300",
+          "question": "Бесплатный квест в ванной. Выход оплачивается отдельно.",
+          "answer": "Пила",
+          "accepted_answers": [
+            "Saw",
+            "Пила 1",
+            "Пила: Игра на выживание"
+          ],
+          "price": 300
+        },
+        {
+          "id": "adapted-movies-400",
+          "question": "Спят в самолёте, работают в чужой голове.",
+          "answer": "Начало",
+          "accepted_answers": [
+            "Inception"
+          ],
+          "price": 400
+        },
+        {
+          "id": "adapted-movies-500",
+          "question": "Попутчики пережидают метель. Кофе переживают не все. Тарантино.",
+          "answer": "Омерзительная восьмёрка",
+          "accepted_answers": [
+            "Омерзительная восьмерка",
+            "The Hateful Eight"
+          ],
+          "price": 500
+        }
+      ]
+    },
+    {
+      "title": "Аниме без шума",
+      "description": "Самое узнаваемое в нескольких словах",
+      "art": "anime",
+      "questions": [
+        {
+          "id": "adapted-anime-100",
+          "question": "«Тоторо», «Лапута», «Порко Россо», «Ведьмина служба доставки». Какая студия?",
+          "answer": "Studio Ghibli",
+          "accepted_answers": [
+            "Ghibli",
+            "Студия Гибли",
+            "Гибли",
+            "Дзибли",
+            "Студия Дзибли"
+          ],
+          "price": 100
+        },
+        {
+          "id": "adapted-anime-200",
+          "question": "Приправа из перца и аниме Сатоси Кона.",
+          "answer": "Паприка",
+          "accepted_answers": [
+            "Paprika"
+          ],
+          "price": 200
+        },
+        {
+          "id": "adapted-anime-300",
+          "question": "Клерк стал желе и построил государство.",
+          "answer": "О моём перерождении в слизь",
+          "accepted_answers": [
+            "О моем перерождении в слизь",
+            "That Time I Got Reincarnated as a Slime",
+            "Tensei Shitara Slime Datta Ken",
+            "Tensura"
+          ],
+          "price": 300
+        },
+        {
+          "id": "adapted-anime-400",
+          "question": "Холодная война в студсовете. Кто признался в любви — проиграл.",
+          "answer": "Госпожа Кагуя: в любви как на войне",
+          "accepted_answers": [
+            "Госпожа Кагуя",
+            "Кагуя-сама",
+            "Kaguya-sama: Love Is War",
+            "Kaguya-sama wa Kokurasetai"
+          ],
+          "price": 400
+        },
+        {
+          "id": "adapted-anime-500",
+          "question": "Парень без магии обзавёлся мечом, который гасит чужую.",
+          "answer": "Чёрный клевер",
+          "accepted_answers": [
+            "Черный клевер",
+            "Black Clover"
+          ],
+          "price": 500
+        }
+      ]
+    }
+  ]
+}

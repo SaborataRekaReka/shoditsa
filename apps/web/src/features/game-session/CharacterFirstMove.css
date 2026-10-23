@@ -101,9 +101,19 @@
 .character-first-move--empty .character-first-move__example { border-color: var(--color-line-strong); }
 .character-first-move--empty .character-first-move__note { color: var(--color-muted); }
 
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move { padding: var(--space-5); border-color: var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move--empty { padding: var(--space-3); border: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move__icon { color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move :is(.character-first-move__description, .character-first-move__note) { font-size: 14px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move .character-first-move__example { border-radius: var(--radius-pill); border-color: var(--color-line-strong); background: var(--color-surface); font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move .character-first-move__example:hover:not(:disabled) { border-color: var(--color-line-strong); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move .character-first-move__example:focus-visible { outline-color: var(--color-focus); }
+
 @media (max-width: 479px) {
   .character-first-move { padding: 13px; }
   .character-first-move--empty { padding: 0; }
   .character-first-move__examples { gap: 6px; }
   .character-first-move .character-first-move__example { flex-grow: 1; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move { padding: var(--space-4); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-first-move--empty { padding: var(--space-3); }
 }

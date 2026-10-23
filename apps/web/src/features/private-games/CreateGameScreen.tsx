@@ -1,25 +1,10 @@
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { useState, type FormEvent, type MouseEvent } from 'react'
-import {
-  ArrowRight,
-  BriefcaseBusiness,
-  CalendarCheck2,
-  Check,
-  Clock3,
-  ExternalLink,
-  FileCheck2,
-  Image,
-  Lightbulb,
-  Link2,
-  MonitorPlay,
-  PencilLine,
-  Rocket,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react'
+import { ArrowRight, BriefcaseBusiness, CalendarCheck2, Check, Clock3, ExternalLink, FileCheck2, Image, Lightbulb, Link2, MonitorPlay, PencilLine, Rocket, ShieldCheck } from 'lucide-react'
 import { publicAssetUrl } from '../../app/public-asset'
 import { api } from '../../api/client'
 import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
-import { TextArea, TextInput } from '../../components/ui'
+import { ActionLink, InlineAlert, TextArea, TextInput } from '../../components/ui'
 import './CorporatePage.css'
 
 type Props = {
@@ -145,7 +130,7 @@ export function CreateGameScreen({
 
         <section className="corporate-hero" aria-labelledby="partners-title">
           <div className="corporate-hero__media" aria-hidden="true">
-            <img src={heroArt} alt="" fetchPriority="high" />
+            <ThemedArtwork src={heroArt} alt="" fetchPriority="high" />
           </div>
           <div className="corporate-hero__veil" />
 
@@ -158,12 +143,12 @@ export function CreateGameScreen({
             <h1 id="partners-title">Игра, которая <em>работает</em> на вашу команду</h1>
             <p>Создадим интерактивный игровой сеанс под ваше событие, бренд и аудиторию — от идеи и редакторской сборки до готовой частной ссылки.</p>
             <div className="corporate-hero__actions">
-              <a className="ui-button ui-button--primary corporate-hero__action" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>
+              <ActionLink variant="primary" className="corporate-hero__action" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>
                 Обсудить проект <ArrowRight />
-              </a>
-              <a className="ui-button ui-button--ghost corporate-hero__action" href="/partners#formats" onClick={(event) => scrollToSection(event, 'formats')}>
+              </ActionLink>
+              <ActionLink variant="ghost" className="corporate-hero__action" href="/partners#formats" onClick={(event) => scrollToSection(event, 'formats')}>
                 Посмотреть форматы
-              </a>
+              </ActionLink>
             </div>
           </div>
 
@@ -178,7 +163,7 @@ export function CreateGameScreen({
         <section className="corporate-section" id="formats">
           <header className="corporate-section__heading">
             <div>
-              <span className="corporate-eyebrow"><Sparkles /> Три сценария</span>
+              <span className="corporate-eyebrow">Три сценария</span>
               <h2>Не просто квиз. Инструмент для вашей задачи</h2>
             </div>
             <p>Сохраняем лёгкость игры, а содержание и подачу настраиваем под контекст компании, аудиторию и площадку.</p>
@@ -188,7 +173,7 @@ export function CreateGameScreen({
             {formats.map((format, index) => (
               <article className="corporate-format-card" key={format.label}>
                 <div className="corporate-format-card__visual">
-                  <img src={format.image} alt={format.alt} loading="lazy" />
+                  <ThemedArtwork src={format.image} alt={format.alt} loading="lazy" />
                   <span className="corporate-format-card__index">0{index + 1}</span>
                   <span className="corporate-format-card__label">{format.label}</span>
                 </div>
@@ -196,7 +181,7 @@ export function CreateGameScreen({
                   <div className="corporate-format-card__meta"><span>{format.audience}</span><span>{format.duration}</span></div>
                   <h3>{format.title}</h3>
                   <p>{format.text}</p>
-                  <a className="ui-button ui-button--secondary corporate-format-card__action" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>Подобрать формат <ArrowRight /></a>
+                  <ActionLink variant="secondary" className="corporate-format-card__action" href="/partners#brief" onClick={(event) => scrollToSection(event, 'brief')}>Подобрать формат <ArrowRight /></ActionLink>
                 </div>
               </article>
             ))}
@@ -215,7 +200,7 @@ export function CreateGameScreen({
         <section className="corporate-section" id="preview">
           <header className="corporate-section__heading">
             <div>
-              <span className="corporate-eyebrow"><Sparkles /> Пример экрана</span>
+              <span className="corporate-eyebrow">Пример экрана</span>
               <h2>Участники узнают себя уже с первого вопроса</h2>
             </div>
             <p>Показываем сам продукт: узнаваемую игровую карточку, собранную из материалов компании.</p>
@@ -240,7 +225,7 @@ export function CreateGameScreen({
             </div>
 
             <aside className="corporate-preview__copy">
-              <span className="corporate-eyebrow"><Sparkles /> В вашей версии</span>
+              <span className="corporate-eyebrow">В вашей версии</span>
               <h3>Своей будет каждая деталь</h3>
               <p>Берём узнаваемую механику «Сходится!» и собираем отдельный выпуск под конкретную аудиторию.</p>
               <div className="corporate-features">
@@ -255,7 +240,7 @@ export function CreateGameScreen({
         <section className="corporate-section">
           <div className="corporate-value">
             <div className="corporate-value__lead">
-              <span className="corporate-eyebrow"><Sparkles /> Что получаете</span>
+              <span className="corporate-eyebrow">Что получаете</span>
               <h2>От вас — факты. От нас — готовая игра.</h2>
               <p>Берём на себя редактуру, дизайн и запуск. Команде остаётся перейти по ссылке и начать.</p>
             </div>
@@ -273,7 +258,7 @@ export function CreateGameScreen({
         <section className="corporate-section" id="process" aria-labelledby="process-title">
           <header className="corporate-section__heading">
             <div>
-              <span className="corporate-eyebrow"><Sparkles /> Как это работает</span>
+              <span className="corporate-eyebrow">Как это работает</span>
               <h2 id="process-title">От задачи до запуска — четыре понятных шага</h2>
             </div>
             <p>Один контакт с нашей стороны, прозрачные этапы и согласование до публикации.</p>
@@ -292,7 +277,7 @@ export function CreateGameScreen({
 
         <section className="corporate-order" id="brief">
           <div className="corporate-order__intro">
-            <span className="corporate-eyebrow"><Sparkles /> Заявка на спецвыпуск</span>
+            <span className="corporate-eyebrow">Заявка на спецвыпуск</span>
             <h2>Расскажите, что должно сойтись</h2>
             <p>Ответим по рабочей почте, уточним задачу и предложим формат, сроки и стоимость.</p>
             <div className="corporate-order__promise">
@@ -356,7 +341,7 @@ export function CreateGameScreen({
               <ActionButton className="corporate-order__wide" type="submit" disabled={pending}>
                 {pending ? 'Отправляем…' : <>Обсудить проект <ExternalLink /></>}
               </ActionButton>
-              {error && <p className="corporate-order__error corporate-order__wide" role="alert">{error}</p>}
+              {error && <InlineAlert tone="danger" className="corporate-order__error corporate-order__wide">{error}</InlineAlert>}
             </form>
           )}
         </section>

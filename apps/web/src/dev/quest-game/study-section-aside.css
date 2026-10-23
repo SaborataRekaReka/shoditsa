@@ -1,0 +1,26 @@
+.qg-app .study-section-widget > p { color: var(--quest-muted); font-size: 15px; line-height: 1.65; margin: 14px 0 0; }
+.qg-app .study-section-widget .study-widget-action { display: flex; justify-content: center; width: 100%; margin-top: 19px; }
+.study-section-widget--account > h2 { font-size: 21px; line-height: 1.35; margin-top: 0; }
+.qg-app .study-widget-link { display: flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 5px; color: var(--quest-blue); font-size: 13px; font-weight: 700; }
+.study-widget-number { display: flex; align-items: baseline; gap: 12px; margin-top: 18px; }
+.study-widget-number > strong { color: var(--quest-text); font: 800 48px/1 var(--quest-heading); letter-spacing: -1px; }
+.study-widget-number > span { color: var(--quest-muted); font-size: 14px; }
+.study-widget-games { display: grid; margin-top: 12px; }
+.qg-app .study-widget-game { display: flex; align-items: center; gap: 12px; padding: 12px 0; color: var(--quest-text); border-bottom: 1px solid var(--quest-line); }
+.study-widget-game:last-child { border-bottom: 0; padding-bottom: 0; }
+.study-widget-game > img { object-fit: contain; flex: none; }
+.study-widget-game > span { flex: 1; min-width: 0; }
+.study-widget-game strong { display: block; font-size: 14px; font-weight: 700; }
+.study-widget-game small { display: block; margin-top: 4px; color: var(--quest-muted); font-size: 12px; }
+.study-widget-game > svg { flex: none; color: var(--quest-green); }
+.study-section-widget > .quest-progress { margin-top: 17px; }
+.study-section-widget--badge { text-align: center; }
+.study-section-widget--badge > .quest-glyph { display: block; margin: 0 auto 12px; }
+.study-widget-kicker { display: block; color: var(--quest-muted); font-size: 12px; margin-bottom: 8px; }
+.study-section-widget--badge > h2 { font-size: 21px; }
+.study-section-widget--badge > small { display: block; margin-top: 12px; color: var(--quest-muted); font-size: 12px; }
+.hs-guest-note-heading { display: grid; grid-template-columns: minmax(0, 1fr) 48px; align-items: center; gap: 12px; }
+.hs-guest-note-illustration { display: block; width: 48px; height: 48px; object-fit: contain; }
+.qg-app .hs-guest-note h2 { font-size: 20px; line-height: 1.35; margin: 0; }
+.qg-app .hs-guest-note > p { color: var(--quest-muted); font-size: 14px; line-height: 1.6; margin-top: 14px; }
+.qg-app .hs-guest-note-action { display: flex; width: 100%; font-size: 12px; margin-top: 20px; }

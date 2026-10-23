@@ -1,11 +1,13 @@
 import { useEffect, useRef, type CSSProperties, type MouseEvent } from 'react'
-import { BookOpen, CheckCircle2, HelpCircle, Home, Lightbulb } from 'lucide-react'
+import { BookOpen, HelpCircle, Home, Lightbulb } from 'lucide-react'
 import type { GameCompletionType } from '@shoditsa/contracts'
 import type { TitleMode } from '../../types'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { trackNextGameClick } from '../../app/game-analytics'
+import { publicAssetUrl } from '../../app/public-asset'
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { ControlButton } from '../../components/ui'
 import { ResultActionBar } from '../result/ResultActionBar'
 import { DanetkiRegistrationOffer } from './DanetkiRegistrationOffer'
@@ -25,6 +27,7 @@ type Props = {
   hintLevel: number
   sessionId: string
   story: string
+  solution?: string
   completedModes?: readonly string[]
   onPlayNext: (mode: TitleMode) => void
   onHome: () => void
@@ -38,6 +41,7 @@ export function DanetkiResult({
   hintLevel,
   sessionId,
   story,
+  solution,
   completedModes = [],
   onPlayNext,
   onHome,
@@ -86,19 +90,20 @@ export function DanetkiResult({
     style={{ '--result-next-color': nextPresentation.color } as CSSProperties}
   >
     <div className="danetki-outcome__hero">
-      <span className="danetki-outcome__mark" aria-hidden="true"><CheckCircle2 /></span>
+      <ThemedArtwork className="danetki-outcome__mascot" src={publicAssetUrl(`images/mascot/${won ? "celebrate" : "think"}-v1.webp`)} width={96} height={108} alt="" />
       <div className="danetki-outcome__copy">
         <span>{won ? 'Версия подтверждена' : completionType === 'answer_revealed' ? 'Вы сдались' : 'Разгадка открыта'}</span>
         <h2 id="danetki-outcome-title">Дело закрыто</h2>
-        <p>{won ? 'Вы восстановили цепочку событий.' : completionType === 'answer_revealed' ? 'Расследование завершено по вашему решению.' : 'Расследование завершено.'} Полная разгадка сохранена в протоколе выше.</p>
+        <p>{won ? 'Вы восстановили цепочку событий.' : completionType === 'answer_revealed' ? 'Расследование завершено по вашему решению.' : 'Расследование завершено.'}</p>
       </div>
     </div>
 
     <section className="danetki-outcome__metrics" aria-label="Итоги расследования">
       <article><span aria-hidden="true"><HelpCircle /></span><div><strong>{questionCount}</strong><small>{questionWord}</small></div></article>
       <article><span aria-hidden="true"><Lightbulb /></span><div><strong>{hintLevel}/3</strong><small>{hintLevel > 0 ? 'подсказок открыто' : 'без подсказок'}</small></div></article>
-      <article><span aria-hidden="true"><CheckCircle2 /></span><div><strong>{won ? 'Раскрыто' : 'Открыто'}</strong><small>итог дела</small></div></article>
     </section>
+
+    {solution && <section className="danetki-outcome__solution" aria-label="Разгадка истории"><h3>Как всё было</h3><p>{solution}</p></section>}
 
     <ResultActionBar
       nextLabel={`Играть дальше: ${NEXT_MODE_LABEL[nextMode]}`}

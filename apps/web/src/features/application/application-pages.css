@@ -1,0 +1,44 @@
+.application-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.application-stat-grid > article { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 5px 14px; padding: 22px; }
+.application-stat-grid .quest-glyph { grid-row: 1 / 3; }
+.application-stat-grid strong { font: 800 32px/1.2 var(--quest-heading); }
+.application-stat-grid span { color: var(--quest-muted); font-size: 13px; }
+.application-profile-save { margin-top: 26px; padding: 26px; }
+.application-profile-save p { margin-top: 12px; color: var(--quest-muted); }
+.application-profile-save > div, .application-profile-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.application-profile-links > a { flex: 1; }
+.application-archive-filter { display: grid; gap: 10px; max-width: 360px; margin-bottom: 22px; color: var(--quest-text); font-size: 14px; font-weight: 700; }
+.application-archive-list { display: grid; gap: 14px; }
+.application-archive { container-type: inline-size; }
+.application-archive-tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+.application-calendar-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-bottom: 28px; }
+.application-calendar-filters label { display: grid; min-width: 0; gap: 10px; font-size: 14px; font-weight: 700; color: var(--quest-text); }
+.application-calendar-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 24px; }
+.qg-app .application-calendar-day { display: grid; align-content: start; justify-items: start; gap: 10px; min-width: 0; min-height: 146px; padding: 18px; color: var(--quest-text); font-family: var(--quest-font); text-align: left; cursor: pointer; }
+.application-calendar-day > span { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--quest-blue-wash); color: var(--quest-blue); }
+.application-calendar-day strong { font: 800 16px/1.4 var(--quest-heading); }
+.application-calendar-day small { color: var(--quest-muted); font-size: 12px; line-height: 1.4; }
+.application-calendar-day:is(:hover, :focus-visible) { border-color: var(--quest-blue); outline-color: var(--quest-blue); }
+.application-calendar-day:disabled { opacity: .6; cursor: default; }
+.application-calendar-day.is-locked > span { background: var(--quest-surface); color: var(--quest-muted); }
+.application-calendar-error { color: var(--color-danger); margin-block: 16px; }
+@container (max-width: 650px) { .application-calendar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (max-width: 420px) {
+  .application-calendar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .application-calendar-filters { grid-template-columns: minmax(0, 1fr); }
+  .qg-app .application-calendar-day { padding: 14px; }
+}
+.qg-app .application-archive-game { display: flex; align-items: center; gap: 18px; padding: 20px; color: var(--quest-text); }
+.application-archive-game > img { object-fit: contain; flex: none; }
+.application-archive-game > div { flex: 1; min-width: 0; }
+.application-archive-game strong, .application-archive-game span, .application-archive-game small { display: block; }
+.application-archive-game strong { font: 800 19px/1.35 var(--quest-heading); }
+.application-archive-game span, .application-archive-game small { margin-top: 5px; color: var(--quest-muted); font-size: 13px; }
+.application-empty { display: grid; justify-items: center; gap: 18px; padding: 42px 24px; text-align: center; }
+.application-empty p { color: var(--quest-muted); }
+@media (max-width: 699px) {
+  .application-stat-grid { gap: 10px; }
+  .application-stat-grid > article { gap: 7px; padding: 16px 12px; grid-template-columns: 32px minmax(0, 1fr); }
+  .application-stat-grid .quest-glyph { width: 30px; height: 30px; }
+  .application-stat-grid strong { font-size: 27px; }
+}

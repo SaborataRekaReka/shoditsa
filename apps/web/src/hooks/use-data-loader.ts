@@ -122,12 +122,34 @@ const loadModeItems = async (dataFile: string) => {
   }
 }
 
+const preparedData: Partial<ModeData> = {}
+const preparedRequests = new Map<TitleMode, Promise<void>>()
+let preparedSalt: number | undefined
+let preparedVignettes: CaseVignetteMap = {}
+
+/** Local-preview data only. Server games never download the answer catalogue. */
+export function prepareLocalGameData(mode: TitleMode): Promise<void> {
+  if (preparedRequests.has(mode)) return preparedRequests.get(mode)!
+  const request = Promise.all([
+    loadModeItems(MODE_CONFIG[mode].dataFile).then(items => { preparedData[mode] = normalizeItemMediaUrls(items) }),
+    Promise.all([
+      fetchJsonCached<{ dailySalt?: number }>('./data/source.json').catch(() => null),
+      fetchJsonCached<{ globalSalt?: number; dailySalt?: number }>('./data/daily-config.json').catch(() => null),
+    ]).then(([source, config]) => { preparedSalt ??= toIntegerOrNull(config?.globalSalt ?? config?.dailySalt ?? source?.dailySalt) ?? 0 }),
+    mode === 'diagnosis' ? fetchJsonCached<DiagnosisCaseVignettes[]>('./data/diagnosis-case-vignettes.by-id.json').then(entries => {
+      if (Array.isArray(entries)) preparedVignettes = Object.fromEntries(entries.filter(entry => entry?.diagnosisId && Array.isArray(entry.caseVignettes)).map(entry => [entry.diagnosisId, entry.caseVignettes]))
+    }).catch(() => {}) : undefined,
+  ]).then(() => {}, error => { preparedRequests.delete(mode); throw error })
+  preparedRequests.set(mode, request)
+  return request
+}
+
 export const useDataLoader = (mode: TitleMode, enabled = true) => {
-  const [data, setData] = useState<ModeData>(initialData)
+  const [data, setData] = useState<ModeData>(() => enabled ? { ...initialData, ...preparedData } : initialData)
   const [titleCounts, setTitleCounts] = useState<ModeCounts>(initialCounts)
   const [searchIndexes, setSearchIndexes] = useState<ModeSearchIndexes>(initialSearchIndexes)
-  const [caseVignettes, setCaseVignettes] = useState<CaseVignetteMap>({})
-  const [globalDailySalt, setGlobalDailySalt] = useState(0)
+  const [caseVignettes, setCaseVignettes] = useState<CaseVignetteMap>(() => enabled ? preparedVignettes : {})
+  const [globalDailySalt, setGlobalDailySalt] = useState(() => enabled ? preparedSalt ?? 0 : 0)
   const [loading, setLoading] = useState(false)
   const [loadErrors, setLoadErrors] = useState<Partial<Record<TitleMode, string>>>({})
   const [retryVersion, setRetryVersion] = useState(0)
@@ -150,14 +172,14 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
         }))
 
         const sourceSalt = toIntegerOrNull((source as { dailySalt?: number }).dailySalt)
-        if (sourceSalt != null) setGlobalDailySalt(sourceSalt)
+        if (sourceSalt != null && preparedSalt == null) setGlobalDailySalt(sourceSalt)
       })
       .catch(() => undefined)
 
     fetchJsonNoCache<{ globalSalt?: number; dailySalt?: number }>(withCacheBuster('./data/daily-config.json'))
       .then((config) => {
         const configSalt = toIntegerOrNull(config.globalSalt ?? config.dailySalt)
-        if (configSalt != null) setGlobalDailySalt(configSalt)
+        if (configSalt != null) { preparedSalt = configSalt; setGlobalDailySalt(configSalt) }
       })
       .catch(() => undefined)
 
@@ -198,7 +220,7 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
         .then((config) => {
           if (canceled) return
           const configSalt = toIntegerOrNull(config.globalSalt ?? config.dailySalt)
-          if (configSalt != null) setGlobalDailySalt(configSalt)
+          if (configSalt != null) { preparedSalt = configSalt; setGlobalDailySalt(configSalt) }
         })
         .catch(() => undefined)
     }
@@ -247,6 +269,7 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
       .then((items) => {
         if (canceled) return
         const normalizedItems = normalizeItemMediaUrls(items)
+        preparedData[mode] = normalizedItems
         setData((current) => ({ ...current, [mode]: normalizedItems }))
         setTitleCounts((current) => ({ ...current, [mode]: current[mode] ?? normalizedItems.length }))
       })
@@ -262,6 +285,8 @@ export const useDataLoader = (mode: TitleMode, enabled = true) => {
   }, [enabled, mode, data, retryVersion])
 
   const retryLoading = () => {
+    delete preparedData[mode]
+    preparedRequests.delete(mode)
     const dataFile = MODE_CONFIG[mode].dataFile
     requestCache.delete(`./data/libraries/${dataFile}/items.json`)
     requestCache.delete(`./data/${dataFile}.generated.json`)

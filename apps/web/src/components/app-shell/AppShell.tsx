@@ -1,8 +1,9 @@
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Archive, BarChart3, ChevronDown, ChevronLeft, Crown, DoorOpen, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
+import { Archive, BarChart3, ChevronDown, ChevronLeft, CircleHelp, Crown, DoorOpen, Gamepad2, LayoutDashboard, LogIn, LogOut, Plus, Settings, ShieldCheck, Ticket, Trophy, UserPlus, UserRound, X } from 'lucide-react'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
+import { LOCAL_PRESENTATION as localPresentation, localPresentationLink, isReferencePresentationPath } from '../../app/local-presentation'
 import { PUBLIC_GAME_LINKS } from '../../app/public-game-links'
 import { DANETKI_DISCOVERY_LINKS } from '../../app/danetki-discovery-links'
 import { api, queryKeys } from '../../api/client'
@@ -13,10 +14,16 @@ import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime
 import { loadAttendanceStats, loadWallet } from '../../storage'
 import { formatDays } from '../../game'
 import { headerRuntimeState } from './header-runtime-state'
-import { DialogSurface } from '../ui/DialogSurface'
+import { DialogSurface, DialogTitle } from '../ui/DialogSurface'
 import { ActionButton } from '../ui/UiControls'
+import { ReferenceIcon } from '../ui/ReferenceIcon'
 import { HeaderRoomMenu } from './HeaderRoomMenu'
+import { ReferenceGameHeader } from './ReferenceGameChrome'
+import { ReferenceFooter } from './ReferenceFooter'
+import { BrandWordmark } from './BrandWordmark'
 import './AppShell.css'
+import { EmbeddedApplicationContext } from '../../features/application/EmbeddedApplicationContext'
+import { PageBackline } from '../ui/PageBackline'
 
 const EconomyView = lazy(() => import('../../features/economy/EconomyView').then((module) => ({ default: module.EconomyView })))
 
@@ -31,7 +38,14 @@ const brandLogoUrl = publicAssetUrl('images/logo.svg')
 let lastKnownHeaderWallet: ReturnType<typeof loadWallet> | null = null
 let lastKnownHeaderAttendance: ReturnType<typeof loadAttendanceStats> | null = null
 
+function isReferenceGamePreview() {
+  if (typeof window === 'undefined') return false
+  const pathname = window.location.hash.startsWith('#/') ? window.location.hash.slice(1).split('?')[0] : window.location.pathname
+  return isReferencePresentationPath(pathname)
+}
+
 export function BrandLogo({ className = '', compactOnMobile = true }: { className?: string; compactOnMobile?: boolean }) {
+  if (isReferenceGamePreview()) return <BrandWordmark variant="compact" className={className} />
   return <picture className={className}>
     {compactOnMobile && <source media="(max-width: 719px)" srcSet={brandSymbolUrl} />}
     <img src={brandLogoUrl} alt="Сходится!" />
@@ -46,6 +60,8 @@ export function ScreenBack({ onBack, href, label = 'Назад', keyboardShortcu
   trailing?: ReactNode
   className?: string
 }) {
+  const embedded = useContext(EmbeddedApplicationContext)
+  const reference = isReferenceGamePreview()
   useEffect(() => {
     if (!keyboardShortcut) return
     const onKeyDown = (event: KeyboardEvent) => {
@@ -58,18 +74,20 @@ export function ScreenBack({ onBack, href, label = 'Назад', keyboardShortcu
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [href, keyboardShortcut, onBack])
 
+  if (embedded) return <PageBackline href={href} onBack={onBack} label={label} trailing={trailing} className={className} />
+
   return <div className={`screen-back-row ${className}`.trim()}>
     {href
-      ? <a className="screen-back" href={href} aria-label={label} title={label}><ChevronLeft /></a>
-      : <button className="screen-back" type="button" onClick={onBack} aria-label={label} title={label}><ChevronLeft /></button>}
-    <span className="keycap-hint" aria-hidden="true">Esc</span>
+      ? <a className={`screen-back${reference ? ' screen-back--labeled' : ''}`} href={href} aria-label={label} title={label}><ChevronLeft />{reference && <span>{label}</span>}</a>
+      : <button className={`screen-back${reference ? ' screen-back--labeled' : ''}`} type="button" onClick={onBack} aria-label={label} title={label}><ChevronLeft />{reference && <span>{label}</span>}</button>}
+    {!reference && <span className="keycap-hint" aria-hidden="true">Esc</span>}
     {trailing}
   </div>
 }
 
 export function Modal({ title, onClose, children, className = '' }: { title: string; onClose: () => void; children: ReactNode; className?: string }) {
   return <DialogSurface backdropClassName="modal-backdrop" className={`modal ${className}`.trim()} ariaLabel={title} onClose={onClose}>
-      <div className="modal-head"><h2>{title}</h2><button onClick={onClose} aria-label="Закрыть"><X /></button></div>
+      <div className="modal-head"><DialogTitle>{title}</DialogTitle><button onClick={onClose} aria-label="Закрыть"><X /></button></div>
       {children}
   </DialogSurface>
 }
@@ -86,7 +104,12 @@ export type AppHeaderProps = {
   hideMobileNav?: boolean
 }
 
-export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileActive = false, minimal = false, hideMobileNav = false }: AppHeaderProps) {
+export function AppHeader(props: AppHeaderProps) {
+  const embedded = useContext(EmbeddedApplicationContext)
+  return embedded ? null : <LegacyAppHeader {...props} />
+}
+
+function LegacyAppHeader({ onHome, onArchive, onStats, onRules, onCreateRoom, profileActive = false, minimal = false, hideMobileNav = false }: AppHeaderProps) {
   const [economyOpen, setEconomyOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
@@ -165,12 +188,18 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
     const closeOnOutsideClick = (event: PointerEvent) => {
       if (!profileMenuRef.current?.contains(event.target as Node)) setProfileMenuOpen(false)
     }
-    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setProfileMenuOpen(false)
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      event.stopPropagation()
+      setProfileMenuOpen(false)
+      profileTriggerRef.current?.focus()
+    }
     window.addEventListener('pointerdown', closeOnOutsideClick)
-    window.addEventListener('keydown', closeOnEscape)
+    window.addEventListener('keydown', closeOnEscape, true)
     return () => {
       window.removeEventListener('pointerdown', closeOnOutsideClick)
-      window.removeEventListener('keydown', closeOnEscape)
+      window.removeEventListener('keydown', closeOnEscape, true)
     }
   }, [profileMenuOpen])
 
@@ -186,6 +215,56 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
       setProfileMenuOpen(false)
     }
   }
+
+  const profileControl = <div className="header-profile-menu" ref={profileMenuRef}>
+            <button ref={profileTriggerRef} disabled={runtimeState === 'loading'} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label={runtimeReady ? 'Открыть меню профиля' : profileLabel} title={runtimeReady ? 'Меню' : profileLabel} aria-busy={runtimeState === 'loading'} aria-haspopup="menu" aria-expanded={profileMenuOpen}>
+              <span className="header-profile__avatar">{isReferenceGamePreview() ? <ReferenceIcon name="user" /> : <UserRound />}</span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
+            </button>
+            {profileMenuOpen && <div className="header-profile-dropdown" role="menu">
+              <div className="header-profile-dropdown__identity"><span className="header-profile__avatar">{isReferenceGamePreview() ? <ReferenceIcon name="user" /> : <UserRound />}</span><div><strong>{signedIn ? session?.name || 'Игрок' : 'Гость кинозала'}</strong><small>{signedIn ? session?.email : 'Прогресс хранится в этом браузере'}</small></div></div>
+              <button className="header-profile-dropdown__economy" type="button" role="menuitem" aria-label={`Билеты: ${wallet?.tickets ?? 0}. Серия: ${formatDays(attendance?.currentDailyStreak ?? 0)}`} onClick={() => { trackMetrikaGoal('open_economy_modal'); profileTriggerRef.current?.focus(); setProfileMenuOpen(false); setEconomyOpen(true) }}>
+                <Ticket /><span>Билеты</span><strong>{wallet?.tickets}</strong>
+                <Trophy /><span>Серия</span><strong>{attendance ? formatDays(attendance.currentDailyStreak) : ''}</strong>
+              </button>
+              <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>{signedIn ? 'Обзор профиля' : 'Гостевой кабинет'}</span></button>
+              <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_archive'); setProfileMenuOpen(false); onArchive() }}><Archive /><span>Архив</span></button>
+              {!localPresentation && <button className="header-profile-dropdown__club" type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_club', { placement: 'profile_menu' }); window.location.assign('/club') }}><Crown /><span>{hasClub ? 'Клубный билет' : 'Вступить в клуб'}</span></button>}
+              <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_stats'); setProfileMenuOpen(false); onStats() }}><BarChart3 /><span>Статистика</span></button>
+              <button type="button" role="menuitem" onClick={() => openProfile('achievements')}><Trophy /><span>Достижения</span></button>
+              {signedIn
+                ? <>
+                  <button type="button" role="menuitem" onClick={() => openProfile('settings')}><Settings /><span>Настройки</span></button>
+                  {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button type="button" role="menuitem" onClick={() => window.location.assign('/admin')}><ShieldCheck /><span>Админ-панель</span></button>}
+                  <button className="header-profile-dropdown__signout" type="button" role="menuitem" disabled={signingOut} onClick={() => void signOut()}><LogOut /><span>{signingOut ? 'Выходим…' : 'Выйти'}</span></button>
+                </>
+                : !localPresentation && <>
+                  <button className="header-profile-dropdown__account" type="button" role="menuitem" onClick={() => window.location.assign('/register')}><UserPlus /><span>Сохранить прогресс</span></button>
+                  <button type="button" role="menuitem" onClick={() => window.location.assign('/login')}><LogIn /><span>Войти</span></button>
+                </>}
+            </div>}
+          </div>
+
+  if (isReferenceGamePreview()) return <>
+    <ReferenceGameHeader
+      onHome={() => { trackMetrikaGoal('header_home_click'); onHome() }}
+      onArchive={() => { trackMetrikaGoal('open_archive'); onArchive() }}
+      onStats={() => { trackMetrikaGoal('open_stats'); onStats() }}
+      onRules={onRules}
+      onEconomy={() => { trackMetrikaGoal('open_economy_modal'); setEconomyOpen(true) }}
+      tickets={wallet?.tickets ?? null}
+      streak={attendance?.currentDailyStreak ?? null}
+      runtimeReady={runtimeReady}
+      loading={runtimeState === 'loading'}
+      minimal={minimal}
+      hideMobileNav={hideMobileNav}
+      profileControl={!authLoading && !session && !localPresentation
+        ? <a className="ui-button ui-button--secondary" href={localPresentationLink('/login')}>Войти</a>
+        : profileControl}
+      roomControl={showRoomEntry ? <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} /> : null}
+      showCommerce={!localPresentation}
+    />
+    {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><Suspense fallback={<div className="loading loading--compact" role="status">Загружаем кассу…</div>}><EconomyView /></Suspense></Modal>}
+  </>
 
   return <>
     <header className={`app-header${minimal ? ' app-header--minimal' : ''}`}>
@@ -205,7 +284,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
           <span><Trophy /> <strong>{attendance?.currentDailyStreak ?? '—'}</strong>{attendance && <i>дн.</i>}</span>
         </button>}
         <nav aria-label="Навигация">
-          {!minimal && <a
+          {!minimal && !localPresentation && <a
             className={`header-club ${hasClub ? 'is-active' : ''}`}
             href="/club"
             aria-label={hasClub ? 'Клубный билет активен' : 'Клуб'}
@@ -215,33 +294,7 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
             <Crown /><span>Клуб</span>
           </a>}
           {!minimal && showRoomEntry && <HeaderRoomMenu onCreateRoom={createRoom} rooms={openRooms.data?.rooms ?? []} />}
-          <div className="header-profile-menu" ref={profileMenuRef}>
-            <button ref={profileTriggerRef} disabled={!runtimeReady} onClick={() => setProfileMenuOpen((value) => !value)} className={`header-profile ${signedIn ? 'is-signed-in' : 'is-guest'} ${profileActive ? 'is-active' : ''}`} aria-label={runtimeReady ? 'Открыть меню' : profileLabel} title={runtimeReady ? 'Меню' : profileLabel} aria-busy={runtimeState === 'loading'} aria-haspopup="menu" aria-expanded={profileMenuOpen}>
-              <span className="header-profile__avatar"><UserRound /></span><strong>{profileLabel}</strong><ChevronDown className="header-profile__chevron" />
-            </button>
-            {profileMenuOpen && <div className="header-profile-dropdown" role="menu">
-              <div className="header-profile-dropdown__identity"><span className="header-profile__avatar"><UserRound /></span><div><strong>{signedIn ? session?.name || 'Игрок' : 'Гость кинозала'}</strong><small>{signedIn ? session?.email : 'Прогресс хранится в этом браузере'}</small></div></div>
-              <button className="header-profile-dropdown__economy" type="button" role="menuitem" aria-label={`Билеты: ${wallet?.tickets ?? 0}. Серия: ${formatDays(attendance?.currentDailyStreak ?? 0)}`} onClick={() => { trackMetrikaGoal('open_economy_modal'); profileTriggerRef.current?.focus(); setProfileMenuOpen(false); setEconomyOpen(true) }}>
-                <Ticket /><span>Билеты</span><strong>{wallet?.tickets}</strong>
-                <Trophy /><span>Серия</span><strong>{attendance ? formatDays(attendance.currentDailyStreak) : ''}</strong>
-              </button>
-              <button type="button" role="menuitem" onClick={() => openProfile('overview')}><LayoutDashboard /><span>{signedIn ? 'Обзор профиля' : 'Гостевой кабинет'}</span></button>
-              <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_archive'); setProfileMenuOpen(false); onArchive() }}><Archive /><span>Архив</span></button>
-              <button className="header-profile-dropdown__club" type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_club', { placement: 'profile_menu' }); window.location.assign('/club') }}><Crown /><span>{hasClub ? 'Клубный билет' : 'Вступить в клуб'}</span></button>
-              <button type="button" role="menuitem" onClick={() => { trackMetrikaGoal('open_stats'); setProfileMenuOpen(false); onStats() }}><BarChart3 /><span>Статистика</span></button>
-              <button type="button" role="menuitem" onClick={() => openProfile('achievements')}><Trophy /><span>Достижения</span></button>
-              {signedIn
-                ? <>
-                  <button type="button" role="menuitem" onClick={() => openProfile('settings')}><Settings /><span>Настройки</span></button>
-                  {SERVER_RUNTIME && serverRuntime.me?.user.role === 'admin' && <button type="button" role="menuitem" onClick={() => window.location.assign('/admin')}><ShieldCheck /><span>Админ-панель</span></button>}
-                  <button className="header-profile-dropdown__signout" type="button" role="menuitem" disabled={signingOut} onClick={() => void signOut()}><LogOut /><span>{signingOut ? 'Выходим…' : 'Выйти'}</span></button>
-                </>
-                : <>
-                  <button className="header-profile-dropdown__account" type="button" role="menuitem" onClick={() => window.location.assign('/register')}><UserPlus /><span>Сохранить прогресс</span></button>
-                  <button type="button" role="menuitem" onClick={() => window.location.assign('/login')}><LogIn /><span>Войти</span></button>
-                </>}
-            </div>}
-          </div>
+          {profileControl}
         </nav>
       </div>
     </header>
@@ -270,14 +323,14 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
       >
         <i aria-hidden="true">{hasOpenRoom ? <DoorOpen /> : <Plus />}</i><span>Комната</span>
       </button>}
-      <a
+      {localPresentation ? <button className="mobile-app-nav__item" type="button" onClick={onRules}><CircleHelp /><span>Правила</span></button> : <a
         className={`mobile-app-nav__item mobile-app-nav__club ${mobileSection === 'club' ? 'is-active' : ''}`}
         href="/club"
         aria-current={mobileSection === 'club' ? 'page' : undefined}
         onClick={() => trackMetrikaGoal('open_club', { placement: 'mobile_nav' })}
       >
         <Crown /><span>Клуб</span>
-      </a>
+      </a>}
       <button
         className={`mobile-app-nav__item ${mobileSection === 'profile' ? 'is-active' : ''}`}
         type="button"
@@ -287,11 +340,14 @@ export function AppHeader({ onHome, onArchive, onStats, onCreateRoom, profileAct
         <UserRound /><span>Профиль</span>
       </button>
     </nav>}
-    {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><Suspense fallback={<div className="loading" role="status">Загружаем кассу…</div>}><EconomyView /></Suspense></Modal>}
+    {economyOpen && runtimeReady && <Modal title="Билеты" onClose={() => setEconomyOpen(false)}><Suspense fallback={<div className="loading loading--compact" role="status">Загружаем кассу…</div>}><EconomyView /></Suspense></Modal>}
   </>
 }
 
 export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: () => void; onArchive: () => void; onRules: () => void; onProfile: () => void }) {
+  const embedded = useContext(EmbeddedApplicationContext)
+  if (embedded) return null
+  if (isReferenceGamePreview()) return <ReferenceFooter onHome={onHome} onArchive={onArchive} onRules={onRules} onProfile={onProfile} />
   return <footer className="app-footer">
     <div className="app-footer__inner">
       <div className="app-footer__head">
@@ -304,34 +360,36 @@ export function AppFooter({ onHome, onArchive, onRules, onProfile }: { onHome: (
         <nav className="app-footer__primary" aria-label="Основные разделы">
           <button className="app-footer__link" onClick={onHome}>Сегодня</button>
           <button className="app-footer__link" onClick={onArchive}>Архив</button>
-          <a className="app-footer__link" href="/specials">Спецпоказы</a>
-          <a className="app-footer__link app-footer__link--club" href="/club"><Crown />Клуб</a>
+          {!localPresentation && <a className="app-footer__link" href="/specials">Спецпоказы</a>}
+          {!localPresentation && <a className="app-footer__link app-footer__link--club" href="/club"><Crown />Клуб</a>}
         </nav>
       </div>
       <nav className="app-footer__games" aria-label="Все игры">
         <span>Все игры</span>
         <div>
-          {PUBLIC_GAME_LINKS.map((game) => <a key={game.mode} href={game.href}>{game.label}</a>)}
-          <a href="/danetki">Данетки с ответами</a>
+          {PUBLIC_GAME_LINKS.filter((game) => !localPresentation || !['danetki', 'connections'].includes(game.mode)).map((game) => <a key={game.mode} href={localPresentationLink(game.href)}>{game.label}</a>)}
+          {!localPresentation && <a href="/danetki">Данетки с ответами</a>}
         </div>
       </nav>
-      <nav className="app-footer__danetki" aria-label="Подборки и истории данеток">
+      {!localPresentation && <nav className="app-footer__danetki" aria-label="Подборки и истории данеток">
         <span>Данетки с ответами</span>
         <div>{DANETKI_DISCOVERY_LINKS.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}</div>
-      </nav>
+      </nav>}
       <div className="app-footer__bottom">
         <div className="app-footer__secondary">
           <nav className="app-footer__utility" aria-label="Сервис">
+            <a href={localPresentationLink('/support')}>Поддержка</a>
+            <a href={localPresentationLink('/blog')}>Блог</a>
             <button onClick={onProfile}>Профиль</button>
             <button onClick={onRules}>Как играть</button>
-            <a href="/partners">Для компаний</a>
+            {!localPresentation && <a href="/partners">Для компаний</a>}
           </nav>
           <nav className="app-footer__legal" aria-label="Юридическая информация">
-            <a href="/legal/terms">Оферта</a>
-            <a href="/legal/tariffs">Тарифы</a>
-            <a href="/legal/privacy">Конфиденциальность</a>
-            <a href="/legal/refunds">Возвраты</a>
-            <a href="/legal/contacts">Реквизиты</a>
+            <a href={localPresentationLink('/legal/terms')}>Оферта</a>
+            <a href={localPresentationLink('/legal/tariffs')}>Тарифы</a>
+            <a href={localPresentationLink('/legal/privacy')}>Конфиденциальность</a>
+            <a href={localPresentationLink('/legal/refunds')}>Возвраты</a>
+            <a href={localPresentationLink('/legal/contacts')}>Реквизиты</a>
             <button type="button" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Cookie</button>
           </nav>
         </div>

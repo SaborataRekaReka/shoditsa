@@ -1,31 +1,32 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
+import { lazy, Suspense, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react'
+import { RoutePending } from '../../app/RoutePending'
 import { useQuery } from '@tanstack/react-query'
-import { ECONOMY_RULE_SET } from '@shoditsa/contracts'
-import {
-  Archive,
-  ArrowRight,
-  Clapperboard,
-  Eye,
-  Gamepad2,
-  LockKeyhole,
-  Settings,
-  Sparkles,
-  Ticket,
-  UsersRound,
-} from 'lucide-react'
+import { ECONOMY_RULE_SET, type CommerceProduct } from '@shoditsa/contracts'
+import { Archive, ArrowRight, Clapperboard, Eye, Gamepad2, LockKeyhole, Settings, Ticket, UsersRound } from 'lucide-react'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { InlineAlert } from '../../components/ui'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
+import { LOCAL_PRESENTATION, REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { mascotAsset } from '../../components/mascot/Mascot'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { api, queryKeys } from '../../api/client'
 import { ClubCard, type ClubPlanFeature } from './ClubCard'
 import { CheckoutButton } from './CheckoutButton'
 import { buildClubPageViewModel, dailyPriceMinor } from './club-page-model'
+import { ReferenceClubPage, type ReferenceClubPageProps } from './ReferenceClubPage'
 import './ClubScreen.css'
+import { APPLICATION_DESIGN } from '../../app/application-design'
+
+const StudyClubPage = APPLICATION_DESIGN
+  ? lazy(() => import('../../dev/quest-game/StudyClubPage'))
+  : null
 
 type Props = {
+  studySection?: 'library' | 'offers'
+  studyPage?: ComponentType<ReferenceClubPageProps & { studySection?: 'library' | 'offers'; onPlanUnavailable?: () => void }>
   onHome: () => void
   onArchive: () => void
   onFreePlay: () => void
@@ -73,6 +74,7 @@ function ContentCard({
   large = false,
   label,
   stamp,
+  artTone,
 }: {
   title: string
   description: string
@@ -85,6 +87,7 @@ function ContentCard({
   large?: boolean
   label?: string
   stamp?: string
+  artTone?: 'lilac' | 'yellow' | 'mint' | 'blue'
 }) {
   return (
     <ActionButton
@@ -97,9 +100,10 @@ function ContentCard({
         large && 'club-content-card--special',
       ].filter(Boolean).join(' ')}
       onClick={action}
+      data-club-tone={artTone}
     >
       <figure>
-        <img src={image} alt={imageAlt} loading={large ? 'eager' : 'lazy'} />
+        <ThemedArtwork src={image} alt={imageAlt} loading={large ? 'eager' : 'lazy'} />
       </figure>
       <div className="club-content-card__copy">
         {label && <span>{label}</span>}
@@ -117,6 +121,8 @@ function ContentCard({
 }
 
 export function ClubScreen({
+  studySection,
+  studyPage,
   onHome,
   onArchive,
   onFreePlay,
@@ -125,6 +131,7 @@ export function ClubScreen({
   onRules,
   onReview,
 }: Props) {
+  const LocalStudyPage = studyPage ?? StudyClubPage
   const runtime = useServerRuntime()
   const [notice, setNotice] = useState('')
   const resumedPlan = useRef(false)
@@ -217,7 +224,7 @@ export function ClubScreen({
     window.requestAnimationFrame(() => {
       const plan = document.querySelector<HTMLElement>(`[data-plan-id="${productId}"]`)
       plan?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      plan?.querySelector<HTMLElement>('button')?.focus({ preventScroll: true })
+      plan?.querySelector<HTMLElement>('button:not(:disabled), input:not(:disabled)')?.focus({ preventScroll: true })
     })
   }
 
@@ -226,7 +233,8 @@ export function ClubScreen({
     const productId = new URLSearchParams(window.location.search).get('product')
     if (productId !== 'club_30d' && productId !== 'club_365d') return
     resumedPlan.current = true
-    scrollToPlan(productId, 'Выбранный клубный билет сохранён. Подтвердите условия, чтобы продолжить оформление.')
+    if (window.location.hash === '#club-content') return
+    scrollToPlan(productId)
   }, [hasClub])
 
   const lockedAction = (message: string) => {
@@ -260,6 +268,37 @@ export function ClubScreen({
     hasClub ? activeAction : () => lockedAction(message)
   )
 
+  const planAction = (product: CommerceProduct, placement: string) => commerceEnabled && productsById.get(product.id)
+    ? <CheckoutButton
+      product={productsById.get(product.id)!}
+      authenticated={authenticated}
+      hasClub={hasClub}
+      label={`Выбрать ${product.durationDays ?? (product.id === 'club_365d' ? 365 : 30)} дней`}
+      placement={placement}
+      growthStage={runtime.meta?.growth?.stage}
+    />
+    : <ActionButton type="button" onClick={() => setNotice(StudyClubPage && LOCAL_PRESENTATION ? 'В локальном просмотре оплата не подключена.' : 'Оплата временно недоступна. Попробуйте немного позже.')}>
+      Выбрать {product.durationDays ?? (product.id === 'club_365d' ? 365 : 30)} дней
+    </ActionButton>
+
+  const referencePageProps = {
+    header: <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />,
+    view, heroStatus, notice, contextualOffer,
+    canOpenSpecial: canOpenCurrentSpecial,
+    special: { title: specialTitle, description: specialDescription, image: specialImage },
+    clubFeatures, guestFeatures,
+    monthlyAction: planAction(monthly, 'club_pricing_monthly'),
+    annualAction: planAction(annual, 'club_pricing_annual'),
+    onHome, onArchive, onFreePlay, onProfile,
+    onSpecial: openSpecial,
+    onSelectPlan: scrollToPlan,
+    onLockedFeature: lockedAction,
+  }
+
+  if (LocalStudyPage && (APPLICATION_DESIGN || LOCAL_PRESENTATION)) return <Suspense fallback={<RoutePending />}><LocalStudyPage {...referencePageProps} studySection={studySection} onPlanUnavailable={!commerceEnabled ? () => setNotice('В локальном просмотре оплата не подключена.') : undefined} /></Suspense>
+
+  if (REFERENCE_PRESENTATION) return <ReferenceClubPage {...referencePageProps} />
+
   return (
     <>
       <AppHeader
@@ -275,7 +314,7 @@ export function ClubScreen({
             <div className="club-entry__meta">
               <span>Клубный вход</span>
               <strong className={hasClub ? 'is-active' : expired ? 'is-expired' : undefined}>
-                {hasClub ? <Sparkles aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
+                {hasClub ? <Ticket aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
                 {heroStatus}
               </strong>
             </div>
@@ -309,9 +348,9 @@ export function ClubScreen({
             </div>
           </div>
           <div className="club-entry__art">
-            <img
-              src={publicAssetUrl('assets/club/club-hero-character.png')}
-              alt="Героиня протягивает клубный билет"
+            <ThemedArtwork
+              src={REFERENCE_PRESENTATION ? mascotAsset('club') : publicAssetUrl('assets/club/club-hero-character.png')}
+              alt={REFERENCE_PRESENTATION ? 'Зелёный пушистый персонаж с клубным билетом' : 'Героиня протягивает клубный билет'}
               width="1536"
               height="1024"
               fetchPriority="high"
@@ -344,7 +383,8 @@ export function ClubScreen({
                 description={hasClub
                   ? archiveDescription
                   : `${view.stats.freeArchiveDays} дней доступны бесплатно · весь архив — в клубе`}
-                image={publicAssetUrl('images/title-posters/movie-ticket-poster.webp')}
+                image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/movie.webp' : 'images/title-posters/movie-ticket-poster.webp')}
+                artTone="lilac"
                 icon={<Archive aria-hidden="true" />}
                 action={onArchive}
                 actionLabel={hasClub ? 'Открыть весь архив' : 'Открыть доступные игры'}
@@ -354,7 +394,8 @@ export function ClubScreen({
                 description={hasClub
                   ? `${view.stats.freePlayModes} режимов · без списания билетиков`
                   : `${view.stats.freePlayModes} режимов · от ${view.stats.guestFreePlayCost} билетиков`}
-                image={publicAssetUrl('images/title-posters/game-ticket-poster.webp')}
+                image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/game.webp' : 'images/title-posters/game-ticket-poster.webp')}
+                artTone="mint"
                 icon={<Gamepad2 aria-hidden="true" />}
                 action={onFreePlay}
                 actionLabel={hasClub ? 'Выбрать режим' : `Играть от ${view.stats.guestFreePlayCost} билетиков`}
@@ -364,8 +405,9 @@ export function ClubScreen({
                 description={hasClub
                   ? `${view.stats.danetkiPerDay} истории в сутки`
                   : `${view.stats.guestDanetkiPerDay} история в сутки · в клубе — ${view.stats.danetkiPerDay}`}
-                image={publicAssetUrl('images/title-posters/danetki-ticket-poster.webp')}
-                icon={<Sparkles aria-hidden="true" />}
+                image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/yes-no.webp' : 'images/title-posters/danetki-ticket-poster.webp')}
+                artTone="yellow"
+                icon={<Ticket aria-hidden="true" />}
                 action={() => window.location.assign('/games/danetki')}
                 actionLabel={`Играть · ${hasClub ? view.stats.danetkiPerDay : view.stats.guestDanetkiPerDay} в сутки`}
               />
@@ -374,7 +416,8 @@ export function ClubScreen({
                 description={hasClub
                   ? `До ${view.stats.friendRoomRoundLimit} раундов · включая совместные Данетки`
                   : 'Создание комнаты — с клубом. Друзья могут присоединиться по приглашению бесплатно.'}
-                image={publicAssetUrl('images/friends-room/lobby-collage-lower.webp')}
+                image={publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/associations.webp' : 'images/friends-room/lobby-collage-lower.webp')}
+                artTone="blue"
                 icon={hasClub ? <UsersRound aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
                 action={featureAction(
                   () => window.location.assign('/games/together?new=1'),

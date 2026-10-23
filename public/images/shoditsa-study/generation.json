@@ -1,0 +1,14 @@
+{
+  "mode": "built-in image_gen",
+  "intent": "generate with owned identity/style references",
+  "prompt": "Use case: illustration-story.\nAsset type: transparent square app illustration, displayed at only 208 by 200 px on the right of an anime guessing-game header.\nInput images: image 1 is the owned Shoditsa mascot identity reference, image 2 is its thoughtful expression/pose reference, image 3 is the owned thematic doodle style reference. They are references, not edit targets.\nCreate a NEW polished illustration of this same lime-green fluffy cat-alien with two long ball-tipped antennae, pointy ears, distinct tilted black eyes with small white highlights, little feline smile, two cheek marks and one fluffy tail. Preserve its identity and recognisable face. A lively compact three-quarter seated pose: the character has just found a clue, holding a small lavender film clapperboard close to its body in one paw, the other paw touching its cheek thoughtfully. One eye slightly squints with a playful 'I know this' expression. The clapperboard is a simple outlined lavender/cream object, with one small cream star on its front. Two tiny buttery-yellow hand-drawn excitement strokes next to the head.\nVisual language: original Shoditsa home illustration; friendly editorial doodle with confident gently irregular near-black rounded contours, chunky simple silhouettes, limited flat color regions. More carefully designed app illustration, less busy furry rendering. A little flat darker-green shading is allowed in only 2-3 simple shapes; no gradients, blur, glossy rendering or 3D. Palette: lime green mascot, lavender #e5defb with deeper muted lilac, butter yellow #ffe6a3, cream #fdfbf7, near-black #141416.\nComposition: whole subject including antenna tips and paws within canvas, centered, compact readable silhouette occupying 85 percent of square. Transparent background and empty transparent margins. No colored backing panel, no ground shadow, no text, no lettering, no watermarks, no logo, no Duolingo owl. Do not include a UI or multiple views.",
+  "source": "C:/Users/brene/.codex/generated_images/01a13f38-e81f-79e1-b70f-9204711912bf/exec-ae0a50e8-a405-45da-9d14-44d053bd3dee.png",
+  "asset": "public/images/shoditsa-study/mascot-clue-v1.webp",
+  "references": [
+    "public/images/mascot/celebrate-v1.webp",
+    "public/images/mascot/think-v1.webp",
+    "public/images/home-doodle/anime.webp"
+  ],
+  "processing": "Format conversion to WebP preserving alpha; no image retouching.",
+  "vector_assets": "apps/web/src/dev/quest-game/ShoditsaArt.tsx: 13 original illustrations, no copied Duolingo assets."
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Своя игра — мобильная проверка</title></head>
+<body style="margin:16px;font:14px Arial;background:#f4f0ff">
+  <div style="display:flex;gap:24px;align-items:start">
+    <section><h2>390 × 844</h2><iframe title="Своя игра 390" style="display:block;width:390px;height:844px;border:0"></iframe></section>
+    <section><h2>320 × 844</h2><iframe title="Своя игра 320" style="display:block;width:320px;height:844px;border:0"></iframe></section>
+  </div>
+  <pre id="checks" style="white-space:pre-wrap"></pre>
+  <script>
+    const requested = new URLSearchParams(location.search).get('view');
+    const path = requested && /^(?:\/games\/svoyak|\/svoyak\/create|\/svoyak\/(?:join|rooms)\/[A-Fa-f0-9]{6}(?:\/result)?)$/.test(requested) ? requested : '/games/svoyak';
+    const reports = {};
+    for (const frame of document.querySelectorAll('iframe')) {
+      frame.addEventListener('load', () => {
+        const page = frame.contentWindow, doc = frame.contentDocument;
+        if (!doc) return;
+        const report = () => {
+          if (!doc.querySelector('.svoyak-main')) return;
+          const cards = [...doc.querySelectorAll('.svoyak-company .svoyak-person')];
+          const board = doc.querySelector('.svoyak-board');
+          reports[frame.title] = {
+            width: page.innerWidth, documentWidth: doc.documentElement.scrollWidth,
+            headings: [...doc.querySelectorAll('h1')].map(node => node.textContent),
+            boardFits: !board || board.scrollWidth <= board.clientWidth,
+            playersOnOneRow: !cards.length || new Set(cards.map(card => Math.round(card.getBoundingClientRect().top))).size === 1,
+            buzzer: doc.querySelector('.quest-button--buzzer')?.textContent ?? null,
+            error: doc.querySelector('[role="alert"]')?.textContent ?? null
+          };
+          document.getElementById('checks').textContent = JSON.stringify(reports, null, 2);
+        };
+        new page.MutationObserver(report).observe(doc, { childList: true, subtree: true });
+        doc.fonts.ready.then(report);
+      });
+      frame.src = path;
+    }
+  </script>
+</body>
+</html>

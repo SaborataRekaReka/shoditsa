@@ -5,6 +5,7 @@ import {
   MessageCircle,
   UserRound,
 } from 'lucide-react'
+import './DtfCommentFeed.application.css'
 
 export type DtfCommentCardData = {
   key: string

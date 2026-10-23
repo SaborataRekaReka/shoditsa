@@ -250,7 +250,7 @@
   text-transform: uppercase;
 }.danetki-page--session .danetki-situation__copy > h1 {
   margin: 7px 0 6px;
-  color: var(--color-paper);
+  color: var(--color-on-media);
   font: 500 clamp(40px, 4.2vw, 58px)/.98 Oswald, sans-serif;
   letter-spacing: .015em;
   text-transform: uppercase;
@@ -267,7 +267,7 @@
 }.danetki-page--session .danetki-situation__copy > p {
   max-width: 720px;
   margin: 0 0 12px;
-  color: var(--color-paper);
+  color: var(--color-on-media);
   font: 500 clamp(21px, 2vw, 28px)/1.28 Oswald, sans-serif;
   letter-spacing: .005em;
 }.danetki-page--session .danetki-situation__copy > small {

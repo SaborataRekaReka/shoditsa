@@ -1,0 +1,3 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-title-screen:not(.is-leaving) { animation: none; transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-online-note { max-width: 440px; color: #706a64; font-size: 12px; line-height: 1.55; }

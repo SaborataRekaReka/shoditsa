@@ -5,9 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Keep document-relative resources stable while browser-history routes change. -->
     <base href="%BASE_URL%" />
-    <link rel="icon" type="image/svg+xml" href="./@symbol.svg" />
-    <link rel="shortcut icon" href="./@symbol.svg" />
+    <link rel="shortcut icon" href="%BASE_URL%favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%BASE_URL%apple-touch-icon.png" />
     <meta name="theme-color" content="#2b060a" />
+    <script>
+      // Restore appearance before styles and the first route are painted.
+      try {
+        const requestedTone = new URLSearchParams(location.search).get('tone');
+        const savedTone = localStorage.getItem('shoditsa:study:theme');
+        if (requestedTone === 'dark' || (requestedTone !== 'light' && savedTone === 'dark')) document.documentElement.dataset.questTone = 'dark';
+        if (document.documentElement.dataset.questSkin === 'shoditsa') document.querySelector('meta[name="theme-color"]')?.setAttribute('content', document.documentElement.dataset.questTone === 'dark' ? '#1a191b' : '#fdfcfd');
+      } catch { /* Storage can be unavailable; the app still restores its default. */ }
+    </script>
+    <style>html[data-quest-tone='dark'] { background: #1a191b; color-scheme: dark; }</style>
     <meta name="description" content="Семь бесплатных игр каждый день: угадывайте фильмы, сериалы, аниме, видеоигры, города, исполнителей и диагнозы по сравнительным подсказкам." />
     <meta name="application-name" content="Сходится!" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />

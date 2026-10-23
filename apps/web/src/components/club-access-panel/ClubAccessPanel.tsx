@@ -10,6 +10,7 @@ export function ClubAccessPanel({
   onPrimary,
   onSecondary,
   ariaLabel = 'Доступ только в Клубе',
+  actionsLayout = 'stacked',
 }: {
   title: string
   description: string
@@ -18,6 +19,7 @@ export function ClubAccessPanel({
   onPrimary: () => void
   onSecondary?: () => void
   ariaLabel?: string
+  actionsLayout?: 'stacked' | 'inline'
 }) {
   return <div className="club-access-panel" role="region" aria-label={ariaLabel}>
     <LockKeyhole aria-hidden="true" />
@@ -25,7 +27,7 @@ export function ClubAccessPanel({
       <strong>{title}</strong>
       <p>{description}</p>
     </div>
-    <div className="club-access-panel__actions">
+    <div className={`club-access-panel__actions${actionsLayout === 'inline' ? ' club-access-panel__actions--inline' : ''}`}>
       <ActionButton onClick={onPrimary}><Crown />{primaryLabel}</ActionButton>
       {secondaryLabel && onSecondary && <TextButton className="club-access-panel__secondary" onClick={onSecondary}>{secondaryLabel}</TextButton>}
     </div>

@@ -1,0 +1,10 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-panel { padding: 26px; background: var(--reference-game-white); border-color: var(--reference-game-line); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-panel__kicker { color: var(--reference-game-muted); font: 500 13px/1.5 var(--reference-game-font); letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-panel h2 { font: 900 clamp(28px, 3.8vw, 40px)/1.1 var(--reference-game-font); letter-spacing: -.03em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-card { background: var(--reference-game-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-card.is-selected { background: var(--reference-game-mint); border-color: var(--reference-game-match-ink); box-shadow: inset 0 0 0 1px var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-dialog h2 { font: 800 26px/1.2 var(--font-body); letter-spacing: -.025em; text-transform: none; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .final-choice-panel { padding: 20px; }
+}

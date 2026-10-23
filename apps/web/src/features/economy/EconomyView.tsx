@@ -15,7 +15,7 @@ import { SERVER_RUNTIME } from '../../hooks/use-server-runtime'
 import { formatTickets, nextStreakMilestoneAt, nextStreakMilestoneReward } from './economy-rules'
 import { ECONOMY_CHANGE_EVENT } from './economy-event'
 import { ServerEconomyView } from './ServerEconomyView'
-import { ControlButton, TextInput } from '../../components/ui'
+import { ActionButton, InlineAlert, StatsGrid, TextInput } from '../../components/ui'
 import './EconomyView.css'
 
 const TICKET_PROMO_CODE = 'ДАЙБИЛЕТИК'
@@ -82,18 +82,18 @@ function LocalEconomyView() {
   }
 
   return <div className="economy-view">
-    <div className="stats-grid stats-grid--economy">
+    <StatsGrid variant="economy">
       <div><strong>{wallet.tickets}</strong><span>сейчас</span></div>
       <div><strong>{wallet.lifetimeTickets}</strong><span>всего</span></div>
       <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
       <div><strong>+{nextBonus}</strong><span>на {nextAt}-й день</span></div>
-    </div>
+    </StatsGrid>
     <div className="economy-note"><Ticket /><p>Билеты открывают дополнительные периоды в кино, сериалах, аниме и музыке. Базовый сеанс всегда доступен, а закрытый период можно выбрать заранее.</p></div>
     <p className="modal-lead">Билеты хранятся только в этом браузере на этом устройстве. В другом браузере или на другом устройстве они не переносятся. Если очистить данные сайта, билеты и их история могут исчезнуть.</p>
     <form className="ticket-promo" onSubmit={submitPromoCode}>
       <div className="ticket-promo__copy"><span><Ticket /> Шепнуть кассиру</span><small>Неизвестно, сколько раз это сработает</small></div>
-      <div className="ticket-promo__row"><TextInput value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Секретная фраза" autoComplete="off" /><ControlButton type="submit">Сказать</ControlButton></div>
-      {promoMessage && <p>{promoMessage}</p>}
+      <div className="ticket-promo__row"><TextInput aria-label="Секретная фраза" value={promoCode} onChange={(event) => setPromoCode(event.target.value)} placeholder="Секретная фраза" autoComplete="off" /><ActionButton type="submit">Сказать</ActionButton></div>
+      {promoMessage && <InlineAlert>{promoMessage}</InlineAlert>}
     </form>
     <h3 className="subheading">Как начисляется</h3>
     <div className="economy-rules"><span><strong>+{ECONOMY_RULE_SET.rewards.completion}</strong> завершить сеанс</span><span><strong>+{ECONOMY_RULE_SET.rewards.win}</strong> угадать ответ</span><span><strong>+1–{ECONOMY_RULE_SET.rewards.efficiency.upTo3Attempts}</strong> за эффективность</span><span><strong>+{ECONOMY_RULE_SET.rewards.firstGame}</strong> первая игра дня</span><span><strong>+{ECONOMY_RULE_SET.rewards.route3}</strong> маршрут из 3 режимов</span><span><strong>+{ECONOMY_RULE_SET.rewards.fullRoute}</strong> полный маршрут</span></div>

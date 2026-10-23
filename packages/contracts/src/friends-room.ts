@@ -262,6 +262,10 @@ export type FriendsRoomSummary = {
   isHost: boolean
   joinedAt: string
   updatedAt: string
+  /** Present in the personal room directory; omitted by older servers. */
+  leftAt?: string | null
+  closedAt?: string | null
+  participantCount?: number
 }
 export type FriendsRoomListResponse = { rooms: FriendsRoomSummary[] }
 export type FriendsRoomPreview = {

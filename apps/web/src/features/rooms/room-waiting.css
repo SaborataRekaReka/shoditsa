@@ -1,0 +1,35 @@
+.room-ready { min-width: 0; color: var(--quest-text); }
+.room-ready > .ui-page-backline { margin-bottom: 20px; }
+.room-ready .room-lobby-config { margin-top: 26px; }
+.room-ready-invite { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 16px; margin-top: 24px; padding: 18px 22px; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 18px; background: var(--quest-blue-wash); }
+.room-ready-invite > div { display: grid; gap: 5px; }
+.room-ready-invite > div > span { font-size: 11px; color: var(--quest-muted); }
+.room-ready-invite strong { font: 800 25px/1.2 var(--quest-heading); letter-spacing: 3px; }
+.room-ready-invite > .quest-button { background: var(--quest-bg); font-size: 12px; }
+.qg-app .room-ready-invite > p { grid-column: 1 / -1; margin: 0; color: var(--quest-muted); font-size: 12px; line-height: 1.5; }
+.room-ready-people, .room-ready-summary { margin-top: 20px; padding: 20px; border: 2px solid var(--quest-line); border-radius: 18px; background: var(--quest-bg); }
+.room-ready-people > header, .room-ready-summary > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.qg-app .room-ready-people h2, .qg-app .room-ready-summary h2 { display: flex; align-items: center; gap: 9px; margin: 0; font: 800 20px/1.35 var(--quest-heading); }
+.room-ready-people > header > span, .room-ready-summary > header > div > span { color: var(--quest-muted); font-size: 12px; }
+.room-ready-people .room-company-members { padding: 18px 0 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.qg-app .room-ready-note, .qg-app .room-ready-summary > p { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: var(--quest-muted); }
+.room-ready-categories { display: flex; flex-wrap: wrap; gap: 12px 24px; padding: 0; margin: 16px 0; list-style: none; }
+.room-ready-categories li { display: grid; gap: 3px; font-size: 13px; }
+.room-ready-categories li > span { color: var(--quest-muted); font-size: 11px; }
+.room-ready-rules { display: flex; flex-wrap: wrap; gap: 8px 20px; padding-top: 14px; border-top: 1px solid var(--quest-line); color: var(--quest-muted); font-size: 12px; }
+.room-ready-editor { margin-top: 24px; }
+.qg-app .room-ready-editor > p { font-size: 12px; color: var(--quest-muted); }
+.room-ready-launch { margin: 20px 0; padding-top: 0; border-top: 0; }
+.room-ready-leave { margin-top: 12px; }
+.room-ready-chat { padding: 20px; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 18px; background: var(--quest-bg); min-width: 0; }
+.room-ready-chat > summary { display: flex; align-items: center; gap: 9px; min-height: 24px; cursor: pointer; list-style: none; font: 800 15px/1.4 var(--quest-heading); }
+.room-ready-chat > summary::-webkit-details-marker { display: none; }
+.room-ready-chat > summary > svg { color: var(--quest-blue); }
+.room-ready-chat > summary > span { display: grid; place-items: center; margin-left: auto; min-width: 24px; height: 24px; border-radius: 8px; background: var(--quest-blue-wash); color: var(--quest-blue); font-size: 11px; }
+.room-ready-messages { display: grid; gap: 14px; max-height: 230px; overflow-y: auto; margin: 20px 0; }
+.qg-app .room-ready-messages p { display: grid; gap: 4px; margin: 0; font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
+.room-ready-messages p > strong { color: var(--quest-blue); }
+.room-ready-chat form { display: flex; gap: 8px; }
+.room-ready-chat input { min-width: 0; flex: 1; font-size: 12px; }
+@container application-content (max-width: 420px) { .room-ready-invite { grid-template-columns: minmax(0, 1fr); padding: 16px; } .room-ready-invite strong { font-size: 25px; } .room-ready-invite > .quest-button { width: 100%; } .room-ready-people, .room-ready-summary { padding: 16px; } .room-ready-people .room-company-members { grid-template-columns: minmax(0, 1fr); } }
+

@@ -1,24 +1,17 @@
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { ArrowUpRight, Route } from 'lucide-react'
 import type { TitleMode } from '../../types'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
+import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { referenceModeIllustration } from '../game/reference-mode-art'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { DanetkiRegistrationOffer } from './DanetkiRegistrationOffer'
+import { DANETKI_RECOMMENDATIONS as RECOMMENDATIONS } from '../../app/danetki-recommendation-copy'
 import './DanetkiRecommendations.css'
 
 type Placement = 'landing-bottom' | 'catalog-bottom'
-
-const RECOMMENDATIONS: readonly {
-  mode: TitleMode
-  kicker: string
-  title: string
-  description: string
-}[] = [
-  { mode: 'diagnosis', kicker: 'Стройте версию по уликам', title: 'Угадайте диагноз', description: 'Сопоставляйте симптомы, систему органов и диагностические признаки.' },
-  { mode: 'character', kicker: 'Новое досье каждый день', title: 'Угадайте персонажа', description: 'Ищите героя по происхождению, роли, эпохе и способностям.' },
-  { mode: 'animal', kicker: 'Наблюдение вместо допроса', title: 'Угадайте животное', description: 'Сверяйте среду обитания, строение, питание и ареал.' },
-]
 
 export function DanetkiRecommendations({ placement }: { placement: Placement }) {
   const viewTracked = useRef(false)
@@ -55,7 +48,7 @@ export function DanetkiRecommendations({ placement }: { placement: Placement }) 
           onClick={() => trackClick(entry.mode)}
           style={{ '--danetki-recommendation-color': presentation.color } as CSSProperties}
         >
-          <img src={presentation.watermarkUrl} alt="" aria-hidden="true" loading="lazy" />
+          <ThemedArtwork src={REFERENCE_PRESENTATION ? referenceModeIllustration(entry.mode) : presentation.watermarkUrl} alt="" aria-hidden="true" loading="lazy" />
           <span className="danetki-recommendation-card__veil" aria-hidden="true" />
           <span className="danetki-recommendation-card__icon" aria-hidden="true"><Icon /></span>
           <span className="danetki-recommendation-card__copy">

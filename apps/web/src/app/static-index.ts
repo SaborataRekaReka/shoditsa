@@ -22,6 +22,15 @@ const escapeXml = (value: string) => value
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#39;')
 
+/** Only published canonical documents get a trailing-slash redirect. */
+export const renderPublicTrailingSlashRedirects = (
+  canonicalPaths: readonly string[] = STATIC_INDEXABLE_PATHS,
+) => {
+  const paths = canonicalPaths.filter((path) => path !== '/')
+    .map((path) => path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  return `# Generated from the sitemap; unknown and private URLs keep their own routing.\nlocation ~ "^(${paths.join('|')})/$" {\n    return 301 ${SITE_ORIGIN}$1$is_args$args;\n}\n`
+}
+
 export const renderSitemap = (
   canonicalPaths: readonly string[] = STATIC_INDEXABLE_PATHS,
   siteOrigin = SITE_ORIGIN,

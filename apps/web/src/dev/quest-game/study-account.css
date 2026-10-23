@@ -1,0 +1,40 @@
+.study-account { position: relative; flex: none; }
+.study-account-trigger { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 5px 9px; border: 0; border-radius: 12px; background: transparent; color: var(--quest-text); font: 700 13px/1.3 var(--quest-font); cursor: pointer; }
+.study-account-trigger:hover, .study-account-trigger[aria-expanded='true'] { background: var(--quest-blue-wash); }
+.study-account-trigger > span { text-align: left; }
+.study-account-trigger strong { font-weight: 800; }
+.study-account-avatar { display: block; flex: none; width: 36px; height: 36px; object-fit: contain; }
+.study-account-trigger small { display: block; color: var(--quest-muted); font-weight: 400; margin-top: 2px; }
+.study-account--rail { margin: -10px 0 19px; }
+.study-account--rail .study-account-trigger { width: 100%; gap: 10px; padding: 9px 10px; border: 2px solid var(--quest-line); border-bottom-width: 4px; }
+.study-account--rail .study-account-trigger > span { flex: 1; }
+.study-account-popover { position: absolute; z-index: 100; top: calc(100% + 10px); right: 0; width: 306px; max-width: calc(100vw - 32px); padding: 12px; background: var(--quest-bg); border: 2px solid var(--quest-line); border-bottom-width: 5px; border-radius: 18px; color: var(--quest-text); }
+.study-account--rail .study-account-popover { left: 0; right: auto; }
+.study-account-popover::before { content: ''; position: absolute; width: 12px; height: 12px; right: 29px; top: -8px; border-top: 2px solid var(--quest-line); border-left: 2px solid var(--quest-line); background: var(--quest-bg); transform: rotate(45deg); }
+.study-account--rail .study-account-popover::before { left: 27px; right: auto; }
+.study-account-intro { display: flex; align-items: center; gap: 12px; padding: 8px 4px 17px; }
+.study-account-intro > div { min-width: 0; overflow-wrap: anywhere; }
+.study-support-icon { flex: none; object-fit: contain; }
+.study-account-intro strong { font: 800 17px/1.3 var(--quest-heading); }
+.study-account-intro p { color: var(--quest-muted); font-size: 12px; line-height: 1.5; margin: 4px 0 0; }
+.qg-app .study-account-popover > :is(a, button) { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 46px; padding: 10px 12px; margin: 2px 0; border: 0; border-radius: 11px; color: var(--quest-text); background: transparent; font: 700 14px/1.4 var(--quest-font); text-align: left; text-decoration: none; cursor: pointer; }
+.study-account-popover > :is(a, button) > svg { flex: none; color: var(--quest-muted); }
+.qg-app .study-account-popover > :is(a, button):is(:hover, :focus-visible) { background: var(--quest-blue-wash); outline: 0; }
+.qg-app .study-account-popover > .study-account-signin { background: var(--color-action); color: var(--color-on-action); border-bottom: 4px solid var(--shg-action-edge); justify-content: center; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; font-size: 12px; }
+.qg-app .study-account-popover > .study-account-signin:is(:hover, :focus-visible) { background: var(--color-action-hover); }
+.study-account-popover > .study-account-signin > svg { color: inherit; }
+.qg-app .study-account-popover > .study-account-register { color: var(--quest-blue); justify-content: center; border: 2px solid var(--quest-line); border-bottom-width: 4px; }
+.study-account-popover small { display: block; color: var(--quest-muted); font-size: 11px; font-weight: 400; }
+.study-account-divider { height: 1px; background: var(--quest-line); margin: 10px 2px; }
+.study-account-trigger:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 3px; }
+@media (min-width: 700px) and (max-width: 1200px) {
+  .study-account--rail .study-account-trigger { padding: 5px; justify-content: center; }
+  .study-account--rail .study-account-trigger > span, .study-account--rail .study-account-trigger > svg:last-child { display: none; }
+}
+@media (max-width: 699px) {
+  .study-account--rail { display: none; }
+  .study-account-trigger { gap: 4px; padding-inline: 3px; font-size: 11px; }
+  .study-account-popover { position: fixed; top: calc(var(--study-review-offset, 0px) + 66px); right: 16px; max-height: calc(100dvh - var(--study-review-offset, 0px) - 155px); overflow-y: auto; overscroll-behavior: contain; }
+  .study-account-popover::before { display: none; }
+}
+@media (max-width: 359px) { .study-account--header .study-account-trigger > span { display: none; } }

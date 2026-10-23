@@ -53,3 +53,16 @@
 .club-access-panel__secondary.ui-text-button:hover {
   color: var(--color-ink);
 }
+
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .club-access-panel { margin-top: 24px; padding-top: 22px; border-color: var(--color-line); gap: 10px 12px; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .club-access-panel__copy strong { font-size: 15px; line-height: 1.4; overflow-wrap: anywhere; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .club-access-panel__copy p { color: var(--color-muted); font-size: 14px; line-height: 1.6; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .club-access-panel__actions { margin-top: 10px; gap: 6px; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .club-access-panel__secondary { font-size: 14px; }
+
+.club-access-panel .club-access-panel__actions--inline { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 20px; }
+.club-access-panel__actions--inline .ui-button { width: auto; }
+@media (max-width: 560px) {
+  .club-access-panel .club-access-panel__actions--inline { flex-direction: column; align-items: stretch; }
+  .club-access-panel__actions--inline .ui-button { width: 100%; }
+}

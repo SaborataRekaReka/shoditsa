@@ -7,7 +7,7 @@ import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader } from '../../components/app-shell/AppShell'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
-import { ControlButton } from '../../components/ui'
+import { ActionButton } from '../../components/ui'
 import './CommercialShell.css'
 
 type Props = { onHome: () => void; onClub: () => void; onProfile: () => void; onArchive: () => void; onStats: () => void; onRules: () => void; onReview: () => void }
@@ -93,7 +93,7 @@ export function PurchaseReturnScreen({ onHome, onClub, onProfile, onArchive, onS
   const pendingTimedOut = (status === 'created' || status === 'pending') && elapsedMs >= 60_000
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
-    <main className="purchase-return">
+    <main className="purchase-return" data-payment-state={!orderId || order.isError ? 'error' : status ?? 'checking'}>
       {!orderId ? <><XCircle /><h1>Заказ не указан</h1><p>Вернитесь в клуб и выберите абонемент ещё раз.</p></>
         : order.isError ? <><XCircle /><h1>Не удалось проверить заказ</h1><p>{apiErrorMessage(order.error)}</p></>
           : status === 'paid' ? <><CheckCircle2 /><h1>{paidTitle}</h1><p>{paidDescription}</p></>
@@ -102,13 +102,13 @@ export function PurchaseReturnScreen({ onHome, onClub, onProfile, onArchive, onS
               : pendingTimedOut ? <><Clock3 /><h1>Платёж ещё обрабатывается</h1><p>Мы продолжаем автоматически проверять CloudPayments. Обновлять страницу или оплачивать повторно не нужно.</p></>
                 : <><Clock3 className="purchase-return__spin" /><h1>Проверяем оплату</h1><p>Не закрывайте страницу — подтверждение обычно занимает несколько секунд.</p></>}
       <div className="purchase-return__actions">
-        {status === 'paid' && order.data?.order.sourceMode === 'diagnosis' && <ControlButton type="button" onClick={() => window.location.assign('/games/diagnosis')}>Продолжить «Диагнозы»</ControlButton>}
-        {pendingTimedOut && <ControlButton type="button" disabled={order.isFetching} onClick={() => { void order.refetch() }}>
+        {status === 'paid' && order.data?.order.sourceMode === 'diagnosis' && <ActionButton type="button" onClick={() => window.location.assign('/games/diagnosis')}>Продолжить «Диагнозы»</ActionButton>}
+        {pendingTimedOut && <ActionButton variant="secondary" type="button" disabled={order.isFetching} onClick={() => { void order.refetch() }}>
           {order.isFetching ? 'Проверяем…' : 'Проверить ещё раз'}
-        </ControlButton>}
-        <ControlButton type="button" onClick={productKind === 'tip' ? onProfile : onClub}>
+        </ActionButton>}
+        <ActionButton type="button" onClick={productKind === 'tip' ? onProfile : onClub}>
           {productKind === 'tip' ? 'Посмотреть жетон' : 'Перейти в клуб'}
-        </ControlButton>
+        </ActionButton>
       </div>
     </main>
   </>

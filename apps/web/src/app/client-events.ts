@@ -1,3 +1,4 @@
+import { PRESENTATION_PREVIEW } from './local-presentation'
 import { ANALYTICS_CONSENT_EVENT, canonicalAnalyticsPath, consentedAnalyticsEntryParams, storedAnalyticsConsent } from './metrics'
 
 export type EventName =
@@ -138,6 +139,7 @@ export const deterministicClientEventId = (namespace: string, eventName: EventNa
 }
 
 export const trackClientEvent = (eventName: EventName, properties: Record<string, unknown> = {}, context: Partial<Pick<QueuedEvent, 'eventId' | 'requestId' | 'errorCode' | 'gameSessionId' | 'stackFingerprint'>> = {}) => {
+  if (PRESENTATION_PREVIEW) return
   const callerProperties = Object.fromEntries(Object.entries(properties).filter(([key]) => !ATTRIBUTION_PROPERTIES.has(key)))
   const consent = storedAnalyticsConsent()
   const attributedProperties = {
@@ -164,6 +166,7 @@ export const trackClientEvent = (eventName: EventName, properties: Record<string
 }
 
 export const flushClientEvents = async () => {
+  if (PRESENTATION_PREVIEW) return
   if (flushing || !navigator.onLine) return
   const consent = storedAnalyticsConsent()
   // Do not permanently lose a search entrance while the visitor is still
@@ -191,6 +194,7 @@ export const trackConsentedLanding = () => {
 }
 
 export const initClientEvents = () => {
+  if (PRESENTATION_PREVIEW) return
   trackClientEvent('page_view')
   window.addEventListener(ANALYTICS_CONSENT_EVENT, (event) => {
     const consent = (event as CustomEvent<{ consent?: string }>).detail?.consent

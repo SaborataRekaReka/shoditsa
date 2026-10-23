@@ -1,0 +1,39 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-screen-shell--title {
+  width: min(var(--content-width), calc(100% - 2 * var(--content-gutter)));
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding: 24px 0 64px;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell--title > .game-screen-shell__nav { width: 100%; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-shell.game-screen-shell--session {
+  width: min(100%, 1050px);
+  padding: 32px 40px 65px;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell__content--session { width: min(100%, 880px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell__content--session.game-screen-shell__content--wide { width: 100%; }
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-screen-shell--title { padding-block: 18px 48px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-shell.game-screen-shell--session { padding: 23px 20px 48px; }
+}
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-shell.game-screen-shell--session { padding-inline: 14px; }
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-shell.game-screen-shell--session.game-screen-shell--sidebar {
+  width: min(var(--content-width), calc(100% - 2 * var(--content-gutter)));
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding: 24px 0 48px;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell--sidebar > .game-screen-shell__nav { display: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell--sidebar > .game-screen-shell__content--session {
+  width: 100%;
+  max-width: none;
+}
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-screen-shell--title.game-screen-shell--landing { width: 100%; max-width: none; padding-top: 14px; background: var(--color-entry-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell--landing > .game-screen-shell__nav { width: min(var(--content-width), calc(100% - 2 * var(--content-gutter))); margin-inline: auto; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell--landing > .game-screen-shell__content--title { width: 100%; max-width: none; }
+
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .game-screen-shell.game-shell.game-screen-shell--session.game-screen-shell--sidebar { padding: 18px 0 32px; }
+}

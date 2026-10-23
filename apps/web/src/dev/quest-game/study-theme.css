@@ -1,0 +1,6 @@
+.study-footer-theme { display: flex; flex: 0 0 100%; justify-content: center; padding-top: 6px; }
+.qg-right > .study-footer { margin-top: 16px; gap: 4px 12px; }
+.study-account-theme-row { display: none; }
+@media (max-width: 1000px) {
+  .study-account-theme-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 8px 0 12px; border-top: 1px solid var(--quest-line); color: var(--quest-muted); font-size: 13px; }
+}

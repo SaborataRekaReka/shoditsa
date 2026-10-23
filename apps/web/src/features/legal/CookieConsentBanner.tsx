@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { setAnalyticsConsent, storedAnalyticsConsent, type AnalyticsConsent } from '../../app/metrics'
-import { ControlButton, DialogRegion } from '../../components/ui'
+import { ActionButton, DialogRegion } from '../../components/ui'
 import './LegalScreen.css'
 
 const SETTINGS_EVENT = 'shoditsa:cookie-settings'
@@ -29,8 +29,8 @@ export function CookieConsentBanner() {
       {current && <small>Текущий выбор: {current === 'accepted' ? 'аналитика разрешена' : 'только необходимые'}.</small>}
     </div>
     <div className="cookie-consent__actions">
-      <ControlButton type="button" className="cookie-consent__secondary" onClick={() => choose('rejected')}>Только необходимые</ControlButton>
-      <ControlButton type="button" className="cookie-consent__primary" onClick={() => choose('accepted')}>Разрешить аналитику</ControlButton>
+      <ActionButton variant="secondary" type="button" className="cookie-consent__secondary" onClick={() => choose('rejected')}>Только необходимые</ActionButton>
+      <ActionButton type="button" className="cookie-consent__primary" onClick={() => choose('accepted')}>Разрешить аналитику</ActionButton>
     </div>
   </DialogRegion>
 }

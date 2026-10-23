@@ -1,19 +1,21 @@
 import type { ReactNode } from 'react'
 import './Progress.css'
 
-export function SegmentedProgress({ value, max = 10, segments = max, label = 'Использовано попыток', valueLabel, className = '' }: {
+export function SegmentedProgress({ value, max = 10, segments = max, label = 'Использовано попыток', valueLabel, variant = 'default', ariaLabel, className = '' }: {
   value: number
   max?: number
   segments?: number
   label?: ReactNode
   valueLabel?: ReactNode
+  variant?: 'default' | 'composer'
+  ariaLabel?: string
   className?: string
 }) {
   const segmentCount = Math.max(1, Math.round(segments))
   const usedSegments = value <= 0 || max <= 0 ? 0 : Math.min(segmentCount, Math.ceil(value / max * segmentCount))
-  return <div className={`progress-block ui-segmented-progress ${className}`.trim()}>
+  return <div className={`progress-block ui-segmented-progress ui-segmented-progress--${variant} ${className}`.trim()}>
     <div className="progress-copy"><span>{label}</span><strong>{valueLabel ?? <>{Math.min(value, max)} <i>из {max}</i></>}</strong></div>
-    <div className="progress-track" role="progressbar" aria-label={`${String(label)}: ${value} из ${max}`} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} style={{ gridTemplateColumns: `repeat(${segmentCount}, minmax(0, 1fr))` }}>
+    <div className="progress-track" role="progressbar" aria-label={ariaLabel ?? `${String(label)}: ${value} из ${max}`} aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} style={{ gridTemplateColumns: `repeat(${segmentCount}, minmax(0, 1fr))` }}>
       {Array.from({ length: segmentCount }, (_, index) => <i key={index} className={index < usedSegments ? 'used' : ''} />)}
     </div>
   </div>

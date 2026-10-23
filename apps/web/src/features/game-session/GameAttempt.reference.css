@@ -1,0 +1,15 @@
+/* Game identity and studio cards, including long names on narrow screens. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-head__art { object-fit: contain; background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-studios { gap: var(--space-3); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-studio { padding: var(--space-3); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-studio__meta small { margin-bottom: 4px; font-size: 13px; font-weight: 400; line-height: 1.4; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-studio__meta strong { overflow: visible; font-size: 14px; line-height: 1.5; text-overflow: clip; white-space: normal; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-rank small { letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-head__sub > .gm-head__orig { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-head { grid-template-columns: 20px 64px minmax(0, 1fr); gap: 8px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-head__art { grid-column: 2; grid-row: 1 / 3; width: 64px; height: 88px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-head__identity { grid-column: 3; grid-row: 1; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-rank { grid-column: 3; grid-row: 2; flex-direction: row; flex-wrap: wrap; justify-self: start; gap: 6px; padding: 5px 8px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .gm-studios { grid-template-columns: minmax(0, 1fr); }
+}

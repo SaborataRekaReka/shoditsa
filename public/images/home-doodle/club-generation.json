@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-10-15",
+  "tool": "built-in image_gen",
+  "purpose": "New club hero illustration matching the public reference doodle style",
+  "sourceReferencesInspected": [
+    "public/images/home-doodle/hero.png",
+    "public/images/home-doodle/anime-hero.png"
+  ],
+  "transparentBackground": true,
+  "assets": [
+    {
+      "name": "club-hero-v1",
+      "prompt": "Use case: illustration-story.\nAsset type: transparent raster illustration for the right side of a playful Russian puzzle-game club landing-page hero.\nPrimary request: Create one new illustration of a friendly warm-yellow round mascot, with oversized oval white eyes and simple tall black pupils, small cheerful smile, yellow cartoon hands, short black legs and chunky white sneakers. It is seated, holding a large golden club-admission ticket proudly across its lap. The ticket has a crisp black hand-drawn outline, scalloped ticket notches, a simple outlined star emblem and perforation dots, and absolutely no lettering. One modest lilac closed book rests beside the mascot.\nStyle/medium: warm 2D hand-drawn doodle, bold slightly imperfect black ink outline, simple flat golden-yellow and warm-white fills with very subtle paper-pencil texture within the opaque shapes. Match the established friendly round yellow puzzle mascot appearance: big eyes, compact rounded body, black trousers and oversized white shoes. Minimal charming black doodle accent rays.\nComposition/framing: horizontal 3:2 canvas, the mascot and ticket centered as a compact balanced group, full figure visible, generous transparent breathing room around every edge. Designed to remain clear at roughly 420 pixels wide. Ticket remains the main accessory. Keep both shoes and all outlines fully inside the canvas.\nScene/backdrop: genuinely transparent alpha background, no opaque rectangle, no checkerboard painted into the image, no scenery, no floor plane.\nConstraints: no words, no letters, no logo, no watermark; no 3D, no glossy plastic, no photorealism, no heavy gradients, no decorative border. The black outline is bold but clean; preserve true transparency around the artwork.",
+      "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f50-4ac5-7ef1-9103-11db656e469a/exec-ff3cfa07-9866-49b1-9000-1aa4faa99b91.png",
+      "original": "club-hero-v1.png",
+      "web": "club-hero-v1.webp",
+      "width": 1536,
+      "height": 1024,
+      "hasAlpha": true,
+      "conversion": "sharp.webp({ quality: 88, alphaQuality: 100 }); no cropping or resizing"
+    }
+  ],
+  "inspection": "Selected the first composition for its generous transparent margins. Pixel inspection confirms actual zero-alpha transparency around the artwork; RGB values in transparent pixels do not create a visible halo when composited normally.",
+  "alternative": {
+    "purpose": "Targeted background cleanup verification, not selected because it tightened the composition without improving already-transparent exterior pixels.",
+    "prompt": "Use case: background-extraction. Edit this existing generated club mascot illustration. Preserve the character identity, pose, proportions, composition, black outlines, eyes, smile, yellow hands, golden ticket with star, sneakers, lilac book and paper texture exactly. Change only the background cutout: completely remove ALL yellow/gray/purple glow, bloom, ambient haze, drop shadow and color spill outside the solid black outlines. Outside the mascot, book, ticket and the small black accent marks must be pure zero-alpha transparency, including all gaps between them. Keep crisp antialiased edges and make the painted artwork itself opaque. No new objects, no text, no logo, no cropping. True transparent PNG with clean sticker-like outline, no shadow whatsoever.",
+    "sourceGeneratedPng": "C:/Users/brene/.codex/generated_images/01a13f50-4ac5-7ef1-9103-11db656e469a/exec-d39f0cea-5c85-4f4c-80ae-a058c27b3272.png"
+  }
+}

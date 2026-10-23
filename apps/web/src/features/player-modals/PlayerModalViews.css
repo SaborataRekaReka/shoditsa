@@ -19,3 +19,36 @@
 .resume-item__mode i { font-style: normal; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .resume-item__open strong { color: var(--color-ink); font: 500 18px/1.1 Oswald, sans-serif; text-transform: uppercase; letter-spacing: .02em; }
 .resume-item__open small { color: var(--color-paper-muted); font-size: 12px; line-height: 1.4; }
+
+/* Rules and anamnesis are available before any game session is loaded. */
+.anamnesis-modal {
+  scrollbar-gutter: stable;
+}
+.anamnesis-modal { width: min(100%, 540px); padding: 18px 16px 16px; border: 1px solid var(--color-paper-line); border-radius: var(--radius-xl) var(--radius-xl) var(--radius-md) var(--radius-md); background: var(--color-paper); color: var(--color-ink); box-shadow: 5px 5px 0 var(--color-shadow); position: relative; overflow: hidden; animation: sheet .32s var(--ease) both; }
+.anamnesis-modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: repeating-linear-gradient(90deg, var(--color-primary) 0 16px, var(--color-accent) 16px 20px); opacity: .85; }
+.anamnesis-modal__head { display: flex; align-items: center; justify-content: space-between; }
+.anamnesis-modal__head > span { display: flex; align-items: center; gap: 6px; color: #2f6b45; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.anamnesis-modal__head > span svg { width: 15px; }
+.anamnesis-modal__head button { width: 44px; height: 44px; border: 1px solid var(--color-paper-line); border-radius: 12px; background: transparent; color: var(--color-ink); display: grid; place-items: center; }
+.anamnesis-modal__head button svg { width: 17px; }
+.anamnesis-modal__patient { display: flex; align-items: center; gap: 13px; margin: 16px 0 15px; padding-bottom: 15px; border-bottom: 1px dashed var(--color-paper-line); }
+.anamnesis-modal__avatar { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 15px; background: var(--color-primary); color: var(--color-ink); display: grid; place-items: center; box-shadow: 2px 2px 0 var(--color-shadow); }
+.anamnesis-modal__avatar svg { width: 28px; }
+.anamnesis-modal__patient-copy { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.anamnesis-modal__patient-copy small { color: var(--color-paper-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
+.anamnesis-modal__patient-copy h2 { margin: 1px 0; font: 500 24px Oswald, sans-serif; text-transform: uppercase; }
+.anamnesis-modal__patient-copy em { color: var(--color-paper-muted-2); font-size: 12px; font-style: normal; }
+.anamnesis-modal__text { margin: 0; color: var(--color-ink); font-size: 13px; line-height: 1.6; }
+.anamnesis-modal__note { display: flex; align-items: center; gap: 8px; margin: 15px 0 16px; padding: 10px 12px; border: 1px solid var(--color-primary-border); border-radius: var(--radius-md); background: rgba(87, 183, 119, .14); color: #2f6b45; font-size: 12px; font-weight: 600; line-height: 1.4; }
+.anamnesis-modal__note svg { flex: 0 0 auto; width: 16px; }
+.anamnesis-modal__actions { display: flex; }
+.anamnesis-modal__start { flex: 1; min-height: 52px; }
+.rules-list > p { color: var(--color-paper-muted); font-size: 12px; line-height: 1.6; }
+.rules-list { padding-top: 10px; }
+.rules-list > div { padding: 12px 0; border-bottom: 1px solid var(--color-paper-line); display: flex; align-items: center; gap: 11px; }
+.rules-list i { width: 30px; height: 30px; border: 1px solid var(--color-ink); border-radius: 10px; flex: 0 0 auto; }
+.rules-list i.match { background: var(--color-primary); }
+.rules-list i.close { background: var(--color-accent); }
+.rules-list i.miss { background: var(--color-surface-2); }
+.rules-list span { font-size: 12px; line-height: 1.45; }
+.rules-list strong { display: block; font-size: 12px; }

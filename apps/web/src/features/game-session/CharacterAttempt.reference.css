@@ -1,0 +1,194 @@
+/* Character attempts own their portrait, identity and comparison details. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--character-summary {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  grid-template-areas: 'portrait heading' 'details details';
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-color: var(--color-line);
+  background: var(--color-surface);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__body { display: contents; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__portrait {
+  grid-area: portrait;
+  width: 104px;
+  height: 124px;
+  min-height: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-2);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__portrait::after { content: none; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__portrait-image,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__portrait > .poster-fallback {
+  object-fit: contain;
+  object-position: center;
+  border-radius: var(--radius-sm);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__portrait > .poster-fallback {
+  color: var(--color-muted);
+  font: 400 14px/1.35 var(--font-body);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__number {
+  top: 6px;
+  left: 6px;
+  min-width: 28px;
+  height: 28px;
+  border-color: var(--color-line);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  font: 400 13px/1 var(--font-mono);
+  box-shadow: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__header {
+  grid-area: heading;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 16px;
+  background: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--character-summary .character-summary__header h2 {
+  overflow: visible;
+  font: 700 26px/1.25 var(--font-body);
+  letter-spacing: -.02em;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__score {
+  width: min(100%, 240px);
+  gap: 4px;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__score i { height: 6px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__score i.exact { background: var(--match-exact-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__score i.partial { background: var(--match-partial-ink); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__content {
+  grid-area: details;
+  min-width: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__row {
+  min-height: 0;
+  padding: 12px 0;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__row > label,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__detail > label {
+  font: 400 14px/1.4 var(--font-body);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__tokens,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__identity-values { gap: 6px; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__token {
+  min-height: 30px;
+  max-width: 100%;
+  padding: 5px 9px;
+  border-color: var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink);
+  background: var(--color-surface-2);
+  font: 500 14px/1.35 var(--font-body);
+  overflow-wrap: anywhere;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__token > span { min-width: 0; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__token.is-match {
+  border-color: var(--match-exact-bg);
+  color: var(--match-exact-ink);
+  background: var(--match-exact-bg);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__token > svg:not(.character-summary__gender) {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__token.is-gender { width: 32px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__token.has-role-icon { padding-left: 7px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__gender { width: 18px; height: 18px; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__direction {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  color: var(--match-partial-ink);
+  background: var(--match-partial-bg);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__details {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 12px;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__detail {
+  min-height: 0;
+  padding: 12px;
+  border-color: var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  overflow-wrap: anywhere;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__detail > label { margin-bottom: 6px; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__detail > div {
+  color: var(--color-ink);
+  font: 500 14px/1.5 var(--font-body);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__detail--match {
+  border-color: var(--match-exact-bg);
+  background: var(--match-exact-bg);
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__detail--partial {
+  border-color: var(--match-partial-bg);
+  background: var(--match-partial-bg);
+}
+
+@media (max-width: 600px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--character-summary {
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 16px 12px;
+    padding: 16px;
+  }
+
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__portrait { width: 76px; height: 96px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__header { gap: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .attempt-card--character-summary .character-summary__header h2 { font-size: 22px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__row { grid-template-columns: 92px minmax(0, 1fr); }
+}
+
+@media (max-width: 400px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__row { grid-template-columns: minmax(0, 1fr); gap: 7px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .character-summary__details { grid-template-columns: minmax(0, 1fr); }
+}

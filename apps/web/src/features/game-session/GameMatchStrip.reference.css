@@ -1,0 +1,69 @@
+/* Public reference appearance. Scoped at the document root, including portal previews. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip { min-width: 0; margin: 0; color: var(--color-ink); font-family: var(--font-body); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0 16px; min-width: 0; padding: 3px 2px; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toggle,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__rules {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  text-align: left;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toggle > span { white-space: nowrap; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toggle > svg { flex: 0 0 16px; width: 16px; height: 16px; transition: transform .18s ease; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip.is-open .reference-match-strip__toggle > svg { transform: rotate(90deg); }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__rules { margin-left: auto; white-space: nowrap; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__rules svg { flex: 0 0 18px; width: 18px; height: 18px; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__panel { min-width: 0; padding: 0 2px 13px; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__panel[hidden] { display: none; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tags {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+  max-height: min(28dvh, 190px);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  background: transparent;
+  list-style: none;
+}
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tag { display: inline-flex; flex: 0 1 auto; align-items: baseline; flex-wrap: wrap; gap: 3px 5px; min-width: 0; max-width: 100%; padding: 7px 10px; border: 1px solid color-mix(in srgb, var(--match-exact-ink) 20%, var(--match-exact-bg)); border-radius: 8px; color: var(--match-exact-ink); background: var(--match-exact-bg); font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tag-label { font-weight: 400; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tag-value { min-width: 0; font-weight: 600; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__empty { margin: 0; padding: 12px; border: 1px solid var(--color-line); border-radius: 12px; color: var(--color-muted-2); background: var(--color-paper); font-size: 12px; line-height: 1.5; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tags:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+@media (max-width: 719px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toolbar { gap: 0 10px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tags { flex-wrap: nowrap; gap: 6px; max-height: none; overflow-x: auto; overflow-y: hidden; padding-block: 3px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__tag { flex: 0 0 auto; padding: 6px 8px; }
+}
+
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toolbar { gap: 0 6px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__toggle,
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__rules { gap: 5px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-match-strip__rules svg { width: 15px; height: 15px; flex-basis: 15px; }
+}

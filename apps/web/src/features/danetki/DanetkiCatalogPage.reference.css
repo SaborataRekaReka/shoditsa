@@ -1,0 +1,69 @@
+/* Public story collection and story detail share the puzzle's warm paper style. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-page { color: var(--reference-game-ink); background: var(--reference-game-canvas); font-family: var(--reference-game-font); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-main { width: min(var(--content-width), calc(100% - 2 * var(--content-gutter))); max-width: var(--content-width); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-breadcrumbs { flex-wrap: wrap; font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-breadcrumbs svg { flex: 0 0 auto; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-page h1, .danetki-catalog-page h2) { color: var(--reference-game-ink); font-family: var(--reference-game-font); font-weight: 800; line-height: 1.1; text-transform: none; letter-spacing: -.035em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-hero h1, .danetki-story__header h1) { font-size: clamp(36px, 5.8vw, 72px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-hero, .danetki-story__header) { background: var(--reference-game-coral); border-color: var(--reference-game-line); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-card, .danetki-catalog-copy, .danetki-catalog-guide, .danetki-story) { color: var(--reference-game-ink); border-color: var(--reference-game-line); background: var(--reference-game-white); box-shadow: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-facts div, .danetki-catalog-guide li, .danetki-story__questions li, .danetki-story__play, .danetki-catalog-collections a) { color: var(--reference-game-ink); border-color: var(--reference-game-line); background: var(--reference-game-paper); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-breadcrumbs, .danetki-breadcrumbs a, .danetki-catalog-hero__copy > p, .danetki-catalog-facts dt, .danetki-catalog-section-head > p, .danetki-catalog-card p, .danetki-catalog-copy p, .danetki-story__aliases, .danetki-story__answer summary small, .danetki-story__play p, .danetki-story-missing p) { color: var(--reference-game-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-eyebrow, .danetki-catalog-section-head > div > span, .danetki-story__condition > span, .danetki-story__questions > span, .danetki-story__play > div > span, .danetki-story__stamp small, .danetki-story__answer > div > span) { color: var(--reference-game-muted); font-size: 14px; font-weight: 500; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-facts div { border: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-facts dt { font-size: 14px; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-facts dd { font-size: 24px; font-weight: 700; line-height: 1.25; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-section-head > a, .danetki-catalog-collection-link, .danetki-breadcrumbs a:hover, .danetki-catalog-guide li strong, .danetki-story__questions li svg, .danetki-story-missing > svg) { color: var(--reference-game-match-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-filters button, .danetki-catalog-card__action) { min-height: 44px; color: var(--reference-game-ink); border-color: var(--reference-game-line); background: var(--reference-game-white); font-size: 14px; font-weight: 500; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-filters button { padding-block: 8px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-collections a { font-size: 14px; font-weight: 500; line-height: 1.45; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-filters button strong,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-collections strong { flex: 0 0 auto; color: var(--reference-game-ink); background: var(--reference-game-lilac); font: 500 13px/1 var(--reference-game-font); font-variant-numeric: tabular-nums; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-filters button:hover,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-filters button[aria-pressed='true'],
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-collections a:hover,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-collections a.is-current { color: var(--reference-game-ink); border-color: var(--reference-game-ink); background: var(--reference-game-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-filters button[aria-pressed='true'] strong { color: var(--reference-game-white); background: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card:hover { border-color: var(--color-line-strong); transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__number { color: var(--reference-game-muted); font: 700 25px var(--reference-game-script); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-card__meta span, .danetki-story__tags span) { color: var(--reference-game-muted); border-color: var(--reference-game-line); background: var(--reference-game-white); font-size: 13px; line-height: 1.4; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card h2 a,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__condition p { color: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__action { padding-block: 10px; border-radius: var(--radius-pill); text-align: center; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__action--open:hover { color: var(--reference-game-ink); background: var(--reference-game-lilac); border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__action--try { color: var(--reference-game-white); border-color: var(--reference-game-ink); background: var(--reference-game-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__action--try:not(:disabled):hover { color: var(--reference-game-white); border-color: var(--reference-game-ink); background: color-mix(in srgb, var(--reference-game-ink) 86%, white); transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__action--try:disabled { color: var(--reference-game-muted); background: var(--reference-game-paper); border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__play-note { color: var(--reference-game-match-ink); font-size: 13px; font-weight: 400; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__play-note svg { flex: 0 0 auto; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__play-note.is-unavailable { color: var(--reference-game-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__stamp { color: var(--reference-game-ink); border-color: var(--reference-game-ink); background: var(--reference-game-yellow); transform: rotate(4deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__aliases { font-size: 14px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-story__condition, .danetki-story__questions, .danetki-story__answer, .danetki-story__play) { border-color: var(--reference-game-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__questions li { line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__questions li svg { flex: 0 0 18px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__answer summary { background: var(--reference-game-lilac); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__answer summary small { font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__answer summary > span:last-child { flex: 0 0 44px; width: 44px; height: 44px; border-color: var(--reference-game-line); background: var(--reference-game-white); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__answer > div { color: var(--reference-game-ink); background: var(--reference-game-white); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-card a, .danetki-catalog-card button, .danetki-catalog-collections a, .danetki-catalog-filters button, .danetki-story__answer summary):focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-story__answer summary:focus-visible { outline-offset: -4px; }
+/* This page can sit inside the shared shell, whose centre is narrower than
+   the viewport. The hero must respond to that actual content width. */
+@container application-content (max-width: 900px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-hero { grid-template-columns: minmax(0, 1fr); padding: 28px; gap: 24px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-hero h1 { font-size: clamp(32px, 6cqi, 48px); line-height: 1.15; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-facts div { min-height: 76px; padding: 12px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-copy { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-copy > :is(span, h2, div) { grid-column: 1; grid-row: auto; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-guide { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 800px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-facts dd { font-size: 20px; }
+}
+@media (max-width: 520px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-hero { padding: 25px 20px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.danetki-catalog-hero h1, .danetki-story__header h1) { font-size: 36px; overflow-wrap: anywhere; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .danetki-catalog-card__actions { grid-template-columns: minmax(0, 1fr); }
+}

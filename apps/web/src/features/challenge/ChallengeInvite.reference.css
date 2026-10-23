@@ -1,0 +1,11 @@
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite-backdrop { background: color-mix(in srgb, var(--reference-game-ink) 40%, transparent); backdrop-filter: blur(5px); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite { padding: 30px; color: var(--reference-game-ink); background: var(--reference-game-white); border-color: var(--reference-game-line); border-radius: 25px; box-shadow: 0 22px 80px color-mix(in srgb, var(--color-shadow) 14.1176%, transparent); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite > svg { width: 50px; height: 50px; padding: 10px; border-radius: 15px; color: var(--reference-game-ink); background: var(--reference-game-yellow); transform: rotate(-5deg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite > span { color: var(--reference-game-muted); font-size: 13px; font-weight: 500; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite h2 { font: 800 28px/1.15 var(--reference-game-font); text-transform: none; letter-spacing: -.025em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite .challenge-invite__error { color: var(--reference-game-miss-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite p { font-size: 15px; line-height: 1.6; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite .challenge-invite__note { font-size: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite button { border-radius: 999px; font-weight: 700; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite__accept { background: var(--reference-game-ink); border-color: var(--reference-game-ink); color: var(--reference-game-white); }
+@media (max-width: 380px) { html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .challenge-invite { padding: 24px 20px; } }

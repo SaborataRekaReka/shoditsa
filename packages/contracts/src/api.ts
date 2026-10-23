@@ -82,6 +82,7 @@ export type MetaResponse = {
     connectionsEnabled: boolean
     connectionsHintsEnabled: boolean
     connectionsLaunchDate: string | null
+    svoyakEnabled?: boolean
     territoryEnabled: boolean
   }
 }

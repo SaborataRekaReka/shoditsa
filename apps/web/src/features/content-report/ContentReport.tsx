@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { trackClientEvent } from '../../app/client-events'
-import { ControlButton, InlineAlert, TextArea, TextInput } from '../../components/ui'
+import { ActionButton, InlineAlert, TextArea, TextButton, TextInput } from '../../components/ui'
 import type { TitleMode } from '../../types'
 import './ContentReport.css'
 
@@ -52,11 +52,12 @@ export function ContentReport({
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
+  const formId = useId()
 
   if (sent) return <p className="content-report__thanks" role="status">{thanks}</p>
   return <div className="content-report">
-    <ControlButton type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open}>{prompt}</ControlButton>
-    {open && <form onSubmit={async (event) => {
+    <TextButton type="button" className="content-report__toggle" onClick={() => setOpen((value) => { if (!value) trackClientEvent('report_form_opened'); return !value })} aria-expanded={open} aria-controls={formId}>{prompt}</TextButton>
+    {open && <form id={formId} onSubmit={async (event) => {
       event.preventDefault()
       if (sending || !reason) return
       setSending(true)
@@ -74,13 +75,13 @@ export function ContentReport({
       <fieldset>
         <legend>Что случилось?</legend>
         {contentReportReasonsForMode(mode).map(([value, label]) => <label key={value}>
-          <TextInput type="radio" name="content-report-reason" value={value} checked={reason === value} onChange={() => setReason(value)} />
+          <TextInput type="radio" name={`${formId}-reason`} value={value} checked={reason === value} onChange={() => setReason(value)} />
           <span>{label}</span>
         </label>)}
       </fieldset>
-      <TextArea value={comment} onChange={(event) => setComment(event.target.value)} placeholder="Комментарий — необязательно" maxLength={500} />
+      <TextArea value={comment} onChange={(event) => setComment(event.target.value)} aria-label="Комментарий — необязательно" placeholder="Комментарий — необязательно" maxLength={500} />
       {error && <InlineAlert tone="danger" className="server-error">{error}</InlineAlert>}
-      <ControlButton type="submit" disabled={sending || !reason}>{sending ? 'Отправляем…' : 'Отправить'}</ControlButton>
+      <ActionButton type="submit" disabled={sending || !reason}>{sending ? 'Отправляем…' : 'Отправить'}</ActionButton>
     </form>}
   </div>
 }

@@ -1,0 +1,13 @@
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found { width: min(760px, calc(100% - 40px)); min-height: min(680px, 100svh); margin-inline: auto; padding-block: 48px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__brand { display: inline-flex; margin-bottom: 44px; text-decoration: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__code { margin: 0 0 14px; color: var(--color-muted); font: 400 14px/1.5 var(--font-mono); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found h1 { margin: 0; color: var(--color-ink); font: 800 clamp(32px, 6vw, 48px)/1.15 var(--font-display); letter-spacing: -.035em; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__description { max-width: 520px; margin: 20px 0 28px; color: var(--color-muted); font-size: 16px; line-height: 1.7; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__actions > a { text-decoration: none; }
+@media (max-width: 480px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found { padding-block: 32px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__brand { margin-bottom: 32px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__description { font-size: 15px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .public-not-found__actions { width: 100%; flex-direction: column; }
+}

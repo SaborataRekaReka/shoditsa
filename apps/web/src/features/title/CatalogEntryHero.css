@@ -1,0 +1,64 @@
+.entry-hero { padding: 20px 0 26px; display: flow-root; }
+.entry-hero__stage { --scene-x: 0px; --scene-y: 0px; --scene-counter-x: 0px; --scene-counter-y: 0px; --think-opacity: 1; --celebrate-opacity: 0; --pose-lift: 0px; --pose-turn: -3deg; --spark-scale: 1; position: relative; width: min(calc(100% - 2 * var(--content-gutter)), 1100px); margin: 0 auto; }
+.entry-hero__intro { position: relative; z-index: 1; width: min(100%, 560px); margin: 0 auto; text-align: center; }
+.entry-hero h1 { font: 550 46px/1.15 var(--font-entry); letter-spacing: -1.65px; color: var(--color-ink); }
+.entry-hero__intro p { margin-top: 12px; font: 400 15px/1.6 var(--font-entry); letter-spacing: -.15px; color: var(--color-muted); }
+.entry-hero__launch-group { position: relative; z-index: 1; display: grid; gap: 20px; width: min(100%, 880px); margin: 24px auto 0; }
+.entry-hero__criteria { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 18px; font-size: 12px; line-height: 1.6; }
+.entry-hero__criteria > span { color: var(--color-muted); font-size: 11px; }
+.entry-hero__criteria ul { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; color: var(--color-text); }
+.entry-hero__criteria li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border: 1px solid var(--color-line); border-radius: 999px; background: transparent; white-space: nowrap; }
+
+.entry-scene { position: absolute; inset: 0; pointer-events: none; user-select: none; }
+.entry-scene__mascot { position: absolute; top: 8px; left: 4px; width: clamp(150px, 17vw, 190px); height: 204px; transform: translate(var(--scene-x), var(--scene-y)); transition: transform 320ms ease-out; }
+.entry-scene__mint { position: absolute; width: 100%; height: 72%; left: -4px; bottom: 7px; border-radius: 54% 46% 42% 58% / 48% 44% 56% 52%; background: var(--color-mint); transform: rotate(-9deg); }
+.entry-scene__pose { position: relative; width: 100%; height: 100%; transform: translateY(var(--pose-lift)) rotate(var(--pose-turn)); transition: transform 340ms cubic-bezier(.2, .8, .25, 1); }
+.entry-scene__pose .mascot { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity 180ms ease; }
+.entry-scene__think { opacity: var(--think-opacity); }
+.entry-scene__celebrate { opacity: var(--celebrate-opacity); }
+.entry-scene__cinema { position: absolute; top: 45px; right: 22px; width: clamp(110px, 12vw, 138px); height: 142px; transform: translate(var(--scene-counter-x), var(--scene-counter-y)); transition: transform 320ms ease-out; }
+.entry-scene__lilac { position: absolute; inset: 11px -4px -4px 1px; border-radius: 25px 37px 27px 40px; background: var(--color-lilac); transform: rotate(9deg); }
+.entry-scene__cinema > img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain; transform: rotate(7deg); transition: transform 340ms ease; }
+.entry-scene__spark { position: absolute; color: var(--color-yellow); transform: scale(var(--spark-scale)) rotate(8deg); transition: transform 340ms cubic-bezier(.2, .8, .25, 1); }
+.entry-scene__spark--mascot { top: 8px; right: -9px; }
+.entry-scene__spark--cinema { width: 18px; height: 22px; left: -18px; bottom: 0; transform: scale(var(--spark-scale)) rotate(-13deg); }
+.entry-hero__stage:has(.game-launch-controls__action > button:not(:disabled):focus-visible) { --think-opacity: 0; --celebrate-opacity: 1; --pose-lift: -6px; --pose-turn: 2deg; --spark-scale: 1.2; }
+@media (hover: hover) and (pointer: fine) {
+  .entry-hero__stage:has(.game-launch-controls__action > button:not(:disabled):hover) { --think-opacity: 0; --celebrate-opacity: 1; --pose-lift: -6px; --pose-turn: 2deg; --spark-scale: 1.2; }
+}
+@media (max-width: 1000px) {
+  .entry-scene__mascot { left: -1px; width: 158px; height: 184px; top: 22px; }
+  .entry-scene__cinema { right: 9px; width: 112px; height: 124px; top: 51px; }
+}
+@media (max-width: 900px) {
+  .entry-scene { position: relative; height: 102px; width: 245px; margin: 0 auto 12px; }
+  .entry-scene__mascot { left: 4px; top: -5px; width: 118px; height: 113px; }
+  .entry-scene__mint { height: 75%; bottom: 0; }
+  .entry-scene__cinema { right: 9px; top: 14px; width: 90px; height: 90px; }
+  .entry-scene__lilac { border-radius: 19px 27px 20px 29px; }
+  .entry-scene__spark--mascot { width: 20px; height: 24px; top: 6px; right: -7px; }
+  .entry-scene__spark--cinema { width: 14px; height: 18px; left: -15px; bottom: 2px; }
+}
+@media (max-width: 650px) {
+  .entry-hero { padding: 21px 0 23px; }
+  .entry-hero__stage { width: calc(100% - 40px); }
+  .entry-hero h1 { font-size: 37px; letter-spacing: -1.25px; }
+  .entry-hero__intro p { font-size: 13px; line-height: 1.6; margin-top: 10px; }
+  .entry-hero__launch-group { width: 100%; margin: 22px auto 0; gap: 18px; }
+  .entry-hero__criteria { gap: 7px; font-size: 11px; }
+  .entry-hero__criteria > span { width: 100%; text-align: center; font-size: 10px; }
+  .entry-hero__criteria ul { max-width: 280px; }
+  .entry-hero__criteria li { gap: 5px; padding: 3px 8px; }
+}
+@media (max-width: 370px) {
+  .entry-hero h1 { font-size: 33px; }
+  .entry-hero__stage { width: calc(100% - 32px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entry-scene *, .entry-scene *::before, .entry-scene *::after { transition: none !important; animation: none !important; }
+  .entry-scene__mascot, .entry-scene__cinema, .entry-scene__pose, .entry-scene__spark { transform: none; }
+}
+
+.entry-hero__actions { width: min(100%, 460px); min-width: 0; justify-self: center; }
+.entry-hero__actions .game-launch-controls { margin: 0; }
+.entry-hero__extra { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }

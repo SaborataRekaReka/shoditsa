@@ -1,34 +1,15 @@
-import { useId, useMemo, type KeyboardEvent } from 'react'
-import type { TerritoryMapPoint, TerritoryPublicSnapshot } from '@shoditsa/contracts'
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { Flag, Maximize2, Minimize2 } from 'lucide-react'
+import type { TerritoryPublicSnapshot } from '@shoditsa/contracts'
+import { QuestButton } from '../../components/ui/QuestPrimitives'
+import { createTerritoryBoardLayout } from './territory-board-layout'
+import { TerritoryScenery } from './TerritoryScenery'
+import './TerritoryBoard.css'
 
-type TerritoryMap = TerritoryPublicSnapshot['map']
-type TerritoryOwnership = TerritoryPublicSnapshot['ownership']
-type TerritoryPlayers = TerritoryPublicSnapshot['players']
-
-const classNames = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(' ')
-const pointKey = ([x, y]: readonly [number, number]) => `${x.toFixed(3)},${y.toFixed(3)}`
-
-const territoryStateLabel = (ownerUserId: string | null, currentMemberId: string) => {
-  if (!ownerUserId) return 'нейтральная'
-  return ownerUserId === currentMemberId ? 'ваша' : 'территория соперника'
-}
-
-export function TerritoryBoard({
-  map,
-  ownership,
-  players,
-  currentMemberId,
-  legalCellIds,
-  selectedCellId,
-  capturedCellId,
-  capitalTowers,
-  siegeTargetCellId,
-  disabled = false,
-  onCapture,
-}: {
-  map: TerritoryMap
-  ownership: TerritoryOwnership
-  players: TerritoryPlayers
+export function TerritoryBoard({ map, ownership, players, currentMemberId, legalCellIds, selectedCellId, capturedCellId, capitalTowers, siegeTargetCellId, disabled = false, onCapture }: {
+  map: TerritoryPublicSnapshot['map']
+  ownership: TerritoryPublicSnapshot['ownership']
+  players: TerritoryPublicSnapshot['players']
   currentMemberId: string
   legalCellIds: readonly string[]
   selectedCellId: string | null
@@ -38,196 +19,114 @@ export function TerritoryBoard({
   disabled?: boolean
   onCapture: (cellId: string) => void
 }) {
-  const patternPrefix = useId().replace(/:/g, '')
-  const lightPatternId = `${patternPrefix}-territory-light-pattern`
-  const deepPatternId = `${patternPrefix}-territory-deep-pattern`
-  const organicFilterId = `${patternPrefix}-territory-organic-filter`
-  const legalCells = useMemo(() => new Set(legalCellIds), [legalCellIds])
-  const playerByUserId = useMemo(() => new Map(players.map((player, index) => [player.userId, index] as const)), [players])
-  const baseByCellId = useMemo(() => new Map(players.map((player, index) => [player.baseCellId, index] as const)), [players])
-  const markerRadius = Math.max(20, Math.min(map.viewBox.width, map.viewBox.height) * .034)
-  const organicSeed = useMemo(() => Array.from(map.seed).reduce((sum, character) => sum + character.charCodeAt(0), 17) % 997, [map.seed])
-  const geometryBounds = useMemo(() => {
-    const points = map.cells.flatMap((cell) => cell.polygon)
-    if (!points.length) return {
-      minX: map.viewBox.x,
-      maxX: map.viewBox.x + map.viewBox.width,
-      minY: map.viewBox.y,
-      maxY: map.viewBox.y + map.viewBox.height,
-    }
-    return {
-      minX: Math.min(...points.map(([x]) => x)),
-      maxX: Math.max(...points.map(([x]) => x)),
-      minY: Math.min(...points.map(([, y]) => y)),
-      maxY: Math.max(...points.map(([, y]) => y)),
-    }
-  }, [map.cells, map.viewBox])
-  const geometryWidth = Math.max(1, geometryBounds.maxX - geometryBounds.minX)
-  const geometryHeight = Math.max(1, geometryBounds.maxY - geometryBounds.minY)
-  const sourceAspect = geometryWidth / geometryHeight
-  const horizontalScale = sourceAspect < 2.3 ? Math.min(1.7, 2.42 / sourceAspect) : 1
-  const sourceCenterX = (geometryBounds.minX + geometryBounds.maxX) / 2
-  const horizontalPadding = geometryWidth * horizontalScale * .035
-  const verticalPadding = geometryHeight * .035
-  const renderedWidth = geometryWidth * horizontalScale + horizontalPadding * 2
-  const renderedHeight = geometryHeight + verticalPadding * 2
-  const renderedX = sourceCenterX - renderedWidth / 2
-  const renderedY = geometryBounds.minY - verticalPadding
-  const projectX = (x: number) => sourceCenterX + (x - sourceCenterX) * horizontalScale
-  const outerContour = useMemo(() => {
-    const pointsByKey = new Map<string, TerritoryMapPoint>()
-    const edges = new Map<string, { count: number; start: string; end: string }>()
-    for (const cell of map.cells) {
-      for (let index = 0; index < cell.polygon.length; index += 1) {
-        const startPoint = cell.polygon[index]
-        const endPoint = cell.polygon[(index + 1) % cell.polygon.length]
-        const start = pointKey(startPoint)
-        const end = pointKey(endPoint)
-        pointsByKey.set(start, startPoint)
-        pointsByKey.set(end, endPoint)
-        const key = start < end ? `${start}|${end}` : `${end}|${start}`
-        const edge = edges.get(key)
-        if (edge) edge.count += 1
-        else edges.set(key, { count: 1, start, end })
-      }
-    }
-    const boundaryEdges = [...edges.values()].filter((edge) => edge.count === 1)
-    if (boundaryEdges.length < 3) return []
-    const neighbors = new Map<string, string[]>()
-    for (const edge of boundaryEdges) {
-      neighbors.set(edge.start, [...(neighbors.get(edge.start) ?? []), edge.end])
-      neighbors.set(edge.end, [...(neighbors.get(edge.end) ?? []), edge.start])
-    }
-    const start = [...neighbors.keys()].sort((left, right) => {
-      const leftPoint = pointsByKey.get(left)!
-      const rightPoint = pointsByKey.get(right)!
-      return leftPoint[0] - rightPoint[0] || leftPoint[1] - rightPoint[1]
-    })[0]
-    const contour: TerritoryMapPoint[] = []
-    let previous: string | null = null
-    let current = start
-    for (let index = 0; index <= boundaryEdges.length; index += 1) {
-      const point = pointsByKey.get(current)
-      if (!point) break
-      contour.push(point)
-      const next = (neighbors.get(current) ?? []).find((candidate) => candidate !== previous)
-      if (!next || next === start) break
-      previous = current
-      current = next
-    }
-    return contour.length >= 3 ? contour : []
-  }, [map.cells])
-  const outerContourPoints = outerContour.map(([x, y]) => `${projectX(x)},${y}`).join(' ')
+  const [zoomed, setZoomed] = useState(false)
+  const [inspectedId, setInspectedId] = useState<string | null>(null)
+  const [celebration, setCelebration] = useState<{ id: string; serial: number } | null>(null)
+  const previous = useRef({ seed: map.seed, ownership })
+  const serial = useRef(0)
+  const layout = useMemo(() => createTerritoryBoardLayout(map), [map])
+  const legal = useMemo(() => new Set(legalCellIds), [legalCellIds])
+  const artId = useId().replace(/:/g, '')
+  const inspected = map.cells.find(cell => cell.id === inspectedId)
+  const adjacent = new Set(inspected?.adjacentCellIds ?? [])
+  const captured = layout.tiles.find(tile => tile.cell.id === celebration?.id)
 
-  const activate = (cellId: string) => {
-    if (disabled || !legalCells.has(cellId)) return
-    onCapture(cellId)
-  }
+  // Celebrate a received ownership change, never a click or an already-finished saved match.
+  useEffect(() => {
+    const before = previous.current
+    previous.current = { seed: map.seed, ownership }
+    if (before.seed !== map.seed) { setCelebration(null); return }
+    const changed = Object.keys(ownership).filter(id => ownership[id] && before.ownership[id] !== ownership[id])
+    const id = capturedCellId && changed.includes(capturedCellId) ? capturedCellId : changed[0]
+    if (id) setCelebration({ id, serial: ++serial.current })
+  }, [map.seed, ownership, capturedCellId])
+  useEffect(() => {
+    if (!celebration) return
+    const timer = window.setTimeout(() => setCelebration(null), 1250)
+    return () => window.clearTimeout(timer)
+  }, [celebration])
 
-  const onRegionKeyDown = (event: KeyboardEvent<SVGGElement>, cellId: string) => {
+  const activate = (cellId: string) => { if (!disabled && legal.has(cellId)) onCapture(cellId) }
+  const onKeyDown = (event: KeyboardEvent<SVGGElement>, cellId: string) => {
     if (event.key !== 'Enter' && event.key !== ' ') return
     event.preventDefault()
     activate(cellId)
   }
+  const canChoose = !disabled && legal.size > 0
 
-  return <div className="territory-map-shell">
-    {map.cells.length > 0
-      ? <svg
-          className="territory-map"
-          viewBox={`${renderedX} ${renderedY} ${renderedWidth} ${renderedHeight}`}
-          preserveAspectRatio="xMidYMid meet"
-          role="group"
-          aria-label={`Карта матча: ${map.cellCount} территорий. Доступно для захвата: ${legalCellIds.length}.`}
-        >
-          <defs>
-            <pattern id={lightPatternId} width="8" height="8" patternUnits="userSpaceOnUse">
-              <rect width="8" height="8" fill="var(--territory-player-light)" />
-              <path d="M-2 8 8-2M2 10 10 2" fill="none" stroke="rgba(16, 39, 23, .2)" strokeWidth="1.2" />
-            </pattern>
-            <pattern id={deepPatternId} width="8" height="8" patternUnits="userSpaceOnUse">
-              <rect width="8" height="8" fill="var(--territory-player-deep)" />
-              <circle cx="2" cy="2" r=".85" fill="rgba(255, 255, 255, .24)" />
-              <circle cx="6" cy="6" r=".65" fill="rgba(255, 255, 255, .18)" />
-            </pattern>
-            <filter id={organicFilterId} x="-4%" y="-5%" width="108%" height="110%" colorInterpolationFilters="sRGB">
-              <feTurbulence type="fractalNoise" baseFrequency=".008 .014" numOctaves="2" seed={organicSeed} result="territoryNoise" />
-              <feDisplacementMap in="SourceGraphic" in2="territoryNoise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
-            </filter>
-          </defs>
-          {outerContourPoints && <polygon className="territory-map__rim-shadow" points={outerContourPoints} aria-hidden="true" />}
-          {map.cells.map((cell, index) => {
-            const ownerUserId = ownership[cell.id] ?? null
-            const ownerIndex = ownerUserId ? playerByUserId.get(ownerUserId) : undefined
-            const baseIndex = baseByCellId.get(cell.id)
-            const legal = legalCells.has(cell.id)
-            const selected = selectedCellId === cell.id
-            const relation = territoryStateLabel(ownerUserId, currentMemberId)
-            const capital = baseIndex === undefined ? '' : ` Столица игрока ${baseIndex === 0 ? 'А' : 'Б'} — ${players[baseIndex].displayName}.`
-            const towers = baseIndex === undefined ? '' : ` Башен стоит: ${capitalTowers[cell.id] ?? 3} из 3.`
-            const siege = siegeTargetCellId === cell.id ? ' Идёт осада.' : ''
-            const availability = legal ? baseIndex === undefined ? ' Доступна для захвата.' : ' Доступна для осады.' : ' Сейчас недоступна для захвата.'
-            const label = `Территория ${index + 1}, ценность ${cell.value} очков: ${relation}.${capital}${towers}${siege}${availability}`
-            const fill = ownerIndex === 0
-              ? `url(#${lightPatternId})`
-              : ownerIndex === 1
-                ? `url(#${deepPatternId})`
-                : 'var(--territory-neutral)'
-            const points = cell.polygon.map(([x, y]) => `${projectX(x)},${y}`).join(' ')
-            const centerX = projectX(cell.center[0])
-            return <g
-              key={cell.id}
-              className={classNames(
-                'territory-map__region',
-                ownerIndex === 0 && 'is-light',
-                ownerIndex === 1 && 'is-deep',
-                legal && !disabled && 'is-actionable',
-                legal && 'is-legal',
-                selected && 'is-selected',
-                capturedCellId === cell.id && 'is-last-capture',
-                siegeTargetCellId === cell.id && 'is-under-siege',
-              )}
-              role="button"
-              tabIndex={0}
-              focusable="true"
-              aria-label={label}
-              aria-disabled={!legal || disabled}
-              aria-pressed={selected || undefined}
-              onClick={() => activate(cell.id)}
-              onKeyDown={(event) => onRegionKeyDown(event, cell.id)}
-            >
-              <polygon className="territory-map__shape" points={points} style={{ fill }} filter={`url(#${organicFilterId})`} />
-              <polygon className="territory-map__hit" points={points} aria-hidden="true" />
-              <text
-                className="territory-map__value"
-                x={centerX}
-                y={cell.center[1] + (baseIndex === undefined ? 2 : markerRadius + 27)}
-                aria-hidden="true"
-              >
-                {cell.value}
-              </text>
-              {baseIndex !== undefined && <g
-                className={classNames('territory-map__capital', baseIndex === 0 ? 'is-light' : 'is-deep', siegeTargetCellId === cell.id && 'is-under-siege')}
-                transform={`translate(${centerX} ${cell.center[1]})`}
-                aria-hidden="true"
-              >
-                <circle className="territory-map__capital-outer" r={markerRadius} />
-                <circle className="territory-map__capital-inner" r={markerRadius * .58} />
-                {[0, 1, 2].map((towerIndex) => {
-                  const remaining = capitalTowers[cell.id] ?? 3
-                  const x = (towerIndex - 1) * markerRadius * .52
-                  return <g
-                    key={towerIndex}
-                    className={classNames('territory-map__tower', towerIndex >= remaining && 'is-down')}
-                    transform={`translate(${x} ${-markerRadius * .17})`}
-                  >
-                    <path d={`M${-markerRadius * .15} ${-markerRadius * .36}v${markerRadius * .72}h${markerRadius * .3}v${-markerRadius * .72}l${-markerRadius * .075} ${markerRadius * .09}l${-markerRadius * .075} ${-markerRadius * .09}l${-markerRadius * .075} ${markerRadius * .09}Z`} />
-                  </g>
-                })}
-              </g>}
+  return <section className={`territory-board${zoomed ? ' is-zoomed' : ''}`} aria-label="Карта территорий">
+    <header className="territory-board__heading">
+      <div><h2>{canChoose ? 'Какую землю займём?' : 'Твой маленький мир'}</h2><p>{canChoose ? 'Выбирай подсвеченную территорию' : 'Каждая земля приближает к победе'}</p></div>
+      <QuestButton kind="outline" size="compact" aria-pressed={zoomed} onClick={() => setZoomed(value => !value)}>{zoomed ? <Minimize2 size={17} /> : <Maximize2 size={17} />}{zoomed ? 'Весь остров' : 'Увеличить'}</QuestButton>
+    </header>
+    {map.cells.length ? <div className="territory-board__viewport" tabIndex={zoomed ? 0 : undefined} aria-label={zoomed ? 'Увеличенный остров, прокрутка по горизонтали' : undefined}>
+      <svg className="territory-board__scene" viewBox={layout.viewBox} role="group" aria-label={`Карта матча: ${map.cellCount} территорий. Доступно для захвата: ${disabled ? 0 : legal.size}.`}>
+        <defs>
+          <linearGradient id={`${artId}-cliff`} x1="0" x2=".3" y1="0" y2="1"><stop stopColor="var(--island-cliff-light)" /><stop offset="1" stopColor="var(--island-cliff)" /></linearGradient>
+          <radialGradient id={`${artId}-leaf`} cx=".3" cy=".2" r=".85"><stop stopColor="var(--island-leaf-light)" /><stop offset="1" stopColor="var(--island-leaf)" /></radialGradient>
+          <filter id={`${artId}-shadow`} x="-.2" y="-.4" width="1.4" height="1.8"><feGaussianBlur stdDeviation="6" /></filter>
+        </defs>
+        <g className="territory-board__coast" aria-hidden="true">
+          <path className="territory-board__waterline is-outer" d={layout.coastPath} transform="translate(0 40)" />
+          <path className="territory-board__island-shadow" d={layout.coastPath} transform="translate(0 46)" filter={`url(#${artId}-shadow)`} />
+          <path className="territory-board__waterline" d={layout.coastPath} transform="translate(0 36)" />
+          <path className="territory-board__cliff" d={layout.coastPath} transform="translate(0 32)" fill={`url(#${artId}-cliff)`} />
+          <path className="territory-board__shore" d={layout.coastPath} transform="translate(0 10)" />
+          <path className="territory-board__ground" d={layout.coastPath} />
+        </g>
+        {layout.tiles.map(({ cell, center: [x, y], elevation, path, detailScale }) => {
+          const owner = players.findIndex(player => player.userId === ownership[cell.id])
+          const base = players.findIndex(player => player.baseCellId === cell.id)
+          const canCapture = !disabled && legal.has(cell.id)
+          const selected = selectedCellId === cell.id
+          const mine = ownership[cell.id] === currentMemberId
+          const towers = capitalTowers[cell.id] ?? 3
+          const cellNumber = map.cells.findIndex(candidate => candidate.id === cell.id) + 1
+          const label = `Территория ${cellNumber}, ${cell.value} очков: ${owner < 0 ? 'свободная' : mine ? 'ваша' : 'соперника'}.${base >= 0 ? ` Столица ${players[base].displayName}. Башен: ${towers} из 3.` : ''} ${canCapture ? 'Можно захватить.' : 'Сейчас недоступна для захвата.'}`
+          const classes = ['territory-board__tile', owner === 0 ? 'is-mint' : owner === 1 ? 'is-violet' : 'is-neutral', base >= 0 && 'is-capital', canCapture && 'is-legal', selected && 'is-selected', celebration?.id === cell.id && 'is-celebrating', adjacent.has(cell.id) && 'is-neighbor', siegeTargetCellId === cell.id && 'is-under-siege'].filter(Boolean).join(' ')
+          return <g key={cell.id} className={classes} transform={`translate(${x} ${y - elevation})`} role="button" tabIndex={0} aria-label={label} aria-disabled={!canCapture} aria-pressed={selected || undefined} data-cell-id={cell.id} onClick={() => activate(cell.id)} onKeyDown={event => onKeyDown(event, cell.id)} onPointerEnter={() => setInspectedId(cell.id)} onPointerLeave={() => setInspectedId(null)} onFocus={() => setInspectedId(cell.id)} onBlur={() => setInspectedId(null)}>
+            <title>{label}</title>
+            <defs>
+              <linearGradient id={`${artId}-${cell.id}`} x1="0" x2=".65" y1="0" y2="1"><stop stopColor="var(--tile-top)" /><stop offset="1" stopColor="var(--tile-face)" /></linearGradient>
+              <linearGradient id={`${artId}-${cell.id}-edge`} x1="0" x2=".3" y1="0" y2="1"><stop stopColor="var(--tile-edge-light)" /><stop offset="1" stopColor="var(--tile-edge)" /></linearGradient>
+            </defs>
+            <path className="territory-board__tile-shadow" d={path} transform="translate(0 19)" aria-hidden="true" />
+            <g className="territory-board__piece" aria-hidden="true">
+              <path className="territory-board__tile-depth" d={path} transform="translate(0 15)" fill={`url(#${artId}-${cell.id}-edge)`} />
+              <path className="territory-board__tile-face" d={path} fill={`url(#${artId}-${cell.id})`} />
+              <g className="territory-board__scenery" transform={`scale(${detailScale})`}>
+                <TerritoryScenery capital={base >= 0} owned={owner >= 0} variant={cellNumber} towers={towers} leafGradient={`${artId}-leaf`} />
+              </g>
+              {selected && <ellipse className="territory-board__pending" cy="9" rx="35" ry="17" />}
+            </g>
+          </g>
+        })}
+        {/* Labels sit above the terrain so a raised foreground region cannot hide a cost. */}
+        <g className="territory-board__labels" aria-hidden="true">
+          {layout.tiles.map(({ cell, center: [x, y], elevation }) => {
+            const owner = players.findIndex(player => player.userId === ownership[cell.id])
+            const canCapture = !disabled && legal.has(cell.id)
+            return <g key={cell.id} className={`territory-board__tile-label ${owner === 0 ? 'is-mint' : owner === 1 ? 'is-violet' : 'is-neutral'}${canCapture ? ' is-legal' : ''}`} transform={`translate(${x} ${y - elevation + 17})`} onClick={() => activate(cell.id)} onPointerEnter={() => setInspectedId(cell.id)} onPointerLeave={() => setInspectedId(null)}>
+              <g className="territory-board__value"><rect x="-28" y="-11" width="56" height="23" rx="11.5" />
+                {canCapture && <path className="territory-board__plus" d="M-20 0H-12M-16-4V4" />}
+                <text x={canCapture ? 5 : 0} y="5.5">{cell.value}</text>
+              </g>
             </g>
           })}
-          {outerContourPoints && <polygon className="territory-map__rim-line" points={outerContourPoints} aria-hidden="true" />}
-        </svg>
-      : <p className="territory-map__empty" role="status">Карта пока недоступна. Как только сервер подготовит территории, поле появится здесь.</p>}
-  </div>
+        </g>
+        {captured && celebration && <g key={celebration.serial} className="territory-board__celebration" transform={`translate(${captured.center[0]} ${captured.center[1] - captured.elevation})`} aria-hidden="true">
+          <ellipse className="territory-board__capture-ring" rx="43" ry="23" />
+          {Array.from({ length: 7 }, (_, i) => <g key={i} transform={`rotate(${i * 51})`}><path className="territory-board__spark" d="M0-42L3-35L10-32L3-29L0-22L-3-29L-10-32L-3-35Z" /></g>)}
+          <text className="territory-board__reward" y="-53">+{captured.cell.value}</text>
+        </g>}
+      </svg>
+    </div> : <p role="status">Карта появится, когда сервер подготовит территории.</p>}
+    <footer className="territory-board__legend">
+      {players.map((player, index) => <span key={player.userId}><i className={index === 0 ? 'is-mint' : 'is-violet'} />{player.userId === currentMemberId ? 'Твои земли' : player.displayName}</span>)}
+      <span><i className="is-neutral" />Свободные</span>
+      <span><Flag size={14} />Столица · 3 башни</span>
+      {zoomed && <small>Остров можно прокручивать влево и вправо</small>}
+    </footer>
+    <span className="territory-board__announcement" role="status">{captured ? `${ownership[captured.cell.id] === currentMemberId ? 'Твоя новая территория' : 'Соперник захватил территорию'}: ${captured.cell.value} очков.` : ''}</span>
+  </section>
 }

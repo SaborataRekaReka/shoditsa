@@ -1,0 +1,16 @@
+.room-lobby-page { min-width: 0; color: var(--quest-text); }
+.room-lobby-config { min-width: 0; display: grid; gap: 22px; margin-top: 28px; }
+.room-lobby-launch { display: grid; gap: 12px; padding-top: 22px; border-top: 2px solid var(--quest-line); }
+.room-lobby-launch > .quest-button { width: 100%; min-height: 54px; }
+.qg-app .room-lobby-launch p { margin: 0; font-size: 12px; line-height: 1.6; color: var(--quest-muted); text-align: center; }
+.room-lobby-current { display: grid; gap: 10px; padding: 20px; border: 2px solid var(--quest-line); border-radius: 18px; }
+.qg-app .room-lobby-current h2 { margin: 0 0 2px; font-size: 16px; }
+.qg-app .room-lobby-current > a { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-width: 0; padding: 12px 0; border-top: 1px solid var(--quest-line); color: var(--quest-text); }
+.room-lobby-current strong { display: block; font-size: 12px; line-height: 1.5; }
+.room-lobby-current small { display: block; margin-top: 4px; color: var(--quest-muted); font-size: 10px; }
+.room-lobby-current > a > span:last-child { display: flex; align-items: center; gap: 5px; flex: none; font: 800 10px/1.3 var(--quest-font); color: var(--quest-blue); }
+.room-lobby-current > a:hover { color: var(--quest-blue); }
+.room-lobby-config .svoyak-form { margin: 0; }
+.room-lobby-page .ui-page-heading__actions > .quest-button { white-space: nowrap; }
+.room-lobby-join-dialog .room-company-join { border: 0; padding: 0; }
+@container application-content (max-width: 500px) { .room-lobby-config { gap: 26px; margin-top: 26px; } .room-lobby-page .ui-page-heading { flex-wrap: wrap; } .room-lobby-page .ui-page-heading__actions { margin-left: 0; } }

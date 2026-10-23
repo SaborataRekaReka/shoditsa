@@ -8,28 +8,48 @@ import './styles.css'
 import { initClientEvents } from './app/client-events'
 import { applyRuntimeSeo } from './app/seo'
 import { initReleaseUpdateWatcher } from './app/release-update'
-import { appRouter } from './app/router'
+import { applyPublicPresentation, PRESENTATION_PREVIEW } from './app/local-presentation'
+import { APPLICATION_DESIGN } from './app/application-design'
+import { canonicalApplicationHref } from './features/application/routes'
+import { RoutePending } from './app/RoutePending'
+import { applyStudyTheme } from './dev/quest-game/study-theme'
 
+if (APPLICATION_DESIGN) {
+  const canonical = canonicalApplicationHref(window.location)
+  if (canonical) window.history.replaceState(window.history.state, '', canonical)
+  document.documentElement.dataset.questSkin = 'shoditsa'
+  applyStudyTheme()
+}
+
+applyPublicPresentation(window.location.hash.startsWith('#/') ? window.location.hash.slice(1).split('?')[0] : window.location.pathname)
 markAppBootStart()
+if (!PRESENTATION_PREVIEW) {
 captureAnalyticsEntry()
 initMetrikaDataLayer()
 initMetrikaFromStoredConsent()
 initWebVitalsObservers()
 initClientEvents()
-applyRuntimeSeo()
 initReleaseUpdateWatcher()
+}
+applyRuntimeSeo()
+
+const root = ReactDOM.createRoot(document.getElementById('root')!)
+if (APPLICATION_DESIGN) root.render(<RoutePending />)
 
 // Initialize Yandex Games SDK before mounting the app.
 // YaGames is injected globally by /sdk.js loaded in index.html.
-const mountApp = () => {
+const mountApp = async () => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false }, mutations: { retry: false } } })
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode><AppErrorBoundary><QueryClientProvider client={queryClient}><RouterProvider router={appRouter} /></QueryClientProvider></AppErrorBoundary></React.StrictMode>,
+  const { appRouter } = await import('./app/router')
+  root.render(
+    <React.StrictMode><AppErrorBoundary><QueryClientProvider client={queryClient}><RouterProvider router={appRouter} context={{ queryClient }} /></QueryClientProvider></AppErrorBoundary></React.StrictMode>,
   )
 }
 
-if (typeof YaGames !== 'undefined') {
-  YaGames.init().then(mountApp).catch(mountApp)
-} else {
-  mountApp()
-}
+function BootstrapFailure({ error }: { error: unknown }): never { throw error }
+const startApp = () => mountApp().catch(error => {
+  root.render(<AppErrorBoundary><BootstrapFailure error={error} /></AppErrorBoundary>)
+})
+
+if (typeof YaGames !== 'undefined') YaGames.init().then(startApp, startApp)
+else void startApp()

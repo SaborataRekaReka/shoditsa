@@ -5,9 +5,23 @@ import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from '../featu
 import { DANETKI_CATALOG_ITEMS } from '../features/danetki/danetki-catalog'
 import { PUBLIC_GAME_LINKS } from './public-game-links'
 import { DANETKI_DISCOVERY_LINKS } from './danetki-discovery-links'
-import { STATIC_INDEXABLE_PATHS, renderSitemap } from './static-index'
+import { STATIC_INDEXABLE_PATHS, renderPublicTrailingSlashRedirects, renderSitemap } from './static-index'
 
 describe('search index contract', () => {
+  it('redirects trailing slashes only for published canonical pages', () => {
+    const config = renderPublicTrailingSlashRedirects()
+    const pattern = config.match(/location ~ "([^"]+)"/)?.[1]
+    expect(pattern).toBeTruthy()
+    const matcher = new RegExp(pattern!)
+    for (const pathname of STATIC_INDEXABLE_PATHS.filter(path => path !== '/')) {
+      expect(matcher.exec(pathname + '/')?.[1], pathname).toBe(pathname)
+      expect(matcher.test(pathname), pathname).toBe(false)
+    }
+    for (const pathname of ['/', '//', '/games/unknown/', '/games/together/', '/danetki/unknown/', '/login/', '/api/v1/meta/', '/sessions/private/']) {
+      expect(matcher.test(pathname), pathname).toBe(false)
+    }
+    expect(config).toContain('return 301 https://shoditsa.ru$1$is_args$args;')
+  })
   it('keeps public navigation aligned with every indexable game mode', () => {
     expect(PUBLIC_GAME_LINKS).toHaveLength(INDEXABLE_GAME_SEO.length)
     expect(PUBLIC_GAME_LINKS.map((game) => game.mode)).toEqual(INDEXABLE_GAME_SEO.map((game) => game.mode))
@@ -87,7 +101,7 @@ describe('search index contract', () => {
   })
 
   it('keeps personal and transactional routes out of the index', () => {
-    for (const pathname of ['/login', '/register', '/archive', '/profile', '/play/movie', '/games/together', '/sessions/id-1', '/review/music', '/admin', '/ui-kit', '/missing']) {
+    for (const pathname of ['/login', '/register', '/archive', '/profile', '/lobby', '/play/movie', '/games/together', '/sessions/id-1', '/review/music', '/admin', '/ui-kit', '/missing']) {
       const route = seoRouteFromPathname(pathname)
       expect(route.indexable, pathname).toBe(false)
       expect(route.robots, pathname).toContain('noindex')

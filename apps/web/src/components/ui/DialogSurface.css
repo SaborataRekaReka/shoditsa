@@ -5,3 +5,8 @@
 .ui-dialog-surface:focus {
   outline: 0;
 }
+
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-dialog-backdrop { background: var(--color-overlay); backdrop-filter: blur(5px); z-index: var(--z-dialog); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-dialog-surface { color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-line); border-radius: var(--radius-lg); box-shadow: var(--shadow-floating); font-family: var(--font-body); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-dialog-surface :is(h1,h2,h3) { font-family: var(--font-display); }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-dialog-surface .ui-dialog-title { color: var(--color-ink); font: 800 26px/1.2 var(--font-display); letter-spacing: normal; text-transform: none; overflow-wrap: anywhere; }

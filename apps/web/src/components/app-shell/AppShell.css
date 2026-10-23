@@ -390,6 +390,22 @@
   opacity: .85;
 }
 
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .keycap-hint {
+  flex: 0 0 auto;
+  min-height: 22px;
+  padding: 2px 6px;
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, currentColor 9%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, currentColor 30%, transparent);
+  color: inherit;
+  font: 500 11px/1.2 var(--font-body);
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 1;
+}
+
 :where(.screen-back, .app-footer__home, .app-footer__link, .app-footer__legal a, .app-footer__legal button):focus-visible {
   outline: 3px solid color-mix(in srgb, var(--color-primary) 72%, white);
   outline-offset: 3px;
@@ -1060,4 +1076,50 @@
 
 @media (min-width: 1920px) {
   .app-footer__inner { max-width: 1440px; }
+}
+/* The shared shell owns public chrome, account navigation and footer variants. */
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.header-create-room, .header-return-room) { min-height: 44px; gap: 8px; padding: 10px 14px; white-space: nowrap; font-size: 13px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-return-room { border-radius: var(--radius-pill) 0 0 var(--radius-pill); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-return-room__menu { border-radius: 0 var(--radius-pill) var(--radius-pill) 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown { z-index: var(--z-menu); border-radius: var(--radius-md); background: var(--color-surface); box-shadow: var(--shadow-floating); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown > header span { font-size: 12px; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown > header strong { font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-summary strong { font-size: 14px; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-summary small,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown__leave-current small { font-size: 12px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown__leave-current strong { font-size: 14px; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown__mark { font-family: var(--font-mono); background: var(--color-mint); color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown__mark.is-danetki { background: var(--color-peach); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown__error { color: var(--match-miss-ink); background: var(--match-miss-bg); font-size: 12px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown__leave-current { width: 100%; min-height: 51px; gap: 9px; justify-content: flex-start; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 5px 12px 5px 5px; border: 1px solid var(--color-line); border-radius: var(--radius-pill); background: var(--color-surface-2); color: var(--color-ink); font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile > strong { max-width: 112px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile__chevron { width: 14px; height: 14px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile__avatar { width: 32px; height: 32px; border-radius: var(--radius-pill); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) :is(.header-profile, .header-profile-dropdown__identity) .header-profile__avatar { color: var(--color-ink); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-line); border-radius: var(--radius-md); box-shadow: var(--shadow-floating); z-index: var(--z-menu); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > button { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 10px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text); font: 500 14px/1.4 var(--font-body); letter-spacing: 0; text-align: left; text-transform: none; cursor: pointer; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > button svg { width: 18px; height: 18px; color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > button:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > .header-profile-dropdown__economy { grid-template-columns: 20px minmax(0, 1fr) auto; row-gap: 8px; margin-bottom: 6px; border-bottom: 1px solid var(--color-line); border-radius: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > .header-profile-dropdown__economy strong { font: 600 14px/1.4 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > .header-profile-dropdown__signout,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown > .header-profile-dropdown__account { margin-top: 6px; border-top: 1px solid var(--color-line); border-radius: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown button:hover { background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown__identity { border-color: var(--color-line); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown__identity small { font-size: 12px; line-height: 1.5; white-space: normal; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .modal-head button { width: 44px; height: 44px; border-radius: var(--radius-pill); border-color: var(--color-line); background: var(--color-surface-2); color: var(--color-ink); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .screen-back--labeled { display: inline-flex; align-items: center; justify-content: center; width: auto; min-height: 44px; gap: 6px; padding: 8px 4px; color: var(--color-muted); background: transparent; border: 0; border-radius: var(--radius-sm); box-shadow: none; font: 400 14px/1.5 var(--font-body); text-decoration: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .screen-back--labeled:hover { color: var(--color-ink); background: transparent; transform: none; }
+@media (max-width: 1100px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-game-header .header-profile > strong,
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-game-header .header-profile__chevron { display: none; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-game-header .header-profile { width: 44px; padding: 5px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-profile-dropdown { position: fixed; top: 76px; right: var(--content-gutter); left: var(--content-gutter); width: auto; max-height: calc(100dvh - 92px); overflow-y: auto; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .header-room-dropdown { right: auto; left: 0; width: 100%; }
+}
+@media (max-width: 420px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-game-header__streak { display: none; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-game-header__actions { gap: 4px; }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .reference-game-header__progress { padding-inline: 9px; }
 }

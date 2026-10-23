@@ -1,8 +1,13 @@
-import { Check, HeartPulse, Stethoscope, Ticket, UserRound, X } from 'lucide-react'
+import { Check, HeartPulse, Minus, Stethoscope, Ticket, UserRound, X } from 'lucide-react'
+import type { GameSessionSnapshot } from '@shoditsa/contracts'
 import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
+import { GAME_RULES } from '../../app/seo-content'
 import { ActionButton } from '../../components/app-shell/AppShell'
-import { ControlButton, DialogSurface } from '../../components/ui'
+import { APPLICATION_DESIGN } from '../../app/application-design'
+import { GameArtwork } from '../../components/ui/GameArtwork'
+import { QuestButton, QuestDialog } from '../../components/ui/QuestPrimitives'
+import { ControlButton, DialogSurface, DialogTitle, IconButton, StatsGrid } from '../../components/ui'
 import { DIFFICULTIES, PERIODS, prettyDate } from '../../game'
 import { dayNumber } from '../../game/day-number'
 import { nextStreakMilestoneAt, nextStreakMilestoneReward } from '../economy/economy-rules'
@@ -11,6 +16,7 @@ import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime
 import { loadAttendanceStats, loadStats, loadWallet } from '../../storage'
 import type { DifficultyKey, SavedGame, Stats, TitleMode } from '../../types'
 import './PlayerModalViews.css'
+import './AnamnesisDialog.css'
 
 const modeMeta = (mode: TitleMode) => MODE_CONFIG[mode]
 const modeIcon = (mode: TitleMode) => { const Icon = MODE_PRESENTATION[mode].icon; return <Icon /> }
@@ -35,16 +41,27 @@ export function AnamnesisModal({ text, dayNo, onClose, onStart }: {
   onClose: () => void
   onStart?: () => void
 }) {
+  if (APPLICATION_DESIGN) return <QuestDialog title={`Приём № ${dayNo}`} description="Амбулаторная карта · Анамнез" onClose={onClose}>
+    <div className="study-anamnesis">
+      <div className="study-anamnesis__patient">
+        <GameArtwork mode="diagnosis" alt="" width="52" height="52" />
+        <div><strong>Анонимный пациент</strong><span>Жалобы записаны со слов пациента</span></div>
+      </div>
+      <p className="study-anamnesis__text">{text}</p>
+      <div className="study-anamnesis__note"><HeartPulse size={20} aria-hidden="true" /><span>Поставьте верный диагноз по симптомам за десять попыток.</span></div>
+      <div className="study-anamnesis__actions"><QuestButton onClick={onStart ?? onClose}>{onStart ? <Stethoscope size={20} aria-hidden="true" /> : <Check size={20} aria-hidden="true" />}{onStart ? 'Взяться за дело' : 'Понятно'}</QuestButton></div>
+    </div>
+  </QuestDialog>
   return <DialogSurface backdropClassName="anamnesis-backdrop" className="anamnesis-modal" onClose={onClose} ariaLabelledBy="anamnesis-title">
       <div className="anamnesis-modal__head">
         <span><Stethoscope /> Амбулаторная карта · Анамнез</span>
-        <ControlButton onClick={onClose} aria-label="Закрыть"><X /></ControlButton>
+        <IconButton onClick={onClose} label="Закрыть"><X /></IconButton>
       </div>
       <div className="anamnesis-modal__patient">
         <span className="anamnesis-modal__avatar" aria-hidden="true"><UserRound /></span>
         <div className="anamnesis-modal__patient-copy">
           <small>Анонимный пациент</small>
-          <h2 id="anamnesis-title">Приём № {dayNo}</h2>
+          <DialogTitle id="anamnesis-title">Приём № {dayNo}</DialogTitle>
           <em>Жалобы записаны со слов пациента</em>
         </div>
       </div>
@@ -76,20 +93,20 @@ export function StatsView({ mode, difficulty }: { mode: TitleMode; difficulty?: 
   const rate = stats.played ? Math.round(stats.won / stats.played * 100) : 0
   const max = Math.max(1, ...stats.distribution)
   return <>
-    <div className="stats-grid stats-grid--economy">
+    <StatsGrid variant="economy">
       <div><strong>{wallet.tickets}</strong><span>билетов</span></div>
       <div><strong>{attendance.currentDailyStreak}</strong><span>абонемент</span></div>
       <div><strong>+{nextStreakMilestoneReward(attendance.currentDailyStreak, serverRuntime.dashboard?.economyRules)}</strong><span>на {nextStreakMilestoneAt(attendance.currentDailyStreak)}-й день</span></div>
       <div><strong>{attendance.gracePasses}</strong><span>контрамарки</span></div>
-    </div>
+    </StatsGrid>
     <h3 className="subheading">Статистика темы</h3>
     {mode === 'music' && difficulty && <p className="modal-lead">Сложность: <strong>{DIFFICULTIES[difficulty].label}</strong></p>}
-    <div className="stats-grid">
+    <StatsGrid>
       <div><strong>{stats.played}</strong><span>сеансов</span></div>
       <div><strong>{rate}%</strong><span>побед</span></div>
       <div><strong>{stats.currentStreak}</strong><span>серия побед</span></div>
       <div><strong>{stats.bestStreak}</strong><span>рекорд побед</span></div>
-    </div>
+    </StatsGrid>
     <div className="attendance-line">
       <span>Активных дней: <strong>{attendance.totalActiveDays}</strong></span>
       <span>Полных залов: <strong>{attendance.fullHouseDays}</strong></span>
@@ -100,7 +117,21 @@ export function StatsView({ mode, difficulty }: { mode: TitleMode; difficulty?: 
   </>
 }
 
-export function RulesView() {
+export function RulesView({ mode }: { mode?: GameSessionSnapshot['mode'] } = {}) {
+  if (mode === 'connections') return <div className="rules-list">
+    <p><strong>Связи</strong> — найди четыре группы по четыре слова среди шестнадцати карточек.</p>
+    <p>{GAME_RULES.connections.searchInstruction}</p>
+    <p>{GAME_RULES.connections.comparisonInstruction}</p>
+    <p>{GAME_RULES.connections.directionInstruction}</p>
+    {GAME_RULES.connections.modeNote && <p>{GAME_RULES.connections.modeNote}</p>}
+  </div>
+  if (mode === 'danetki') return <div className="rules-list">
+    <p><strong>Данетки</strong> — восстанови необычную историю с помощью вопросов ведущему.</p>
+    <p>Прочитай условие. Задавай короткие вопросы, на которые можно ответить «да» или «нет», и сопоставляй ответы в журнале.</p>
+    <p>«Неважно» означает, что эта деталь не помогает объяснить происшествие. Попробуй проверить другую версию.</p>
+    <p>Когда восстановишь причинно-следственную связь, сформулируй полное объяснение и отправь его ведущему на проверку.</p>
+    <p>В совместной комнате участники видят один диалог, подсказки и итоговую версию.</p>
+  </div>
   return <div className="rules-list">
     <p>Выберите тайтл из поиска. После каждой попытки значения сравниваются с ответом дня.</p>
     <p>Перед 5-й и 8-й попытками можно открыть по одной из трёх дополнительных подсказок.</p>
@@ -108,9 +139,9 @@ export function RulesView() {
     <p>В режиме «Игры» дополнительно сравниваются позиция в топе, метрики Steam и Metacritic.</p>
     <p>В режиме «Музыка» сравниваются страна, старт карьеры, десятилетие, тип артиста, статус карьеры, сцена и жанры.</p>
     <p>Топ-трек, топ-альбом и похожие артисты открываются как дополнительные подсказки и не увеличивают основной счетчик совпадений.</p>
-    <div><i className="match" /><span><strong>Точно</strong> — значение совпало.</span></div>
-    <div><i className="close" /><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
-    <div><i className="miss" /><span><strong>Мимо</strong> — значение не совпало.</span></div>
+    <div><i className="match" aria-hidden="true"><Check /></i><span><strong>Точно</strong> — значение совпало.</span></div>
+    <div><i className="close" aria-hidden="true"><Minus /></i><span><strong>Рядом</strong> — число близко или есть частичное совпадение.</span></div>
+    <div><i className="miss" aria-hidden="true"><X /></i><span><strong>Мимо</strong> — значение не совпало.</span></div>
     <p>Стрелка показывает, выше или ниже находится правильный год, рейтинг, хронометраж или количество сезонов.</p>
   </div>
 }

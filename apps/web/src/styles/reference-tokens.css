@@ -1,0 +1,146 @@
+/* Public presentation foundation. Values live here; components consume roles. */
+@import './radix-dark.css';
+@import './dark-components.css';
+@import './promo-motion.css';
+@font-face { font-family: 'Reference Nunito'; src: url('/fonts/quest-study/nunito-variable.ttf') format('truetype'); font-style: normal; font-weight: 200 1000; font-display: swap; }
+@font-face { font-family: 'Reference Caveat'; src: url('/fonts/reference/caveat-bold.ttf') format('truetype'); font-style: normal; font-weight: 400 900; font-display: swap; }
+@font-face { font-family: 'Reference PT Mono'; src: url('/fonts/reference/pt-mono-regular.ttf') format('truetype'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Reference Manrope'; src: url('/fonts/reference/manrope-variable.ttf') format('truetype'); font-style: normal; font-weight: 200 800; font-display: swap; }
+
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']),
+html[data-quest-skin='shoditsa'] {
+  color-scheme: light;
+  --font-body: 'Reference Nunito', Arial, sans-serif;
+  --font-display: var(--font-body);
+  --font-script: 'Reference Caveat', cursive;
+  --font-mono: 'Reference PT Mono', monospace;
+  --font-entry: 'Reference Manrope', Arial, sans-serif;
+  --color-entry-bg: #fdfcfd;
+  --color-bg: #faf9fb;
+  --color-surface: #fdfcfd;
+  --color-surface-2: #f2eff3;
+  --color-surface-3: #eae7ec;
+  --color-paper: #fdfcfd;
+  --color-paper-2: #f2eff3;
+  --color-paper-hover: #e3dfe6;
+  --color-ink: #211f26;
+  --color-art-ink: #141416;
+  --color-art-paper: #fdfbf7;
+  --color-art-mint: #acf0ce;
+  --color-art-violet: #c3a2f0;
+  --color-art-gold: #ffe17d;
+  --color-on-media: #fdfbf7;
+  --color-text: var(--color-ink);
+  --color-muted: #625d66;
+  --color-muted-2: #625d66;
+  --color-text-muted: var(--color-muted);
+  --color-paper-muted: var(--color-muted);
+  --color-paper-muted-2: var(--color-muted);
+  --color-line: #e3dfe6;
+  --color-line-strong: #d0cdd7;
+  --color-paper-line: var(--color-line);
+  --color-paper-line-strong: #d0cdd7;
+  --color-action: var(--color-ink);
+  --color-action-hover: #353137;
+  --color-on-action: #fdfcfd;
+  --color-focus: #6550b9;
+  --color-promo-base: var(--color-lilac);
+  --color-promo-glow-start: var(--color-mint);
+  --color-promo-glow-middle: var(--color-blue);
+  --color-promo-glow-end: var(--color-lilac);
+  --color-promo-button-edge: color-mix(in srgb, var(--color-focus) 30%, var(--color-lilac));
+  --color-promo-button-ink: var(--color-focus);
+  --color-on-promo: var(--color-ink);
+  --color-club-action: var(--color-focus);
+  --color-club-action-edge: color-mix(in srgb, var(--color-focus) 75%, var(--color-ink));
+  --color-club-column: var(--color-lilac);
+  --color-mint: #c8f4e9;
+  --color-yellow: #ffe6a3;
+  --color-coral: #fce5e8;
+  --color-lilac: #e2ddfe;
+  --color-blue: #d6eafa;
+  --color-peach: #f6dfc5;
+  --color-primary: #006c59;
+  --color-primary-hover: #005847;
+  --color-primary-soft: var(--color-mint);
+  --color-primary-border: #9ce4d6;
+  --color-accent: #795d22;
+  --color-accent-hover: #92702a;
+  --color-accent-soft: var(--color-yellow);
+  --color-accent-border: #dfc47e;
+  --color-danger: #8b4138;
+  --color-danger-text: var(--color-danger);
+  --color-success-ink: var(--color-primary);
+  --color-success-text: var(--color-primary);
+  --color-accent-ink: var(--color-accent);
+  --color-warning-text: var(--color-accent);
+  --color-shadow: #24212a;
+  --color-overlay: #24212a66;
+  --match-exact-bg: #d2f7ed;
+  --match-exact-ink: var(--color-primary);
+  --match-partial-bg: #f5f2ff;
+  --match-partial-ink: var(--color-focus);
+  --match-miss-bg: #f2eff3;
+  --match-miss-ink: var(--color-danger);
+  --match-unknown-bg: var(--color-surface-2);
+  --match-unknown-ink: var(--color-muted);
+  /* Connections roles also apply to standalone examples and result cards. */
+  --connections-yellow: var(--color-yellow);
+  --connections-green: var(--match-exact-bg);
+  --connections-blue: var(--color-blue);
+  --connections-purple: var(--color-lilac);
+  --connections-paper: var(--color-surface);
+  --connections-ink: var(--color-ink);
+  --radius-sm: 12px;
+  --radius-md: 17px;
+  --radius-lg: 23px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --shadow-tile: 0 3px 14px #24212a05;
+  --shadow-paper: 0 4px 24px #24212a06;
+  --shadow-floating: 0 16px 48px #24212a1f;
+  --z-header: 30;
+  --z-sticky: 20;
+  --z-menu: 130;
+  --z-dialog: 500;
+  --content-width: 1320px;
+  --content-gutter: 52px;
+  --reference-game-ink: var(--color-ink);
+  --reference-game-paper: var(--color-paper);
+  --reference-game-white: var(--color-surface);
+  --reference-game-canvas: var(--color-bg);
+  --reference-game-muted: var(--color-muted);
+  --reference-game-line: var(--color-line);
+  --reference-game-mint: var(--color-mint);
+  --reference-game-yellow: var(--color-yellow);
+  --reference-game-coral: var(--color-coral);
+  --reference-game-lilac: var(--color-lilac);
+  --reference-game-blue: var(--color-blue);
+  --reference-game-match-ink: var(--match-exact-ink);
+  --reference-game-close-ink: var(--match-partial-ink);
+  --reference-game-miss-ink: var(--match-miss-ink);
+  --reference-game-accent: var(--color-lilac);
+  --reference-game-font: var(--font-body);
+  --reference-game-script: var(--font-script);
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 1190px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) { --content-gutter: 32px; }
+}
+@media (max-width: 760px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) { --content-gutter: 20px; }
+}
+@media (max-width: 480px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) { --content-gutter: 16px; }
+}

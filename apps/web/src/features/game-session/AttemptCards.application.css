@@ -1,0 +1,99 @@
+/* Card anatomy and semantic colours for the shared application skin. */
+/* Appearance roles allow dark cards to keep their colour in small markers. */
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card { border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 16px; background: var(--quest-bg); color: var(--quest-text); box-shadow: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-list > .attempt-card:first-of-type { border-color: var(--quest-purple); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card { container-type: inline-size; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__header { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; grid-template-areas: 'poster identity rating'; align-items: center; gap: 16px; padding: 18px; border-bottom: 1px solid var(--quest-line); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__number { display: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__header > :is(img, .poster-fallback) { grid-area: poster; width: 64px; height: 90px; border-radius: 10px; object-fit: cover; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card__identity { min-width: 0; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__identity { grid-area: identity; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card__identity h2 { margin: 3px 0 6px; color: var(--quest-text); font: 800 22px/1.25 var(--quest-heading); letter-spacing: -.3px; text-transform: none; overflow-wrap: anywhere; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-label { display: block; color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); text-transform: none; letter-spacing: 0; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .gm-head__sub { color: var(--quest-muted); font: 400 13px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .gm-genres { gap: 5px; margin-top: 8px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .gm-genre { padding: 3px 8px; border-radius: 7px; font: 500 11px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .rating-badge { grid-area: rating; align-self: start; white-space: nowrap; border-radius: 10px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .rating-badge strong { font: 800 20px/1.2 var(--quest-heading); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score { padding: 11px 18px; gap: 12px; background: var(--quest-bg); border-block: 1px solid var(--quest-line); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score > span { color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); text-transform: none; letter-spacing: 0; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score > strong b { color: var(--quest-text); font: 800 16px/1.4 var(--quest-heading); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score--match .dx-score__count--exact b { color: var(--quest-green); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score .dx-score__count--partial b { color: var(--quest-gold); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score > strong small { color: var(--quest-muted); font: 400 12px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar i { height: 8px; background: color-mix(in srgb, var(--quest-purple) 40%, var(--quest-bg)); border: 1px solid color-mix(in srgb, var(--quest-purple) 65%, var(--quest-bg)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar i.exact { background: var(--quest-green-wash); border-color: color-mix(in srgb, var(--quest-green) 25%, var(--quest-green-wash)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar i.partial { background: var(--quest-gold-wash); border-color: color-mix(in srgb, var(--quest-gold) 22%, var(--quest-gold-wash)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid { grid-template-areas: none; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 16px; gap: 10px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid > .clue-tile { grid-area: auto; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid > .people-group { grid-area: auto; grid-column: span 2; min-height: 0; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid > .people-creator { grid-column: span 1; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid > .clue-country { grid-column: 1 / -1; min-height: 0; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 12px; }
+/* Four series metrics share one row; creators and cast share the next. */
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen-series .attempt-clue-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen-series .attempt-clue-grid > .clue-tile:not(.clue-country) { grid-column: span 3; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen-series .attempt-clue-grid > .people-creator { grid-column: span 4; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen-series .attempt-clue-grid > .people-cast { grid-column: span 8; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference { position: relative; display: flex; flex-direction: column; min-height: 88px; padding: 12px; gap: 9px; border: 1px solid var(--quest-line); border-bottom-width: 3px; border-radius: 12px; background: var(--quest-bg); color: var(--quest-text); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group).match { background: var(--quest-green-wash); border-color: color-mix(in srgb, var(--quest-green) 25%, var(--quest-green-wash)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group):is(.partial, .close) { background: var(--quest-gold-wash); border-color: color-mix(in srgb, var(--quest-gold) 22%, var(--quest-gold-wash)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group).miss { background: color-mix(in srgb, var(--quest-red-wash) 28%, var(--quest-bg)); border-color: color-mix(in srgb, var(--quest-red-wash) 65%, var(--quest-bg)); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference .clue-tile__top { position: static; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0; opacity: 1; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference .clue-tile__top > span:first-child { color: var(--quest-muted); font: 500 12px/1.3 var(--quest-font); letter-spacing: 0; text-transform: none; white-space: normal; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference > strong { margin: 0; color: var(--quest-text); font: 700 16px/1.35 var(--quest-heading); overflow-wrap: anywhere; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .reference-clue-state { display: inline-grid; place-items: center; flex: 0 0 22px; width: 22px; height: 22px; border-radius: 7px; color: var(--quest-muted); background: color-mix(in srgb, var(--quest-bg) 65%, transparent); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .reference-clue-state svg { width: 15px; height: 15px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .reference-clue-state--match { color: var(--quest-green); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .reference-clue-state:is(.reference-clue-state--partial, .reference-clue-state--close) { color: var(--quest-gold); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .reference-clue-state--miss { color: var(--quest-red); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-token-list { margin: 0; gap: 5px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-token-list > span { color: var(--quest-text); border-color: var(--quest-line); background: var(--quest-bg); font: 500 12px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-token-list > span.is-match { color: var(--quest-green); background: var(--quest-green-wash); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .people-group { padding: 12px; border-radius: 12px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .people-group__head :is(span, small) { color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); text-transform: none; letter-spacing: 0; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .hint-person > strong { color: var(--quest-text); font: 500 12px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .people-row { display: flex; flex-wrap: wrap; gap: 12px; overflow: visible; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .hint-person { flex: 0 0 64px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .hint-person > strong { display: block; width: 64px; overflow-wrap: anywhere; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .hint-person__portrait { width: 44px; height: 52px; background: var(--quest-purple); border-color: var(--quest-purple); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .hint-person__portrait > span { font: 700 13px var(--quest-font); color: var(--quest-blue); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .people-cast .people-row { gap: 5px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .people-cast .hint-person { flex-basis: 62px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .people-cast .hint-person > strong { width: 62px; font-size: 11px; }
+/* Compact comparisons use the same semantic palette as the clue tiles. */
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-chip, .gm-year, .gm-genre) { padding: 5px 8px; border: 1px solid var(--quest-line); border-radius: 8px; background: var(--quest-bg); color: var(--quest-text); font: 500 12px/1.35 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-chip, .gm-year, .gm-genre, .gm-rank, .gm-studio, .dx-system-icon).match { background: var(--quest-green-wash); border-color: color-mix(in srgb, var(--quest-green) 25%, var(--quest-green-wash)); color: var(--quest-green); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-chip, .gm-year, .gm-rank, .gm-studio, .dx-system-icon):is(.partial, .close) { background: var(--quest-gold-wash); border-color: color-mix(in srgb, var(--quest-gold) 22%, var(--quest-gold-wash)); color: var(--quest-gold); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-chip, .gm-year, .gm-rank, .gm-studio, .dx-system-icon).miss { background: color-mix(in srgb, var(--quest-red-wash) 28%, var(--quest-bg)); border-color: color-mix(in srgb, var(--quest-red-wash) 65%, var(--quest-bg)); color: var(--quest-red); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-clouds { gap: 16px; padding: 4px 16px 18px; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-cloud__head, .dx-systems__head) > span { color: var(--quest-text); font: 500 14px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-cloud__head, .dx-systems__head) > small { color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-cloud__head, .dx-systems__head) > small.match { color: var(--quest-green); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.dx-cloud__head, .dx-systems__head) > small.partial { color: var(--quest-gold); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-rank { gap: 4px; padding: 10px; border-radius: 12px; background: var(--quest-bg); border-color: var(--quest-line); color: var(--quest-text); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-rank__ico { color: inherit; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-rank__val strong { font: 700 18px/1.2 var(--quest-heading); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-rank small { color: var(--quest-muted); font: 500 12px/1.3 var(--quest-font); letter-spacing: 0; text-transform: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-studio__logo { background: var(--quest-bg); border-color: var(--quest-line); color: var(--quest-text); font: 700 14px/1 var(--quest-font); }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-studio__meta small { color: var(--quest-muted); font: 500 12px/1.4 var(--quest-font); letter-spacing: 0; text-transform: none; }
+html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .gm-studio__meta strong { color: var(--quest-text); }
+@container (max-width: 420px) {
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding-inline: 12px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar { grid-column: 1 / -1; grid-row: 2; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score > strong { grid-column: 2; grid-row: 1; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen-series .attempt-clue-grid > .clue-tile:not(.clue-country) { grid-column: span 1; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid > .people-group { grid-column: 1 / -1; }
+}
+@container (max-width: 420px) {
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__header { grid-template-columns: 48px minmax(0, 1fr); grid-template-areas: 'poster identity'; gap: 12px; padding: 14px 12px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-card__header > :is(img, .poster-fallback) { width: 48px; height: 70px; align-self: start; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .rating-badge { display: none; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card__identity h2 { font-size: 18px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .attempt-clue-grid { padding: 12px; gap: 8px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card--screen .dx-score { padding-inline: 12px; flex-wrap: wrap; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference { padding: 10px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference .clue-tile__top > span:first-child { font-size: 11px; overflow-wrap: normal; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference:not(.clue-country) .reference-clue-state { position: absolute; bottom: 10px; right: 10px; }
+  html[data-local-study='session'] .study-session[data-public-theme='quest-study'] .clue-tile--reference:not(.clue-country) > strong { padding-right: 24px; }
+}

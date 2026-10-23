@@ -1,0 +1,9 @@
+.study-brand-logo { display: block; width: 170px; max-width: 100%; height: 47px; object-fit: contain; }
+.qg-rail[data-study-shell] .qg-wordmark:has(.study-brand-logo) { padding: 8px 12px 28px; }
+.study-header-brand .study-brand-logo { width: 102px; height: 28px; }
+.study-auth-wordmark .study-brand-logo { width: 144px; height: 40px; }
+html[data-quest-tone='dark'] .study-brand-logo { filter: brightness(0) invert(1); }
+@media (min-width: 700px) and (max-width: 1200px) {
+  .qg-rail[data-study-shell] .qg-wordmark:has(.study-brand-logo) { padding: 0 0 24px; }
+  .qg-wordmark .study-brand-logo { width: 58px; height: 16px; }
+}

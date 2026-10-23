@@ -1,0 +1,27 @@
+.poster-reel { --poster-width: 120px; --poster-gap: 12px; position: relative; width: 100%; margin-top: 20px; padding-block: 12px; background: #fff; }
+.poster-reel__viewport { overflow: hidden; width: 100%; padding-block: 5px; touch-action: pan-y; mask-image: linear-gradient(90deg, transparent, #000 25px, #000 calc(100% - 25px), transparent); }
+.poster-reel__track { display: flex; width: max-content; animation: poster-reel-loop var(--poster-duration) linear infinite; will-change: transform; }
+.poster-reel[data-paused='true'] .poster-reel__track { animation-play-state: paused; }
+.poster-reel__group { flex: 0 0 auto; display: flex; gap: var(--poster-gap); padding-right: var(--poster-gap); }
+.poster-reel .poster-reel__poster { flex: 0 0 var(--poster-width); width: var(--poster-width); aspect-ratio: 2 / 3; margin: 0; border-radius: 8px; overflow: hidden; border: 1px solid #29203212; background: #eee8f3; }
+.poster-reel__poster img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+.poster-reel .poster-reel__poster[data-fit='contain'] { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 12px; background: var(--color-surface); text-align: center; }
+.poster-reel__poster[data-fit='contain'] img { flex: 1; min-height: 0; height: 0; object-fit: contain; }
+.poster-reel__poster figcaption { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; }
+.poster-reel .poster-reel__poster--fallback { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; padding: 12px; color: var(--color-ink); background: var(--color-lilac); text-align: center; }
+.poster-reel__poster--fallback:nth-child(3n + 1) { background: var(--color-mint); }
+.poster-reel__poster--fallback:nth-child(3n + 2) { background: var(--color-yellow); }
+.poster-reel__control { position: absolute; right: 15px; bottom: 16px; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #e2dbe9; border-radius: 50%; background: #fff; color: #5d4b70; }
+.poster-reel__control:hover { background: #f1ecf8; }
+@keyframes poster-reel-loop { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+@media (max-width: 650px) {
+  .poster-reel { --poster-width: 96px; --poster-gap: 10px; margin-top: 10px; padding-block: 8px; }
+  .poster-reel__viewport { mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent); }
+  .poster-reel .poster-reel__poster { border-radius: 7px; }
+  .poster-reel__control { right: 10px; bottom: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .poster-reel__viewport { overflow-x: auto; touch-action: auto; mask-image: none; scrollbar-width: thin; }
+  .poster-reel__track { animation: none; transform: none; will-change: auto; }
+  .poster-reel__group--clone { display: none; }
+}

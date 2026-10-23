@@ -1,0 +1,11 @@
+.study-anamnesis { color: var(--quest-text); font-family: var(--quest-font); }
+.study-anamnesis__patient { display: flex; align-items: center; gap: 14px; }
+.study-anamnesis__patient > img { flex: none; width: 52px; height: 52px; object-fit: contain; }
+.study-anamnesis__patient > div { display: grid; min-width: 0; gap: 4px; }
+.study-anamnesis__patient strong { font-size: 14px; font-weight: 800; line-height: 1.4; }
+.study-anamnesis__patient span { color: var(--quest-muted); font-size: 13px; line-height: 1.5; }
+.study-anamnesis .study-anamnesis__text { margin: 22px 0; color: var(--quest-text); font-size: 16px; line-height: 1.7; }
+.study-anamnesis__note { display: flex; align-items: flex-start; gap: 10px; padding: 14px; border-radius: 14px; background: var(--quest-surface); color: var(--quest-muted); font-size: 13px; line-height: 1.6; }
+.study-anamnesis__note > svg { flex: none; margin-top: 1px; color: var(--color-focus); }
+.study-anamnesis__actions { display: flex; justify-content: flex-end; margin-top: 24px; }
+.study-anamnesis__actions > .quest-button { width: auto; max-width: 100%; min-height: 48px; }

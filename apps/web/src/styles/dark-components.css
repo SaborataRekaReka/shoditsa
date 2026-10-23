@@ -1,0 +1,184 @@
+/* Component appearance only. Light appearance and component geometry stay local. */
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.qg-card, .study-game-card, .hs-today) {
+  background-color: var(--color-surface);
+  border-color: var(--color-line);
+  border-width: 1px;
+  box-shadow: 0 2px 0 var(--mauve-1);
+}
+html[data-quest-tone='dark'] .qg-rail { border-right-width: 1px; }
+html[data-quest-tone='dark'] .qg-app .qg-nav-item > .study-games-counter {
+  background: var(--mint-9);
+  color: var(--color-on-pastel);
+}
+html[data-quest-tone='dark'] .rating-join {
+  background: var(--violet-3);
+  border-color: var(--violet-7);
+}
+html[data-quest-tone='dark'] .study-club-mini b { color: var(--violet-11); }
+html[data-quest-tone='dark'] .qg-app .study-club-mini {
+  color: var(--mauve-12);
+  background: linear-gradient(135deg, var(--violet-4), var(--violet-3) 70%, var(--mint-3));
+  border-color: var(--violet-7);
+}
+html[data-quest-tone='dark'] .study-club-mini::before,
+html[data-quest-tone='dark'] .study-club-mini::after { opacity: .18; }
+html[data-quest-tone='dark'] .study-club-mini small { color: var(--violet-12); }
+html[data-quest-tone='dark'] .room-company-scene {
+  background:
+    radial-gradient(ellipse at 22% 12%, color-mix(in srgb, var(--color-action) 23%, transparent), transparent 68%),
+    radial-gradient(ellipse at 90% 8%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 65%),
+    var(--quest-bg);
+}
+html[data-quest-tone='dark'] .room-company-orbit { display: none; }
+html[data-quest-tone='dark'] .quest-button--promo {
+  background: var(--color-action);
+  border-color: var(--color-action);
+  color: var(--color-on-action);
+}
+html[data-quest-tone='dark'] .quest-button--promo:hover {
+  background: var(--color-action-hover);
+  border-color: var(--color-action-hover);
+}
+html[data-quest-tone='dark'] .quest-theme-track .quest-theme-thumb { background: var(--violet-11); }
+html[data-quest-tone='dark'] .quest-button--theme[aria-checked='true'] .quest-theme-track > svg:last-of-type { color: var(--color-on-action); }
+html[data-quest-tone='dark'] :is(.quest-dialog, .ui-dialog-surface, .modal, .anamnesis-modal, .ui-bottom-sheet) {
+  background: var(--color-overlay-surface);
+  color: var(--color-text);
+  border-color: var(--color-line-strong);
+  box-shadow: var(--shadow-floating);
+}
+html[data-quest-tone='dark'] :is(.quest-dialog-backdrop, .ui-dialog-backdrop, .modal-backdrop) { background: var(--color-overlay); }
+html[data-quest-tone='dark'] :is(.study-account-menu, .anchored-menu, .ui-menu) { background: var(--color-overlay-surface); }
+html[data-quest-tone='dark'] .login-page.study-auth .login-field input.ui-input:not([type='checkbox']) {
+  background: var(--color-input);
+  color: var(--color-text);
+  border-color: var(--color-input-border);
+  box-shadow: none;
+}
+html[data-quest-tone='dark'] .login-page.study-auth .login-field input.ui-input::placeholder { color: var(--color-text-muted); }
+html[data-quest-tone='dark'] .login-page.study-auth .login-field input.ui-input:not([type='checkbox']):focus {
+  border-color: var(--color-focus);
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+html[data-quest-tone='dark'] .login-page.study-auth .login-field input.ui-input[aria-invalid='true'] { border-color: var(--color-danger-text); }
+html[data-quest-tone='dark'] .login-page.study-auth .login-field input.ui-input:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  box-shadow: 0 0 0 1000px var(--color-input) inset;
+}
+html[data-quest-tone='dark'] :is(.study-widget-game > img, .study-today-row > img) {
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--violet-11);
+}
+html[data-quest-tone='dark'] .svoyak-welcome__board-column > span,
+html[data-quest-tone='dark'] .svoyak-welcome__step { color: var(--violet-11); background: var(--violet-4); }
+html[data-quest-tone='dark'] .svoyak-welcome__board-column > .is-picked,
+html[data-quest-tone='dark'] .svoyak-welcome__score { color: var(--color-on-pastel); background: var(--mint-9); }
+html[data-quest-tone='dark'] .application-frame { background: var(--quest-bg); }
+html[data-quest-tone='dark'] .server-lobby { background: var(--color-surface); border-color: var(--color-line); }
+html[data-quest-tone='dark'] .server-lobby :is(select, input) { background: var(--color-input); color: var(--color-text); border-color: var(--color-input-border); }
+
+html[data-quest-tone='dark'] .hs-app .hs-game {
+  background: var(--color-surface);
+  border-color: var(--color-line);
+  border-width: 1px;
+  border-bottom-width: 2px;
+}
+html[data-quest-tone='dark'] .hs-app .hs-game:hover { background: var(--color-surface-2); border-color: var(--violet-8); }
+html[data-quest-tone='dark'] .hs-game .hs-game-art { background: var(--violet-11); }
+html[data-quest-tone='dark'] :is(.hs-game--game, .hs-game--animal, .hs-game--diagnosis) .hs-game-art { background: var(--mint-9); }
+html[data-quest-tone='dark'] .rating-place--1 { color: var(--status-partial-text); }
+html[data-quest-tone='dark'] .rating-place--2 { color: var(--mauve-11); }
+html[data-quest-tone='dark'] .rating-place--3 { color: var(--violet-11); }
+
+/* Night scene: the same editable meadow, with moonlight and mint foliage. */
+html[data-quest-tone='dark'] .club-sky {
+  --meadow-green: #144b48;
+  --meadow-deep: #0c3334;
+  --meadow-outline: #3b8279;
+  color: var(--mauve-12);
+  background: radial-gradient(ellipse at 18% 16%, #47387677, transparent 42%), linear-gradient(160deg, #1a1727, #291f43 65%, #183339);
+}
+html[data-quest-tone='dark'] .club-sky__sunlight {
+  inset: 0;
+  background: radial-gradient(circle at 12% 20%, #e2ddfe 0 1px, transparent 2px), radial-gradient(circle at 78% 16%, #86ead4 0 1px, transparent 2px), radial-gradient(circle at 89% 39%, #e2ddfe 0 1px, transparent 2px), radial-gradient(circle at 36% 12%, #baa7ff 0 1px, transparent 2px);
+}
+html[data-quest-tone='dark'] .club-sky__sun { background: var(--violet-12); box-shadow: 0 0 0 9px #baa7ff10, 0 0 40px #baa7ff18; }
+html[data-quest-tone='dark'] .club-sky__sun::after { content: ''; position: absolute; width: 7px; height: 7px; left: 13px; top: 14px; border-radius: 50%; background: #baa7ff44; box-shadow: 15px 13px 0 3px #baa7ff33; }
+html[data-quest-tone='dark'] .club-sky__cloud { background: #6958ad30; }
+html[data-quest-tone='dark'] .club-sky__hill--distant { fill: #223b42; }
+html[data-quest-tone='dark'] .meadow-hill-light { stop-color: #205450; }
+html[data-quest-tone='dark'] .meadow-hill-shade { stop-color: #133b3d; }
+html[data-quest-tone='dark'] .club-sky__field-seam { stroke: #28625c; }
+html[data-quest-tone='dark'] .club-sky__path-shadow { fill: #142a35; }
+html[data-quest-tone='dark'] .club-sky__path { fill: #516484; }
+html[data-quest-tone='dark'] .meadow-grass-light { stop-color: #27645d; }
+html[data-quest-tone='dark'] .meadow-grass-shade { stop-color: #103a38; }
+html[data-quest-tone='dark'] .club-sky__field-details { stroke: #3c8074; }
+html[data-quest-tone='dark'] .meadow-plant__front { fill: #19544e; }
+html[data-quest-tone='dark'] .meadow-plant__veins { stroke: #4c9a88; }
+html[data-quest-tone='dark'] .meadow-flower__bloom > ellipse { fill: var(--violet-11); stroke: var(--violet-8); }
+html[data-quest-tone='dark'] .meadow-flower__bloom--daisy > ellipse { fill: var(--violet-12); stroke: var(--violet-8); }
+html[data-quest-tone='dark'] .meadow-flower__center { fill: var(--mint-9); stroke: #27796d; }
+html[data-quest-tone='dark'] .meadow-flower__center-detail { stroke: #27796d; }
+html[data-quest-tone='dark'] .club-sky__butterfly { --wing-upper: var(--violet-11); --wing-lower: #a58ee5; --wing-line: #6958ad; }
+html[data-quest-tone='dark'] .club-sky__butterfly--gold { --wing-upper: var(--mint-9); --wing-lower: #58d5ba; --wing-line: #27796d; }
+html[data-quest-tone='dark'] .meadow-butterfly__spot { fill: var(--color-art-paper); }
+html[data-quest-tone='dark'] .club-sky__ticket-glint { background: var(--color-art-paper); }
+html[data-quest-tone='dark'] .club-sky__seat { background: #092c2b99; }
+html[data-quest-tone='dark'] .club-sky__heading em { color: var(--mint-9); }
+html[data-quest-tone='dark'] .club-sky__badge { color: var(--color-art-ink); }
+html[data-quest-tone='dark'] .club-sky__badge-ticket { fill: var(--violet-12); stroke: var(--violet-11); }
+html[data-quest-tone='dark'] .club-sky__badge-star { fill: var(--mint-9); color: #176354; }
+html[data-quest-tone='dark'] .club-sky__badge .brand-wordmark__image { filter: none; }
+html[data-quest-tone='dark'] .study-club-hero { background: var(--color-bg); }
+html[data-quest-tone='dark'] .club-sky__edge { fill: var(--color-bg); }
+
+/* Broad comparison cells stay neutral; state lives in the edge and symbol. */
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-card {
+  background: var(--color-surface);
+  border-width: 1px;
+  border-color: var(--color-line);
+}
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .attempt-list > .attempt-card:first-of-type { border-color: var(--violet-7); }
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group):is(.match, .partial, .close, .miss) {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-inline-start: 3px solid var(--color-line-strong);
+}
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group).match { border-inline-start-color: var(--quest-green); }
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group):is(.partial, .close) { border-inline-start-color: var(--quest-gold); }
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] :is(.clue-tile--reference, .people-group).miss { border-inline-start-color: var(--quest-red); }
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar i.exact { background: var(--quest-green); }
+html[data-quest-tone='dark'][data-local-study='session'] .study-session[data-public-theme='quest-study'] .dx-score__bar i.partial { background: var(--quest-gold); }
+html[data-quest-tone='dark'] :is(.ui-button--primary, .ui-button--hint) { color: var(--color-on-action); }
+html[data-quest-tone='dark']:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-button--hint { color: var(--color-text); }
+html[data-quest-tone='dark'] .quest-progress > strong { color: var(--quest-text); }
+html[data-quest-tone='dark'] .quest-progress > strong > span { padding-inline: 6px; border-radius: 8px; background: var(--mauve-3); }
+html[data-quest-tone='dark'] .category-ticket__badge { color: var(--color-text); background: var(--color-surface); border-color: var(--color-line-strong); }
+html[data-quest-tone='dark'] .hs-game:has([data-night-art]) .hs-game-art { background: transparent; }
+html[data-quest-tone='dark'] .study-widget-game > img[data-night-art] { background: transparent; padding: 0; }
+html[data-quest-tone='dark'] .danetki-recommendation-card { background: var(--color-surface); color: var(--color-text); border-color: var(--color-line); }
+html[data-quest-tone='dark'] :is(.danetki-recommendation-card__action, .danetki-recommendation-card__icon) { background: var(--violet-11); color: var(--color-on-action); }
+html[data-quest-tone='dark'] :is(.result-primary-actions, .result-primary-actions .result-next) { background: var(--color-surface); }
+html[data-quest-tone='dark'] .result-next__arrow { color: var(--color-on-action); background: var(--color-action); }
+html[data-quest-tone='dark'] .result-replay-notice .result-replay-notice__action { background: var(--color-action); color: var(--color-on-action); }
+html[data-quest-tone='dark'] .study-club-perk { --perk-color: var(--violet-3); background: var(--color-surface); border-color: var(--color-line); border-width: 1px; border-bottom-width: 2px; }
+html[data-quest-tone='dark'] .study-club-perk[data-tone='mint'] { --perk-color: var(--mint-3); }
+html[data-quest-tone='dark'] .study-club-perk[data-tone='yellow'] { --perk-color: var(--violet-4); }
+html[data-quest-tone='dark'] .study-club-perk[data-tone='blue'] { --perk-color: var(--mint-3); }
+html[data-quest-tone='dark'] :is(.ui-input, .ui-textarea, .ui-select)::placeholder { color: var(--color-text-muted); opacity: 1; }
+html[data-quest-tone='dark'] .corporate-order__form :is(input, textarea)::placeholder { color: var(--color-text-muted); opacity: 1; }
+html[data-quest-tone='dark'] .qg-live { color: var(--quest-text); }
+html[data-quest-tone='dark'] .qt-route-card:nth-child(2) .qt-route-art { background: var(--violet-3); }
+html[data-quest-tone='dark'] .qt-route-card:nth-child(3) .qt-route-art { background: var(--mauve-4); }
+html[data-quest-tone='dark'] .rating-row.is-club .rating-row__button { background: var(--violet-3); }
+html[data-quest-tone='dark'] .study-match--partial { color: var(--violet-11); background: var(--violet-3); border-color: var(--violet-7); }
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.quest-input, .ui-input, .ui-select, .ui-textarea) { --ui-field-border: var(--color-input-border); border-color: var(--color-input-border); }
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.quest-input, .ui-input, .ui-select, .ui-textarea):focus-visible { --ui-field-border: var(--color-focus); border-color: var(--color-focus); }
+html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.quest-input, .ui-input, .ui-select, .ui-textarea)[aria-invalid='true'] { --ui-field-border: var(--color-danger-text); border-color: var(--color-danger-text); }
+/* These source SVGs contain monochrome black paths only (body systems / player count). */
+html[data-quest-tone='dark'][data-public-theme] body :is(.dx-system-icon .dx-system-icon__glyph, .dx-chip .dx-chip__icon, .reward-breakdown .result-dx-icon) { filter: brightness(0) invert(1); opacity: .92; }
+html[data-quest-tone='dark'] .corporate-format-card__visual img[data-night-art] { padding: 0; object-fit: cover; }

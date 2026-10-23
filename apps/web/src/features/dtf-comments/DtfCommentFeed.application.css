@@ -1,0 +1,24 @@
+html[data-public-theme='quest-study'] .dtf-comment-intro { padding: 16px; border: 2px solid var(--quest-line); border-radius: 16px; background: var(--quest-blue-wash); }
+html[data-public-theme='quest-study'] .dtf-comment-intro > svg { color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .dtf-comment-intro strong { color: var(--quest-text); font-size: 14px; }
+html[data-public-theme='quest-study'] .dtf-comment-intro span { color: var(--quest-muted); font-size: 12px; }
+html[data-public-theme='quest-study'] .dtf-comment-feed { gap: 14px; }
+html[data-public-theme='quest-study'] .dtf-comment-card { padding: 18px; gap: 12px; border: 2px solid var(--quest-line); border-bottom-width: 4px; border-radius: 18px; background: var(--quest-bg); box-shadow: none; }
+html[data-public-theme='quest-study'] .dtf-comment-card::after { display: none; }
+html[data-public-theme='quest-study'] .dtf-comment-card--new { border-color: var(--quest-blue); box-shadow: none; }
+html[data-public-theme='quest-study'] .dtf-comment-card__avatar { width: 42px; height: 42px; border: 0; border-radius: 14px; color: var(--quest-blue); background: var(--quest-blue-wash); box-shadow: none; }
+html[data-public-theme='quest-study'] .dtf-comment-card__avatar--1 { color: var(--quest-green); background: var(--quest-green-wash); }
+html[data-public-theme='quest-study'] .dtf-comment-card__body > header { flex-wrap: wrap; row-gap: 6px; }
+html[data-public-theme='quest-study'] .dtf-comment-card__author strong { color: var(--quest-text); font: 800 13px/1.4 var(--quest-font); }
+html[data-public-theme='quest-study'] .dtf-comment-card__author :is(span,svg) { color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .dtf-comment-card__status { flex-wrap: wrap; color: var(--quest-muted); font-size: 11px; }
+html[data-public-theme='quest-study'] .dtf-comment-card__status b { color: var(--quest-blue); background: var(--quest-blue-wash); border-color: var(--quest-blue); }
+html[data-public-theme='quest-study'] .dtf-comment-card__body > p { margin-block: 12px; color: var(--quest-text); font: 400 15px/1.7 var(--quest-font); }
+html[data-public-theme='quest-study'] .dtf-comment-card__body > footer { border-color: var(--quest-line); }
+html[data-public-theme='quest-study'] .dtf-comment-card__metric--likes { color: var(--quest-green); }
+html[data-public-theme='quest-study'] .dtf-comment-card__source { color: var(--quest-blue); }
+@container application-content (max-width: 420px) {
+  html[data-public-theme='quest-study'] .dtf-comment-card { grid-template-columns: 32px minmax(0,1fr); padding: 14px; gap: 9px; }
+  html[data-public-theme='quest-study'] .dtf-comment-card__avatar { width: 32px; height: 36px; border-radius: 11px; }
+  html[data-public-theme='quest-study'] .dtf-comment-card__body > p { font-size: 14px; }
+}

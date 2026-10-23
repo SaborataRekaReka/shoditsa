@@ -4,9 +4,10 @@ import { ApiClientError, api } from '../../api/client'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { ActionButton } from '../../components/app-shell/AppShell'
-import { TextInput } from '../../components/ui'
+import { InlineAlert, TextInput } from '../../components/ui'
 import { checkoutDestination } from './checkout-flow'
 import { checkoutContext, checkoutRegistrationHref } from './checkout-context'
+import './CheckoutButton.css'
 
 export function CheckoutButton({ product, authenticated, hasClub = false, label, placement = 'club_screen', returnUrl = '/club', growthStage = 'baseline' }: { product: CommerceProduct; authenticated: boolean; hasClub?: boolean; label?: string; placement?: string; returnUrl?: string; growthStage?: string }) {
   const keyRef = useRef<string | null>(null)
@@ -68,7 +69,7 @@ export function CheckoutButton({ product, authenticated, hasClub = false, label,
       <span>Включить автопродление каждые {product.durationDays} суток по указанной цене. Отключить можно в профиле до следующего списания.</span>
     </label>}
     <ActionButton type="button" disabled={pending || (authenticated && !accepted)} onClick={() => void start()}>{pending ? 'Создаём заказ…' : label ?? (product.kind === 'club' ? 'Выбрать абонемент' : 'Поддержать')}</ActionButton>
-    {!authenticated && <small>Сначала вход или регистрация. Оплата — только после вашего подтверждения.</small>}
-    {error && <span className="club-card__error" role="alert">{error}</span>}
+    {!authenticated && <small className="checkout-note">Сначала вход или регистрация. Оплата — только после вашего подтверждения.</small>}
+    {error && <InlineAlert tone="danger" className="checkout-error">{error}</InlineAlert>}
   </>
 }

@@ -1,3 +1,4 @@
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import './LoginScreen.css'
 import { ArrowLeft, ArrowRight, Eye, EyeOff, LoaderCircle } from 'lucide-react'
@@ -12,19 +13,27 @@ import {
 } from '../../app/metrics'
 import { trackClientEvent } from '../../app/client-events'
 import { publicAssetUrl } from '../../app/public-asset'
+import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { APPLICATION_DESIGN } from '../../app/application-design'
+import { PageHeading } from '../../components/ui/PageHeading'
 import { ApiClientError, api } from '../../api/client'
 import { ActionButton, BrandLogo } from '../../components/app-shell/AppShell'
 import { SERVER_RUNTIME, useServerRuntime } from '../../hooks/use-server-runtime'
 import { notifyAuthSessionChanged } from './use-auth-session'
 import { localizeYandexOAuthUrl } from './yandex-oauth'
 import { REGISTRATION_REFERRALS, registrationReferralFromSearch } from './registration-referral'
-import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
+import { ActionLink, ControlButton, InlineAlert, TextInput } from '../../components/ui'
 import { clearDanetkiRegistrationIntent, readDanetkiRegistrationIntent } from '../danetki/danetki-registration-attribution'
 
 type AuthPageMode = 'login' | 'register'
 
 type LoginScreenProps = {
   mode?: AuthPageMode
+  presentation?: 'study'
+  backHref?: string
+  returnTo?: string
+  admin?: boolean
+  initialForgot?: boolean
 }
 
 type FieldErrors = {
@@ -36,7 +45,10 @@ type FieldErrors = {
 
 const emptyFieldErrors: FieldErrors = { name: '', email: '', password: '', consent: '' }
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const loginIllustrationUrl = publicAssetUrl('images/login_illustration.webp')
+const loginIllustrationUrl = publicAssetUrl(REFERENCE_PRESENTATION ? 'images/home-doodle/hero.webp' : 'images/login_illustration.webp')
+const connectedReferencePreview = import.meta.env.DEV && import.meta.env.VITE_REFERENCE_API === '1'
+const localAuthRedirectUnsupported = connectedReferencePreview && window.location.origin !== 'https://shoditsa.ru'
+const publicLoginUrl = 'https://shoditsa.ru/login'
 
 const authErrorMessage = (error: unknown) => {
   if (error instanceof ApiClientError) {
@@ -81,7 +93,7 @@ const currentReturnUrl = () => {
 
 const authHref = (pathname: '/login' | '/register', returnUrl: string) => {
   const query = returnUrl !== '/' ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ''
-  return `${pathname}${query}`
+  return `${localAuthRedirectUnsupported ? 'https://shoditsa.ru' : ''}${pathname}${query}`
 }
 
 const danetkiAcquisitionMeta = () => {
@@ -111,10 +123,13 @@ const removeResetTokenFromAddress = () => {
   window.history.replaceState(window.history.state, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`)
 }
 
-export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
+export function LoginScreen({ mode = 'login', presentation, backHref = '/', returnTo, admin = false, initialForgot = false }: LoginScreenProps) {
+  const study = presentation === 'study'
+  const autonomousStudy = study && import.meta.env.DEV && import.meta.env.VITE_QUEST_STUDY === '1' && !SERVER_RUNTIME
+  const previewMessage = 'Это локальный просмотр дизайна. Сервер авторизации не подключён — вход и создание аккаунта пока недоступны.'
   const serverRuntime = useServerRuntime()
   const [register, setRegister] = useState(mode === 'register')
-  const [forgotMode, setForgotMode] = useState(false)
+  const [forgotMode, setForgotMode] = useState(initialForgot && mode !== 'register')
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -127,7 +142,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const [pendingAction, setPendingAction] = useState<'email' | 'yandex' | null>(null)
   const pending = pendingAction !== null
 
-  const returnUrl = useMemo(() => currentReturnUrl(), [])
+  const returnUrl = useMemo(() => returnTo ? safeLocalUrl(returnTo) : currentReturnUrl(), [returnTo])
   const registrationReferral = useMemo(
     () => mode === 'register' && typeof window !== 'undefined'
       ? registrationReferralFromSearch(window.location.search)
@@ -137,8 +152,8 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
   const registrationInvite = registrationReferral ? REGISTRATION_REFERRALS[registrationReferral] : null
   const resetMode = Boolean(resetToken) && !register
   const authCapabilities = serverRuntime.meta?.auth
-  const emailAuthEnabled = authCapabilities?.emailPassword ?? SERVER_RUNTIME
-  const passwordResetEnabled = authCapabilities?.passwordReset ?? SERVER_RUNTIME
+  const emailAuthEnabled = autonomousStudy || (authCapabilities?.emailPassword ?? SERVER_RUNTIME)
+  const passwordResetEnabled = autonomousStudy || (authCapabilities?.passwordReset ?? SERVER_RUNTIME)
   const yandexAuthEnabled = Boolean(authCapabilities?.yandex)
 
   useEffect(() => {
@@ -205,6 +220,8 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     setFieldErrors(nextErrors)
     if (nextErrors.password) return
 
+    if (autonomousStudy) { setError(previewMessage); return }
+
     clearMessages()
     setPendingAction('email')
     try {
@@ -227,6 +244,8 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     const emailError = validateEmail()
     setFieldErrors({ ...emptyFieldErrors, email: emailError })
     if (emailError) return
+
+    if (autonomousStudy) { setError(previewMessage); return }
 
     clearMessages()
     setPendingAction('email')
@@ -257,6 +276,8 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       return
     }
     if (!validateForm()) return
+
+    if (autonomousStudy) { setError(previewMessage); return }
 
     clearMessages()
     setPendingAction('email')
@@ -295,6 +316,10 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
   const signInWithYandex = async () => {
     if (pending) return
+    if (localAuthRedirectUnsupported) {
+      window.open(publicLoginUrl, '_blank', 'noopener,noreferrer')
+      return
+    }
     clearMessages()
     setPendingAction('yandex')
     let redirected = false
@@ -332,7 +357,7 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
     removeResetTokenFromAddress()
   }
 
-  const title = resetMode ? 'Новый пароль' : forgotMode ? 'Восстановить доступ' : register ? 'Создать аккаунт' : 'Войти в аккаунт'
+  const title = resetMode ? 'Новый пароль' : forgotMode ? 'Восстановить доступ' : register ? 'Создать аккаунт' : admin ? 'Вход в админ-панель' : study ? 'С возвращением!' : 'Войти в аккаунт'
   const showYandex = !resetMode && !forgotMode && yandexAuthEnabled
   const description = resetMode
     ? 'Задайте новый пароль и вернитесь к своим играм.'
@@ -340,15 +365,15 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
       ? 'Укажите email — мы отправим ссылку для смены пароля.'
     : register
       ? 'Сохраните серию, билеты и статистику на любом устройстве.'
-      : 'Продолжите с того места, где остановились.'
-  const submitLabel = resetMode ? 'Сохранить пароль' : register ? 'Создать аккаунт по почте' : 'Войти по почте'
+      : admin ? 'Войдите в аккаунт с правами администратора.' : 'Продолжите с того места, где остановились.'
+  const submitLabel = resetMode ? 'Сохранить пароль' : register ? 'Создать аккаунт по почте' : study ? 'Войти' : 'Войти по почте'
 
-  return <div className="login-page">
+  return <div className={`login-page${study ? ' study-auth' : ''}`}>
     <main className="login-main">
       <section className="login-card" aria-labelledby="login-title">
         <div className="login-art-panel">
-          <a className="login-brand" href="/" aria-label="Сходится! — на главную"><BrandLogo compactOnMobile={false} /></a>
-          <img className="login-art" src={loginIllustrationUrl} srcSet={`${loginIllustrationUrl} 1536w`} sizes="(max-width: 767px) 100vw, 580px" alt="" width="1536" height="1024" fetchPriority="high" />
+          <a className="login-brand" href={backHref} aria-label="Сходится! — на главную"><BrandLogo compactOnMobile={false} /></a>
+          <ThemedArtwork className="login-art" src={loginIllustrationUrl} srcSet={`${loginIllustrationUrl} 1536w`} sizes="(max-width: 767px) 100vw, 580px" alt="" width="1536" height="1024" fetchPriority="high" />
           <div className="login-art-copy">
             <span>Ваш игровой профиль</span>
             <strong>Весь прогресс<br />в одном месте</strong>
@@ -356,13 +381,16 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
           </div>
         </div>
         <div className="login-form-column">
-          <a className="login-back" href="/">
+          <a className="login-back" href={backHref}>
             <ArrowLeft aria-hidden="true" />
             <span>К играм</span>
           </a>
           <div className="login-form-wrap">
-            <h1 id="login-title">{title}</h1>
-            <p className="login-description">{description}</p>
+            {study && <ThemedArtwork className="study-auth-mascot" src={publicAssetUrl('images/mascot/welcome-v1.webp')} width="112" height="112" alt="" />}
+            {APPLICATION_DESIGN || study ? <PageHeading id="login-title" title={title} description={description} /> : <><h1 id="login-title">{title}</h1><p className="login-description">{description}</p></>}
+            {localAuthRedirectUnsupported && <p className="login-preview-note">
+              Для локального просмотра войдите по email и паролю своего аккаунта. Вход через Яндекс и восстановление пароля доступны на <a href={publicLoginUrl} target="_blank" rel="noopener noreferrer">основном сайте</a>.
+            </p>}
             {register && serverRuntime.meta?.growth?.registration && <aside className="login-referral-invite">
               <span><strong>По 3 бонусные партии в каждой игре</strong><small>Во всех 12 играх — отдельный запас по 3 партии, один раз на новый аккаунт. Без оплаты. После регистрации вернём вас к игре и сохраним гостевой результат.</small></span>
             </aside>}
@@ -376,11 +404,17 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
 
             {serverRuntime.loading
               ? <div className="login-session-loading" role="status" aria-live="polite"><LoaderCircle className="login-spinner" /> Проверяем сессию…</div>
+              : localAuthRedirectUnsupported && (register || resetMode)
+              ? <div className="login-connected-action">
+                  <p>{register ? 'Создайте аккаунт на основном сайте, затем вернитесь и войдите здесь по email и паролю.' : 'Установите новый пароль на основном сайте, затем вернитесь ко входу.'}</p>
+                  <ActionLink href={register ? 'https://shoditsa.ru/register' : publicLoginUrl} target="_blank" rel="noopener noreferrer">{register ? 'Создать аккаунт' : 'Восстановить пароль'}</ActionLink>
+                  <ControlButton className="login-secondary-link" type="button" onClick={() => switchMode(false)}>Войти в локальную версию</ControlButton>
+                </div>
               : <form className="login-form" onSubmit={submitEmail} noValidate aria-busy={pending}>
                 {error && <InlineAlert tone="danger" className="login-error">{error}</InlineAlert>}
                 {notice && <InlineAlert tone="success" className="login-notice">{notice}</InlineAlert>}
                 {showYandex && <div className="login-yandex-section">
-                  <ActionButton className="login-yandex" type="button" onClick={signInWithYandex} disabled={pending} aria-describedby="login-yandex-caption login-yandex-terms">
+                  <ActionButton className="login-yandex" variant={REFERENCE_PRESENTATION ? 'secondary' : 'primary'} type="button" onClick={signInWithYandex} disabled={pending} aria-describedby="login-yandex-caption login-yandex-terms">
                     <span className="login-yandex-mark" aria-hidden="true">Я</span>
                     <span>{pendingAction === 'yandex' ? 'Переходим в Яндекс…' : 'Продолжить с Яндексом'}</span>
                     {pendingAction === 'yandex' ? <LoaderCircle className="login-spinner" aria-hidden="true" /> : <ArrowRight aria-hidden="true" />}
@@ -406,7 +440,9 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                 </div>}
 
                 {!resetMode && !forgotMode && <div className="login-field">
-                  <div className="login-field-heading"><label htmlFor="login-password">Пароль</label>{!register && passwordResetEnabled && <ControlButton className="login-forgot" type="button" disabled={pending} onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</ControlButton>}</div>
+                  <div className="login-field-heading"><label htmlFor="login-password">Пароль</label>{!register && passwordResetEnabled && (localAuthRedirectUnsupported
+                    ? <a className="login-forgot" href={publicLoginUrl} target="_blank" rel="noopener noreferrer">Забыли пароль?</a>
+                    : <ControlButton className="login-forgot" type="button" disabled={pending} onClick={() => { setForgotMode(true); setFieldErrors(emptyFieldErrors); clearMessages() }}>Забыли пароль?</ControlButton>)}</div>
                   <div className="login-input-wrap">
                     <TextInput surface="paper" className="ym-disable-keys" id="login-password" type={showPassword ? 'text' : 'password'} value={password} disabled={pending} onChange={(event) => { setPassword(event.target.value); clearFieldError('password') }} autoComplete={register ? 'new-password' : 'current-password'} placeholder={register ? 'Придумайте пароль' : 'Введите пароль'} aria-invalid={Boolean(fieldErrors.password)} aria-describedby={fieldErrors.password ? 'login-password-error' : register ? 'login-password-hint' : undefined} />
                     <ControlButton className="login-password-toggle" type="button" disabled={pending} onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'} aria-pressed={showPassword}>
@@ -448,15 +484,15 @@ export function LoginScreen({ mode = 'login' }: LoginScreenProps) {
                   {fieldErrors.consent && <small id="login-consent-error" className="login-field-error">{fieldErrors.consent}</small>}
                 </div>}
 
-                <ActionButton className="login-submit" variant={showYandex ? 'secondary' : 'primary'} surface="paper" type="submit" disabled={pending}>
+                <ActionButton className="login-submit" variant={REFERENCE_PRESENTATION || !showYandex ? 'primary' : 'secondary'} surface="paper" type="submit" disabled={pending}>
                   {pendingAction === 'email' && <LoaderCircle className="login-spinner" aria-hidden="true" />}
                   <span>{pendingAction === 'email' ? resetMode ? 'Сохраняем…' : forgotMode ? 'Отправляем…' : register ? 'Создаём…' : 'Входим…' : forgotMode ? 'Отправить ссылку' : submitLabel}</span>
                 </ActionButton>
                 </div>}
 
                 {(forgotMode || resetMode) && <ControlButton className="login-secondary-link" type="button" onClick={() => switchMode(false)}>Вернуться ко входу</ControlButton>}
-                {register && !resetMode && <p className="login-register-line">Уже есть аккаунт? <ControlButton type="button" onClick={() => switchMode(false)}>Войти</ControlButton></p>}
-                {!register && !resetMode && !forgotMode && <p className="login-register-line">Нет аккаунта? <a href={authHref('/register', returnUrl)}>Зарегистрироваться</a></p>}
+                {register && !resetMode && <p className="login-register-line">Уже есть аккаунт? {study ? <a href={authHref('/login', returnUrl)}>Войти</a> : <ControlButton type="button" onClick={() => switchMode(false)}>Войти</ControlButton>}</p>}
+                {!admin && !register && !resetMode && !forgotMode && <p className="login-register-line">Нет аккаунта? <a href={authHref('/register', returnUrl)} target={localAuthRedirectUnsupported ? '_blank' : undefined} rel={localAuthRedirectUnsupported ? 'noopener noreferrer' : undefined}>Зарегистрироваться</a></p>}
               </form>}
             {!serverRuntime.loading && !emailAuthEnabled && !resetMode && !forgotMode && <p className="login-form-hint login-form-hint--warning">Вход по email временно недоступен на этом окружении.</p>}
           </div>

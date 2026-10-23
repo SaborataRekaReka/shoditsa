@@ -12,7 +12,7 @@ import {
   type SeoPageContent,
 } from '../../apps/web/src/app/seo-content'
 import { seoRouteFromPathname, structuredDataForSeoRoute } from '../../apps/web/src/app/seo'
-import { LEGAL_DOCUMENT_SLUGS } from '../../apps/web/src/features/legal/legal'
+import { LEGAL_DOCUMENT_LINKS, LEGAL_DOCUMENT_SLUGS, legalHref } from '../../apps/web/src/features/legal/legal'
 import { PUBLIC_GAME_LINKS } from '../../apps/web/src/app/public-game-links'
 import { DANETKI_DISCOVERY_LINKS } from '../../apps/web/src/app/danetki-discovery-links'
 import {
@@ -28,22 +28,11 @@ import {
   danetkiCollectionFromPathname,
   danetkiCollectionItems,
 } from '../../apps/web/src/features/danetki/danetki-collections'
-import { INDEXABLE_UTILITY_PATHS, STATIC_INDEXABLE_PATHS, renderSitemap } from '../../apps/web/src/app/static-index'
+import { INDEXABLE_UTILITY_PATHS, STATIC_INDEXABLE_PATHS, renderPublicTrailingSlashRedirects, renderSitemap } from '../../apps/web/src/app/static-index'
 
 const distRoot = resolve('dist')
-const TITLE_POSTER_PATHS: Partial<Record<GameSeoContent['mode'], string>> = {
-  movie: '/images/title-posters/movie-ticket-poster.avif',
-  series: '/images/title-posters/series-ticket-poster.avif',
-  anime: '/images/title-posters/anime-ticket-poster.avif',
-  game: '/images/title-posters/game-ticket-poster.avif',
-  city: '/images/title-posters/city-ticket-poster.avif',
-  music: '/images/title-posters/music-ticket-poster.avif',
-  diagnosis: '/images/title-posters/diagnosis-ticket-poster.avif',
-  animal: '/images/title-posters/animal-ticket-poster.avif',
-  book: '/images/title-posters/book-ticket-poster-v2.avif',
-  character: '/images/title-posters/character-ticket-poster.webp',
-  danetki: '/images/title-posters/danetki-ticket-poster.avif',
-}
+
+
 const escapeHtml = (value: string) => value
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -64,10 +53,7 @@ const upsertCanonical = (html: string, href: string) => {
     : html.replace('</head>', `  ${tag}\n</head>`)
 }
 
-const addImagePreload = (html: string, href: string) => html.replace(
-  '</head>',
-  `  <link rel="preload" as="image" href="${escapeHtml(href)}" type="image/avif" fetchpriority="high" />\n</head>`,
-)
+
 
 const setJsonLd = (html: string, value: unknown) => {
   const json = JSON.stringify(value).replace(/</g, '\\u003c')
@@ -77,6 +63,13 @@ const setJsonLd = (html: string, value: unknown) => {
 }
 
 const renderParagraphs = (content: SeoPageContent) => content.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')
+const renderStaticFooter = () => {
+  const links = [
+    ...INDEXABLE_UTILITY_PATHS.map((href) => ({ href, label: ({ '/partners': 'Для компаний', '/specials': 'Спецпоказы', '/club': 'Клуб' })[href] })),
+    ...LEGAL_DOCUMENT_LINKS.map(({ slug, label }) => ({ href: legalHref(slug), label })),
+  ]
+  return `<footer class="public-static-footer"><nav aria-label="Разделы сайта и юридическая информация">${links.map(({ href, label }) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`).join('')}</nav></footer>`
+}
 const renderGameLinks = (currentMode?: GameSeoContent['mode']) => PUBLIC_GAME_LINKS
   .filter((game) => game.mode !== currentMode)
   .map((game) => `<a href="${game.href}">${escapeHtml(game.label)}</a>`)
@@ -93,10 +86,11 @@ const renderRelatedGameLinks = (content: GameSeoContent) => content.relatedModes
 const renderSearchSummary = (content: GameSeoContent) => content.searchSummary
   ? `<section class="ticket-search-summary ticket-search-summary--${content.mode}" aria-labelledby="search-summary-${content.mode}"><span>Играть онлайн · без спойлеров</span><h2 id="search-summary-${content.mode}">${escapeHtml(content.searchSummary.heading)}</h2><div>${content.searchSummary.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${content.searchSummary.action ? `<a href="${escapeHtml(content.searchSummary.action.href)}">${escapeHtml(content.searchSummary.action.label)}<span aria-hidden="true">↗</span></a>` : ''}${renderRelatedGameLinks(content)}</section>`
   : ''
-const renderHubGuideSummary = () => `<summary class="hub-guide__summary"><span class="hub-guide__summary-title"><span aria-hidden="true">▤</span><span><strong class="hub-guide__closed-label">Как устроены ежедневные игры</strong><strong class="hub-guide__open-label">Путеводитель по «Сходится!»</strong></span></span><small>формат · подсказки · все режимы</small><span class="hub-guide__summary-chevron" aria-hidden="true">⌄</span></summary>`
+const renderHubGuideSummary = () => `<summary class="hub-guide__summary public-static-disclosure"><strong>Как устроены ежедневные игры</strong><span aria-hidden="true">⌄</span></summary>`
 
-const renderHomeFallback = () => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><div class="hub-hero__facts" aria-label="Об игре"><span><strong>${PUBLIC_GAME_LINKS.length} игр</strong></span><span><strong>1 загадка в день</strong></span><span><strong>10 попыток</strong></span></div><h1>${escapeHtml(HOME_SEO.heading)}</h1><p>${escapeHtml(HOME_SEO.lead)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="#hub-guide">Узнать больше</a><a class="ui-button ui-button--secondary" href="/games/movie">Играть сейчас</a></div></div><div class="hub-hero__visual" aria-hidden="true"><img src="/images/hero.webp" alt="" width="1122" height="913"></div></section><details class="hub-guide" id="hub-guide">${renderHubGuideSummary()}<div class="hub-guide__drawer"><header class="hub-guide__intro"><span>Путеводитель · без спойлеров</span><h2>${escapeHtml(HOME_SEO.heading)}</h2><p>${escapeHtml(HOME_SEO.lead)}</p></header><div class="hub-guide__content"><section class="hub-guide__story" aria-label="О платформе">${renderParagraphs(HOME_SEO)}</section><nav class="hub-guide__game-links" aria-label="Все ежедневные игры"><span>↗ Все игровые маршруты</span><div>${renderGameLinks()}</div></nav><nav class="hub-guide__game-links" aria-label="Данетки с ответами"><span>↗ Подборки и классические истории</span><div>${renderDanetkiDiscoveryLinks()}</div></nav></div></div></details></article></main>`
-const renderUtilityFallback = (content: SeoPageContent) => `<main class="seo-static-shell seo-static-shell--home"><article class="hub-hero-ticket hub-hero-ticket--static"><section class="hub-hero"><div class="hub-hero__copy"><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead || content.description)}</p><div class="hub-hero__actions"><a class="ui-button ui-button--primary" href="${escapeHtml(content.canonicalPath)}">Открыть страницу</a><a class="ui-button ui-button--secondary" href="/">К играм</a></div></div></section><details class="hub-guide" open><summary class="hub-guide__summary"><span class="hub-guide__summary-title"><strong>Подробнее</strong></span></summary><div class="hub-guide__drawer"><header class="hub-guide__intro"><h2>${escapeHtml(content.heading)}</h2><p>${escapeHtml(content.lead || content.description)}</p></header><div class="hub-guide__content"><section class="hub-guide__story">${renderParagraphs(content)}</section></div></div></details></article></main>`
+const renderHomeFallback = () => `<main class="public-static-page"><a class="public-static-brand" href="/" aria-label="Сходится! — играть"><img src="/images/logo.svg" alt="" width="170" height="47"></a><header class="public-static-hero"><div><h1>${escapeHtml(HOME_SEO.heading)}</h1><p>${escapeHtml(HOME_SEO.lead)}</p><div class="public-static-actions"><a class="ui-button ui-button--primary" href="/games/movie">Играть сейчас</a><a class="ui-button ui-button--secondary" href="#hub-guide">Узнать больше</a></div></div><figure aria-hidden="true"><img class="public-static-art" src="/images/shoditsa-study/home-promo-v1.webp" alt="" width="160" height="200"></figure></header><details class="hub-guide" id="hub-guide">${renderHubGuideSummary()}<div class="hub-guide__drawer"><header class="hub-guide__intro"><h2>${escapeHtml(HOME_SEO.heading)}</h2><p>${escapeHtml(HOME_SEO.lead)}</p></header><div class="hub-guide__content"><section class="hub-guide__story" aria-label="О платформе">${renderParagraphs(HOME_SEO)}</section><nav class="hub-guide__game-links" aria-label="Все ежедневные игры"><div>${renderGameLinks()}</div></nav><nav class="hub-guide__game-links" aria-label="Данетки с ответами"><div>${renderDanetkiDiscoveryLinks()}</div></nav></div></div></details></main>`
+
+const renderUtilityFallback = (content: SeoPageContent) => `<main class="public-static-page"><a class="public-static-brand" href="/" aria-label="Сходится! — играть"><img src="/images/logo.svg" alt="" width="170" height="47"></a><header class="public-static-hero"><div><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead || content.description)}</p><div class="public-static-actions"><a class="ui-button ui-button--primary" href="${escapeHtml(content.canonicalPath)}">Открыть страницу</a><a class="ui-button ui-button--secondary" href="/">К играм</a></div></div></header><details class="hub-guide" open><summary class="hub-guide__summary"><span class="hub-guide__summary-title"><strong>Подробнее</strong></span></summary><div class="hub-guide__drawer"><div class="hub-guide__content"><section class="hub-guide__story">${renderParagraphs(content)}</section></div></div></details></main>`
 
 const renderDanetkiCard = (item: DanetkiCatalogItem, index: number) => `<article class="danetki-catalog-card"><div class="danetki-catalog-card__number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div><div class="danetki-catalog-card__copy"><div class="danetki-catalog-card__meta"><span>${escapeHtml(danetkiDifficultyLabel(item.difficulty))}</span>${item.genres.slice(0, 1).map((genre) => `<span>${escapeHtml(genre)}</span>`).join('')}<span>${item.estimatedMinutes} мин</span></div><h2><a href="${escapeHtml(danetkiStoryPath(item))}">${escapeHtml(item.titleRu)}</a></h2><p>${escapeHtml(item.condition)}</p><a class="danetki-catalog-card__action" href="${escapeHtml(danetkiStoryPath(item))}">Проверить свою версию <span aria-hidden="true">→</span></a></div></article>`
 
@@ -134,7 +128,7 @@ const renderDanetkiStoryFallback = (item: DanetkiCatalogItem) => {
 const renderArtifactDossier = (content: GameSeoContent) => {
   const presentation = GAME_GUIDE_PRESENTATION[content.mode]
   const expanded = content.mode === 'connections' ? ' open' : ''
-  return `${renderSearchSummary(content)}<details class="artifact-dossier ticket-dossier ticket-dossier--${content.mode}"${expanded}><summary class="ticket-dossier__summary"><span class="ticket-dossier__summary-title"><span class="ticket-dossier__static-icon" aria-hidden="true">▤</span><span><strong class="ticket-dossier__closed-label">${escapeHtml(presentation.closedLabel)}</strong><strong class="ticket-dossier__open-label">${escapeHtml(presentation.openLabel)}</strong><small>об игре · подсказки · вопросы</small></span></span><span class="ticket-dossier__chevron ticket-dossier__static-icon" aria-hidden="true">⌄</span></summary><div class="ticket-dossier__drawer"><header class="ticket-dossier__intro"><div><span class="ticket-dossier__eyebrow">${escapeHtml(presentation.introLabel)}</span><h2>${escapeHtml(content.heading)}</h2><p class="ticket-dossier__lead">${escapeHtml(content.lead)}</p></div></header><div class="ticket-dossier__guide"><section class="ticket-dossier__evidence"><header><span class="ticket-dossier__section-icon" aria-hidden="true">⌕</span><div><span>${escapeHtml(presentation.evidenceLabel)}</span><h3>${escapeHtml(presentation.evidenceTitle)}</h3></div></header><ul>${content.features.map((feature) => `<li><span class="ticket-dossier__static-icon" aria-hidden="true">✓</span><span>${escapeHtml(feature)}</span></li>`).join('')}</ul></section><section class="ticket-dossier__route"><header><span class="ticket-dossier__section-icon" aria-hidden="true">↗</span><div><span>${escapeHtml(presentation.routeLabel)}</span><h3>${escapeHtml(presentation.routeTitle)}</h3></div></header><ol>${content.steps.map((step, index) => `<li><strong>${String(index + 1).padStart(2, '0')}</strong><span>${escapeHtml(step)}</span></li>`).join('')}</ol></section></div><details class="ticket-dossier__more"${expanded}><summary><span>Подробнее об игре</span><span class="ticket-dossier__static-icon" aria-hidden="true">⌄</span></summary><section class="ticket-dossier__story" aria-label="Об игре подробнее">${renderParagraphs(content)}</section></details><section class="ticket-dossier__faq"><header><span class="ticket-dossier__section-icon" aria-hidden="true">?</span><div><span>${escapeHtml(presentation.faqLabel)}</span><h3>${escapeHtml(presentation.faqTitle)}</h3></div></header><div>${content.faq.map((entry) => `<details><summary><span>${escapeHtml(entry.question)}</span><span class="ticket-dossier__static-icon" aria-hidden="true">⌄</span></summary><p>${escapeHtml(entry.answer)}</p></details>`).join('')}</div></section><nav class="ticket-dossier__links" aria-label="Другие ежедневные игры"><span><span class="ticket-dossier__static-icon" aria-hidden="true">✦</span>${escapeHtml(presentation.linksLabel)}</span><div>${renderGameLinks(content.mode)}</div></nav><nav class="ticket-dossier__links" aria-label="Данетки с ответами"><span><span class="ticket-dossier__static-icon" aria-hidden="true">✦</span>Подборки и классические истории</span><div>${renderDanetkiDiscoveryLinks()}</div></nav></div></details>`
+  return `${renderSearchSummary(content)}<details class="artifact-dossier ticket-dossier ticket-dossier--${content.mode}"${expanded}><summary class="public-static-disclosure"><strong>Подробнее об игре</strong><span aria-hidden="true">⌄</span></summary><div class="ticket-dossier__drawer"><header class="ticket-dossier__intro"><div><span class="ticket-dossier__eyebrow">${escapeHtml(presentation.introLabel)}</span><h2>${escapeHtml(content.heading)}</h2><p class="ticket-dossier__lead">${escapeHtml(content.lead)}</p></div></header><div class="ticket-dossier__guide"><section class="ticket-dossier__evidence"><header><span class="ticket-dossier__section-icon" aria-hidden="true">⌕</span><div><span>${escapeHtml(presentation.evidenceLabel)}</span><h3>${escapeHtml(presentation.evidenceTitle)}</h3></div></header><ul>${content.features.map((feature) => `<li><span class="ticket-dossier__static-icon" aria-hidden="true">✓</span><span>${escapeHtml(feature)}</span></li>`).join('')}</ul></section><section class="ticket-dossier__route"><header><span class="ticket-dossier__section-icon" aria-hidden="true">↗</span><div><span>${escapeHtml(presentation.routeLabel)}</span><h3>${escapeHtml(presentation.routeTitle)}</h3></div></header><ol>${content.steps.map((step, index) => `<li><strong>${String(index + 1).padStart(2, '0')}</strong><span>${escapeHtml(step)}</span></li>`).join('')}</ol></section></div><details class="ticket-dossier__more"${expanded}><summary><span>Подробнее об игре</span><span class="ticket-dossier__static-icon" aria-hidden="true">⌄</span></summary><section class="ticket-dossier__story" aria-label="Об игре подробнее">${renderParagraphs(content)}</section></details><section class="ticket-dossier__faq"><header><span class="ticket-dossier__section-icon" aria-hidden="true">?</span><div><span>${escapeHtml(presentation.faqLabel)}</span><h3>${escapeHtml(presentation.faqTitle)}</h3></div></header><div>${content.faq.map((entry) => `<details><summary><span>${escapeHtml(entry.question)}</span><span class="ticket-dossier__static-icon" aria-hidden="true">⌄</span></summary><p>${escapeHtml(entry.answer)}</p></details>`).join('')}</div></section><nav class="ticket-dossier__links" aria-label="Другие ежедневные игры"><span><span class="ticket-dossier__static-icon" aria-hidden="true">✦</span>${escapeHtml(presentation.linksLabel)}</span><div>${renderGameLinks(content.mode)}</div></nav><nav class="ticket-dossier__links" aria-label="Данетки с ответами"><span><span class="ticket-dossier__static-icon" aria-hidden="true">✦</span>Подборки и классические истории</span><div>${renderDanetkiDiscoveryLinks()}</div></nav></div></details>`
 }
 
 const renderStaticLaunchOption = (content: GameSeoContent) => {
@@ -146,32 +140,20 @@ const renderStaticLaunchOption = (content: GameSeoContent) => {
         ? ['Период', 'Все годы']
         : null
   if (!option) return ''
-  return `<span class="game-launch-controls__option"><span class="game-option-trigger game-option-trigger--static"><span class="game-option-trigger__meta"><span class="game-option-trigger__label">⌁ ${option[0]}</span></span><span class="game-option-trigger__value"><strong>${option[1]}</strong><span aria-hidden="true">›</span></span></span></span>`
+  return `<span class="public-static-option"><small>${option[0]}</small><strong>${option[1]}</strong></span>`
 }
 
 const renderLaunchControls = (content: GameSeoContent) => {
   const option = renderStaticLaunchOption(content)
-  return `<div class="game-launch-controls game-launch-controls--${content.mode} ${option ? 'has-option' : 'is-action-only'} game-launch-controls--static"><span class="game-launch-controls__action"><a class="ui-button ui-button--primary play-button game-launch-controls__play" href="${escapeHtml(content.canonicalPath)}#game">▶ Начать игру</a></span>${option}</div>`
+  return `<div class="public-static-launch"><a class="public-static-play" href="${escapeHtml(content.canonicalPath)}#game">Начать игру <span aria-hidden="true">→</span></a>${option}</div>`
 }
 
-const renderPosterImage = (content: GameSeoContent, className: string) => {
-  const src = TITLE_POSTER_PATHS[content.mode]
-  return src ? `<img class="${className}" src="${src}" alt="" width="480" height="1200" decoding="async" fetchpriority="high">` : ''
-}
 
-const renderAdmissionTicketFallback = (content: GameSeoContent) => `<article class="admit-ticket admit-ticket--dossier" aria-labelledby="ticket-${content.mode}"><div class="admit-ticket__stub admit-ticket__stub--poster admit-ticket__stub--${content.mode}" aria-hidden="true">${renderPosterImage(content, 'admit-ticket__stub-art')}<span>ВХОД</span><strong>ОДИН</strong><small>${escapeHtml(content.shortName)}</small><em>10 попыток</em><i></i></div><div class="admit-ticket__body"><div class="ticket-kicker"><span>Ежедневная премьера</span><i></i><small>полночный сеанс</small></div><h1 id="ticket-${content.mode}">${escapeHtml(content.mode === 'game' || content.mode === 'series' || content.mode === 'danetki' || content.mode === 'connections' || content.mode === 'book' ? content.heading : `Ежедневная игра: ${content.shortName.toLocaleLowerCase('ru-RU')}`)}</h1><p>${escapeHtml(content.lead)}</p>${renderLaunchControls(content)}</div>${renderArtifactDossier(content)}</article>`
-
-const renderConcertTicketFallback = (content: GameSeoContent) => `<article class="concert-ticket concert-ticket--dossier" aria-labelledby="ticket-music"><div class="concert-ticket__main"><div class="concert-ticket__head"><div class="concert-ticket__brand"><span class="concert-ticket__kicker">♪ Концерт дня</span><h1 id="ticket-music">${escapeHtml(content.heading)}</h1><p class="concert-ticket__venue">Главная сцена · ежедневный сеанс</p></div><div class="concert-ticket__when"><strong>СЕГОДНЯ</strong><small>21:45</small></div></div><p class="concert-ticket__lead">${escapeHtml(content.lead)}</p><div class="concert-ticket__meta" aria-hidden="true"><span><i>GATE</i><b>10</b></span><span><i>SEAT</i><b>A15</b></span><span><i>ROW</i><b>07</b></span></div><div class="concert-ticket__barcode" aria-hidden="true"></div>${renderLaunchControls(content)}</div><div class="concert-ticket__stub concert-ticket__stub--poster" aria-hidden="true">${renderPosterImage(content, 'concert-ticket__stub-art')}<span class="concert-ticket__stub-kicker">Концерт дня</span><strong>Артист дня</strong><small>Главная сцена</small><em>21:45</em><span class="concert-ticket__stub-no">№ 001</span><div class="concert-ticket__barcode concert-ticket__barcode--v"></div></div>${renderArtifactDossier(content)}</article>`
-
-const renderDiagnosisChartFallback = (content: GameSeoContent) => `<article class="med-chart med-chart--dossier" aria-labelledby="ticket-diagnosis"><div class="med-chart__stub med-chart__stub--poster" aria-hidden="true">${renderPosterImage(content, 'med-chart__stub-art')}<span class="med-chart__cross" aria-hidden="true"><i></i><i></i></span><span>ПРИЁМ</span><strong>ОТКРЫТ</strong><small>Карта № 001</small><em>СЕГОДНЯ</em></div><div class="med-chart__body"><div class="med-chart__kicker"><span>Амбулаторная карта</span><i></i><small>анонимный пациент</small></div><h1 id="ticket-diagnosis">Ежедневная игра: диагнозы</h1><p>${escapeHtml(content.lead)}</p>${renderLaunchControls(content)}</div>${renderArtifactDossier(content)}</article>`
 
 const renderGameArtifactFallback = (content: GameSeoContent) => {
-  const artifact = content.mode === 'music'
-      ? renderConcertTicketFallback(content)
-      : content.mode === 'diagnosis'
-        ? renderDiagnosisChartFallback(content)
-        : renderAdmissionTicketFallback(content)
-  return `<main class="seo-static-shell seo-static-shell--artifact">${artifact}</main>`
+  const file = content.mode === 'connections' ? 'associations' : content.mode === 'danetki' ? 'yes-no' : content.mode
+  const art = `<figure aria-hidden="true"><img class="public-static-art public-static-art--light" src="/images/home-doodle/${file}.webp" alt="" width="160" height="160"><img class="public-static-art public-static-art--dark" src="/images/home-doodle/dark/${file}-v1.webp" alt="" width="160" height="160"></figure>`
+  return `<main class="public-static-page"><a class="public-static-brand" href="/" aria-label="Сходится! — играть"><img src="/images/logo.svg" alt="" width="170" height="47"></a><header class="public-static-hero"><div><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead)}</p></div>${art}${renderLaunchControls(content)}</header>${renderArtifactDossier(content)}</main>`
 }
 
 const buildPage = (template: string, content: SeoPageContent, fallback: string) => {
@@ -198,8 +180,7 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
   html = upsertMeta(html, 'name', 'twitter:image:alt', `${content.heading} — ${SITE_NAME}`)
   html = upsertCanonical(html, canonicalUrl)
   html = setJsonLd(html, structuredDataForSeoRoute(route, SITE_ORIGIN))
-  if ('mode' in content && TITLE_POSTER_PATHS[content.mode]) html = addImagePreload(html, TITLE_POSTER_PATHS[content.mode]!)
-  html = html.replace(/<div id="root">[^]*?<\/div>\s*<noscript>/i, `<div id="root">${fallback}</div>\n    <noscript>`)
+  html = html.replace(/<div id="root">[^]*?<\/div>\s*<noscript>/i, `<div id="root">${fallback}${renderStaticFooter()}</div>\n    <noscript>`)
   const isGamePage = 'mode' in content
   const danetkiPageFragment = route.kind === 'danetki-catalog'
     ? 'class="danetki-catalog-hero"'
@@ -275,6 +256,7 @@ for (const slug of LEGAL_DOCUMENT_SLUGS) {
 }
 
 await writeFile(resolve(distRoot, 'sitemap.xml'), renderSitemap(), 'utf8')
+await writeFile(resolve(distRoot, 'seo', 'public-trailing-slash.conf'), renderPublicTrailingSlashRedirects(), 'utf8')
 await writeFile(resolve(distRoot, 'robots.txt'), renderRobots(), 'utf8')
 await writeFile(resolve(distRoot, 'seo-manifest.json'), `${JSON.stringify({ origin: SITE_ORIGIN, paths: STATIC_INDEXABLE_PATHS }, null, 2)}\n`, 'utf8')
 

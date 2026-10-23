@@ -1,4 +1,4 @@
-import { CheckCircle2, Save } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { offerObservationScope, useVisibleImpression } from '../../app/visible-impression'
@@ -11,6 +11,8 @@ import {
   type DanetkiRegistrationPlacement,
 } from './danetki-registration-attribution'
 import './DanetkiRegistrationOffer.css'
+import { ActionLink } from '../../components/ui'
+import { ResultPersistence } from '../result/ResultPersistence'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { trackGrowthAction } from '../result/DiagnosisGrowth'
 
@@ -70,8 +72,9 @@ export function DanetkiRegistrationOffer({ placement, sessionId, questionCount =
   if (loading) return null
   if (!guest) return placement === 'result'
     ? <section className="danetki-registration-offer is-saved" aria-label="Прогресс сохранён">
-        <span><CheckCircle2 aria-hidden="true" /></span>
-        <div><strong>Расследование сохранено</strong><p>{(runtime.dashboard?.registrationBonus?.byMode?.danetki?.remaining ?? 0) > 0 ? `Бонусных комнат «Данеток» осталось: ${runtime.dashboard?.registrationBonus?.byMode?.danetki?.remaining}. В других играх — отдельные бонусы.` : 'Результат, серия дней и статистика доступны в вашем профиле.'}</p></div>
+        <ResultPersistence title="Расследование сохранено" icon={<CheckCircle2 />} saved>
+          {(runtime.dashboard?.registrationBonus?.byMode?.danetki?.remaining ?? 0) > 0 ? `Бонусных комнат «Данеток» осталось: ${runtime.dashboard?.registrationBonus?.byMode?.danetki?.remaining}. В других играх — отдельные бонусы.` : 'Результат, серия дней и статистика доступны в вашем профиле.'}
+        </ResultPersistence>
       </section>
     : null
 
@@ -96,8 +99,8 @@ export function DanetkiRegistrationOffer({ placement, sessionId, questionCount =
   }
 
   return <section ref={offerRef} className={`danetki-registration-offer danetki-registration-offer--${placement}`} aria-label="Сохранить прогресс">
-    <span><Save aria-hidden="true" /></span>
-    <div><strong>{copy.title}</strong><p>{copy.description}</p></div>
-    <a href={href} onClick={click}>{copy.action}</a>
+    <ResultPersistence title={copy.title} action={<ActionLink variant="secondary" href={href} onClick={click}>{copy.action}</ActionLink>}>
+      {copy.description}
+    </ResultPersistence>
   </section>
 }

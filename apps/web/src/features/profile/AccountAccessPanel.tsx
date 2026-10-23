@@ -12,7 +12,7 @@ import {
 } from '../../app/metrics'
 import { clearQueuedClientEvents } from '../../app/client-events'
 import { ActionButton } from '../../components/app-shell/AppShell'
-import { ControlButton, InlineAlert, TextInput } from '../../components/ui'
+import { InlineAlert, TextButton, TextInput } from '../../components/ui'
 import { authErrorMessage, resetPasswordTokenFromLocation } from '../auth/auth-helpers'
 import { buildLegacyImport, legacyImportCompleted, markLegacyImportCompleted } from '../auth/legacy-import'
 import { localizeYandexOAuthUrl } from '../auth/yandex-oauth'
@@ -321,7 +321,7 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
 
   return <div className="account-access">
     {loadingSession
-      ? <p className="modal-lead">Проверяем сессию...</p>
+      ? <p className="modal-lead" role="status">Проверяем сессию...</p>
       : session && !session.isAnonymous
         ? <>
           <p className="modal-lead">Вы вошли как <strong>{session.name || session.email || 'пользователь'}</strong>.</p>
@@ -349,11 +349,11 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
             <div className="account-access__form">
               <label className="account-access__label">Новый пароль<TextInput surface="dark" type="password" value={resetPasswordValue} onChange={(event) => setResetPasswordValue(event.target.value)} autoComplete="new-password" /></label>
               <ActionButton onClick={submitResetPassword} disabled={pending}>{pending ? 'Сохраняем...' : 'Сбросить пароль'}</ActionButton>
-              <ControlButton className="account-access__toggle" type="button" onClick={() => {
+              <TextButton className="account-access__toggle" type="button" onClick={() => {
                 clearResetTokenFromAddress()
                 setForgotMode(false)
                 clearMessages()
-              }}>Вернуться ко входу</ControlButton>
+              }}>Вернуться ко входу</TextButton>
             </div>
           </>
           : forgotMode && passwordResetEnabled
@@ -362,10 +362,10 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
               <div className="account-access__form">
                 <label className="account-access__label">Email<TextInput surface="dark" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></label>
                 <ActionButton onClick={requestPasswordReset} disabled={pending}>{pending ? 'Отправляем...' : 'Отправить ссылку'}</ActionButton>
-                <ControlButton className="account-access__toggle" type="button" onClick={() => {
+                <TextButton className="account-access__toggle" type="button" onClick={() => {
                   setForgotMode(false)
                   clearMessages()
-                }}>Вернуться ко входу</ControlButton>
+                }}>Вернуться ко входу</TextButton>
               </div>
             </>
         : <>
@@ -379,19 +379,19 @@ export function AccountAccessPanel({ session, loadingSession, refreshSession }: 
               <label className="account-access__label">Пароль<TextInput surface="dark" type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={register ? 'new-password' : 'current-password'} /></label>
               {register && authCapabilities?.emailVerification && <p className="modal-lead">После регистрации нужно открыть письмо на этом устройстве и подтвердить email. До подтверждения вы останетесь гостем, а затем текущие билеты и игры автоматически перейдут в аккаунт.</p>}
               <ActionButton onClick={submitEmail} disabled={pending}>{pending ? 'Отправляем...' : register ? 'Создать аккаунт' : 'Войти'}</ActionButton>
-              <ControlButton className="account-access__toggle" type="button" onClick={() => {
+              <TextButton className="account-access__toggle" type="button" onClick={() => {
                 setRegister((current) => !current)
                 setForgotMode(false)
                 clearMessages()
-              }}>{register ? 'У меня уже есть аккаунт' : 'Создать аккаунт'}</ControlButton>
-              {!register && passwordResetEnabled && <ControlButton className="account-access__toggle" type="button" onClick={() => {
+              }}>{register ? 'У меня уже есть аккаунт' : 'Создать аккаунт'}</TextButton>
+              {!register && passwordResetEnabled && <TextButton className="account-access__toggle" type="button" onClick={() => {
                 setForgotMode(true)
                 clearMessages()
-              }}>Забыли пароль?</ControlButton>}
+              }}>Забыли пароль?</TextButton>}
             </div>
             : !yandexAuthEnabled && <InlineAlert tone="warning" className="server-error">Способы входа временно не настроены на сервере. Гостевая игра продолжает работать, весь прогресс хранится в текущем серверном гостевом профиле.</InlineAlert>}
         </>}
-    {!!notice && <p className="account-access__notice">{notice}</p>}
+    {!!notice && <InlineAlert tone="success">{notice}</InlineAlert>}
     {!!error && <InlineAlert tone="danger" className="server-error">{error}</InlineAlert>}
   </div>
 }

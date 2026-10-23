@@ -2,6 +2,7 @@ import type { CSSProperties, MouseEvent } from 'react'
 import { ChevronRight } from 'lucide-react'
 import type { CategoryTicketConfig, CategoryTicketMode } from './category-ticket.config'
 import './CategoryTicket.css'
+import './CategoryPoster.css'
 
 export type CategoryTicketStatus = 'new' | 'active' | 'completed'
 
@@ -17,6 +18,7 @@ type Props = Omit<CategoryTicketConfig, 'mode'> & {
   poolLabel?: string
   newActionLabel?: string
   href?: string
+  layout?: 'ticket' | 'poster'
   onClick: () => void
 }
 
@@ -38,12 +40,12 @@ const ariaLabel = (title: string, status: CategoryTicketStatus, attempts: number
   return `Играть: ${title}`
 }
 
-export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, progressLabel = 'ПОПЫТКИ', progressMax = 10, completedProgress = true, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, onClick }: Props) {
+export function CategoryTicket({ mode, title, description, color, watermarkUrl, poolCount, status, attempts, progressLabel = 'ПОПЫТКИ', progressMax = 10, completedProgress = true, kicker = 'ЕЖЕДНЕВНАЯ ИГРА', poolLabel = 'В ПУЛЕ', newActionLabel, href, layout = 'ticket', onClick }: Props) {
   const style = { '--ticket-color': color } as CSSProperties
   const badge = status === 'active' ? `${progressLabel} · ${attempts ?? 0}/${progressMax}` : null
   const state = status === 'completed'
     ? completedProgress ? `ГОТОВО · ${attempts ?? 0}/${progressMax}` : 'ГОТОВО'
-    : statusLabel[status]
+    : layout === 'poster' && status === 'active' ? '' : statusLabel[status]
 
   const content = <>
     <span className="category-ticket__stub" aria-hidden="true">
@@ -63,7 +65,7 @@ export function CategoryTicket({ mode, title, description, color, watermarkUrl, 
     </span>
     {badge && <span className={`category-ticket__badge ${status === 'completed' ? 'category-ticket__badge--completed' : ''}`}>{badge}</span>}
   </>
-  const className = `category-ticket category-ticket--${mode} ${status === 'completed' ? 'is-completed' : ''}`
+  const className = `category-ticket category-ticket--${mode} ${layout === 'poster' ? 'category-ticket--poster' : ''} ${status === 'completed' ? 'is-completed' : ''}`
   const label = ariaLabel(title, status, attempts, progressLabel, progressMax)
   const openInApp = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return

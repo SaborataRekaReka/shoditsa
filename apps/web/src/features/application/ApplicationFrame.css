@@ -1,0 +1,35 @@
+.application-content { min-width: 0; container: application-content / inline-size; }
+.application-frame { background: var(--color-entry-bg); }
+.application-aside-slot:empty, .application-aside-slot:not(:empty) + .application-aside-fallback { display: none; }
+.application-frame .application-content > .app { width: 100%; max-width: none; margin: 0; padding: 0; background: transparent; }
+.application-content :is(.profile-shell, .rewatch-shell, .game-screen-shell) { width: 100%; max-width: none; margin-inline: 0; }
+.application-content :is(h1, h2, h3) { font-family: var(--quest-heading); }
+.application-content .screen-back-row { margin-top: 0; }
+.application-content :is(.profile-screen, .rewatch-screen) { padding-inline: 0; }
+.application-content .community-page { width: 100%; margin: 0; padding: 0 0 32px; }
+
+/* Supporting pages live in the centre column, not a full browser viewport. */
+@container application-content (max-width: 900px) {
+  .application-content :is(.support-layout, .blog-layout) { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .application-content :is(.legal-screen, .specials-screen, .corporate-page) { width: 100%; }
+  .application-content .legal-layout { grid-template-columns: minmax(0, 1fr); }
+  .application-content .legal-nav { position: static; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .application-content .legal-nav > strong { grid-column: 1 / -1; }
+  .application-content .legal-document { padding: 24px; }
+  .application-content .legal-document h1 { font-size: clamp(30px, 5cqi, 40px); }
+  .application-content :is(.legal-contact-cards, .legal-data-table article) { grid-template-columns: minmax(0, 1fr); }
+  .application-content .specials-hero { grid-template-columns: minmax(0, 1fr) 140px; gap: 20px; padding: 24px; }
+  .application-content .specials-hero h1 { font-size: clamp(30px, 5cqi, 42px); overflow-wrap: normal; }
+  .application-content .specials-hero__poster { width: 140px; height: 160px; }
+  html[data-quest-tone] .application-content .corporate-hero { grid-template-columns: minmax(0, 1fr); }
+  html[data-quest-tone] .application-content .corporate-hero__copy { grid-column: 1; grid-row: 1; padding: 28px; }
+  html[data-quest-tone] .application-content .corporate-hero h1 { font-size: clamp(32px, 5.8cqi, 46px); overflow-wrap: normal; }
+  html[data-quest-tone] .application-content .corporate-hero__media { grid-column: 1; grid-row: 2; height: auto; aspect-ratio: 1.88; padding: 0; }
+  html[data-quest-tone] .application-content .corporate-hero__media img { display: block; object-fit: cover; }
+  html[data-quest-tone] .application-content .corporate-hero__stats { grid-row: 3; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 24px 28px; }
+  html[data-quest-tone] .application-content .corporate-hero__stats > p { grid-column: 1 / -1; }
+}
+@container application-content (max-width: 520px) {
+  .application-content .legal-nav { grid-template-columns: minmax(0, 1fr); }
+  .application-content .specials-hero { grid-template-columns: minmax(0, 1fr); }
+}

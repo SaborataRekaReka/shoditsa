@@ -1,0 +1,11 @@
+[
+  {"id":24974,"title":"Аниме пак 2026 №1","expected_questions":108},
+  {"id":21337,"title":"Фильмы, сериалы, актеры, игры, аниме, музыка, лого by reboot","expected_questions":90},
+  {"id":15161,"title":"паки для дэбилов №15","expected_questions":92},
+  {"id":19726,"title":"Хороший пак, не пизди","expected_questions":256},
+  {"id":25867,"title":"Полуночный разгон №2","expected_questions":168},
+  {"id":25388,"title":"Разное (без аниме)","expected_questions":106},
+  {"id":23938,"title":"Огромный Мешок Сюрпризов","expected_questions":288},
+  {"id":15714,"title":"GEOgrafia (By Executer)","expected_questions":120},
+  {"id":23721,"title":"Ностальгический (2001-2020)","expected_questions":85}
+]

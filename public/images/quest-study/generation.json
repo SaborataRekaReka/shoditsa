@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "prompt": "Use case: stylized-concept / brand illustration. Create a polished transparent-background app illustration, using the attached original Shoditsa mascot only as an identity reference. Preserve its identity: lime green round cat-like alien, two long antennae ending in round bulbs, small triangular ears, friendly dark eyes, little fluffy tail. Completely redraw the character in the clean flat geometric illustration language of Duolingo's product illustrations: large rounded vector-like shapes, very few interior details, two solid green shades, no heavy black outer contour, dark facial features, playful expressive silhouette, readable at 140 pixels. Pose: happy mid-air leap, one hand proudly holding a small lavender movie clapper board with a simple white question-mark symbol, the other arm raised. Full body visible, confident joyful expression, a few tiny white/yellow sparkle shapes around the character. Centered isolated cutout, suitable for placing on a purple welcome banner and in a game completion panel. Transparent background with genuine alpha. No backdrop, no gradients, no texture, no fuzzy fur rendering, no ground shadow, no frame, no words, no logos. Do not use the Duolingo owl or any Duolingo characters. Original character and illustration.",
+  "reference": "../mascot/celebrate-v1.webp",
+  "source": "C:/Users/brene/.codex/generated_images/01a13f38-e81f-79e1-b70f-9204711912bf/exec-498f890a-53a3-4d6c-9327-6381e44ad34f.png",
+  "asset": "mascot-quest-v1.webp",
+  "usage": "Isolated Duolingo-inspired study; original Shoditsa character."
+}

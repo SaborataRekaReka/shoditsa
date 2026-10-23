@@ -1,0 +1,20 @@
+/* Checkout owns its conditions in club plans and ticket bundles alike. */
+.checkout-acceptance {
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 9px;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  color: var(--color-muted);
+  font: 400 13px/1.6 var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+.checkout-acceptance input { width: 18px; height: 18px; margin: 2px 0 0; cursor: pointer; }
+.checkout-acceptance a { color: var(--color-text); font-weight: 600; text-underline-offset: 3px; }
+.checkout-note { display: block; margin-top: 12px; color: var(--color-muted); font: 400 13px/1.6 var(--font-body); }
+.checkout-error { margin-top: 12px; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .checkout-acceptance,
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .checkout-note { font-size: 14px; }

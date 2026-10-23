@@ -1,0 +1,42 @@
+.hs-promo-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 200px;
+  padding: 28px 20px 20px;
+  border-radius: 16px;
+  color: var(--color-on-promo);
+  background: radial-gradient(216% 106% at 6% 3%, var(--color-promo-glow-start) 0%, var(--color-promo-glow-middle) 52%, var(--color-promo-glow-end) 100%), var(--color-promo-base);
+}
+.hs-promo-copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; min-height: 152px; width: calc(100% - 166px); max-width: 520px; }
+.hs-app .hs-promo-copy h1 { margin: 0; color: inherit; font: 800 24px/1.25 var(--quest-heading); letter-spacing: -.5px; }
+.hs-promo-copy > p { margin: 6px 0 0; color: inherit; font-size: 14px; line-height: 1.5; }
+.hs-promo-copy > p strong { font-weight: 700; }
+.hs-promo-play { align-self: flex-start; width: fit-content; min-width: min(200px,100%); max-width: 100%; margin-top: 25px; }
+.hs-promo-scene { position: absolute; z-index: 1; inset: 0 0 0 auto; width: 190px; pointer-events: none; }
+.hs-promo-scene > img { position: absolute; display: block; width: 190px; max-width: none; height: 210px; object-fit: contain; right: -5px; bottom: -5px; }
+.hs-promo-spark { position: absolute; z-index: 3; width: 9px; height: 9px; background: var(--color-paper); clip-path: polygon(50% 0, 64% 36%, 100% 50%, 64% 64%, 50% 100%, 36% 64%, 0 50%, 36% 36%); pointer-events: none; }
+.hs-promo-spark--one { top: 13px; right: 51px; }
+.hs-promo-spark--two { bottom: 20px; right: 171px; }
+.hs-home-intro { margin-top: 20px; }
+.hs-home-intro > p { color: var(--quest-muted); font-size: 14px; line-height: 1.7; }
+@media (max-width: 699px) {
+  .hs-promo-hero { min-height: 208px; padding: 22px 18px 19px; }
+  .hs-promo-copy { width: calc(100% - 125px); min-height: 166px; }
+  .hs-app .hs-promo-copy h1 { font-size: 25px; }
+  .hs-promo-copy > p { max-width: 170px; font-size: 13px; }
+  .hs-promo-play { margin-top: 20px; }
+  .hs-promo-scene { width: 132px; }
+  .hs-promo-scene > img { width: 140px; height: 184px; right: 0; bottom: 0; }
+  .hs-promo-spark--one { right: 22px; }
+  .hs-promo-spark--two { right: 121px; bottom: 18px; }
+  .hs-home-intro { margin-top: 18px; }
+  .hs-home-intro > p { font-size: 13px; line-height: 1.7; }
+}
+@media (max-width: 359px) {
+  .hs-promo-hero { padding-inline: 15px; }
+  .hs-promo-copy { width: calc(100% - 105px); }
+  .hs-app .hs-promo-copy h1 { font-size: 23px; }
+  .hs-promo-scene { width: 118px; }
+  .hs-promo-scene > img { width: 122px; height: 164px; }
+}

@@ -1,12 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import type { DanetkiRoomMode, DashboardResponse, GameSessionSnapshot } from '@shoditsa/contracts'
-import { Clock3, HelpCircle, LoaderCircle, LockKeyhole, Play, Sparkles, UserRound, Users } from 'lucide-react'
+import { Clock3, HelpCircle, LoaderCircle, LockKeyhole, Play, Search, UserRound, Users } from 'lucide-react'
 import { api, ApiClientError } from '../../api/client'
 import { ActionButton, AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
-import { GameLaunchControls, GameOption, GameOptionSelect } from '../../components/game-launch-controls/GameLaunchControls'
+import { GameLaunchButton, GameLaunchControls, GameOption, GameOptionSelect } from '../../components/game-launch-controls/GameLaunchControls'
 import { GameArtifactSeoDetails } from '../../components/seo-content/SeoContent'
-import { ensureServerSession } from '../../hooks/use-server-runtime'
+import { ensureServerSession, SERVER_RUNTIME } from '../../hooks/use-server-runtime'
+import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { ReferencePuzzleTitle } from '../title/ReferenceTitle'
 import { publicAssetUrl } from '../../app/public-asset'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
 import { AdmissionTitleTicket, TicketKicker } from '../../components/title-ticket'
@@ -52,7 +54,7 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
   const groupStartCost = access?.nextGroupCost ?? 0
   const launchCost = roomMode === 'group' || dailyAvailable ? 0 : access?.nextSoloCost ?? 0
   const launchShortage = Math.max(0, launchCost - ticketBalance)
-  const canLaunch = !busy && (roomMode === 'group'
+  const canLaunch = !busy && (!REFERENCE_PRESENTATION || SERVER_RUNTIME) && (roomMode === 'group'
     ? canCreateGroupRoom
     : launchShortage === 0 && (dailyAvailable || Boolean(onStartFreePlay)))
   const launch = () => {
@@ -90,20 +92,34 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
   }, [canCreateGroupRoom, roomMode])
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return
       if (event.key === 'Escape') { event.preventDefault(); onBack(); return }
       if (event.key !== 'Enter' || !canLaunch || event.target instanceof HTMLInputElement) return
+      if (event.target instanceof HTMLElement && event.target.closest('button, a, input, select, textarea, summary, [role="option"]')) return
       event.preventDefault()
       launch()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [canLaunch, dailyAvailable, onBack, onCreateRoom, onStart, onStartFreePlay, roomMode])
+  if (REFERENCE_PRESENTATION) return <>
+    <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
+    <GameScreenShell variant="title" onBack={onBack} backLabel="Все игры" className="title-screen reference-title-screen">
+      <ReferencePuzzleTitle mode="danetki" date={date} onRules={onRules} details={<GameArtifactSeoDetails mode="danetki" />} launchControls={<GameLaunchControls mode="danetki"
+        action={<GameLaunchButton className="play-button game-launch-controls__play" disabled={!canLaunch} onClick={launch}>{busy ? <LoaderCircle className="danetki-spinner" aria-hidden="true" /> : <Play aria-hidden="true" />}{launchLabel}</GameLaunchButton>}
+        option={<GameOptionSelect label="Формат игры" labelIcon={<Users />} value={roomMode === 'solo' ? 'Одному' : 'Вместе'} menuLabel="Формат игры" disabled={busy} resetKey={roomMode}>{(close) => <>
+          <GameOption title="Одному" description="Собственное расследование" icon={<UserRound />} selected={roomMode === 'solo'} onSelect={() => { setRoomMode('solo'); close() }} />
+          <GameOption title="Вместе" description={canCreateGroupRoom ? `До 4 игроков · запуск ${groupStartCost > 0 ? `${groupStartCost} билетов` : 'бесплатный'}` : 'До 4 игроков · нужен клубный билет'} icon={canCreateGroupRoom ? <Users /> : <LockKeyhole />} status={canCreateGroupRoom ? undefined : { label: 'Только клуб', tone: 'locked', icon: <LockKeyhole /> }} selected={roomMode === 'group'} disabled={!canCreateGroupRoom} onSelect={() => { setRoomMode('group'); close() }} />
+        </>}</GameOptionSelect>} />}
+        extra={<>{onContinue && <ActionButton variant="secondary" disabled={busy || !SERVER_RUNTIME} onClick={onContinue}><Clock3 aria-hidden="true" />Продолжить историю</ActionButton>}{selectedStory && <p className="reference-online-note">Выбрана история: {selectedStory.titleRu}{roomMode === 'group' && <><br />Для совместной комнаты будет выбрана случайная история.</>}</p>}{!SERVER_RUNTIME && <p className="reference-online-note">В этом локальном просмотре доступно оформление. Расследовать истории можно <a href="https://shoditsa.ru/games/danetki" target="_blank" rel="noreferrer">на основном сайте ↗</a>.</p>}{error && <InlineAlert tone="danger">{error}</InlineAlert>}</>} />
+    </GameScreenShell>
+  </>
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <GameScreenShell variant="title" onBack={onBack} wide className="title-screen danetki-title-screen">
       <section className="title-stage danetki-title-stage">
         <div className="title-game-mark">
-          <span><Sparkles aria-hidden="true" /></span>
+          <span><Search aria-hidden="true" /></span>
           <i>Игра дня · совместное расследование</i>
           <h1>Данетки онлайн</h1>
         </div>
@@ -134,11 +150,11 @@ export function DanetkiLobbyPage({ date, access, ticketBalance = 0, canCreateGro
           {onContinue && <ActionButton type="button" variant="secondary" className="danetki-title-continue" onClick={onContinue}><Clock3 /> Продолжить расследование</ActionButton>}
           <GameLaunchControls
             mode="danetki"
-            action={<ActionButton type="button" className="play-button game-launch-controls__play" onClick={launch} disabled={!canLaunch}>
+            action={<GameLaunchButton type="button" className="play-button game-launch-controls__play" onClick={launch} disabled={!canLaunch}>
               {busy ? <LoaderCircle className="danetki-spinner" aria-hidden="true" /> : <Play aria-hidden="true" />}
               {launchLabel}
               {canLaunch && <span className="keycap-hint keycap-hint--inline" aria-hidden="true">Enter</span>}
-            </ActionButton>}
+            </GameLaunchButton>}
             option={<GameOptionSelect
               label="Формат игры"
               labelIcon={<Users aria-hidden="true" />}
@@ -194,15 +210,16 @@ export function DanetkiJoinPage({ token, onHome, onArchive, onStats, onRules, on
     join.mutate()
   }
   const error = preview.error ?? join.error
+  const hasInviteForm = Boolean(preview.data && !join.isSuccess)
 
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <main className="danetki-join-screen">
       <ScreenBack onBack={onHome} label="На главную" />
       {preview.isLoading && <section className="danetki-join-card"><LoaderCircle className="danetki-spinner" /><h1>Проверяем приглашение…</h1></section>}
-      {error && <section className="danetki-join-card is-error"><HelpCircle /><h1>Не получилось войти в комнату</h1><p>{messageFor(error)}</p><ActionButton type="button" variant="secondary" onClick={onHome}>На главную</ActionButton></section>}
+      {error && <section className="danetki-join-card is-error"><HelpCircle />{hasInviteForm ? <h2>Не получилось войти в комнату</h2> : <h1>Не получилось войти в комнату</h1>}<p>{messageFor(error)}</p><ActionButton type="button" variant="secondary" onClick={onHome}>На главную</ActionButton></section>}
       {preview.data && !join.isSuccess && <section className="danetki-join-card">
-        <Sparkles /><span>Приглашение в расследование</span><h1>{preview.data.title}</h1>
+        <Search /><span>Приглашение в расследование</span><h1>{preview.data.title}</h1>
         <p>Вас приглашает <strong>{preview.data.ownerName}</strong>. В комнате {preview.data.participants} из {preview.data.capacity} участников.</p>
         <form onSubmit={submit}><label>Как вас показывать другим игрокам<TextInput surface="paper" value={displayName} onChange={(event) => setDisplayName(event.target.value)} minLength={1} maxLength={40} autoFocus placeholder="Ваше имя" /></label><ActionButton type="submit" disabled={join.isPending || !displayName.trim()}>{join.isPending ? <><LoaderCircle /> Входим…</> : <><Users /> Присоединиться</>}</ActionButton></form>
       </section>}

@@ -14,6 +14,7 @@ server {
 
     root /opt/shoditsa/current/web;
     index index.html;
+    include /opt/shoditsa/current/web/seo/public-trailing-slash.conf;
     client_max_body_size 25m;
 
     location ^~ /api/ {
@@ -79,6 +80,12 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
+    location ~ "^/(games/svoyak|svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?))/?$" {
+        try_files /index.html =404;
+        add_header X-Robots-Tag "noindex, follow, noarchive" always;
+        add_header Cache-Control "no-cache" always;
+    }
+
     location = /games/together {
         try_files /index.html =404;
         add_header X-Robots-Tag "noindex, follow, noarchive" always;
@@ -102,13 +109,13 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
-    location ~ ^/(archive|profile|login|register)$ {
+    location ~ ^/(archive|profile|login|register|lobby|leaderboard|quests|settings|support|blog)$ {
         try_files /index.html =404;
         add_header X-Robots-Tag "noindex, follow, noarchive" always;
         add_header Cache-Control "no-cache" always;
     }
 
-    location ~ ^/(play/(movie|series|anime|game|music|diagnosis|city|animal|book|character|connections)|sessions/[^/]+|review/music|purchase/return|danetki/join/[^/]+|specials/[^/]+)$ {
+    location ~ ^/(play/(movie|series|anime|game|music|diagnosis|city|animal|book|character|connections)|sessions/[^/]+|review/music|purchase/return|danetki/join/[^/]+|specials/[^/]+|club/membership|blog/[^/]+)$ {
         try_files /index.html =404;
         add_header X-Robots-Tag "noindex, follow, noarchive" always;
         add_header Cache-Control "no-cache" always;

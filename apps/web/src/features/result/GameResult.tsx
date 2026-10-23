@@ -1,3 +1,4 @@
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { lazy, Suspense, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { FULL_HOUSE_MODE_IDS, type GameCompletionType, type GrowthFeatures, type CommerceProduct } from '@shoditsa/contracts'
 import {
@@ -6,7 +7,6 @@ import {
   ChevronDown,
   Flame,
   Route,
-  Save,
   Send,
   Ticket,
 } from 'lucide-react'
@@ -18,14 +18,19 @@ import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { trackDiagnosisGoal } from '../../app/diagnosis-analytics'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { publicAssetUrl } from '../../app/public-asset'
+import { REFERENCE_PRESENTATION } from '../../app/local-presentation'
+import { referenceModeIllustration } from '../game/reference-mode-art'
 import { useAuthSession } from '../auth/use-auth-session'
 import { formatDays } from '../../game'
 import { countWord } from '../economy/economy-rules'
 import { ResultActionBar } from './ResultActionBar'
-import { ControlButton } from '../../components/ui'
+import { ResultPersistence } from './ResultPersistence'
+import { DiagnosisNextGameRecommendation } from './DiagnosisNextGameRecommendation'
+import { ActionLink, ControlButton } from '../../components/ui'
 import './GameResult.css'
 import { DiagnosisClubOffer, DiagnosisRegistrationOffer, trackGrowthAction, useGrowthImpression } from './DiagnosisGrowth'
 import { useResultRegistrationTracking } from './use-result-registration-tracking'
+import { QuizVictory } from './QuizVictory'
 
 const TipCheckoutTrigger = lazy(() => import('../commerce/TipCheckout').then((module) => ({ default: module.TipCheckoutTrigger })))
 const diagnosisSystemRewardIcon = publicAssetUrl('images/diagnosis-systems/nervous.svg')
@@ -79,6 +84,8 @@ type Props = {
   configureLabel: string
   onConfigure: () => void
   onChallenge?: () => void
+  onShare?: () => void
+  contextLabel?: string
   onReplay?: () => void
   replayCost?: number
   replayShortage?: number
@@ -109,6 +116,7 @@ const currentRegistrationHref = () => {
 }
 
 export function GameResult(props: Props) {
+  const celebrate = REFERENCE_PRESENTATION && props.won
   const [rewardOpen, setRewardOpen] = useState(false)
   const resultRef = useRef<HTMLElement>(null)
   const resultViewKeyRef = useRef('')
@@ -121,13 +129,13 @@ export function GameResult(props: Props) {
     if (props.autoScroll === false) return
     let innerFrame = 0
     const frame = window.requestAnimationFrame(() => {
-      innerFrame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+      innerFrame = window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }))
     })
     return () => {
       window.cancelAnimationFrame(frame)
       window.cancelAnimationFrame(innerFrame)
     }
-  }, [props.autoScroll])
+  }, [props.autoScroll, props.sessionId, props.title])
 
   useEffect(() => {
     const resultKey = [props.mode, props.title, props.won, props.attempts, props.completionType ?? 'standard'].join(':')
@@ -162,7 +170,7 @@ export function GameResult(props: Props) {
     ? `${String(Math.min(props.completedToday + 1, FULL_HOUSE_MODE_IDS.length)).padStart(2, '0')}/${String(FULL_HOUSE_MODE_IDS.length).padStart(2, '0')}`
     : 'СЕАНС'
   const rewardIcon = props.mode === 'diagnosis'
-    ? <img className="result-dx-icon" src={diagnosisSystemRewardIcon} alt="" aria-hidden="true" loading="lazy" />
+    ? <ThemedArtwork className="result-dx-icon" src={diagnosisSystemRewardIcon} alt="" aria-hidden="true" loading="lazy" />
     : <Ticket />
   const attemptsText = `${props.attempts} ${countWord(props.attempts, ['попытку', 'попытки', 'попыток'])}`
   const resultKicker = props.completionType === 'final_choice_win'
@@ -179,7 +187,7 @@ export function GameResult(props: Props) {
     : props.completionType === 'final_choice_loss'
       ? 'Правильный ответ открыт после финальной сверки'
       : props.completionType === 'answer_revealed'
-        ? `Правильный ответ открыт · использовано ${props.attempts}/${props.maxAttempts ?? 10}`
+        ? `Правильный ответ открыт, использовано ${props.attempts}/${props.maxAttempts ?? 10}`
         : props.completionType === 'attempts_exhausted'
           ? 'Лимит попыток исчерпан — правильный ответ открыт'
           : props.completionType === 'expired'
@@ -219,40 +227,35 @@ export function GameResult(props: Props) {
       : '',
   ].filter(Boolean)
   const progressSummary = joinList(progressItems)
-  const recommendations: TitleMode[] = primaryReplay && props.mode === 'diagnosis' ? ['animal', 'character', 'book'] : props.recommendedModes ?? []
+  const focusedDiagnosisRecommendation = primaryReplay && props.mode === 'diagnosis'
+  const recommendations: TitleMode[] = focusedDiagnosisRecommendation ? [] : props.recommendedModes ?? []
   const persistence = accountState === 'guest' && props.growth?.registration
     ? <DiagnosisRegistrationOffer growth={props.growth} sessionId={props.sessionId} mode={props.mode} href={`${currentRegistrationHref()}&bonus=all-games`} />
     : accountState === 'guest'
-    ? <section ref={registrationTracking.ref} className="result-persistence result-card__wide" aria-label="Сохранить прогресс">
-        <span className="result-persistence__icon" aria-hidden="true"><Save /></span>
-        <div className="result-persistence__copy">
-          <strong>{props.won ? 'Сохраните победу и прогресс' : 'Сохраните результат и прогресс'}</strong>
-          <p>{progressSummary
-            ? `В аккаунте: ${progressSummary}. Продолжите завтра с любого устройства.`
-            : 'Результат будет доступен в аккаунте — продолжите завтра с любого устройства.'}</p>
-        </div>
-        <a href={currentRegistrationHref()} onClick={() => {
+    ? <ResultPersistence ref={(node) => { registrationTracking.ref.current = node }} aria-label="Сохранить прогресс"
+        title={props.won ? 'Сохраните победу и прогресс' : 'Сохраните результат и прогресс'}
+        action={<ActionLink variant="secondary" href={currentRegistrationHref()} onClick={() => {
           registrationTracking.trackClick()
           const payload = { mode: props.mode, completedToday: props.completedToday ?? 0, tickets: props.award?.total ?? 0 }
           trackMetrikaGoal('result_save_progress', payload)
           if (props.mode === 'diagnosis') trackDiagnosisGoal('save', { placement: 'result' })
-        }}>Сохранить в аккаунте</a>
-      </section>
+        }}>Сохранить в аккаунте</ActionLink>}>
+        {progressSummary
+          ? `В аккаунте: ${progressSummary}. Продолжите завтра с любого устройства.`
+          : 'Результат будет доступен в аккаунте — продолжите завтра с любого устройства.'}
+      </ResultPersistence>
     : accountState === 'authenticated'
-      ? <section className="result-persistence result-persistence--saved result-card__wide" aria-label="Прогресс сохранён">
-          <span className="result-persistence__icon" aria-hidden="true"><CheckCircle2 /></span>
-          <div className="result-persistence__copy">
-            <strong>Прогресс сохранён в профиле</strong>
-            <p>{(props.registrationBonusRemaining ?? 0) > 0 ? `Результат сохранён. Бонусных партий в этой игре: ${props.registrationBonusRemaining}. В других играх — отдельные бонусы.` : 'Этот результат уже доступен на всех ваших устройствах.'}</p>
-          </div>
-        </section>
+      ? <ResultPersistence saved aria-label="Прогресс сохранён" icon={<CheckCircle2 />}
+          title="Прогресс сохранён в профиле">
+          {(props.registrationBonusRemaining ?? 0) > 0 ? `Результат сохранён. Бонусных партий в этой игре: ${props.registrationBonusRemaining}. В других играх — отдельные бонусы.` : 'Этот результат уже доступен на всех ваших устройствах.'}
+        </ResultPersistence>
       : null
 
   const rewardMetrics = props.packProgress
     ? [
         { key: 'score', icon: <Ticket />, value: `+${props.packProgress.roundScore}`, label: 'баллов за раунд' },
         { key: 'pack', icon: <Route />, value: `${props.packProgress.played}/${props.packProgress.total}`, label: 'пройдено в подборке' },
-        { key: 'record', icon: <CheckCircle2 />, value: `${props.packProgress.won} · ${props.packProgress.lost}`, label: 'угадано · не угадано' },
+        { key: 'record', icon: <CheckCircle2 />, value: `${props.packProgress.won}`, label: 'правильных ответов' },
       ]
     : [
         ...(props.award ? [{
@@ -282,13 +285,19 @@ export function GameResult(props: Props) {
 
   return <section
     ref={resultRef}
-    className={`result-card result-card--${props.mode} ${props.won ? 'won' : 'lost'}`}
+    className={`result-card result-card--${props.mode} ${props.won ? 'won' : 'lost'}${celebrate ? ' result-card--celebration' : ''}`}
     style={{
       '--result-mode-color': MODE_PRESENTATION[props.mode].color,
       '--result-next-color': nextPresentation.color,
     } as CSSProperties}
   >
-    <div className="result-card__hero result-card__wide">
+    {celebrate ? <QuizVictory key={props.sessionId ?? props.title} attempts={props.attempts} maxAttempts={props.maxAttempts} completionType={props.completionType}
+      context={props.contextLabel ?? MODE_CONFIG[props.mode].title} resultLine={resultLine} poster={props.poster} title={props.title} meta={props.meta} tags={visibleTags}>
+      {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
+        <span>Вы — {props.completionType === 'final_choice_win' ? 'Ф' : props.attempts}/{props.maxAttempts ?? 10}. Друг — {challengeResultLabel(props.opponentAttempts)}</span>
+        <strong>{outcomeText}</strong>
+      </div>}
+    </QuizVictory> : <div className="result-card__hero result-card__wide">
       <div className="result-card__poster">{props.poster}</div>
       <div className="result-card__copy">
         <div className="result-verdict">
@@ -304,7 +313,7 @@ export function GameResult(props: Props) {
           <strong>{outcomeText}</strong>
         </div>}
       </div>
-    </div>
+    </div>}
 
     {!!rewardMetrics.length && <section className={`result-rewards result-card__wide result-rewards--${Math.min(rewardMetrics.length, 3)}`} aria-label="Награда и прогресс">
       {rewardMetrics.map((metric) => <article className={`result-reward result-reward--${metric.key}`} key={metric.key} title={metric.key === 'route' ? props.nextRewardText : undefined}>
@@ -312,7 +321,7 @@ export function GameResult(props: Props) {
         <div>
           <strong>{metric.value}</strong>
           <small>{metric.label}</small>
-          {metric.key === 'route' && props.completedToday !== undefined && <i className="result-route-track" aria-hidden="true">
+          {!celebrate && metric.key === 'route' && props.completedToday !== undefined && <i className="result-route-track" aria-hidden="true">
             {Array.from({ length: FULL_HOUSE_MODE_IDS.length }, (_, index) => <b
               className={`${index < routeProgress ? 'is-complete' : ''}${index === routeProgress - 1 ? ' is-current' : ''}`}
               key={index}
@@ -323,6 +332,8 @@ export function GameResult(props: Props) {
     </section>}
 
     <ResultActionBar
+      celebration={celebrate}
+      onShare={props.onShare ?? props.onChallenge}
       replayTitle={props.mode === 'diagnosis' ? 'Следующий случай' : 'Ещё одна партия'}
       replayModeLabel={MODE_CONFIG[props.mode].title}
       primaryReplay={primaryReplay}
@@ -352,7 +363,12 @@ export function GameResult(props: Props) {
 
     {props.mode === 'diagnosis' && props.growth?.club && props.clubOfferEligible && props.monthlyClubProduct && <DiagnosisClubOffer growth={props.growth} sessionId={props.sessionId} product={props.monthlyClubProduct} />}
 
-    {!!recommendations.length && props.onRecommendedMode && <section className="result-recommendations result-card__wide" aria-label="Другие игры после результата">
+    {focusedDiagnosisRecommendation && props.onRecommendedMode && <DiagnosisNextGameRecommendation
+      mode={props.nextActionLabel === 'Играть' ? props.nextMode ?? inferredNextMode : undefined}
+      onSelect={props.onRecommendedMode}
+    />}
+
+    {!celebrate && !!recommendations.length && props.onRecommendedMode && <section className="result-recommendations result-card__wide" aria-label="Другие игры после результата">
       <header><div><span>Продолжить</span><strong>Выберите следующую игру</strong></div><small>Животные, персонажи или книги</small></header>
       <div>{recommendations.map((mode) => {
         const presentation = MODE_PRESENTATION[mode]
@@ -363,7 +379,7 @@ export function GameResult(props: Props) {
           style={{ '--result-recommendation-color': presentation.color } as CSSProperties}
           onClick={() => props.onRecommendedMode?.(mode)}
         >
-          <span className="result-recommendations__art" aria-hidden="true"><img src={presentation.watermarkUrl} alt="" loading="lazy" /></span>
+          <span className="result-recommendations__art" aria-hidden="true"><ThemedArtwork src={REFERENCE_PRESENTATION ? referenceModeIllustration(mode) : presentation.watermarkUrl} alt="" loading="lazy" /></span>
           <span className="result-recommendations__copy"><i><Icon /> Ещё одна игра</i><strong>{MODE_CONFIG[mode].title}</strong><small>{presentation.description}</small></span>
         </ControlButton>
       })}</div>
@@ -385,8 +401,8 @@ export function GameResult(props: Props) {
 
     <div className="result-utility result-card__wide">
       {props.mode === 'diagnosis' && <a href="/archive?mode=diagnosis" onClick={() => trackDiagnosisGoal('archive', { placement: 'result' })}><CalendarDays /> Архив диагнозов</a>}
-      {props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Отправить результат в Telegram</a>}
-      {showContextualTip && <Suspense fallback={null}><TipCheckoutTrigger className="result-support" label="Поддержать проект" hint="Жетон кассиру" /></Suspense>}
+      {!celebrate && props.telegramUrl && <a href={props.telegramUrl} target="_blank" rel="noreferrer"><Send /> Отправить результат в Telegram</a>}
+      {showContextualTip && <Suspense fallback={null}><TipCheckoutTrigger variant={REFERENCE_PRESENTATION ? 'compact' : 'card'} className="result-support" label="Поддержать проект" hint="Жетон кассиру" /></Suspense>}
       {props.onReport && <ContentReport mode={props.mode} onSubmit={props.onReport} />}
     </div>
   </section>

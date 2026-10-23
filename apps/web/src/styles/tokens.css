@@ -61,6 +61,7 @@
   --color-warning-text: #e6c478;
   --color-danger-text: #efaaa5;
   --color-white: #fff;
+  --color-on-media: #fdfbf7;
   --color-shadow: #090b09;
   --radius-sm: 10px;
   --radius-md: 15px;
@@ -86,14 +87,12 @@
   --friends-paper: #eee7d8;
   --friends-paper-muted: #746c5e;
   --friends-green: #477558;
-  --connections-yellow: #d9b95b;
-  --connections-green: #7cae75;
-  --connections-blue: #738fc4;
-  --connections-purple: #9a78aa;
-  --connections-paper: #f3ead8;
-  --connections-paper-hover: #e7dbc2;
-  --connections-ink: #172019;
-  --connections-table: #173126;
+  --connections-yellow: var(--color-yellow);
+  --connections-green: var(--match-exact-bg);
+  --connections-blue: var(--color-blue);
+  --connections-purple: var(--color-lilac);
+  --connections-paper: var(--color-surface);
+  --connections-ink: var(--color-ink);
   --territory-map-light: #608f68;
   --territory-map-deep: #2d4937;
   --territory-map-neutral: #2d312d;

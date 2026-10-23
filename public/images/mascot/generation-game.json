@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "generator": "built-in image_gen",
+  "useCase": "identity-preserve",
+  "generatedOn": "2026-10-15",
+  "referenceImage": "C:/Users/brene/AppData/Local/Temp/codex-clipboard-d124e60a-25a1-4700-b426-5d4055e97cdf.png",
+  "transparentBackground": true,
+  "assets": [
+    {
+      "name": "peek-v1",
+      "source": "C:/Users/brene/.codex/generated_images/01a13f50-1996-7a60-a5cd-98dad54ccddc/exec-31e23b17-d350-4290-acd8-50ebed44be8f.png",
+      "prompt": "Use case: identity-preserve. Asset type: transparent website mascot illustration.\nInput image 1 is the exact character identity and drawing style reference. Create one new pose of THIS SAME lime-green furry alien cat, not a new design. Preserve the rounded chubby furry cheeks, pointed cat ears, TWO LONG antennae with rounded bulb tips, glossy slanted black almond eyes with small white highlights, tiny olive nose, gentle curved cat mouth, thick dark near-black hand-drawn outline, lime-yellow green fur with soft layered cel shading and loose darker green fur accents.\nPose: curious relaxed peeking mascot, front-facing head and upper chest with both fluffy front paws resting gently side by side on an INVISIBLE ledge. This is a natural isolated bust illustration, no actual ledge, bar, window, frame or lower-body/legs. Slight inquisitive head tilt, calm friendly expression, front paws completely visible. Antennae completely visible, recognizable and not shortened.\nComposition: one centered character on a square transparent canvas. Entire silhouette including antenna bulbs, ears, cheek fur and paws is inside the frame, with at least 12 percent clear transparent margin on every side. Keep details and black outlines clean enough for small website use.\nBackground: genuinely transparent alpha, absolutely no painted background, no checkerboard, no ground, no floor, no cast shadow.\nConstraints: identity and reference illustration style are the highest priority. No text or lettering, no hearts, no decorative marks, no extra props, no clothes, no human hands, no other characters, no watermark. Only the single character.",
+      "outputs": [
+        "peek-v1.png",
+        "peek-v1.webp"
+      ],
+      "validation": {
+        "width": 1254,
+        "height": 1254,
+        "alphaPixelsChangedInWebp": 0,
+        "pngBytes": 835329,
+        "webpBytes": 107188
+      }
+    },
+    {
+      "name": "sleep-v1",
+      "source": "C:/Users/brene/.codex/generated_images/01a13f50-1996-7a60-a5cd-98dad54ccddc/exec-c8b6e615-d2fb-4934-99ac-a3173d261e3a.png",
+      "prompt": "Use case: identity-preserve. Asset type: transparent website mascot illustration.\nInput image 1 is the exact character identity and drawing style reference. Create one new sleeping pose of THIS SAME lime-green furry alien cat, not a new design. Preserve its rounded chubby furry cheeks, pointed cat ears, TWO LONG antennae with rounded bulb tips, tiny olive nose, gentle curved cat mouth, thick dark near-black hand-drawn outline, lime-yellow green fur with soft layered cel shading and loose darker green fur accents.\nPose: peaceful curled-up sleeping character, fluffy tail wrapped around its round compact body, head resting against the tucked front paws. Both eyes closed with simple curved black eyelid lines. Both long antennae relaxed and gently curved, their round tips still clearly visible and recognizable. Show the entire curled body, fluffy tail, ears and both antennae. No upright standing pose.\nComposition: one centered character, isolated on a square transparent canvas. Entire silhouette inside the frame with at least 12 percent clear transparent margin on every side. Keep details and black outlines clean enough for small website use.\nBackground: genuinely transparent alpha, absolutely no painted background, no checkerboard, no ground, no floor, no cast shadow.\nConstraints: identity and reference illustration style are the highest priority. No Z letters, no text or lettering, no hearts, no decorative marks, no scene or props, no pillow, no bed, no clothes, no other characters, no watermark. Only the single character.",
+      "outputs": [
+        "sleep-v1.png",
+        "sleep-v1.webp"
+      ],
+      "validation": {
+        "width": 1254,
+        "height": 1254,
+        "alphaPixelsChangedInWebp": 0,
+        "pngBytes": 870824,
+        "webpBytes": 114254
+      }
+    }
+  ],
+  "validation": {
+    "visualIdentity": "Inspected: same lime furry alien cat, two round-tip antennae, black contours; peek almond eyes, sleep closed eyes and curled fluffy tail. No props or text.",
+    "alpha": "True alpha channel verified; transparent and antialiased pixels present. Original generator images kept untouched."
+  },
+  "postprocessing": {
+    "png": "Original copied unchanged.",
+    "webp": "Sharp conversion only: quality 90, alphaQuality 100, effort 6. No resizing, padding, matte, recoloring or retouching.",
+    "framing": "All visible antennae, paws and tail fit inside canvas. Natural 4–8 percent minimum visible margin accepted by parent; page containers can add spacing."
+  }
+}

@@ -11,8 +11,10 @@ import type {
   DanetkiMessage,
   FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomListResponse, FriendsRoomPreview, FriendsRoomResponse,
   ConnectionsGuessResponse, ConnectionsHintResponse,
+  LeaderboardQuery, LeaderboardResponse,
 } from '@shoditsa/contracts'
 import { analyticsAcquisitionHeaders } from '../app/metrics'
+import type { SupportMessageBody, SupportMessageResponse } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
 
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
@@ -21,6 +23,10 @@ const AUTH_BASE = String(import.meta.env.VITE_AUTH_BASE_URL || '/api/auth').repl
 export class ApiClientError extends Error {
   constructor(public status: number, public code: string, message: string, public requestId?: string, public details: Record<string, unknown> = {}) { super(message) }
 }
+
+export const sendSupportMessage = (body: SupportMessageBody) => request<SupportMessageResponse>(`${API_BASE}/support/messages`, {
+  method: 'POST', body: JSON.stringify(body), timeoutMs: 30_000,
+})
 
 const delay = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms))
 
@@ -197,6 +203,7 @@ export const api = {
   danetkiJoin: (token: string, displayName: string, idempotencyKey: string) => request<GameResponse>(`${API_BASE}/danetki/invites/${encodeURIComponent(token)}/join`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ displayName, idempotencyKey }), retries: 1 }),
   danetkiLeave: (id: string, idempotencyKey: string) => request<{ left: boolean; newOwnerUserId: string | null }>(`${API_BASE}/danetki/sessions/${id}/leave`, { method: 'POST', headers: { 'Idempotency-Key': idempotencyKey }, body: JSON.stringify({ idempotencyKey }) }),
   friendsRoomList: () => request<FriendsRoomListResponse>(`${API_BASE}/friends/rooms`, { retries: 1 }),
+  friendsRoomDirectory: () => request<FriendsRoomListResponse>(`${API_BASE}/friends/rooms?scope=recent`, { retries: 1 }),
   friendsRoomCreate: (body: FriendsRoomCreateBody = {}) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms`, { method: 'POST', body: JSON.stringify(body) }),
   friendsRoomPreview: (code: string) => request<FriendsRoomPreview>(`${API_BASE}/friends/rooms/code/${encodeURIComponent(code)}`),
   friendsRoomJoin: (code: string, displayName?: string) => request<FriendsRoomResponse>(`${API_BASE}/friends/rooms/code/${encodeURIComponent(code)}/join`, { method: 'POST', body: JSON.stringify({ ...(displayName ? { displayName } : {}) }) }),
@@ -231,6 +238,10 @@ export const api = {
   pack: (id: string) => request<PackDetailResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}`, { retries: 1 }),
   packProgress: (id: string) => request<PackProgressResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/progress`, { retries: 1 }),
   packLeaderboard: (id: string) => request<PackLeaderboardResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/leaderboard`, { retries: 1 }),
+  leaderboard: (query: LeaderboardQuery = {}) => {
+    const params = new URLSearchParams(Object.entries(query).filter(([, value]) => value !== undefined).map(([key, value]) => [key, String(value)]))
+    return request<LeaderboardResponse>(`${API_BASE}/leaderboard?${params}`, { retries: 1 })
+  },
   startPack: (id: string, position: number) => request<GameStartResponse>(`${API_BASE}/packs/${encodeURIComponent(id)}/sessions`, { method: 'POST', body: JSON.stringify({ position }), retries: 1 }),
   createPrivateGameOrder: (body: PrivateGameOrderBody) => request<PrivateGameOrderResponse>(`${API_BASE}/private-game-orders`, { method: 'POST', body: JSON.stringify(body) }),
   wallet: () => request<WalletResponse>(`${API_BASE}/me/wallet`, { retries: 1 }),
@@ -285,6 +296,7 @@ export const queryKeys = {
   game: (id: string) => ['game', id] as const,
   friendsRoom: (id: string) => ['friends-room', id] as const,
   friendsRooms: ['friends-rooms'] as const,
+  friendsRoomDirectory: ['friends-rooms', 'directory'] as const,
   search: (id: string, query: string) => ['search', id, query] as const,
   archive: (filters: unknown) => ['archive', filters] as const,
   ledger: ['ledger'] as const,

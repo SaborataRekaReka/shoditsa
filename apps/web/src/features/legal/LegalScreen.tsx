@@ -1,5 +1,6 @@
+import { PageHeading } from '../../components/ui/PageHeading'
 import { useQuery } from '@tanstack/react-query'
-import { DEFAULT_CLUB_PRODUCTS, type CommerceProduct } from '@shoditsa/contracts'
+import { DEFAULT_CLUB_PRODUCTS, SUPPORT_EMAIL, type CommerceProduct } from '@shoditsa/contracts'
 import { ArrowLeft, Building2, Mail, Phone } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { api, queryKeys } from '../../api/client'
@@ -16,7 +17,7 @@ export const LEGAL_ENTITY = {
   inn: '540552157271',
   ogrnip: '318547600133003',
   address: '630091, г. Новосибирск, ул. Крылова, д. 34, кв. 92',
-  email: 'breneize@yandex.ru',
+  email: SUPPORT_EMAIL,
   phoneDisplay: '+7 993 620-13-69',
   phoneHref: '+79936201369',
   bankAccount: '40802810220000099567',
@@ -286,11 +287,7 @@ export function LegalScreen({ document, ...headerProps }: ShellProps & { documen
           {LEGAL_DOCUMENT_LINKS.map((link) => <a key={link.slug} className={link.slug === document ? 'is-active' : ''} href={legalHref(link.slug)}>{link.label}</a>)}
         </aside>
         <article className="legal-document">
-          <header>
-            <span>{selected.eyebrow}</span>
-            <h1>{selected.title}</h1>
-            <p>Редакция от {EFFECTIVE_DATE}</p>
-          </header>
+          <PageHeading title={selected.title} description={`${selected.eyebrow}. Редакция от ${EFFECTIVE_DATE}`} />
           <Content />
         </article>
       </div>

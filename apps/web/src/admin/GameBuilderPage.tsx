@@ -1,9 +1,6 @@
 import { useMemo, useRef, useState, type DragEvent } from 'react'
 import type { ContentMode } from '@shoditsa/contracts'
-import {
-  ArrowLeft, ArrowRight, BadgeCheck, Braces, Check, ChevronDown, ChevronRight, CircleAlert, Clapperboard, CloudUpload, Download, Eye, FileJson,
-  GripVertical, Image as ImageIcon, Layers3, LayoutTemplate, LoaderCircle, Play, Plus, RefreshCw, Save, Search, Sparkles, Ticket, Trash2, Upload, X,
-} from 'lucide-react'
+import { ArrowLeft, ArrowRight, BadgeCheck, Braces, Check, ChevronDown, ChevronRight, CircleAlert, Clapperboard, CloudUpload, Download, Eye, FileJson, GripVertical, Image as ImageIcon, Layers3, LayoutTemplate, LoaderCircle, Play, Plus, RefreshCw, Save, Search, Lightbulb, Ticket, Trash2, Upload, X } from 'lucide-react'
 import { adminApi, type ContentExchangePreview } from './api'
 import {
   analyseUnknownJson, autoMapFields, createExchangeDocument, displayValue, ensureUniqueItemIds, inferContentMode, mapRecordToItem,
@@ -266,7 +263,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
     <section className="game-builder-empty" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); void loadFile(event.dataTransfer.files[0]) }}>
       <div className="game-builder-empty__icon"><FileJson /></div><span>ШАГ 1</span><h2>Перетащите JSON сюда</h2><p>Подойдёт массив объектов или ответ API с карточками на любой глубине. Файл обрабатывается только в админ-панели.</p>
       <button className="admin-btn admin-btn--primary" onClick={() => jsonInput.current?.click()}><CloudUpload />Выбрать JSON</button>
-      <button className="admin-btn admin-btn--secondary" onClick={() => loadJsonValue(sampleJson, 'movie-catalog-example.json')}><Sparkles />Открыть пример</button>
+      <button className="admin-btn admin-btn--secondary" onClick={() => loadJsonValue(sampleJson, 'movie-catalog-example.json')}><Lightbulb />Открыть пример</button>
       <input ref={jsonInput} type="file" accept="application/json,.json" onChange={(event) => { void loadFile(event.currentTarget.files?.[0]); event.currentTarget.value = '' }} />
       <footer><span><Check />Автопоиск массива</span><span><Check />Вложенные поля</span><span><Check />До 5 000 карточек</span></footer>
     </section>
@@ -299,7 +296,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
     <div className="game-builder-toolbar">
       <button className="game-builder-file" onClick={() => jsonInput.current?.click()}><RefreshCw />Заменить JSON</button><input ref={jsonInput} type="file" accept="application/json,.json" onChange={(event) => { void loadFile(event.currentTarget.files?.[0]); event.currentTarget.value = '' }} />
       <label><span>Категория игры</span><select value={mode} onChange={(event) => changeMode(event.target.value as ContentMode)}>{MODE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select><ChevronDown /></label>
-      <button onClick={resetMapping}><Sparkles />Автомаппинг заново</button><span className="game-builder-toolbar__status"><i />{mappedCount} из {targets.length} ячеек заполнено</span>
+      <button onClick={resetMapping}><Lightbulb />Автомаппинг заново</button><span className="game-builder-toolbar__status"><i />{mappedCount} из {targets.length} ячеек заполнено</span>
     </div>
     <div className="game-builder-workspace">
       <aside className="game-builder-fields">
@@ -308,7 +305,7 @@ export function GameBuilderPage({ notify, onNavigateContent }: { notify: (tone: 
         <div className="game-builder-fields__list">{filteredFields.map((field) => <button key={field.id} className={`${usedFields.has(field.id) ? 'is-used' : ''} ${draggedField === field.id ? 'is-dragging' : ''}`} draggable onDragStart={(event) => { event.dataTransfer.setData('application/x-shoditsa-json-field', field.id); event.dataTransfer.setData('text/plain', field.id); event.dataTransfer.effectAllowed = 'copy'; setDraggedField(field.id) }} onDragEnd={() => setDraggedField(null)} onClick={() => assignField(field)}>
           <GripVertical /><span><strong>{field.label}</strong><small>{compactSample(field.sampleValues[0])}</small></span><i>{KIND_LABEL[field.kind]}</i><em>{Math.round(field.coverage * 100)}%</em>{usedFields.has(field.id) && <Check />}
         </button>)}</div>
-        <footer><p><Sparkles />Совпавшие названия уже расставлены. Перетаскивайте остальные или нажмите на поле.</p></footer>
+        <footer><p><Lightbulb />Совпавшие названия уже расставлены. Перетаскивайте остальные или нажмите на поле.</p></footer>
       </aside>
 
       <section className="game-builder-canvas">

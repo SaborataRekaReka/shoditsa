@@ -158,8 +158,8 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
           <div><span>Ежедневная головоломка</span><h2 id="rewatch-connections-title">Связи</h2></div>
           <p>Вернитесь к точной версии раунда, опубликованной в выбранный день.</p>
         </header>
-        {connectionsArchive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(connectionsArchive.error)}</InlineAlert>}
-        <div className="rewatch-connections__grid">{dates.map((itemDate, index) => {
+        {connectionsArchive.isError && <div className="rewatch-load-error"><InlineAlert tone="danger" className="server-error">{apiErrorMessage(connectionsArchive.error)}</InlineAlert><ActionButton variant="secondary" onClick={() => void connectionsArchive.refetch()}>Попробовать снова</ActionButton></div>}
+        {!connectionsArchive.isError && <div className="rewatch-connections__grid">{dates.map((itemDate, index) => {
           const item = connectionsArchive.data?.items.find((entry) => entry.date === itemDate)
           const session = item?.session?.mode === 'connections' ? item.session : null
           const unavailable = item?.available === false
@@ -195,10 +195,11 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
                         ? 'В процессе'
                         : 'Не сыграно'}</small>
           </ControlButton>
-        })}</div>
+        })}</div>}
       </section>}
-      {archiveSection !== 'connections' && archive.isError && <InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert>}
-      {archiveSection !== 'connections' && <section className="rewatch-grid">{dates.map((itemDate, index) => {
+      {archiveSection !== 'connections' && archive.isError && <div className="rewatch-load-error"><InlineAlert tone="danger" className="server-error">{apiErrorMessage(archive.error)}</InlineAlert><ActionButton variant="secondary" onClick={() => void archive.refetch()}>Попробовать снова</ActionButton></div>}
+      {archiveSection !== 'connections' && archive.isLoading && <p className="modal-lead" role="status">Загружаем архив…</p>}
+      {archiveSection !== 'connections' && !archive.isError && <section className="rewatch-grid" aria-busy={archive.isLoading}>{dates.map((itemDate, index) => {
         const played = latestByDate.get(itemDate) ?? null
         const access = accessByDate.get(itemDate) ?? 'locked'
         const sessionId = played?.key.startsWith('server:') ? played.key.slice('server:'.length) : null
@@ -217,7 +218,7 @@ function ServerRewatchScreen({ mode, setMode, period, dates, onOpen, onOpenConne
           <small>{archive.isLoading ? 'Загружаем…' : played ? `${played.status === 'won' ? 'Угадан' : played.status === 'lost' ? 'Не угадан' : 'В процессе'}${['movie', 'series', 'anime', 'music'].includes(played.mode) ? ` · ${PERIODS[played.period].short}` : ''}` : access === 'locked' ? 'Полный архив клуба' : 'Не сыгран'}</small>
         </ControlButton>
       })}</section>}
-      <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
+      <ActionButton variant="secondary" className="rewatch-home" onClick={onHome}>На главный экран</ActionButton>
     </main>
     {lockedDate && <Modal title="Полный архив клуба" onClose={() => setLockedDate(null)}><p className="modal-lead">Эта дата входит в полный архив клуба. Сегодня и предыдущие шесть дней доступны всем.</p><ActionButton onClick={() => { setLockedDate(null); onClub() }}>Узнать о клубе</ActionButton></Modal>}
   </>
@@ -265,7 +266,7 @@ function LocalRewatchScreen({ mode, setMode, period, dates, games, titles, onOpe
             : 'Не сыгран'}</small>
         </ControlButton>
       })}</section>
-      <ActionButton variant="secondary" className="back-to-premiere" onClick={onHome}>На главный экран</ActionButton>
+      <ActionButton variant="secondary" className="rewatch-home" onClick={onHome}>На главный экран</ActionButton>
     </main>
   </>
 }

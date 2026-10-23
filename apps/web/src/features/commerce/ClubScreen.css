@@ -115,7 +115,7 @@
   max-width: 650px;
   margin: 17px 0 11px;
   color: var(--color-text);
-  font: 500 clamp(46px, 3.2vw, 52px)/1 Oswald, sans-serif;
+  font: 500 clamp(46px, 3.2vw, 52px)/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: -.02em;
 }
 
@@ -209,7 +209,7 @@
 
 .club-section-heading h2 {
   margin: 0;
-  font: 500 25px/1 Oswald, sans-serif;
+  font: 500 25px/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -317,7 +317,7 @@
 
 .club-content-card__copy h3 {
   margin: 3px 0 4px;
-  font: 500 26px/1 Oswald, sans-serif;
+  font: 500 26px/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: .03em;
   text-transform: uppercase;
 }
@@ -338,7 +338,7 @@
   border: 2px solid var(--color-success-ink);
   color: var(--color-success-ink);
   display: block;
-  font: 500 13px/1 Oswald, sans-serif;
+  font: 500 13px/1 var(--font-display, Oswald, sans-serif);
   font-style: normal;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -460,7 +460,7 @@
 
 .club-pricing > header h2 {
   margin: 0;
-  font: 500 clamp(48px, 3.5vw, 52px)/1 Oswald, sans-serif;
+  font: 500 clamp(48px, 3.5vw, 52px)/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -558,7 +558,7 @@
   justify-content: center;
   gap: 7px;
   box-sizing: border-box;
-  font: 500 13px/1 Oswald, sans-serif;
+  font: 500 13px/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: .13em;
   text-transform: uppercase;
   transform: translateX(-50%);
@@ -594,7 +594,7 @@
 .club-plan-card__header h3 {
   margin: 10px 0 7px;
   color: inherit;
-  font: 500 38px/1 Oswald, sans-serif;
+  font: 500 38px/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -602,7 +602,7 @@
 .club-plan-card__header > strong {
   display: block;
   color: var(--color-success-ink);
-  font: 500 43px/1 Oswald, sans-serif;
+  font: 500 43px/1 var(--font-display, Oswald, sans-serif);
   letter-spacing: .04em;
 }
 
@@ -686,13 +686,13 @@
   min-height: 56px;
 }
 
-.club-plan-card--guest .club-plan-card__action .ui-button {
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .club-plan-card--guest .club-plan-card__action .ui-button {
   color: var(--color-primary);
   border-color: color-mix(in srgb, var(--color-primary) 60%, var(--color-line));
   background: transparent;
 }
 
-.club-plan-card--featured .club-plan-card__action > .ui-button {
+:where(html:not([data-public-theme='reference']):not([data-quest-skin='shoditsa'])) .club-plan-card--featured .club-plan-card__action > .ui-button {
   background: var(--color-primary);
 }
 
@@ -716,38 +716,6 @@
   width: 13px;
   height: 13px;
   color: var(--color-accent-ink);
-}
-
-.club-plan-card .checkout-acceptance {
-  width: 100%;
-  min-height: 30px;
-  margin-bottom: 3px;
-  color: var(--color-paper-muted-2);
-  display: grid;
-  grid-template-columns: 16px minmax(0, 1fr);
-  align-items: center;
-  gap: 7px;
-  font-size: 8px;
-  line-height: 1.35;
-  text-align: left;
-  cursor: pointer;
-}
-
-.club-plan-card .checkout-acceptance input {
-  width: 15px;
-  height: 15px;
-  margin: 0;
-  accent-color: var(--color-primary);
-  cursor: pointer;
-}
-
-.club-plan-card .checkout-acceptance a {
-  min-height: 20px;
-  color: var(--color-success-ink);
-  font-weight: 800;
-  text-underline-offset: 2px;
-  display: inline-flex;
-  align-items: center;
 }
 
 .club-plan-card .club-card__error {
@@ -994,7 +962,6 @@
   .club-plan-card__header > span,
   .club-plan-card__header p,
   .club-plan-card__note,
-  .club-plan-card .checkout-acceptance,
   .club-plan-card .club-card__error { font-size: 14px; }
 
   .club-content-card__action { min-height: 58px; }

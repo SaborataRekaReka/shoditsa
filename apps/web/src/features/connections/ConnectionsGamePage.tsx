@@ -7,20 +7,7 @@ import {
   type GameResponse,
   type GameSessionSnapshot,
 } from '@shoditsa/contracts'
-import {
-  Check,
-  ChevronDown,
-  Copy,
-  Lightbulb,
-  LoaderCircle,
-  RotateCcw,
-  Send,
-  Shuffle,
-  Sparkles,
-  Ticket,
-  Waypoints,
-  X,
-} from 'lucide-react'
+import { Check, BookOpen, ChevronDown, Copy, Lightbulb, LoaderCircle, RotateCcw, Send, Shuffle, Ticket, X } from 'lucide-react'
 import { api, ApiClientError, queryKeys } from '../../api/client'
 import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
 import { trackGameCompleteOnce, trackNextGameClick } from '../../app/game-analytics'
@@ -28,18 +15,21 @@ import { MODE_CONFIG } from '../../app/mode-config'
 import { MODE_PRESENTATION } from '../../app/mode-presentation'
 import { ActionButton, AppHeader } from '../../components/app-shell/AppShell'
 import { GameScreenShell } from '../../components/game-shell/GameScreenShell'
-import { ActionButton as UiActionButton, ControlButton, InlineAlert } from '../../components/ui'
+import { ActionButton as UiActionButton, InlineAlert } from '../../components/ui'
 import { ResultActionBar } from '../result/ResultActionBar'
+import { ResultPersistence } from '../result/ResultPersistence'
 import { ContentReport, type ContentReportReason } from '../content-report/ContentReport'
 import { useServerRuntime } from '../../hooks/use-server-runtime'
 import { formatDays } from '../../game'
 import { copyText, shareTextWithFallback } from '../../game/sharing'
-import { dayNumber } from '../../game/day-number'
 import type { TitleMode } from '../../types'
 import { connectionsShareText } from './connections-sharing'
-import { ConnectionsSelectionLinks } from './ConnectionsSelectionLinks'
+import { ConnectionsMistakes, ConnectionsSolvedGroup, ConnectionsTile } from './ConnectionsBoardParts'
 import { DiagnosisRegistrationOffer } from '../result/DiagnosisGrowth'
 import { useAuthSession } from '../auth/use-auth-session'
+import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
+import { QuestButton } from '../../components/ui/QuestPrimitives'
+import { publicAssetUrl } from '../../app/public-asset'
 import '../result/GameResult.css'
 import './ConnectionsGamePage.css'
 
@@ -115,8 +105,6 @@ export function ConnectionsGamePage({
   const hintKey = useRef<string | null>(null)
   const started = useRef(false)
   const completionTracked = useRef(false)
-  const gridShellRef = useRef<HTMLDivElement>(null)
-  const tileRefs = useRef(new Map<string, HTMLButtonElement>())
 
   const solvedTileIds = useMemo(
     () => new Set(state.solvedGroups.flatMap((group) => group.tiles.map((tile) => tile.id))),
@@ -337,74 +325,51 @@ export function ConnectionsGamePage({
     ? NEXT_MODE_ORDER.find((candidate) => !completedModes.has(candidate)) ?? null
     : null
 
-  const mistakeDots = <span className="connections-mistakes" aria-label={`Ошибок: ${state.mistakesUsed} из 4`}>
-    <span>Ошибки</span>
-    {Array.from({ length: 4 }, (_, index) => (
-      <i key={index} className={index < state.mistakesUsed ? 'is-used' : ''}>
-        {index < state.mistakesUsed ? <X /> : null}
-      </i>
-    ))}
-  </span>
-
   return <>
     <AppHeader onHome={onHome} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} />
     <GameScreenShell
-      className={`connections-game${feedback ? ` connections-game--${feedback}` : ''}`}
+      className="connections-game"
       variant="session"
       wide
       onBack={onBack}
     >
+      <header className="engine-session-heading connections-heading">
+        <div>
+          <p>{session.kind === 'daily' ? 'Ежедневная загадка' : 'Загадка из архива'} <time dateTime={session.puzzleDate}>{dateLabel(session.puzzleDate)}</time></p>
+          <h1 id="connections-game-title">Связи</h1>
+          <span>16 слов. Четыре группы. Что их объединяет?</span>
+        </div>
+        <ThemedArtwork src={publicAssetUrl('images/home-doodle/connections.webp')} alt="" />
+      </header>
       <div className="connections-layout">
-        <aside className="connections-sidebar" aria-label="Состояние игры">
-          <span className="connections-sidebar__icon" aria-hidden="true"><Waypoints /></span>
-          <div className="connections-sidebar__title">
-            <p>Игра дня · №{dayNumber(session.puzzleDate)}</p>
-            <h1 id="connections-game-title">Связи</h1>
-            <span className="connections-sidebar__scraps" aria-hidden="true"><i /><i /><i /></span>
-          </div>
-          <time dateTime={session.puzzleDate}>{dateLabel(session.puzzleDate)}</time>
-          <p className="connections-sidebar__lead">Соберите 4 группы по 4 слова</p>
-
-          <div className="connections-sidebar__section connections-sidebar__progress">
-            <strong><b>{state.solvedGroups.length}</b> / 4 группы</strong>
-            <div aria-label={`Собрано групп: ${state.solvedGroups.length} из 4`}>
-              {Array.from({ length: 4 }, (_, index) => <i key={index} className={index < state.solvedGroups.length ? 'is-complete' : ''} />)}
-            </div>
-          </div>
-
-          <div className="connections-sidebar__section connections-sidebar__mistakes">
-            {mistakeDots}
-          </div>
-
-          {!terminal && <ControlButton
-            className="connections-sidebar__hint"
-            onClick={openHint}
-            disabled={!state.hintAvailableAt || isPending}
-          >
-            <Lightbulb /> Открыть подсказку
-          </ControlButton>}
-        </aside>
-
         <section className="connections-board" aria-labelledby="connections-game-title">
-          {!terminal && <div className="connections-grid-shell" ref={gridShellRef}>
-            <ConnectionsSelectionLinks
-              hostRef={gridShellRef}
-              tileRefs={tileRefs}
-              selected={selected}
-              layoutKey={remainingIds.join('|')}
-            />
+          {!terminal && <div className="connections-round-status">
+            <div className="connections-round-progress">
+              <div><strong>Найди четыре связи</strong><span>{state.solvedGroups.length} из 4</span></div>
+              <div className="connections-round-progress__track" role="progressbar" aria-label="Найденные группы" aria-valuenow={state.solvedGroups.length} aria-valuemin={0} aria-valuemax={4}>
+                {Array.from({ length: 4 }, (_, index) => <i key={index} className={index < state.solvedGroups.length ? `is-complete connections-color--${state.solvedGroups[index].color}` : ''} />)}
+              </div>
+            </div>
+            <div className="connections-round-tools">
+              <ConnectionsMistakes used={state.mistakesUsed} />
+              <QuestButton kind="text" onClick={onRules}><BookOpen size={16} />Как играть</QuestButton>
+            </div>
+          </div>}
+          {!terminal && <div className="connections-grid-shell">
             <div className="connections-solved" aria-live="polite">
               {state.solvedGroups.map((group) => (
-                <article key={group.color} className={`connections-solved__group connections-color--${group.color}`}>
-                  <strong>{group.title}</strong>
-                  <span>{group.tiles.map((tile) => tile.label).join(', ')}</span>
-                  {group.autoSolved && <small>последняя группа раскрыта автоматически</small>}
-                </article>
+                <ConnectionsSolvedGroup
+                  key={group.color}
+                  color={group.color}
+                  title={group.title}
+                  words={group.tiles.map((tile) => tile.label)}
+                  autoSolved={group.autoSolved}
+                />
               ))}
             </div>
 
             <div
-              className={`connections-grid${guess.isPending ? ' is-submitting' : ''}`}
+              className="connections-grid"
               aria-label="Карточки со словами"
               aria-busy={guess.isPending}
             >
@@ -413,37 +378,37 @@ export function ConnectionsGamePage({
                 if (!tile) return null
                 const selectedIndex = selected.indexOf(tileId)
                 const isSelected = selectedIndex !== -1
-                return <ControlButton
+                return <ConnectionsTile
                   key={tileId}
-                  ref={(node) => {
-                    if (node) tileRefs.current.set(tileId, node)
-                    else tileRefs.current.delete(tileId)
-                  }}
                   type="button"
-                  className={isSelected ? 'is-selected' : ''}
-                  aria-pressed={isSelected}
+                  label={tile.label}
+                  selected={isSelected}
+                  selectionNumber={selectedIndex + 1}
                   disabled={isPending}
                   onClick={() => toggle(tileId)}
-                >
-                  {isSelected && <small className="connections-tile__number" aria-hidden="true">{selectedIndex + 1}</small>}
-                  <span className="connections-tile__label">{tile.label}</span>
-                </ControlButton>
+                />
               })}
             </div>
           </div>}
 
-          {!terminal && (isPending || message) && <div
-            className={`connections-message${feedback ? ` connections-message--${feedback}` : ''}`}
+          {!terminal && <div className="connections-selection-status">
+            <span role="status" className="connections-selection-count"><span className="connections-selection-dots" aria-hidden="true">{Array.from({ length: 4 }, (_, index) => <i key={index} className={index < selected.length ? 'is-filled' : ''} />)}</span>{selected.length === 4 ? <b>Группа собрана — проверим?</b> : <>Выбери ещё <b>{4 - selected.length}</b></>}</span>
+            <QuestButton kind="text" onClick={openHint} disabled={!state.hintAvailableAt || isPending} title={state.hintAvailableAt ? 'Открыть подсказку' : 'Подсказка появится по ходу игры'}><Lightbulb size={17} />Подсказка</QuestButton>
+          </div>}
+
+          {!terminal && <div
+            className={`connections-message${feedback ? ` connections-message--${feedback}` : ''}${!message && !isPending ? ' is-idle' : ''}`}
             role="status"
             aria-live="polite"
           >
             {isPending
               ? <><LoaderCircle className="is-spinning" /> Проверяем связь…</>
-              : <>{feedback === 'correct' ? <Check /> : feedback === 'one_away' ? <Sparkles /> : <X />}{message}</>}
+              : message ? <>{feedback === 'correct' ? <Check /> : feedback === 'one_away' ? <Lightbulb /> : <X />}{message}</> : <span>Найди общее у четырёх слов. Четвёртая ошибка завершит раунд.</span>}
           </div>}
 
           {!terminal && <div className="connections-controls">
-            <ControlButton
+            <UiActionButton
+              variant="secondary"
               className="connections-controls__shuffle"
               onClick={() => setOrder((current) => {
                 const remaining = new Set(remainingIds)
@@ -454,14 +419,15 @@ export function ConnectionsGamePage({
               disabled={isPending}
             >
               <Shuffle /> Перемешать
-            </ControlButton>
-            <ControlButton
+            </UiActionButton>
+            <UiActionButton
+              variant="secondary"
               className="connections-controls__clear"
               onClick={() => setSelected([])}
               disabled={isPending || selected.length === 0}
             >
               <RotateCcw /> Снять выбор
-            </ControlButton>
+            </UiActionButton>
             <ActionButton
               className="connections-controls__submit"
               onClick={submit}
@@ -581,6 +547,7 @@ export function ConnectionsResult({
       : 'Как работает архив'
   return <section ref={resultRef} className={`connections-result connections-result--${state.status}`} aria-labelledby="connections-result-title">
     <div className="connections-result__summary">
+      <ThemedArtwork className="connections-result__mascot" src={publicAssetUrl(`images/mascot/${won ? "celebrate" : "think"}-v1.webp`)} width={88} height={100} alt="" />
       <div className="connections-result__outcome">
         <p>{won ? 'Все 4 связи найдены' : `Найдено ${state.solvedGroups.length} из 4 связей`}</p>
         <h2 id="connections-result-title">{won ? 'Всё сошлось!' : 'Сегодня не сошлось'}</h2>
@@ -591,6 +558,24 @@ export function ConnectionsResult({
         </div>
       </div>
     </div>
+
+    <section className="connections-result__groups" aria-label="Категории этого раунда">
+      <header>
+        <h3>Как сошлись слова</h3>
+        <small>Групп: {state.solvedGroups.length}</small>
+      </header>
+      <div className="connections-result__groups-grid">
+        {state.solvedGroups.map((group, index) => (
+          <article key={group.color} className={`connections-result__group connections-result__group--${group.color}`}>
+            <span className="connections-result__group-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <strong>{group.title}</strong>
+              <small>{group.tiles.map((tile) => tile.label).join(' · ')}</small>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
 
     <ResultActionBar
       persistence={!authLoading && (!authSession || authSession.isAnonymous) && runtime.meta?.growth?.registration
@@ -613,34 +598,17 @@ export function ConnectionsResult({
       showCopy={false}
     />
 
-    {(hasClub || bonusRemaining > 0) && <div className="result-persistence result-card__wide">
-      <div className="result-persistence__copy"><strong>{hasClub ? 'Дополнительные раунды по клубу' : `Бонусных партий «Связей»: ${bonusRemaining}`}</strong><p>{hasClub ? 'Играйте без списания билетов и регистрационных бонусов.' : 'Дополнительный раунд без списания билетов. В остальных играх — отдельные бонусы.'}</p></div>
-      <UiActionButton variant="secondary" disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : hasClub ? 'Сыграть ещё по клубу' : 'Сыграть бонусную партию'}</UiActionButton>
-    </div>}
+    {(hasClub || bonusRemaining > 0) && <ResultPersistence
+      title={hasClub ? 'Дополнительные раунды по клубу' : `Бонусных партий «Связей»: ${bonusRemaining}`}
+      action={<UiActionButton variant="secondary" disabled={bonus.isPending} onClick={() => bonus.mutate()}>{bonus.isPending ? 'Запускаем…' : hasClub ? 'Сыграть ещё по клубу' : 'Сыграть бонусную партию'}</UiActionButton>}
+    >
+      {hasClub ? 'Играйте без списания билетов и регистрационных бонусов.' : 'Дополнительный раунд без списания билетов. В остальных играх — отдельные бонусы.'}
+    </ResultPersistence>}
     {bonus.error && <InlineAlert tone="danger">{errorText(bonus.error)}</InlineAlert>}
 
-    <section className="connections-result__groups" aria-label="Категории этого раунда">
-      <header>
-        <div>
-          <span>Решение</span>
-          <strong>Как сошлись слова</strong>
-        </div>
-        <small>{state.solvedGroups.length} категории</small>
-      </header>
-      <div className="connections-result__groups-grid">
-        {state.solvedGroups.map((group, index) => (
-          <article key={group.color} className={`connections-result__group connections-result__group--${group.color}`}>
-            <span className="connections-result__group-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <strong>{group.title}</strong>
-              <small>{group.tiles.map((tile) => tile.label).join(' · ')}</small>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
 
-    <details className="reward-breakdown connections-result__reward">
+
+    <details className="connections-result__reward">
       <summary role="button" aria-controls={rewardId} onKeyDown={toggleDetailsOnKey}>
         <span className="connections-result__reward-icon" aria-hidden="true"><Ticket /></span>
         <span className="connections-result__accordion-copy">
@@ -676,10 +644,10 @@ export function ConnectionsResult({
       <span>Серия: {streak == null ? '—' : formatDays(streak)}</span>
       <a href={`https://t.me/share/url?url=${encodeURIComponent(new URL('/games/connections', window.location.origin).toString())}&text=${encodeURIComponent(connectionsShareText(session.puzzleDate, state))}`} target="_blank" rel="noreferrer"><Send aria-hidden="true" /> Telegram</a>
       <ContentReport prompt="Нашли ошибку в раунде?" thanks="Спасибо, проверим раунд." onSubmit={onReport} />
-      <ControlButton className="connections-result__copy" onClick={onCopy}>
+      <UiActionButton variant="secondary" className="connections-result__copy" onClick={onCopy}>
         {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
         <span>{copied ? 'Скопировано' : 'Скопировать результат'}</span>
-      </ControlButton>
+      </UiActionButton>
     </div>
   </section>
 }

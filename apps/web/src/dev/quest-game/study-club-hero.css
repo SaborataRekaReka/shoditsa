@@ -1,0 +1,13 @@
+.study-club-hero { overflow: hidden; border-radius: 20px; background: var(--color-entry-bg); }
+.study-club-hero .club-sky { height: 320px; }
+.study-club-hero .club-sky__heading { padding-top: 55px; }
+.study-club-hero-copy { max-width: 420px; margin: 0 auto; padding: 4px 18px 12px; text-align: center; }
+.study-club-hero-copy > p { margin: 0 0 20px; color: var(--quest-muted); font-size: 14px; line-height: 1.5; }
+.study-club-hero-actions > .quest-button { width: 100%; }
+@media (max-width: 699px) {
+  .study-club-hero .club-sky { height: 300px; }
+  .study-club-hero .club-sky__heading { padding-top: 57px; }
+  .study-club-hero-copy { padding-inline: 0; }
+  .study-club-hero-actions > .quest-button { font-size: 12px; }
+}
+

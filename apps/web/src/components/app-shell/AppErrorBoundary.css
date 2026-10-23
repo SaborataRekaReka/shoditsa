@@ -1,0 +1,5 @@
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app-render-error { width: min(560px, calc(100% - 40px)); min-height: 75vh; margin-inline: auto; gap: 18px; padding-block: 40px; font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app-render-error h1 { margin: 0; font: 800 clamp(28px, 5vw, 38px)/1.15 var(--font-body); letter-spacing: -.025em; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app-render-error p { margin: 0; color: var(--color-muted); font-size: 16px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app-render-error code { padding: 16px; border-radius: var(--radius-sm); background: var(--color-surface-2); color: var(--color-muted); font: 12px/1.6 var(--font-mono); overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .app-render-error > button { justify-self: center; min-width: 160px; }

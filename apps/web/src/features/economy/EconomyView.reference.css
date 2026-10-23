@@ -1,0 +1,31 @@
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-view { color: var(--color-ink); font-family: var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-note { margin-top: 18px; padding: 14px 16px; border: 0; border-radius: var(--radius-md); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-note svg { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-note p { font-size: 14px; line-height: 1.65; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo { margin-top: 20px; padding: 18px; gap: 14px; border: 0; border-radius: var(--radius-lg); background: var(--color-surface-2); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo__copy { gap: 5px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo__copy span { font-size: 16px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo__copy small { font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo__copy svg { color: var(--color-muted); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo p { line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo__row { gap: 10px; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-bundles { margin-top: 24px; padding: 0; border: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-bundles > header { margin-bottom: 14px; align-items: start; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-bundles > header small { font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-bundles article { padding: 18px; gap: 12px; border-color: var(--color-line); border-radius: var(--radius-lg); background: var(--color-surface); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-bundles article > strong { font-size: 30px; line-height: 1.15; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-rules { gap: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-rules span { padding: 12px 2px; gap: 14px; border: 0; border-bottom: 1px solid var(--color-line); border-radius: 0; background: transparent; font-size: 14px; line-height: 1.5; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .economy-rules strong,
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item em { font: 700 18px/1.3 var(--font-body); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger { gap: 0; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item { padding: 14px 2px; gap: 12px; border: 0; border-bottom: 1px solid var(--color-line); border-radius: 0; background: transparent; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item strong { font-size: 14px; line-height: 1.4; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item small { font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item.earn > span { background: var(--match-exact-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item.spend > span { background: var(--match-partial-bg); }
+html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-ledger__item.spend :is(svg, em) { color: var(--match-partial-ink); }
+@media (max-width: 380px) {
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-promo__row { grid-template-columns: minmax(0, 1fr); }
+  html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ticket-bundles > header { flex-wrap: wrap; }
+}

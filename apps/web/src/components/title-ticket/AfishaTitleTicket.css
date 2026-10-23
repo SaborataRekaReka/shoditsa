@@ -1,0 +1,56 @@
+.afisha-title { width: min(100%, 940px); margin: 0 auto; }
+.afisha-title__edition { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin: 10px 0 20px; color: var(--color-muted); font-size: 12px; }
+.afisha-title__edition > span, .afisha-title__edition time { display: inline-flex; align-items: center; gap: 7px; }
+.afisha-title__edition > span svg { color: var(--afisha-mode); }
+.admit-ticket.afisha-title__ticket { width: 100%; max-width: none; grid-template-columns: 30% minmax(0, 1fr); margin: 0; border-radius: var(--radius-lg); box-shadow: 0 5px 0 var(--color-primary-soft), 0 24px 60px -35px var(--color-shadow); animation: none; }
+.afisha-title__ticket::before, .afisha-title__ticket::after { left: calc(30% - 10px); }
+.afisha-title__ticket .admit-ticket__stub { min-height: 430px; padding: 22px; border-radius: calc(var(--radius-lg) - 1px) 0 0 calc(var(--radius-lg) - 1px); }
+.afisha-title__ticket .admit-ticket__stub span { font-size: 11px; padding: 6px 8px; }
+.afisha-title__ticket .admit-ticket__stub strong { font-size: 29px; padding: 6px 10px; background: var(--afisha-mode); }
+.afisha-title__ticket .admit-ticket__stub small { font-size: 9px; padding: 6px; max-width: 100%; }
+.afisha-title__ticket .admit-ticket__stub em { padding: 6px 9px; font-size: 13px; }
+.afisha-title__ticket .admit-ticket__stub i { width: 92px; height: 24px; margin-top: 12px; }
+.afisha-title__ticket .admit-ticket__body { padding: 34px 38px 28px; }
+.afisha-title__ticket .ticket-kicker { font-size: 10px; letter-spacing: .08em; }
+.afisha-title__ticket .ticket-kicker span { border-radius: var(--radius-sm); padding: 5px 8px; color: var(--color-success-ink); border-color: color-mix(in srgb, var(--color-success-ink) 40%, var(--color-paper-line)); }
+.afisha-title__ticket .ticket-kicker small { font-size: 10px; }
+.afisha-title__ticket h1 { margin: 18px 0 14px; color: var(--color-ink); font: 500 48px/1.08 Oswald, sans-serif; letter-spacing: -.02em; }
+.afisha-title__ticket h1 span { color: var(--color-success-ink); }
+.afisha-title__ticket .admit-ticket__body > .afisha-title__lead { color: var(--color-paper-muted); font-size: 13px; line-height: 1.7; }
+.afisha-title__criteria { margin-top: 22px; }
+.afisha-title__criteria > span { display: block; margin-bottom: 9px; color: var(--color-paper-muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.afisha-title__criteria > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.afisha-title__criteria > div > span { padding: 5px 9px; border: 1px solid color-mix(in srgb, var(--color-paper-line) 60%, transparent); border-radius: var(--radius-sm); color: var(--color-ink); font-size: 11px; }
+.afisha-title__ticket .game-launch-controls { margin-top: 26px; gap: 10px; }
+.afisha-title__ticket .game-launch-controls__action { min-width: min(230px, 100%); flex-basis: 230px; }
+.afisha-title__ticket .game-launch-controls__option { min-width: min(150px, 100%); flex-basis: 150px; }
+.afisha-title__ticket .game-launch-controls .play-button { min-height: 58px; }
+.afisha-title__footnote { display: flex; align-items: center; gap: 6px; margin-top: 14px; color: var(--color-paper-muted); font-size: 10px; line-height: 1.5; }
+.afisha-title__footnote svg { flex: none; color: var(--color-success-ink); }
+.afisha-title__ticket .seo-ticket-details { grid-column: 1 / -1; }
+.afisha-title__guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 30px; padding: 0 4px; }
+.afisha-title__guide article { display: flex; gap: 10px; }
+.afisha-title__guide article > svg { flex: none; width: 18px; height: 18px; color: var(--color-accent); margin-top: 3px; }
+.afisha-title__guide strong { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+.afisha-title__guide article span { display: block; color: var(--color-muted); font-size: 11px; line-height: 1.6; }
+@media (max-width: 719px) {
+  .afisha-title__edition { font-size: 10px; margin-top: 8px; margin-bottom: 16px; }
+  .admit-ticket.afisha-title__ticket { grid-template-columns: minmax(0, 1fr); }
+  .afisha-title__ticket::before, .afisha-title__ticket::after { display: none; }
+  .afisha-title__ticket .admit-ticket__stub { min-height: 150px; padding: 16px; border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0 0; border-right: 0; border-bottom: 1px dashed var(--color-paper-line); }
+  .afisha-title__ticket .admit-ticket__stub-art { object-position: center 43%; }
+  .afisha-title__ticket .admit-ticket__stub small { position: absolute; right: 16px; bottom: 40px; }
+  .afisha-title__ticket .admit-ticket__stub em { position: absolute; right: 16px; bottom: 12px; }
+  .afisha-title__ticket .admit-ticket__stub i { display: none; }
+  .afisha-title__ticket .admit-ticket__stub strong { font-size: 25px; }
+  .afisha-title__ticket .admit-ticket__body { padding: 24px 22px; }
+  .afisha-title__ticket h1 { font-size: 38px; margin-top: 16px; }
+  .afisha-title__ticket h1 br { display: none; }
+  .afisha-title__ticket .admit-ticket__body > .afisha-title__lead { font-size: 12px; }
+  .afisha-title__ticket .afisha-title__lead br { display: none; }
+  .afisha-title__criteria { margin-top: 18px; }
+  .afisha-title__ticket .game-launch-controls { margin-top: 22px; }
+  .afisha-title__ticket .game-launch-controls__action { flex-basis: 100%; }
+  .afisha-title__ticket .game-launch-controls__option { flex-basis: 100%; }
+  .afisha-title__guide { grid-template-columns: 1fr; gap: 18px; margin-top: 24px; padding: 0 8px; }
+}

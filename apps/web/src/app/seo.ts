@@ -1,4 +1,6 @@
 import { isLegalDocumentSlug, type LegalDocumentSlug } from '../features/legal/legal'
+import { blogPostBySlug, blogPostHref } from '../features/blog/posts'
+import { isSvoyakPath } from '../features/rooms/room-navigation'
 import {
   DANETKI_CATALOG_ITEMS,
   danetkiCatalogItemBySlug,
@@ -99,6 +101,32 @@ const LEGAL_SEO: Record<LegalDocumentSlug, { title: string; description: string 
 }
 
 const utilitySeo = (pathname: string): SeoRoute | null => {
+  if (isSvoyakPath(pathname)) return {
+    kind: 'utility', title: 'Своя игра — Сходится!', description: 'Командная викторина в онлайн-комнате с друзьями и ведущим.',
+    canonicalPath: pathname, heading: 'Своя игра', lead: '', paragraphs: [],
+    robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  if (pathname === '/lobby') return {
+    kind: 'utility', title: 'Лобби — Сходится!', description: 'Создайте комнату для игры с друзьями или присоединитесь по приглашению.',
+    canonicalPath: '/lobby', heading: 'Лобби', lead: '', paragraphs: [],
+    robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  if (pathname === '/leaderboard') return {
+    kind: 'utility', title: 'Рейтинг — Сходится!', description: 'Недельный и общий рейтинг игроков «Сходится!».',
+    canonicalPath: '/leaderboard', heading: 'Рейтинг', lead: '', paragraphs: [],
+    robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  const blogMatch = pathname.match(/^\/blog\/([^/]+)$/)
+  const post = blogMatch ? blogPostBySlug(blogMatch[1]) : undefined
+  if (pathname === '/support' || pathname === '/blog' || post) {
+    const title = post?.title ?? (pathname === '/support' ? 'Поддержка' : 'Блог')
+    return {
+      kind: 'utility', title: `${title} — Сходится!`,
+      description: post?.excerpt ?? (pathname === '/support' ? 'Вопросы, ошибки и пожелания: напишите в поддержку «Сходится!». Ответим по email.' : 'Новости проекта «Сходится!» и списки изменений.'),
+      canonicalPath: post ? blogPostHref(post.slug) : pathname, heading: title,
+      lead: '', paragraphs: [], robots: NOINDEX_FOLLOW, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+    }
+  }
   const legalMatch = pathname.match(/^\/legal\/([^/]+)$/)
   if (legalMatch && isLegalDocumentSlug(legalMatch[1])) {
     const document = legalMatch[1]
@@ -139,6 +167,10 @@ const utilitySeo = (pathname: string): SeoRoute | null => {
   }
   if (pathname === '/profile') return {
     kind: 'utility', title: 'Игровой профиль — Сходится!', description: 'Личный прогресс, статистика и достижения.', canonicalPath: '/profile', heading: 'Профиль', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
+  }
+  const applicationHeading = ({ '/quests': 'Задания', '/settings': 'Настройки', '/club/membership': 'Клубный билет' } as Record<string, string>)[pathname]
+  if (applicationHeading) return {
+    kind: 'utility', title: `${applicationHeading} — ${SITE_NAME}`, description: `${applicationHeading} в Сходится!`, canonicalPath: pathname, heading: applicationHeading, lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,
   }
   if (pathname.startsWith('/play/') || pathname.startsWith('/sessions/') || pathname.startsWith('/review/')) return {
     kind: 'utility', title: `Игровая сессия — ${SITE_NAME}`, description: 'Текущая игровая сессия.', canonicalPath: pathname, heading: 'Игровая сессия', lead: '', paragraphs: [], robots: NOINDEX_PRIVATE, indexable: false, imagePath: DEFAULT_SOCIAL_IMAGE_PATH,

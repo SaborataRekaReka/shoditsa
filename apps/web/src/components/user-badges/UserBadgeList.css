@@ -36,3 +36,6 @@
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
+
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .user-badge { border-color: var(--color-line); color: var(--color-text); background: var(--color-yellow); box-shadow: none; font-size: 11px; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .user-badge[data-style='dtf'] { color: var(--color-on-action); background: var(--color-action); }

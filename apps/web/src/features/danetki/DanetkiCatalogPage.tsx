@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { DashboardResponse } from '@shoditsa/contracts'
-import { ArrowRight, BookOpen, CheckCircle2, Clock3, HelpCircle, Play, Sparkles, Ticket } from 'lucide-react'
+import { ArrowRight, BookOpen, CheckCircle2, Clock3, HelpCircle, Play, Ticket } from 'lucide-react'
 import { trackClientEvent } from '../../app/client-events'
 import { trackMetrikaGoal } from '../../app/metrics'
 import { AppHeader, ScreenBack } from '../../components/app-shell/AppShell'
@@ -110,7 +110,7 @@ const StoryCard = ({ item, index, placement, access, ticketBalance, busy, onTry 
         ><Play aria-hidden="true" /> {busy ? 'Запускаем…' : 'Попробовать'}</ControlButton>
       </div>
       <span className={`danetki-catalog-card__play-note${shortage > 0 ? ' is-unavailable' : ''}`}>
-        {!access || dailyAvailable ? <Sparkles aria-hidden="true" /> : <Ticket aria-hidden="true" />}
+        {!access || dailyAvailable ? <BookOpen aria-hidden="true" /> : <Ticket aria-hidden="true" />}
         {shortage > 0 ? buttonTitle : accessLabel}
       </span>
     </div>
@@ -149,7 +149,7 @@ export function DanetkiCatalogPage({ collection, access, ticketBalance, busy, on
 
       <header className="danetki-catalog-hero">
         <div className="danetki-catalog-hero__copy">
-          <span className="danetki-catalog-eyebrow"><Sparkles aria-hidden="true" /> {collectionDefinition?.eyebrow ?? 'Каталог логических историй'}</span>
+          <span className="danetki-catalog-eyebrow"><BookOpen aria-hidden="true" /> {collectionDefinition?.eyebrow ?? 'Каталог логических историй'}</span>
           <h1>{collectionDefinition?.heading ?? 'Данетки с ответами'}</h1>
           <p>{collectionDefinition?.lead ?? 'Сначала попробуйте восстановить скрытую историю самостоятельно. Если версия не сходится — откройте стартовые вопросы и авторскую разгадку.'}</p>
           <div className="danetki-catalog-hero__actions">
@@ -230,7 +230,7 @@ export function DanetkiStoryPage({ slug, access, ticketBalance, busy, onTry, ...
       <article className="danetki-story">
         <header className="danetki-story__header">
           <div>
-            <span className="danetki-catalog-eyebrow"><Sparkles aria-hidden="true" /> Данетка с ответом</span>
+            <span className="danetki-catalog-eyebrow"><BookOpen aria-hidden="true" /> Данетка с ответом</span>
             <h1>{item.slug === 'albatros' ? 'Данетка про альбатроса' : item.titleRu}</h1>
             {item.alternativeTitles.length > 0 && <p className="danetki-story__aliases">Также известна как: {item.alternativeTitles.join(', ')}</p>}
             <div className="danetki-story__tags"><span>{danetkiDifficultyLabel(item.difficulty)}</span>{item.genres.map((genre) => <span key={genre}>{genre}</span>)}</div>

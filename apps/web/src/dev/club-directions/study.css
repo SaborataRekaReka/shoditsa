@@ -1,0 +1,323 @@
+/* Deliberately isolated from the live app. Existing fonts, art, tokens and UI primitives. */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-body); background: var(--color-bg); color: var(--color-ink); }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+a { color: inherit; }
+img { max-width: 100%; }
+figure, h1, h2, h3, p { margin: 0; }
+svg { flex: none; }
+:is(a, button, summary):focus-visible { outline: 3px solid var(--color-focus); outline-offset: 5px; }
+[hidden] { display: none !important; }
+.study-container { width: min(var(--content-width), calc(100% - 2 * var(--content-gutter))); margin-inline: auto; }
+.study-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 24px; background: var(--color-ink); color: var(--color-paper); font-size: 13px; }
+.study-nav a { text-decoration: none; }
+.study-nav__title { font-weight: 700; }
+.study-nav > div { display: flex; gap: 5px; }
+.study-nav > div a { display: grid; place-items: center; min-width: 40px; min-height: 36px; padding: 5px 12px; border-radius: 99px; }
+.study-nav a[aria-current] { background: var(--color-yellow); color: var(--color-ink); }
+.study-nav > span { font-size: 12px; }
+.study-direction-note { display: flex; align-items: baseline; gap: 22px; padding: 16px max(24px, calc((100% - 1320px)/2)); background: var(--color-surface); border-bottom: 1px solid var(--color-line); font-size: 13px; line-height: 1.5; }
+.study-direction-note strong { white-space: nowrap; }
+.study-direction-note span { color: var(--color-muted); }
+.study-intro { max-width: 1100px; padding: 30px 28px 28px; margin: auto; text-align: center; }
+.study-intro > p:first-child { font-size: 13px; color: var(--color-muted); }
+.study-intro h1 { font-size: clamp(32px, 3vw, 42px); line-height: 1.08; letter-spacing: -.035em; font-weight: 900; margin-block: 12px; }
+.study-intro > p { line-height: 1.6; }
+.study-intro a { display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; text-underline-offset: 4px; }
+.study-intro small { display: block; margin-top: 16px; color: var(--color-muted); font-size: 12px; line-height: 1.6; }
+.study-preview-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 22px; padding: 0 28px; max-width: 1760px; margin: auto; }
+.study-preview { min-width: 0; }
+.study-preview > header { min-height: 190px; position: relative; padding: 20px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 18px 18px 0 0; }
+.study-preview > header > span { display: block; font: 14px var(--font-mono); margin-bottom: 6px; }
+.study-preview h2 { font-size: 25px; line-height: 1.15; letter-spacing: -.025em; margin-bottom: 6px; }
+.study-preview header p { min-height: 36px; font-size: 12px; color: var(--color-muted); line-height: 1.5; }
+.study-preview header .ui-button { margin-top: 12px; min-height: 44px; }
+.study-preview__page { display: block; overflow: hidden; text-decoration: none; border: 1px solid var(--color-line); border-top: 0; border-radius: 0 0 12px 12px; background: var(--color-bg); }
+.study-preview__page > div { position: relative; overflow: hidden; }
+.study-preview iframe { display: block; position: absolute; inset: 0; border: 0; transform-origin: top left; pointer-events: none; }
+.study-choice { max-width: 700px; text-align: center; margin: 50px auto 70px; padding: 0 24px; }
+.study-choice h2 { font-size: 30px; margin-bottom: 12px; }
+.study-choice p { color: var(--color-muted); line-height: 1.65; }
+.study-reference { padding-block: 52px 80px; }
+.study-reference h1 { font-size: 42px; font-weight: 900; letter-spacing: -.03em; }
+.study-reference > p { margin-top: 16px; font-size: 18px; }
+.study-reference ol { max-width: 800px; padding-left: 22px; line-height: 1.8; margin-block: 28px 36px; }
+.study-reference li { padding-left: 8px; margin-block: 8px; }
+.study-reference img { display: block; width: 100%; margin-bottom: 24px; border: 1px solid var(--color-line); border-radius: 16px; }
+
+.club-study { background: var(--color-bg); font-size: 15px; line-height: 1.5; }
+.club-study-header { background: var(--color-paper); border-bottom: 1px solid var(--color-line); }
+.club-study-header > div { min-height: 76px; display: flex; justify-content: space-between; align-items: center; }
+.club-study-header a { text-decoration: none; }
+.club-study-header__actions { display: flex; align-items: center; gap: 8px; }
+.club-study-wallet, .club-study-guest { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 14px; min-height: 40px; border-radius: 99px; background: var(--color-surface-2); font-size: 13px; }
+.club-study-wallet i { height: 18px; border-left: 1px solid var(--color-line-strong); margin-inline: 4px; }
+.club-study-wallet svg:last-of-type { color: var(--color-accent); fill: var(--color-yellow); }
+.club-study-guest { font-weight: 700; padding-inline: 10px 16px; }
+.club-study-guest svg { border-radius: 50%; background: var(--color-surface); box-sizing: content-box; padding: 4px; margin: -4px 2px -4px -3px; }
+.club-study-menu { position: relative; }
+.club-study-menu summary { list-style: none; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--color-surface-2); cursor: pointer; }
+.club-study-menu > button { width: 42px; height: 42px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--color-surface-2); color: var(--color-ink); cursor: pointer; }
+.club-study-menu summary::-webkit-details-marker { display: none; }
+.club-study-menu > div { position: absolute; z-index: 10; right: 0; top: 52px; width: 230px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 16px; padding: 10px; box-shadow: var(--shadow-floating); }
+.club-study-menu > nav { position: absolute; z-index: 10; right: 0; top: 52px; width: 230px; background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 16px; padding: 10px; box-shadow: var(--shadow-floating); }
+.club-study-menu a { display: block; padding: 12px; border-radius: 9px; font-size: 14px; }
+.club-study-menu a:hover { background: var(--color-surface-2); }
+.club-study-back { padding-top: 22px; }
+.club-study-back a { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; color: var(--color-muted); font-size: 13px; text-decoration: none; }
+.club-study-hero { position: relative; display: grid; align-items: center; padding-block: 20px 40px; gap: 24px; }
+.club-study-copy { min-width: 0; position: relative; z-index: 1; }
+.club-study-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; font-size: 13px; margin-bottom: 20px; }
+.club-study-meta > span { color: var(--color-muted); }
+.club-study-copy h1 { font-size: clamp(42px,4.5vw,64px); font-weight: 900; line-height: 1.03; letter-spacing: -.035em; margin-bottom: 22px; }
+.club-study-lead { max-width: 470px; font-size: 16px; line-height: 1.65; }
+.club-study-hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 22px; margin-top: 24px; }
+.club-study .ui-button { min-height: 48px; gap: 18px; padding-inline: 24px; }
+.club-study-quiet { display: inline-flex; align-items: center; gap: 13px; min-height: 44px; font-size: 13px; text-decoration: none; }
+.club-study-quiet:hover { text-decoration: underline; text-underline-offset: 4px; }
+.club-study-terms { color: var(--color-muted); font-size: 12px; line-height: 1.65; margin-top: 16px; }
+.club-study-character { position: relative; margin: 0; min-width: 0; }
+.club-study-character img { display: block; width: 100%; height: auto; object-fit: contain; }
+.club-study-ticket { background: var(--match-partial-bg); border-radius: 17px; padding: 24px; }
+.club-study-ticket__heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 20px; }
+.club-study-ticket h2 { font-size: 24px; line-height: 1.1; font-weight: 900; letter-spacing: -.03em; }
+.club-study-ticket__body { padding: 23px; background: var(--color-paper); border-radius: 13px; }
+.club-study-ticket__body > span { font: 13px var(--font-mono); }
+.club-study-ticket__body strong { display: block; font-size: 48px; letter-spacing: -.035em; line-height: 1.1; margin-block: 12px; }
+.club-study-ticket__body p { font-size: 14px; line-height: 1.6; color: var(--color-muted); }
+.club-study-ticket > .ui-button { margin-top: 16px; width: 100%; }
+.club-study-ticket > small { display: block; text-align: center; font-size: 11px; margin-top: 12px; color: var(--color-muted); }
+.club-study-section-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px 26px; margin-bottom: 20px; }
+.club-study-section-head h2 { font-size: 29px; font-weight: 900; letter-spacing: -.025em; line-height: 1.2; }
+.club-study-section-head p { font-size: 14px; color: var(--color-muted); line-height: 1.6; }
+.club-study-benefits, .club-study-pricing { scroll-margin-top: 30px; }
+.club-study-benefit-grid { display: grid; gap: 16px; }
+.club-study-benefit { min-width: 0; position: relative; border-radius: 16px; overflow: hidden; }
+[data-tone='lilac'] { --study-tone: var(--color-lilac); }
+[data-tone='mint'] { --study-tone: var(--color-mint); }
+[data-tone='yellow'] { --study-tone: var(--color-yellow); }
+[data-tone='blue'] { --study-tone: var(--color-blue); }
+.club-study-benefit { background: var(--study-tone); }
+.club-study-benefit__copy { position: relative; z-index: 1; }
+.club-study-index { font: 12px var(--font-mono); color: var(--color-muted); }
+.club-study-benefit h3 { font-size: 25px; line-height: 1.2; letter-spacing: -.025em; font-weight: 700; margin-bottom: 10px; }
+.club-study-benefit p { font-size: 14px; line-height: 1.55; }
+.club-study-benefit__link { display: inline-flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 13px; font-weight: 700; min-height: 44px; text-decoration: none; }
+.club-study-benefit img { position: absolute; object-fit: contain; object-position: right bottom; }
+.club-study-special { display: grid; align-items: center; gap: 40px; }
+.club-study-special figure { min-width: 0; background: var(--color-lilac); border-radius: 17px; overflow: hidden; }
+.club-study-special figure img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.club-study-special .club-study-label { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--color-muted); margin-bottom: 12px; }
+.club-study-special h2 { font-size: 38px; font-weight: 900; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 12px; }
+.club-study-special p { font-size: 16px; }
+.club-study-special .ui-button { margin-top: 24px; }
+.club-study-pricing { margin-top: 64px; }
+.club-study-plans { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; }
+.club-study-plan { min-width: 0; padding: 30px; background: var(--color-surface); border-radius: 19px; border: 1px solid var(--color-line); }
+.club-study-plan__heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.club-study-plan h3 { font-size: 19px; font-weight: 700; }
+.club-study-price { display: block; font-size: 52px; font-weight: 900; letter-spacing: -.035em; line-height: 1.05; margin-block: 22px 10px; }
+.club-study-daily { display: flex; gap: 10px 18px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--color-muted); }
+.club-study-daily span { color: var(--color-primary); }
+.club-study-plan__detail { font-size: 14px; line-height: 1.6; max-width: 400px; margin-block: 18px 22px; min-height: 45px; }
+.club-study-plan small { display: block; max-width: 340px; margin-top: 12px; font-size: 12px; line-height: 1.55; color: var(--color-muted); }
+.club-study-renewal { color: var(--color-muted); font-size: 13px; line-height: 1.65; margin-top: 20px; }
+.club-study-comparison { margin-top: 64px; padding-bottom: 64px; }
+.club-study-comparison__labels, .club-study-comparison__row { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 20px; align-items: baseline; border-bottom: 1px solid var(--color-line); padding: 16px 0; }
+.club-study-comparison__labels { color: var(--color-muted); font-size: 13px; }
+.club-study-comparison__labels strong { color: var(--color-ink); }
+.club-study-comparison__row { font-size: 14px; }
+.club-study-comparison__row h3 { font-size: 14px; font-weight: 400; }
+.club-study-comparison__row > strong { font-weight: 700; }
+.club-study-comparison__row small { display: none; }
+.club-study-comparison > a { margin-top: 24px; }
+.club-study-comparison > .club-study-terms { margin-top: 0; }
+.club-study-footer { background: var(--color-paper); border-top: 1px solid var(--color-line); padding-block: 34px; }
+.club-study-footer > div { display: flex; align-items: center; justify-content: space-between; gap: 30px; }
+.club-study-footer p { color: var(--color-muted); font-size: 13px; line-height: 1.6; margin-top: 16px; }
+.club-study-footer a { display: inline-flex; align-items: center; gap: 25px; font-size: 14px; text-decoration: none; }
+.club-study-footer__note { font: 26px var(--font-script); transform: rotate(-5deg); }
+
+/* A transfers the home page's three-part hero and illustrated shelf. */
+.club-study--a .club-study-hero { grid-template-columns: 1.13fr .91fr .96fr; min-height: 460px; gap: 16px; padding-top: 12px; }
+.club-study--a .club-study-copy h1 { font-size: clamp(42px,4.1vw,58px); }
+.club-study--a .club-study-character img { max-height: 400px; }
+.club-study--a .club-study-hero-actions { gap: 5px 20px; }
+.club-study--a .club-study-benefits { padding-top: 22px; }
+.club-study--a .club-study-benefit-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+.club-study--a .club-study-benefit { min-height: 304px; padding: 24px 22px 160px; }
+.club-study--a .club-study-index { display: none; }
+.club-study--a .club-study-benefit__link { position: absolute; top: 205px; left: 0; font-size: 0; width: 42px; height: 42px; justify-content: center; background: var(--color-surface); border-radius: 50%; }
+.club-study--a .club-study-benefit img { width: 61%; height: 146px; right: 12px; bottom: 12px; }
+.club-study--a .club-study-special { grid-template-columns: .85fr 2fr; margin-top: 26px; padding: 24px; border: 1px solid var(--color-line); border-radius: 20px; background: var(--color-surface); }
+.club-study--a .club-study-special figure { height: 220px; }
+.club-study--a .club-study-special figure img { padding: 16px; }
+.club-study--a .club-study-plan { background: var(--study-tone); border-color: transparent; }
+
+/* B uses large two-column scenes and moves from open space to the offer. */
+.club-study--b .club-study-hero { grid-template-columns: 1.1fr .9fr; min-height: 510px; padding-block: 12px 54px; gap: 50px; }
+.club-study--b .club-study-copy h1 { max-width: 700px; font-size: clamp(48px,5.5vw,78px); }
+.club-study--b .club-study-character img { max-height: 460px; }
+.club-study--b .club-study-benefit-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+.club-study--b .club-study-benefit { min-height: 285px; padding: 28px; }
+.club-study--b .club-study-benefit__copy { max-width: 55%; }
+.club-study--b .club-study-index { display: block; margin-bottom: 20px; }
+.club-study--b .club-study-benefit h3 { font-size: 31px; }
+.club-study--b .club-study-benefit__link { margin-top: 18px; }
+.club-study--b .club-study-benefit img { width: 40%; height: 210px; right: 20px; bottom: 22px; }
+.club-study--b .club-study-special { grid-template-columns: .8fr 1.2fr; gap: 70px; margin-top: 54px; }
+.club-study--b .club-study-special figure { height: 270px; }
+.club-study--b .club-study-special figure img { padding: 16px; }
+.club-study--b .club-study-special h2 { font-size: 44px; }
+.club-study--b .club-study-plan { border: 0; background: var(--color-surface-2); }
+.club-study--b .club-study-plan__heading { padding-bottom: 18px; border-bottom: 1px solid var(--color-line-strong); }
+
+/* C puts real ticket choices into the first illustrated scene. */
+.club-study--c .club-study-hero { display: block; padding-block: 12px 36px; text-align: center; }
+.club-study--c .club-study-meta { justify-content: center; margin-bottom: 16px; }
+.club-study--c .club-study-copy h1 { font-size: clamp(44px,4.8vw,68px); max-width: 1100px; margin-inline: auto; }
+.club-study--c .club-study-lead { max-width: 670px; margin-inline: auto; }
+.club-study--c .club-study-hero-actions { justify-content: center; margin-top: 20px; }
+.club-study--c .club-study-price-stage { display: grid; grid-template-columns: .85fr 2fr; gap: 34px; align-items: center; margin-top: 32px; text-align: left; }
+.club-study--c .club-study-character { width: 100%; }
+.club-study--c .club-study-character img { max-height: 330px; }
+.club-study--c .club-study-pricing { width: 100%; margin-top: 0; }
+.club-study--c .club-study-pricing .club-study-section-head { display: block; margin-bottom: 16px; }
+.club-study--c .club-study-pricing .club-study-section-head h2 { font-size: 23px; }
+.club-study--c .club-study-pricing .club-study-section-head p { margin-top: 4px; font-size: 13px; }
+.club-study--c .club-study-benefits { border-top: 1px solid var(--color-line); padding-top: 34px; }
+.club-study--c .club-study-section-head > p { max-width: 410px; }
+.club-study--c .club-study-benefit-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
+.club-study--c .club-study-benefit { min-height: 320px; padding: 24px 22px 160px; }
+.club-study--c .club-study-index { display: none; }
+.club-study--c .club-study-benefit h3 { font-size: 27px; }
+.club-study--c .club-study-benefit__link { position: absolute; top: 224px; left: 0; font-size: 0; width: 42px; height: 42px; justify-content: center; background: var(--color-surface); border-radius: 50%; }
+.club-study--c .club-study-benefit img { width: 61%; height: 146px; right: 12px; bottom: 12px; }
+.club-study--c .club-study-special { grid-template-columns: .65fr 1.35fr; gap: 48px; margin-top: 36px; background: var(--color-surface-2); padding: 30px 44px; border-radius: 20px; }
+.club-study--c .club-study-special figure { height: 200px; background: transparent; }
+.club-study--c .club-study-plan { position: relative; background: var(--study-tone); border: 0; padding: 24px; }
+.club-study--c .club-study-plans { gap: 16px; }
+.club-study--c .club-study-plan__detail { font-size: 13px; min-height: 42px; margin-block: 14px 16px; }
+.club-study--c .club-study-price { margin-top: 16px; font-size: 46px; }
+.club-study--c .club-study-plan small { font-size: 11px; }
+.club-study--c .club-study-renewal { font-size: 12px; }
+.club-study--c .club-study-comparison { margin-top: 40px; }
+.study-dialog-backdrop { position: fixed; inset: 0; background: var(--color-overlay); z-index: 100; display: grid; place-items: center; padding: 22px; }
+.study-dialog { width: min(100%,460px); padding: 32px; border-radius: 23px; background: var(--color-surface); box-shadow: var(--shadow-floating); }
+.study-dialog h2 { font-size: 27px; line-height: 1.15; }
+.study-dialog p { margin-block: 18px 24px; line-height: 1.65; }
+
+@media (max-width: 1100px) {
+  .club-study--a .club-study-hero { grid-template-columns: 1.2fr 1fr; }
+  .club-study--a .club-study-ticket { grid-column: 1/-1; display: grid; grid-template-columns: 1fr 1.3fr 1fr; align-items: center; gap: 16px; }
+  .club-study--a .club-study-ticket__heading { margin-bottom: 0; }
+  .club-study--a .club-study-ticket__body { padding: 15px 20px; }
+  .club-study--a .club-study-ticket__body strong { font-size: 35px; }
+  .club-study--a .club-study-ticket__body p, .club-study--a .club-study-ticket > small { display: none; }
+  .club-study--a .club-study-ticket > .ui-button { margin: 0; }
+  .club-study--a .club-study-benefit-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .club-study--c .club-study-benefit-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .club-study--c .club-study-price-stage { grid-template-columns: .6fr 2fr; gap: 20px; }
+  .club-study--c .club-study-plan { padding: 20px; }
+  .study-preview-grid { gap: 14px; padding-inline: 16px; }
+  .study-preview > header { padding-inline: 16px; }
+  .study-preview h2 { font-size: 21px; }
+  .study-preview header p { min-height: 60px; }
+}
+@media (max-width: 760px) {
+  .study-nav { flex-wrap: wrap; padding: 10px 16px; gap: 8px; }
+  .study-nav > span { display: none; }
+  .study-nav__title { width: 100%; }
+  .study-direction-note { display: block; padding: 14px 20px; }
+  .study-direction-note span { display: block; margin-top: 5px; }
+  .study-preview-grid { grid-template-columns: 1fr; max-width: 620px; gap: 32px; }
+  .study-preview header p { min-height: 0; }
+  .study-preview > header { min-height: 0; }
+  .study-reference h1 { font-size: 32px; }
+  .club-study-header > div { min-height: 68px; }
+  .club-study-wallet > span, .club-study-wallet i, .club-study-wallet svg:last-of-type { display: none; }
+  .club-study-wallet { padding: 9px 10px; }
+  .club-study-guest { font-size: 0; padding: 9px; }
+  .club-study-guest svg { margin: 0; padding: 0; background: transparent; }
+  .club-study-menu summary { width: 38px; height: 38px; }
+  .club-study-menu > button { width: 38px; height: 38px; }
+  .club-study-header .brand-wordmark { font-size: 36px; }
+  .club-study-header .brand-wordmark__rays { top: 17px; }
+  .club-study-back { padding-top: 14px; }
+  .club-study-hero { gap: 0; }
+  .club-study-meta { font-size: 12px; margin-bottom: 16px; }
+  .club-study-copy h1, .club-study--a .club-study-copy h1, .club-study--b .club-study-copy h1, .club-study--c .club-study-copy h1 { font-size: clamp(39px,8.4vw,56px); line-height: 1.04; margin-bottom: 18px; }
+  .club-study-lead { font-size: 15px; }
+  .club-study-hero-actions { gap: 7px 18px; margin-top: 20px; }
+  .club-study .ui-button { padding-inline: 20px; font-size: 13px; }
+  .club-study--a .club-study-hero, .club-study--b .club-study-hero { grid-template-columns: 1fr; min-height: 0; padding-top: 16px; padding-bottom: 30px; gap: 0; }
+  .club-study--a .club-study-character, .club-study--b .club-study-character { width: min(100%,320px); margin: 16px auto; }
+  .club-study--a .club-study-ticket { display: block; padding: 22px; }
+  .club-study--a .club-study-ticket__heading { margin-bottom: 16px; }
+  .club-study--a .club-study-ticket__body { padding: 20px; }
+  .club-study--a .club-study-ticket__body p, .club-study--a .club-study-ticket > small { display: block; }
+  .club-study--a .club-study-ticket > .ui-button { margin-top: 16px; }
+  .club-study-section-head { display: block; margin-bottom: 18px; }
+  .club-study-section-head h2 { font-size: 27px; }
+  .club-study-section-head p { margin-top: 10px; font-size: 13px; }
+  .club-study--a .club-study-benefit-grid { gap: 12px; }
+  .club-study--a .club-study-benefit { padding: 18px 16px 140px; min-height: 290px; }
+  .club-study--a .club-study-benefit h3 { font-size: 22px; }
+  .club-study--a .club-study-benefit p { font-size: 12px; }
+  .club-study--a .club-study-benefit img { height: 110px; width: 61%; bottom: 16px; right: 8px; }
+  .club-study--a .club-study-benefit__link { top: 218px; width: 35px; height: 35px; }
+  .club-study--a .club-study-benefit__link svg { width: 16px; }
+  .club-study--b .club-study-benefit-grid { grid-template-columns: 1fr; gap: 14px; }
+  .club-study--b .club-study-benefit { min-height: 270px; padding: 23px; }
+  .club-study--b .club-study-benefit h3 { font-size: 28px; }
+  .club-study--b .club-study-benefit img { width: 39%; height: 160px; right: 15px; bottom: 20px; }
+  .club-study--b .club-study-benefit__copy { max-width: 58%; }
+  .club-study--b .club-study-benefit__link { font-size: 12px; gap: 10px; }
+  .club-study--a .club-study-special, .club-study--b .club-study-special, .club-study--c .club-study-special { grid-template-columns: 1fr; gap: 22px; padding: 24px; margin-top: 28px; }
+  .club-study--b .club-study-special { padding: 0; }
+  .club-study--a .club-study-special figure, .club-study--b .club-study-special figure, .club-study--c .club-study-special figure { height: 220px; }
+  .club-study-special h2, .club-study--b .club-study-special h2 { font-size: 33px; }
+  .club-study-special p { font-size: 15px; }
+  .club-study-pricing, .club-study-comparison { margin-top: 40px; }
+  .club-study-plans { grid-template-columns: 1fr; gap: 16px; }
+  .club-study-plan { padding: 24px; }
+  .club-study-price { font-size: 46px; }
+  .club-study-plan__detail { min-height: 0; }
+  .club-study-comparison__labels { display: none; }
+  .club-study-comparison__row { grid-template-columns: 1fr 1fr; gap: 12px; padding-block: 18px; }
+  .club-study-comparison__row h3 { grid-column: 1/-1; font-size: 16px; font-weight: 700; }
+  .club-study-comparison__row small { display: block; color: var(--color-muted); font-size: 12px; font-weight: 400; margin-bottom: 4px; }
+  .club-study-footer > div { flex-wrap: wrap; gap: 24px; }
+  .club-study-footer > div > div { flex-basis: 100%; }
+  .club-study-footer__note { font-size: 23px; }
+  .club-study--c .club-study-hero { padding-top: 20px; padding-bottom: 26px; }
+  .club-study--c .club-study-price-stage { display: flex; flex-direction: column; gap: 0; margin-top: 14px; }
+  .club-study--c .club-study-character { width: 230px; margin: 0 auto 10px; }
+  .club-study--c .club-study-character img { height: 210px; }
+  .club-study--c .club-study-benefit-grid { gap: 12px; }
+  .club-study--c .club-study-benefit { min-height: 310px; padding: 18px 16px 140px; }
+  .club-study--c .club-study-benefit img { width: 61%; height: 110px; right: 8px; bottom: 16px; }
+  .club-study--c .club-study-benefit h3 { font-size: 25px; }
+  .club-study--c .club-study-benefit p { font-size: 12px; }
+  .club-study--c .club-study-benefit__link { top: 238px; width: 35px; height: 35px; }
+  .club-study--c .club-study-plans { gap: 12px; }
+}
+@media (max-width: 380px) {
+  .club-study-header .brand-wordmark { font-size: 32px; }
+  .club-study-header .brand-wordmark__rays { top: 15px; right: -3px; }
+  .club-study-header__actions { gap: 5px; }
+  .club-study-header .club-study-wallet { gap: 4px; font-size: 12px; }
+  .club-study--a .club-study-benefit-grid { grid-template-columns: 1fr; }
+  .club-study--a .club-study-benefit { min-height: 244px; padding: 22px 22px 130px; }
+  .club-study--a .club-study-benefit img { width: 52%; height: 135px; }
+  .club-study--a .club-study-benefit__link { top: 150px; width: 40px; height: 40px; }
+  .club-study--c .club-study-benefit-grid { grid-template-columns: 1fr; }
+  .club-study--c .club-study-benefit { min-height: 244px; padding: 22px 22px 130px; }
+  .club-study--c .club-study-benefit img { width: 52%; height: 135px; }
+  .club-study--c .club-study-benefit__link { top: 150px; width: 40px; height: 40px; }
+  .club-study--c .club-study-benefit h3 { font-size: 22px; }
+  .club-study--b .club-study-benefit h3 { font-size: 24px; }
+  .club-study--b .club-study-benefit img { width: 34%; height: 148px; right: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
