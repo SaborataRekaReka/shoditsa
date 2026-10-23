@@ -32,9 +32,9 @@ export function DtfLeaderboard({ data, loading = false, error = false }: DtfLead
       <div><span className="dtf-board-eyebrow">Спецпоказ DTF</span><h2 id={titleId}>Игры по комментариям</h2><p>{loading ? 'Собираем результаты…' : participants(data?.participantCount ?? 0)}</p></div>
     </header>
     <div className="dtf-board-rules" aria-label="Как начисляются очки">
-      <div><strong>+100</strong><span>за игру</span></div><div><strong>+50</strong><span>за победу</span></div><div><strong>+10</strong><span>за попытку</span></div>
+      <div><strong>+100</strong><span>за игру</span></div><div><strong>+50</strong><span>за победу</span></div><div><strong>+10</strong><span>за попытку в запасе</span></div>
     </div>
-    <p className="dtf-board-rule-note">Учитываются завершённые игры и сохранённые попытки.</p>
+    <p className="dtf-board-rule-note">Бонус за оставшиеся попытки начисляется при победе.</p>
     {loading && <div className="dtf-board-state" role="status">Загружаем общий зачёт…</div>}
     {error && <div className="dtf-board-state" role="alert">Пока не удалось загрузить рейтинг. Попробуй открыть его чуть позже.</div>}
     {!loading && !error && <>

@@ -6,13 +6,11 @@ import {
   gameSessions,
   playerProfiles,
   user,
-  userBadges,
   userPackProgress,
   type Database,
 } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { canViewPack } from './access.js'
-import { requiredBadgeForPack } from './policy.js'
 
 type LeaderboardCandidate = {
   userId: string
@@ -75,9 +73,6 @@ export const getPackLeaderboard = async (
     throw new ApiError(404, 'PACK_NOT_FOUND', 'Спецпоказ не найден')
   }
 
-  const badgeKey = requiredBadgeForPack(packId)
-  if (!badgeKey) throw new ApiError(404, 'PACK_LEADERBOARD_NOT_FOUND', 'Для этого спецпоказа рейтинг не предусмотрен')
-
   const [countRows, participantRows, sessionRows] = await Promise.all([
     db.select({ count: sql<number>`count(*)::int` }).from(contentPackEntries).where(and(
       eq(contentPackEntries.packId, packId),
@@ -91,23 +86,16 @@ export const getPackLeaderboard = async (
       completedPositions: userPackProgress.completedPositions,
       completedAt: userPackProgress.completedAt,
       startedAt: userPackProgress.startedAt,
-    }).from(userBadges)
-      .innerJoin(user, eq(user.id, userBadges.userId))
-      .leftJoin(playerProfiles, eq(playerProfiles.userId, userBadges.userId))
-      .leftJoin(userPackProgress, and(
-        eq(userPackProgress.userId, userBadges.userId),
-        eq(userPackProgress.packId, packId),
-      ))
-      .where(eq(userBadges.badgeKey, badgeKey)),
+    }).from(userPackProgress)
+      .innerJoin(user, and(eq(user.id, userPackProgress.userId), eq(user.isAnonymous, false)))
+      .leftJoin(playerProfiles, eq(playerProfiles.userId, userPackProgress.userId))
+      .where(eq(userPackProgress.packId, packId)),
     db.select({
       userId: gameSessions.userId,
       status: gameSessions.status,
       attemptsCount: gameSessions.attemptsCount,
     }).from(gameSessions)
-      .innerJoin(userBadges, and(
-        eq(userBadges.userId, gameSessions.userId),
-        eq(userBadges.badgeKey, badgeKey),
-      ))
+      .innerJoin(user, and(eq(user.id, gameSessions.userId), eq(user.isAnonymous, false)))
       .where(eq(gameSessions.packId, packId)),
   ])
 

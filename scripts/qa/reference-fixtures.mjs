@@ -161,9 +161,8 @@ export function specialSession(packKey, status = 'playing', position = 5) {
     variantKey: dtf ? null : packId, maxAttempts: dtf ? 6 : 10,
     ...(dtf ? { promoPrompt: { packId, title: 'Игры по комментариям', subtitle: `Игра ${position} из 25`, disclaimer: 'Примеры комментариев для локального просмотра.' },
       progressiveHints: ['В этом мире легко забыть, зачем шёл на задание.', 'Сначала изучаешь карту, а потом вспоминаешь про основной сюжет.', 'Знакомые персонажи делают каждое возвращение особенным.'].map((text, index) => ({ key: `comment-${index}`, value: {
-        text, unlockAfterAttempts: index, authorName: ['Люмен', 'Ракурс', 'Тихий зритель'][index],
-        authorAvatarUrl: ['/images/shoditsa-study/profile-v1/account-avatar-v1.png', '/images/danetki/host-avatar.webp', '/images/characters/portraits/ali-baba.webp'][index],
-        authorIsVerified: index === 0, authorIsPlus: index === 1, publishedAt: `2026-10-${19 + index}T12:00:00.000Z`,
+        text, unlockAfterAttempts: index, authorName: `Игрок ${index + 1}`,
+        publishedAt: `2026-10-${19 + index}T12:00:00.000Z`,
         likesCount: 12 + index * 9, dislikesCount: index === 1 ? 2 : 0, replyCount: 3 + index * 2,
       } })) } : {}),
   })
