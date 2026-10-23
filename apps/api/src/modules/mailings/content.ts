@@ -1,4 +1,5 @@
-import { createHash } from 'node:crypto'
+import { createHash, createPrivateKey } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import type { AppConfig } from '@shoditsa/config'
@@ -9,6 +10,22 @@ export type MailingContent = Awaited<ReturnType<typeof loadMailingContent>>
 export const normalizeEmail = (email: string) => email.trim().toLowerCase()
 export const emailHash = (email: string) => createHash('sha256').update(normalizeEmail(email)).digest('hex')
 export const validEmail = (email: string) => email.length <= 254 && /^[^\s<>@,;]+@[^\s<>@,;]+\.[^\s<>@,;]+$/.test(email)
+
+export function mailingDkimOptions(config: AppConfig, env: NodeJS.ProcessEnv = process.env) {
+  const path = env.MAILING_DKIM_PRIVATE_KEY_FILE?.trim()
+  const selector = env.MAILING_DKIM_SELECTOR?.trim()
+  if (!path && !selector) return undefined
+  if (!path || !selector || !/^[a-z0-9][a-z0-9-]{0,62}$/.test(selector)
+    || config.smtp.from.toLowerCase() !== 'support@shoditsa.ru') throw new Error('MAILING_DKIM_CONFIG_INVALID')
+  const key = createPrivateKey(readFileSync(path))
+  if (key.asymmetricKeyType !== 'rsa' || (key.asymmetricKeyDetails?.modulusLength ?? 0) < 2048) throw new Error('MAILING_DKIM_KEY_INVALID')
+  return {
+    domainName: 'shoditsa.ru', keySelector: selector,
+    privateKey: key.export({ type: 'pkcs8', format: 'pem' }).toString(),
+    // RFC 8058 requires both unsubscribe headers to be covered by the signature.
+    headerFieldNames: 'from:to:subject:date:message-id:reply-to:mime-version:content-type:content-transfer-encoding:list-id:list-unsubscribe:list-unsubscribe-post:precedence',
+  }
+}
 
 export async function loadMailingContent() {
   const root = resolve(process.env.MAILING_CONTENT_ROOT || 'docs/communications/autumn-2026')
@@ -44,6 +61,7 @@ export function createMailingSender(config: AppConfig) {
     requireTLS: config.smtp.port === 587,
     auth: config.smtp.user ? { user: config.smtp.user, pass: config.smtp.password } : undefined,
     connectionTimeout: 5_000, greetingTimeout: 5_000, socketTimeout: 15_000,
+    dkim: mailingDkimOptions(config),
   })
   return {
     verify: () => transport.verify(),
@@ -54,7 +72,11 @@ export function createMailingSender(config: AppConfig) {
         subject: `${recipient.kind === 'test' ? '[Тест] ' : ''}${content.subject}`,
         html: content.html.replaceAll('{{unsubscribeUrl}}', unsubscribeUrl), text: content.text.replaceAll('{{unsubscribeUrl}}', unsubscribeUrl),
         attachments: content.attachments, messageId: `<${CAMPAIGN_ID}.${recipient.id}@shoditsa.ru>`,
-        headers: { 'List-Unsubscribe': `<${unsubscribeUrl}>, <mailto:${content.replyTo}?subject=unsubscribe%20shoditsa>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeUrl}>, <mailto:${content.replyTo}?subject=unsubscribe%20shoditsa>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          'List-ID': 'Shoditsa news <news.shoditsa.ru>', 'Precedence': 'bulk',
+        },
         disableFileAccess: true, disableUrlAccess: true,
       })
       if (!result.accepted?.some(a => normalizeEmail(typeof a === 'string' ? a : a.address) === recipient.email)) {
