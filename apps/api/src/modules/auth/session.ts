@@ -38,6 +38,7 @@ export const getRequestUser = async (
     id: authSession.user.id,
     email: normalizeEmail(authSession.user.email),
     name: authSession.user.name,
+    avatarUrl: authSession.user.image ?? null,
     isAnonymous: Boolean((authSession.user as { isAnonymous?: boolean }).isAnonymous),
     role: (profile[0]?.role === 'admin' ? 'admin' : 'player') as 'admin' | 'player',
     authSessionId: (authSession.session as { id?: string }).id ?? null,
