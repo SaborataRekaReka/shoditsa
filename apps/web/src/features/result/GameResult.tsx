@@ -308,7 +308,7 @@ export function GameResult(props: Props) {
     } as CSSProperties}
   >
     {celebrate ? <QuizVictory key={props.sessionId ?? props.title} attempts={props.attempts} completionType={props.completionType}
-      context={props.contextLabel ?? MODE_CONFIG[props.mode].title} resultLine={resultLine} poster={<ThemedArtwork src={referenceModeIllustration(props.mode)} alt="" aria-hidden="true" />} title={props.title} meta={props.meta} rewards={rewards}>
+      context={props.contextLabel ?? MODE_CONFIG[props.mode].title} resultLine={resultLine} poster={props.mode === 'diagnosis' ? props.poster : <ThemedArtwork src={referenceModeIllustration(props.mode)} alt="" aria-hidden="true" />} title={props.title} meta={props.meta} rewards={rewards}>
       {props.opponentAttempts && props.challengeOutcome && <div className={`challenge-score challenge-score--${props.challengeOutcome}`}>
         <span>Вы — {props.completionType === 'final_choice_win' ? 'Ф' : props.attempts}/{props.maxAttempts ?? 10}. Друг — {challengeResultLabel(props.opponentAttempts)}</span>
         <strong>{outcomeText}</strong>

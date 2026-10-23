@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { diagnosisArtworkUrl } from './diagnosis-artwork'
 import files from './diagnosis-artwork.json'
 import { TitlePoster } from './TitlePoster'
+import { GameResult } from '../../features/result/GameResult'
 import type { TitleItem } from '../../types'
 
 const diagnosis: TitleItem = {
@@ -15,6 +16,17 @@ const diagnosis: TitleItem = {
 }
 
 describe('published diagnosis illustrations', () => {
+  it.each([true, false])('shows a new diagnosis mascot in the completed result when won=%s', won => {
+    const item = { ...diagnosis, id: 'dx_hiatal_hernia', titleRu: 'Грыжа пищеводного отверстия диафрагмы' }
+    const html = renderToStaticMarkup(createElement(GameResult, {
+      mode: 'diagnosis', won, attempts: 3, poster: createElement(TitlePoster, { item }),
+      title: item.titleRu, meta: '', tags: [], award: null, copied: false,
+      nextLabel: 'Играть дальше', nextActionLabel: 'Играть', configureLabel: 'Настроить',
+      onNext: () => {}, onConfigure: () => {}, accountState: 'authenticated', autoScroll: false,
+    }))
+    expect(html).toContain(diagnosisArtworkUrl(item))
+    expect(html).toContain('diagnosis-artwork')
+  })
   it('ships one real local asset for each of the 320 diagnoses', () => {
     expect(Object.keys(files)).toHaveLength(320)
     expect(new Set(Object.values(files)).size).toBe(320)

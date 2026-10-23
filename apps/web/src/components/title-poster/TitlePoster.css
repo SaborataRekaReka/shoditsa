@@ -22,6 +22,9 @@ html .result-card--diagnosis .quiz-victory__poster:has(.diagnosis-artwork) {
   height: 96px;
   background: transparent;
 }
+html .result-card--diagnosis .quiz-victory__poster > .diagnosis-artwork {
+  padding: 0;
+}
 @media (max-width: 480px) {
   html .result-card--diagnosis .result-card__hero:has(.diagnosis-artwork) {
     grid-template-columns: 80px minmax(0, 1fr);
