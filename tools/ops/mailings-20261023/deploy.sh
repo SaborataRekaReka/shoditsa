@@ -7,6 +7,7 @@ BASE=e17223ff13db7ce22719030c3aae517066471742
 ROOT=/opt/shoditsa
 WORK="$ROOT/incoming/mailings-$SHA"
 COMPOSE=/opt/repeto/deploy/shoditsa-api/docker-compose.yml
+ENVIRONMENT=/opt/repeto/deploy/shoditsa-api/.env
 API=shoditsa-api-shoditsa-api-1
 WORKER=shoditsa-api-shoditsa-worker-1
 PG=shoditsa-api-shoditsa-postgres-1
@@ -23,6 +24,7 @@ case "${1:-}" in
   test ! -e "$WORK"
   install -d -m 700 "$WORK" "$ROOT/backups"
   cp -a "$COMPOSE" "$WORK/compose.before.yml"
+  cp -a "$ENVIRONMENT" "$WORK/environment.before"
   meta > "$WORK/meta.before.json"
   docker exec "$PG" psql -X -v ON_ERROR_STOP=1 -U shoditsa_app -d shoditsa -Atc 'select count(*),max(created_at) from drizzle.__drizzle_migrations' > "$WORK/migrations.before"
   docker exec "$PG" pg_dump -U shoditsa_app -d shoditsa -Fc > "$WORK/database.before.dump"
@@ -40,15 +42,19 @@ case "${1:-}" in
   test -f offhost-backup-verified
   test ! -e activated-at.txt
   cmp "$COMPOSE" compose.before.yml
+  cmp "$ENVIRONMENT" environment.before
   sha256sum --check artifacts.sha256
   sha256sum --check backup.sha256
-  mkdir overlay
-  tar -xzf api-overlay.tar.gz -C overlay --no-same-owner
+  if [ ! -d overlay ]; then
+    mkdir overlay
+    tar -xzf api-overlay.tar.gz -C overlay --no-same-owner
+  fi
   docker build --build-arg "GIT_SHA=$SHA" -t "shoditsa-api:$SHA" overlay
   rollback() {
     local code=$?
     trap - ERR
     cp -a compose.before.yml "$COMPOSE"
+    cp -a environment.before "$ENVIRONMENT"
     compose up -d --no-deps --force-recreate shoditsa-api shoditsa-worker
     printf 'Mailing release failed, previous API and worker restored. Additive migration retained.\n' >&2
     exit "$code"
@@ -56,6 +62,11 @@ case "${1:-}" in
   trap rollback ERR
   # Additive schema only. The current API can continue serving while this runs.
   docker run --rm --network shoditsa_internal --env-file /opt/repeto/deploy/shoditsa-api/.env "shoditsa-api:$SHA" node apps/api/dist/migrate.js
+  if grep -q '^GIT_SHA=' "$ENVIRONMENT"; then
+    sed -Ei "s/^GIT_SHA=.*/GIT_SHA=$SHA/" "$ENVIRONMENT"
+  else
+    printf '\nGIT_SHA=%s\n' "$SHA" >> "$ENVIRONMENT"
+  fi
   sed -Ei "s#^([[:space:]]*image:[[:space:]]*)shoditsa-api:[^[:space:]]+#\1shoditsa-api:$SHA#" "$COMPOSE"
   compose config --quiet
   compose up -d --no-deps --force-recreate shoditsa-api shoditsa-worker

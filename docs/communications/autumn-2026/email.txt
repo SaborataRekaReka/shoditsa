@@ -1,9 +1,9 @@
-Тема: Две новые игры для компании в «Сходится!»
-Прехедер: «Своя игра», «Захват территорий» и другие осенние обновления.
+Тема: Новый дизайн и две новые игры в «Сходится!»
+Прехедер: «Своя игра», «Захват территорий», два спецпоказа и рейтинг игроков.
 
 Привет!
 
-В «Сходится!» появились две новые игры для вечера с друзьями.
+Мы обновили дизайн «Сходится!» и добавили две новые игры для вечера с друзьями.
 
 Выбрать игру: https://shoditsa.ru/lobby?utm_source=newsletter&utm_medium=email&utm_campaign=autumn_2026&utm_content=main
 
@@ -31,7 +31,7 @@ https://shoditsa.ru/specials/kpop-artists-admin-v1?utm_source=newsletter&utm_med
 Появился рейтинг игроков за неделю и за всё время. Очки начисляются за ежедневные игры.
 https://shoditsa.ru/leaderboard?utm_source=newsletter&utm_medium=email&utm_campaign=autumn_2026&utm_content=leaderboard
 
-Ещё обновили дизайн сайта и завели блог. Там будем писать об изменениях проекта.
+Завели блог. Там будем писать об изменениях проекта.
 https://shoditsa.ru/blog?utm_source=newsletter&utm_medium=email&utm_campaign=autumn_2026&utm_content=blog
 
 Команда «Сходится!»
