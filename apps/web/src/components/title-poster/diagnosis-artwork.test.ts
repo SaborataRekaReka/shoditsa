@@ -15,9 +15,9 @@ const diagnosis: TitleItem = {
 }
 
 describe('published diagnosis illustrations', () => {
-  it('ships one real local asset for each of the 120 approved diagnoses', () => {
-    expect(Object.keys(files)).toHaveLength(120)
-    expect(new Set(Object.values(files)).size).toBe(120)
+  it('ships one real local asset for each of the 320 diagnoses', () => {
+    expect(Object.keys(files)).toHaveLength(320)
+    expect(new Set(Object.values(files)).size).toBe(320)
     for (const file of Object.values(files)) {
       expect(file).toMatch(/^dx_[a-z0-9_]+\.[a-f0-9]{12}\.webp$/)
       expect(existsSync(resolve('public/images/diagnoses/mascot-v1', file))).toBe(true)
