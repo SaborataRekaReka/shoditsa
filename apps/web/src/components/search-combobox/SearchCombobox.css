@@ -57,7 +57,7 @@
 
 .suggestions .poster-fallback--diagnosis { padding: 5px; background: var(--palette-brand-green); }
 
-.suggestions img.poster-fallback__dx { width: 30px; height: 30px; margin: 0; object-fit: contain; filter: brightness(0) invert(1); }
+.suggestions img.poster-fallback__dx { width: 30px; height: 30px; margin: 0; object-fit: contain; }
 
 .suggestions .poster-fallback--diagnosis > span { display: none; }
 

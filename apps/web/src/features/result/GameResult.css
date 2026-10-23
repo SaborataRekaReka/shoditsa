@@ -55,7 +55,6 @@
   background: var(--palette-brand-green);
 }
 
-.result-card__poster > .poster-fallback--diagnosis .poster-fallback__dx { filter: brightness(0) invert(1); }
 
 .result-card__copy {
   min-width: 0;

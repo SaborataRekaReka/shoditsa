@@ -178,5 +178,5 @@ html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.quest-input, .ui-i
 html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.quest-input, .ui-input, .ui-select, .ui-textarea):focus-visible { --ui-field-border: var(--color-focus); border-color: var(--color-focus); }
 html[data-quest-skin='shoditsa'][data-quest-tone='dark'] :is(.quest-input, .ui-input, .ui-select, .ui-textarea)[aria-invalid='true'] { --ui-field-border: var(--color-danger-text); border-color: var(--color-danger-text); }
 /* These source SVGs contain monochrome black paths only (body systems / player count). */
-html[data-quest-tone='dark'][data-public-theme] body :is(.dx-system-icon .dx-system-icon__glyph, .dx-chip .dx-chip__icon, .reward-breakdown .result-dx-icon) { filter: brightness(0) invert(1); opacity: .92; }
+html[data-quest-tone='dark'][data-public-theme] body :is(.dx-chip .dx-chip__icon, .reward-breakdown .result-dx-icon) { filter: brightness(0) invert(1); opacity: .92; }
 html[data-quest-tone='dark'] .corporate-format-card__visual img[data-night-art] { padding: 0; object-fit: cover; }
