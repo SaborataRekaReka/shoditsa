@@ -197,7 +197,7 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
     `href="${canonicalUrl}"`,
     'type="application/ld+json"',
     '<h1',
-    danetkiPageFragment ?? (route.mode === 'svoyak' ? 'game-landing--svoyak' : isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
+    danetkiPageFragment ?? (route.mode === 'svoyak' ? 'class="svoyak-guide"' : isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
     danetkiPageFragment ?? (route.mode === 'svoyak' ? 'id="svoyak-faq-title"' : isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"'),
   ]
   for (const fragment of requiredFragments) {

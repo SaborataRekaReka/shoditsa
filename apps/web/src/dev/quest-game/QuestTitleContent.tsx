@@ -5,6 +5,7 @@ import { DANETKI_RECOMMENDATIONS } from '../../app/danetki-recommendation-copy'
 import { StudyGlyph } from './ShoditsaPresentation'
 import type { GlyphName } from './QuestArt'
 import { StudyGameDirectory } from './StudyGameDirectory'
+import { GameFaq } from '../../components/game-information/GameInformation'
 
 const featureGlyphs: GlyphName[] = ['play', 'archive', 'profile', 'medal']
 const stepGlyphs: GlyphName[] = ['play', 'hint', 'medal']
@@ -58,10 +59,7 @@ export function QuestTitleContent({ mode = 'anime' }: { mode?: SeoGameMode }) {
         </details>
       </section>
 
-      <section className="qt-faq" aria-labelledby={`artifact-faq-${mode}`}>
-        <div className="qt-section-heading"><h4 id={`artifact-faq-${mode}`}>Вопросы об игре</h4></div>
-        <div className="qt-faq-answers">{content.faq.map(entry => <details className="qt-disclosure qt-faq-item" key={entry.question}><summary><span>{entry.question}</span><ChevronDown size={19} /></summary><div className="qt-disclosure-body"><p>{entry.answer}</p></div></details>)}</div>
-      </section>
+      <GameFaq id={`artifact-faq-${mode}`} title="Вопросы об игре" heading="h4" entries={content.faq} />
     </section>
 
     <section className="qt-search-summary" aria-labelledby={content.searchSummary ? `search-summary-${mode}` : undefined} aria-label={content.searchSummary ? undefined : 'Подробнее об игре'}>

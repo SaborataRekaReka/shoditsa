@@ -10,7 +10,8 @@ import './svoyak-welcome.css'
 import { useRoomCreationAccess } from '../rooms/RoomCreationAccess'
 import { STUDY_CLUB_OFFER_HREF } from '../../dev/quest-game/account-routing'
 import { SvoyakSeoContent } from './SvoyakSeoContent'
-import '../../components/seo-content/SeoContent.css'
+import '../../components/game-information/GameInformation.css'
+import './SvoyakSeoContent.css'
 
 const topics = [
   { image: 'movie', label: 'Кино' },

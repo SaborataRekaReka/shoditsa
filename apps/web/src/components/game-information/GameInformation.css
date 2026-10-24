@@ -1,0 +1,35 @@
+.game-information-heading { margin: 0 0 16px; color: var(--quest-text, var(--color-text)); font-family: var(--quest-heading, var(--font-body)); font-size: 20px; font-weight: 800; line-height: 1.35; letter-spacing: -.3px; }
+.game-information-heading > :is(h2, h3, h4) { margin: 0; color: inherit; font: inherit; letter-spacing: inherit; }
+.game-faq__items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 12px; }
+.game-faq__item { min-width: 0; border: 0; border-radius: 14px; background: var(--quest-surface, var(--color-surface)); }
+.game-faq__item > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; padding: 16px 18px; color: var(--quest-text, var(--color-text)); font-size: 14px; font-weight: 700; line-height: 1.5; list-style: none; cursor: pointer; }
+.game-faq__item > summary::-webkit-details-marker { display: none; }
+.game-faq__item > summary > span { min-width: 0; }
+.game-faq__item > summary > svg { flex: none; color: var(--quest-muted, var(--color-muted)); transition: transform .15s ease; }
+.game-faq__item[open] > summary > svg { transform: rotate(45deg); }
+.game-faq__item > p { margin: 0; padding: 0 18px 18px; color: var(--quest-muted, var(--color-muted)); font-size: 14px; line-height: 1.7; }
+.game-faq__item > summary:focus-visible,
+.game-discovery__link:focus-visible { outline: 3px solid var(--quest-blue, var(--color-focus)); outline-offset: 3px; border-radius: 12px; }
+.game-discovery { min-width: 0; container: game-discovery / inline-size; }
+.game-discovery__links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 16px; margin: 0; padding: 0; }
+.game-discovery .game-discovery__link { display: flex; align-items: center; min-width: 0; min-height: 60px; gap: 12px; padding: 10px 8px; border: 0; border-radius: 12px; color: var(--quest-text, var(--color-text)); font-size: 14px; font-weight: 600; line-height: 1.45; text-decoration: none; }
+.game-discovery__link > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.game-discovery .game-discovery__link:hover { background: var(--quest-surface, var(--color-surface)); color: var(--quest-blue, var(--color-focus)); }
+.game-discovery__art { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; }
+.game-discovery__art > img { grid-area: 1 / 1; width: 32px; height: 32px; object-fit: contain; }
+.game-discovery__art > .game-discovery__night { display: none; }
+html[data-quest-tone='dark'] .game-discovery__day { display: none; }
+html[data-quest-tone='dark'] .game-discovery__art > .game-discovery__night { display: block; }
+.game-discovery .game-discovery__link--text { min-height: 44px; padding-block: 8px; color: var(--quest-muted, var(--color-muted)); font-weight: 500; }
+@container game-discovery (max-width: 640px) {
+  .game-discovery__links { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; }
+}
+@media (max-width: 600px) {
+  .game-faq__items { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .game-faq__item > summary { min-height: 64px; padding: 15px 16px; }
+  .game-faq__item > p { padding: 0 16px 18px; }
+  .game-discovery .game-discovery__link { gap: 9px; padding-inline: 4px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-faq__item > summary > svg { transition: none; }
+}

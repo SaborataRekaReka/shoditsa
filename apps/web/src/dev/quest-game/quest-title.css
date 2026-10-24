@@ -84,11 +84,7 @@
 .qt-legend small { display: block; font-size: 12px; line-height: 1.5; }
 .qt-source-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 16px; }
 .qt-source-links a { display: inline-flex; align-items: center; gap: 8px; color: var(--quest-text); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
-.qt-faq { margin-bottom: 28px; }
-.qt-faq-answers { overflow: hidden; border: 1px solid var(--quest-line); border-radius: 16px; background: var(--quest-bg); }
-.qt-faq-item + .qt-faq-item { border-top: 1px solid var(--quest-line); }
-.qt-faq-item > summary { min-height: 60px; padding: 16px 18px; font-size: 15px; font-weight: 700; line-height: 1.5; }
-.qt-faq-item .qt-disclosure-body { padding: 0 18px 18px; }
+.qt-guide > .game-faq { margin-bottom: 28px; }
 .qt-search-summary { margin-bottom: 24px; }
 .qt-story-card { border: 1px solid var(--quest-line); border-radius: 16px; background: var(--quest-bg); }
 .qt-story-card > summary { min-height: 64px; padding: 16px 18px; font-size: 15px; }
