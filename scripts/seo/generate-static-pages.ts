@@ -1,5 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { SvoyakSeoContent } from '../../apps/web/src/features/svoyak/SvoyakSeoContent'
 import {
   DEFAULT_SOCIAL_IMAGE_PATH,
   GAME_GUIDE_PRESENTATION,
@@ -8,6 +11,7 @@ import {
   INDEXABLE_ROBOTS,
   SITE_NAME,
   SITE_ORIGIN,
+  SVOYAK_SEO,
   type GameSeoContent,
   type SeoPageContent,
 } from '../../apps/web/src/app/seo-content'
@@ -193,8 +197,8 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
     `href="${canonicalUrl}"`,
     'type="application/ld+json"',
     '<h1',
-    danetkiPageFragment ?? (isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
-    danetkiPageFragment ?? (isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"'),
+    danetkiPageFragment ?? (route.mode === 'svoyak' ? 'game-landing--svoyak' : isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
+    danetkiPageFragment ?? (route.mode === 'svoyak' ? 'id="svoyak-faq-title"' : isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"'),
   ]
   for (const fragment of requiredFragments) {
     if (!html.includes(fragment)) throw new Error(`SEO page ${content.canonicalPath} is missing ${fragment}`)
@@ -225,6 +229,9 @@ for (const game of INDEXABLE_GAME_SEO) {
   const fallback = renderGameArtifactFallback(game)
   await writeFile(target, buildPage(template, game, fallback), 'utf8')
 }
+
+const svoyakFallback = `<main class="public-static-page"><a class="public-static-brand" href="/" aria-label="Сходится! — играть"><img src="/images/logo.svg" alt="" width="170" height="47"></a><header class="public-static-hero"><div><h1>Своя игра</h1><p>${escapeHtml(SVOYAK_SEO.lead)}</p><p>Клубный билет нужен ведущему. Друзья входят по коду бесплатно.</p><div class="public-static-actions"><a class="ui-button ui-button--primary" href="/lobby?mode=svoyak">Создать комнату</a><a class="ui-button ui-button--secondary" href="/games/svoyak#svoyak-join-title">Войти по коду</a></div></div><figure aria-hidden="true"><img class="public-static-art" src="/images/home-doodle/svoyak.webp" alt="" width="160" height="160"></figure></header><section aria-labelledby="svoyak-join-title"><h2 id="svoyak-join-title">Тебя уже ждут?</h2><p>Включите JavaScript, чтобы ввести код комнаты и присоединиться к друзьям.</p></section>${renderToStaticMarkup(createElement(SvoyakSeoContent))}</main>`
+await writeFile(resolve(distRoot, 'seo', 'games', 'svoyak.html'), buildPage(template, SVOYAK_SEO, svoyakFallback), 'utf8')
 
 const danetkiCatalogContent = seoRouteFromPathname('/danetki')
 await writeFile(resolve(distRoot, 'seo', 'danetki.html'), buildPage(template, danetkiCatalogContent, renderDanetkiCatalogFallback(danetkiCatalogContent)), 'utf8')

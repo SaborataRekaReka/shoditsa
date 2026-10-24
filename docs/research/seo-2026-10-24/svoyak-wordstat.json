@@ -1,0 +1,41 @@
+{
+  "source": "Yandex Wordstat, authenticated browser UI",
+  "checkedAtLocalDate": "2026-10-24",
+  "timezone": "Asia/Qyzylorda",
+  "periodStart": "2026-09-08",
+  "periodEnd": "2026-10-07",
+  "region": "all",
+  "devices": ["desktop", "smartphone", "tablet"],
+  "measure": "total query count shown above the result table",
+  "queries": [
+    { "expression": "своя игра онлайн", "matching": "broad", "count": 38920 },
+    { "expression": "\"!своя !игра !онлайн\"", "matching": "fixed word count and forms, unordered", "count": 4605 },
+    { "expression": "своя игра онлайн играть", "matching": "broad", "count": 6748 },
+    { "expression": "\"!своя !игра !онлайн !играть\"", "matching": "fixed word count and forms, unordered", "count": 708 },
+    { "expression": "своя игра с друзьями", "matching": "broad", "count": 4717 },
+    { "expression": "\"!своя !игра +с !друзьями\"", "matching": "fixed word count and forms, required preposition, unordered", "count": 8 },
+    { "expression": "своя игра онлайн с друзьями", "matching": "broad", "count": 481 },
+    { "expression": "\"!своя !игра !онлайн +с !друзьями\"", "matching": "fixed word count and forms, required preposition, unordered", "count": 32 }
+  ],
+  "intentEvidence": {
+    "parentQuery": "своя игра онлайн",
+    "visibleResultRows": [
+      { "query": "своя игра смотреть онлайн", "count": 20436 },
+      { "query": "своя игра онлайн играть", "count": 6745 },
+      { "query": "нтв своя игра онлайн", "count": 6595 },
+      { "query": "своя игра онлайн с друзьями", "count": 476 },
+      { "query": "своя игра онлайн паки", "count": 128 },
+      { "query": "своя игра онлайн конструктор", "count": 38 }
+    ]
+  },
+  "limitations": [
+    "Wordstat displays a warning that some data may be temporarily unavailable.",
+    "The latest displayed period ends 17 days before the audit date; no October 24 demand estimate is inferred.",
+    "Queries overlap. Counts are searches rather than unique people and must not be summed.",
+    "Broad results include television viewing, generic game creation and other mismatched intents.",
+    "Quoted expressions with ! fix word count and word forms, but not word order; [] was not used.",
+    "Total counts can differ from individual rows in the result table. Query totals and result rows are recorded separately.",
+    "Search Console, Webmaster, Metrica and production growth statistics were not collected, per the user's Wordstat-only scope."
+  ],
+  "sourceUrl": "https://wordstat.yandex.ru/?region=all&view=table&words=%D1%81%D0%B2%D0%BE%D1%8F%20%D0%B8%D0%B3%D1%80%D0%B0%20%D0%BE%D0%BD%D0%BB%D0%B0%D0%B9%D0%BD"
+}

@@ -99,7 +99,12 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
-    location ~ "^/(games/svoyak|svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?))/?$" {
+    location = /games/svoyak {
+        try_files /seo/games/svoyak.html =404;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location ~ "^/svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?)/?$" {
         try_files /index.html =404;
         add_header X-Robots-Tag "noindex, follow, noarchive" always;
         add_header Cache-Control "no-cache" always;

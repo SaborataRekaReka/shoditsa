@@ -1,11 +1,11 @@
 import { GameArtwork } from '../../components/ui/GameArtwork'
 import { ArrowUpRight } from 'lucide-react'
 import { DANETKI_DISCOVERY_LINKS } from '../../app/danetki-discovery-links'
-import type { SeoGameMode } from '../../app/seo-content'
+import type { PublicSeoGameMode } from '../../app/seo-content'
 import './study-game-directory.css'
 
 export function StudyGameDirectory({ games, title = 'Все игры' }: {
-  games: readonly { mode: SeoGameMode; href: string; label: string }[]
+  games: readonly { mode: PublicSeoGameMode; href: string; label: string }[]
   title?: string
 }) {
   return <div className="study-game-directory">

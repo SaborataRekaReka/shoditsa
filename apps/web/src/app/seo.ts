@@ -20,13 +20,13 @@ import {
   SITE_NAME,
   SITE_ORIGIN,
   gameSeoFromPathname,
-  type SeoGameMode,
+  type PublicSeoGameMode,
   type SeoPageContent,
 } from './seo-content'
 
 export type SeoRoute = SeoPageContent & {
   kind: 'home' | 'game' | 'utility' | 'danetki-catalog' | 'danetki-story' | 'unknown'
-  mode?: SeoGameMode
+  mode?: PublicSeoGameMode
   robots: string
   indexable: boolean
   imagePath: string
@@ -271,13 +271,16 @@ export const structuredDataForSeoRoute = (route: SeoRoute, siteUrl = SITE_ORIGIN
         '@type': 'WebPage', '@id': `${canonicalUrl}#webpage`, url: canonicalUrl, name: route.title, description: route.description, image: imageUrl, inLanguage: SITE_LANGUAGE, isPartOf: { '@id': websiteId }, mainEntity: { '@id': `${canonicalUrl}#game` },
       },
       {
-        '@type': 'WebApplication', '@id': `${canonicalUrl}#game`, name: route.heading, url: canonicalUrl, description: route.description, image: imageUrl, applicationCategory: 'GameApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', inLanguage: SITE_LANGUAGE, isAccessibleForFree: true,
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
+        '@type': 'WebApplication', '@id': `${canonicalUrl}#game`, name: route.heading, url: canonicalUrl, description: route.description, image: imageUrl, applicationCategory: 'GameApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', inLanguage: SITE_LANGUAGE,
+        ...(route.mode === 'svoyak' ? { isAccessibleForFree: false } : {
+          isAccessibleForFree: true,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
+        }),
       },
       {
         '@type': 'BreadcrumbList', '@id': `${canonicalUrl}#breadcrumb`, itemListElement: [
           { '@type': 'ListItem', position: 1, name: SITE_NAME, item: `${siteUrl}/` },
-          { '@type': 'ListItem', position: 2, name: GAME_SEO[route.mode].shortName, item: canonicalUrl },
+          { '@type': 'ListItem', position: 2, name: gameSeoFromPathname(route.canonicalPath)?.shortName ?? route.heading, item: canonicalUrl },
         ],
       },
     ],
