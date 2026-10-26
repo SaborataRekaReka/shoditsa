@@ -48,7 +48,7 @@ function NavigationProgress() {
 }
 
 async function preparePlayerPage(location: ApplicationLocation, queryClient?: QueryClient | null) {
-  if (location.pathname === '/games/word' && (isPlayableModeId('word') || import.meta.env.DEV)) { await WordTitlePage.preload(); return location }
+  if (location.pathname === '/games/word' && isPlayableModeId('word')) { await WordTitlePage.preload(); return location }
   if (APPLICATION_DESIGN && location.pathname === '/lobby') { await RoomLobbyPage.preload(); return location }
   if (APPLICATION_DESIGN && SVOYAK_ENABLED && isSvoyakPath(location.pathname)) { await SvoyakPage.preload(); return location }
   if (APPLICATION_DESIGN && isApplicationShellPage(location, SERVER_RUNTIME)) {
@@ -157,7 +157,7 @@ const PlayerLayout = () => {
   // the app canonicalise that pending 404 to its home-screen fallback.
   if (referenceNotFound) return <Outlet />
   if (!location) return <RoutePending />
-  if (pathname === '/games/word' && (isPlayableModeId('word') || import.meta.env.DEV)) return <WordTitlePage onNavigate={href => router.navigate({ href })} />
+  if (pathname === '/games/word' && isPlayableModeId('word')) return <WordTitlePage onNavigate={href => router.navigate({ href })} />
   if (APPLICATION_DESIGN && (pathname === '/lobby' || pathname === '/games/together' && !new URLSearchParams(location.search).get('room'))) return <PlayerLocation.Provider value={location}><RoomLobbyPage /></PlayerLocation.Provider>
   if (APPLICATION_DESIGN && SVOYAK_ENABLED && isSvoyakPath(pathname)) return <SvoyakPage pathname={pathname} onNavigate={(href, replace) => router.navigate({ href, replace })} />
   if (APPLICATION_DESIGN && isApplicationShellPage(location, SERVER_RUNTIME)) return <StudyApp key={pathname + location.search} routed />

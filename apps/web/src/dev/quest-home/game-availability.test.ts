@@ -20,9 +20,10 @@ const save = (mode: string, status: string, date = today, extra = {}) => JSON.st
 describe('local daily availability', () => {
   it('counts ten daily catalogues and leaves server-only games unknown', () => {
     const result = readGameAvailability(null, today)
-    expect(summarizeAvailability(result)).toEqual({ new: 10, 'in-progress': 0, completed: 0, online: 2 })
+    expect(summarizeAvailability(result)).toEqual({ new: 10, 'in-progress': 0, completed: 0, online: 3 })
     expect(result.connections).toBe('online')
     expect(result.danetki).toBe('online')
+    expect(result.word).toBe('online')
   })
   it('distinguishes unstarted, started, won and lost daily puzzles', () => {
     const storage = memoryStorage({
@@ -90,9 +91,9 @@ describe('local daily availability', () => {
 
 describe('today card indicators', () => {
   const availability = readGameAvailability(null, today)
-  it('links all twelve game icons and reflects the same daily states as the catalogue', () => {
+  it('links all thirteen game icons and reflects the same daily states as the catalogue', () => {
     const html = renderToStaticMarkup(createElement(TodayCard, { date: today, availability: { ...availability, movie: 'completed', anime: 'in-progress' } }))
-    expect(html.match(/data-day-game=/g)).toHaveLength(12)
+    expect(html.match(/data-day-game=/g)).toHaveLength(13)
     expect(html).toContain('Кино: Сегодняшняя загадка уже завершена')
     expect(html).toContain('Аниме: Загадка уже начата')
     expect(html).not.toContain('>∞<')
@@ -102,6 +103,7 @@ describe('today card indicators', () => {
     expect(html.match(/hs-today-game--club"/g)).toHaveLength(10)
     expect(html).toContain('hs-today-game--online" href="/games/danetki"')
     expect(html).toContain('hs-today-game--online" href="/games/connections"')
+    expect(html).toContain('hs-today-game--online" href="/games/word"')
   })
   it('keeps the completed checkmark even with club free play available', () => {
     const html = renderToStaticMarkup(createElement(TodayCard, { date: today, availability: { ...availability, movie: 'completed' }, clubActive: true }))

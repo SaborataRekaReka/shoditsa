@@ -38,7 +38,7 @@ function activityFromStorage(value: string | null, storageKey: string, dailySalt
 /** Read only: never migrate, remove, or overwrite the player's saved games. */
 export function readGameAvailability(storage: ReadStorage | null, date: string, dailySalt = 0): GameAvailabilityMap {
   const result = Object.fromEntries(INDEXABLE_GAME_SEO.map(game => [game.mode,
-    game.mode === 'connections' || game.mode === 'danetki' ? 'online' : 'new',
+    supportsClubFreePlay(game.mode) ? 'new' : 'online',
   ])) as GameAvailabilityMap
   const activities: DailyActivity[] = []
   try {

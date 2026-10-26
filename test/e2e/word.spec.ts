@@ -13,9 +13,6 @@ test('daily word, hints, reload, both themes, result and archive', async ({ page
   try {
     await request.post('/api/v1/auth/guest')
     const me = await (await request.get('/api/v1/me')).json()
-    // Phase A is intentionally hidden for ordinary users. Admin preview runs
-    // against the same server sessions, HTTP routes and UI as the public mode.
-    await database.db.update(playerProfiles).set({ role: 'admin' }).where(eq(playerProfiles.userId, me.user.id))
     const cookies = await request.storageState()
     await page.context().addCookies(cookies.cookies)
     await page.goto('/games/word')

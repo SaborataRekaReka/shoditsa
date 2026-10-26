@@ -6,6 +6,7 @@ import { api, ApiClientError, queryKeys } from '../../api/client'
 import { QuestButton, QuestInput, QuestDialog } from '../../components/ui/QuestPrimitives'
 import { copyText } from '../../game/sharing'
 import { trackGameCompleteOnce } from '../../app/game-analytics'
+import { trackMetrikaGoal } from '../../app/metrics'
 import './word.css'
 
 type Props = { sessionId: string; session: Extract<GameSessionSnapshot, { engine: 'semantic_word' }> }
@@ -32,9 +33,12 @@ export function WordGamePage({ sessionId, session }: Props) {
       setConfirm(false)
       setInput('')
       const latest = response.session.word.guesses.at(-1)
+      const analytics = { mode: 'word', kind: session.kind, period: 'all', attempts: response.session.attemptsCount }
+      if (response.result === 'guess' || response.result === 'won') trackMetrikaGoal('submit_attempt', analytics)
+      if (response.result === 'hint') trackMetrikaGoal('reveal_hint', { ...analytics, hintKey: 'semantic_closer', checkpoint: response.session.word.hintsUsed })
       setMessage(response.result === 'duplicate' ? 'Это слово уже проверено. Попытка не потрачена.' : response.result === 'hint' ? `Подсказка: ${latest?.word}, место ${latest?.rank}.` : response.result === 'won' ? 'Сходится! Ты нашёл слово.' : response.result === 'given_up' ? 'Ответ открыт. Завтра будет новое слово.' : latest ? `${latest.word}: место ${latest.rank}. ${wordTemperature(latest.rank)}.` : '')
       if (response.session.word.status !== 'playing') {
-        trackGameCompleteOnce(sessionId, { mode: 'word', kind: session.kind, outcome: response.session.word.status, attempts: response.session.attemptsCount })
+        trackGameCompleteOnce(sessionId, { ...analytics, outcome: response.session.word.status }, { serverSession: true })
         await Promise.all([client.invalidateQueries({ queryKey: queryKeys.dashboard }), client.invalidateQueries({ queryKey: ['archive'] }), client.invalidateQueries({ queryKey: queryKeys.ledger })])
       }
       inputRef.current?.focus()
@@ -51,7 +55,9 @@ export function WordGamePage({ sessionId, session }: Props) {
   const date = new Date(`${session.puzzleDate}T12:00:00+03:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
   const share = async () => {
     const text = `Сходится! Слово по смыслу\n${session.puzzleDate}\n${state.status === 'won' ? '🟩 Слово найдено' : '⬜ Ответ открыт'}\nПопыток: ${state.attemptsCount}\nПодсказок: ${state.hintsUsed}\nhttps://shoditsa.ru/games/word`
-    setMessage(await copyText(text) ? 'Результат скопирован без ответа.' : 'Не удалось скопировать результат.')
+    const copied = await copyText(text)
+    if (copied) trackMetrikaGoal('share_copy', { mode: 'word', kind: session.kind, status: state.status })
+    setMessage(copied ? 'Результат скопирован без ответа.' : 'Не удалось скопировать результат.')
   }
   return <main className="word-page" aria-labelledby="word-heading">
     <a className="word-back" href="/games/word"><ArrowLeft size={18} />К игре</a>
