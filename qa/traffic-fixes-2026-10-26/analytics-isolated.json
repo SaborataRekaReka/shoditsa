@@ -1,0 +1,576 @@
+{
+  "scope": "Fresh headless browser, local fixture proxy only, normal analytics enabled; external traffic blocked.",
+  "checks": [
+    {
+      "name": "pending before decision",
+      "pageViews": 0,
+      "metrikaHits": 0
+    },
+    {
+      "name": "first consent",
+      "pageViews": 1,
+      "metrikaHits": 1,
+      "versions": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "consents": [
+        "accepted"
+      ]
+    },
+    {
+      "name": "same route and accepted-consent replay",
+      "newPageViews": 0,
+      "metrikaHits": 1
+    },
+    {
+      "name": "SPA route change",
+      "newPageViews": 1,
+      "lastRoute": "/games/animal",
+      "url": "http://127.0.0.1:5198/games/animal",
+      "metrikaHits": 2
+    },
+    {
+      "name": "token utm and anchor do not create view",
+      "newPageViews": 0,
+      "lastHit": "http://127.0.0.1:5198/games/animal"
+    },
+    {
+      "name": "SPA back and forward",
+      "viewsDuringBack": 1,
+      "viewsDuringForward": 1,
+      "lastRoute": "/games/animal"
+    },
+    {
+      "name": "private session identity",
+      "lastRoute": "/play/movie",
+      "lastHit": "http://127.0.0.1:5198/play/movie",
+      "exportsContainToken": false,
+      "exportsContainSessionId": false
+    },
+    {
+      "name": "rejected navigation",
+      "newMetrikaHits": 0,
+      "lastConsent": "rejected",
+      "lastAcquisition": null
+    },
+    {
+      "name": "cookie footer and reaccept",
+      "newPageViews": 1,
+      "newMetrikaHits": 1,
+      "lastConsent": "accepted"
+    },
+    {
+      "name": "canonical private paths",
+      "canonical": [
+        {
+          "input": "/sessions/private-id",
+          "output": "/sessions/:id"
+        },
+        {
+          "input": "/svoyak/join/private-token",
+          "output": "/svoyak/join"
+        },
+        {
+          "input": "/svoyak/rooms/ABCDEF",
+          "output": "/svoyak/rooms/:id"
+        },
+        {
+          "input": "/svoyak/rooms/ABCDEF/result",
+          "output": "/svoyak/rooms/:id/result"
+        }
+      ]
+    }
+  ],
+  "blockedExternal": [
+    "https://fonts.googleapis.com/css2",
+    "https://mc.yandex.ru/metrika/tag.js",
+    "https://mc.yandex.ru/metrika/tag.js"
+  ],
+  "blockedWrites": [],
+  "pageErrors": [],
+  "batches": [
+    {
+      "eventId": "e726e8ef-d74a-4c33-b906-c4f47918fd70",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:10.247Z",
+      "route": "/",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "home",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "35842574-479a-4cd6-a173-48c7778f0077",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:12.623Z",
+      "route": "/games/animal",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "title",
+        "mode": "animal",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "fc0210d9-df63-4a5d-bbb4-c71ca4cbc1e0",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:14.393Z",
+      "route": "/",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "home",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "4e604331-af4b-474c-8984-a92859ea6919",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:14.879Z",
+      "route": "/games/animal",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "title",
+        "mode": "animal",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "25cb214c-fe24-46db-ad10-60c804dbbdc6",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:15.336Z",
+      "route": "/sessions/:id",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "game",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "52a33f39-cb56-4559-8b68-e83553a6d311",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:15.775Z",
+      "route": "/play/movie",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "game",
+        "mode": "movie",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "f9a92d87-d795-4fa3-b94c-08d16d8465e3",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:16.091Z",
+      "route": "/",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "home",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    },
+    {
+      "eventId": "040c0f40-dd8e-44b8-a725-555b3da7d7c7",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:17.282Z",
+      "route": "/games/animal",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "title",
+        "mode": "animal",
+        "analytics_consent": "rejected"
+      }
+    },
+    {
+      "eventId": "6a99c913-f5d6-4e56-b0b7-93a9871892dc",
+      "eventName": "page_view",
+      "occurredAt": "2026-10-26T12:14:17.863Z",
+      "route": "/games/animal",
+      "appVersion": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "properties": {
+        "screen": "title",
+        "mode": "animal",
+        "consent_granted": true,
+        "analytics_consent": "accepted",
+        "acquisition_id": "5f69c567-b1d2-4e6c-8ea6-8eaaff8ef254",
+        "entry_path": "/games/animal",
+        "entry_source": "direct"
+      }
+    }
+  ],
+  "metrika": [
+    [
+      110517987,
+      "init",
+      {
+        "defer": true,
+        "ssr": true,
+        "webvisor": false,
+        "clickmap": true,
+        "ecommerce": "dataLayer",
+        "accurateTrackBounce": true,
+        "trackLinks": true,
+        "url": "http://127.0.0.1:5198/?utm_source=qa&utm_medium=isolated&utm_campaign=traffic_review",
+        "referrer": "",
+        "params": {
+          "analytics_consent": "accepted",
+          "landing_hit": true,
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/?utm_source=qa&utm_medium=isolated&utm_campaign=traffic_review",
+      {
+        "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+        "referer": "",
+        "params": {
+          "screen": "home",
+          "analytics_consent": "accepted",
+          "landing_hit": true,
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "home",
+        "analytics_consent": "accepted",
+        "landing_hit": true,
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/games/animal",
+      {
+        "title": "Игра «Угадай животное» по признакам онлайн | Сходится!",
+        "referer": "http://127.0.0.1:5198/",
+        "params": {
+          "screen": "title",
+          "mode": "animal",
+          "analytics_consent": "accepted",
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "title",
+        "mode": "animal",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/",
+      {
+        "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+        "referer": "http://127.0.0.1:5198/games/animal",
+        "params": {
+          "screen": "home",
+          "analytics_consent": "accepted",
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "home",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/games/animal",
+      {
+        "title": "Игра «Угадай животное» по признакам онлайн | Сходится!",
+        "referer": "http://127.0.0.1:5198/",
+        "params": {
+          "screen": "title",
+          "mode": "animal",
+          "analytics_consent": "accepted",
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "title",
+        "mode": "animal",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/sessions/:id",
+      {
+        "title": "Игровая сессия — Сходится!",
+        "referer": "http://127.0.0.1:5198/games/animal",
+        "params": {
+          "screen": "game",
+          "analytics_consent": "accepted",
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "game",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/play/movie",
+      {
+        "title": "Игровая сессия — Сходится!",
+        "referer": "http://127.0.0.1:5198/sessions/:id",
+        "params": {
+          "screen": "game",
+          "mode": "movie",
+          "analytics_consent": "accepted",
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "game",
+        "mode": "movie",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/",
+      {
+        "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+        "referer": "http://127.0.0.1:5198/play/movie",
+        "params": {
+          "screen": "home",
+          "analytics_consent": "accepted",
+          "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+          "entry_path": "/",
+          "entry_source": "direct",
+          "utm_source": "qa",
+          "utm_medium": "isolated",
+          "utm_campaign": "traffic_review"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "home",
+        "analytics_consent": "accepted",
+        "acquisition_id": "89bdd2dd-1e6c-45c2-a816-9440b759363b",
+        "entry_path": "/",
+        "entry_source": "direct",
+        "utm_source": "qa",
+        "utm_medium": "isolated",
+        "utm_campaign": "traffic_review"
+      }
+    ],
+    [
+      110517987,
+      "destruct"
+    ],
+    [
+      110517987,
+      "init",
+      {
+        "defer": true,
+        "ssr": true,
+        "webvisor": false,
+        "clickmap": true,
+        "ecommerce": "dataLayer",
+        "accurateTrackBounce": true,
+        "trackLinks": true,
+        "url": "http://127.0.0.1:5198/games/animal",
+        "referrer": "",
+        "params": {
+          "analytics_consent": "accepted",
+          "landing_hit": true,
+          "acquisition_id": "5f69c567-b1d2-4e6c-8ea6-8eaaff8ef254",
+          "entry_path": "/games/animal",
+          "entry_source": "direct"
+        }
+      }
+    ],
+    [
+      110517987,
+      "hit",
+      "http://127.0.0.1:5198/games/animal",
+      {
+        "title": "Игра «Угадай животное» по признакам онлайн | Сходится!",
+        "referer": "",
+        "params": {
+          "screen": "title",
+          "mode": "animal",
+          "analytics_consent": "accepted",
+          "landing_hit": true,
+          "acquisition_id": "5f69c567-b1d2-4e6c-8ea6-8eaaff8ef254",
+          "entry_path": "/games/animal",
+          "entry_source": "direct"
+        }
+      }
+    ],
+    [
+      110517987,
+      "reachGoal",
+      "screen_view",
+      {
+        "screen": "title",
+        "mode": "animal",
+        "analytics_consent": "accepted",
+        "landing_hit": true,
+        "acquisition_id": "5f69c567-b1d2-4e6c-8ea6-8eaaff8ef254",
+        "entry_path": "/games/animal",
+        "entry_source": "direct"
+      }
+    ]
+  ],
+  "pageViewCount": 9,
+  "distinctPageViewIds": 9
+}

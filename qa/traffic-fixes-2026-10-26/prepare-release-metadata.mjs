@@ -1,0 +1,33 @@
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {readFileSync,writeFileSync,readdirSync,lstatSync} from 'node:fs';
+import {resolve,relative,join} from 'node:path';
+
+const [sha,stageArgument]=process.argv.slice(2);
+const apiBase='9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f';
+const webBase='a3fcf6169b128aabf49883832f48a52326064dd5';
+if(!/^[a-f0-9]{40}$/.test(sha??'')||!stageArgument)throw Error('Usage: node prepare-release-metadata.mjs <committed SHA> <local stage directory>');
+const git=(args)=>{const r=spawnSync('git',args,{encoding:'utf8',maxBuffer:8*1024*1024});if(r.status!==0)throw Error(`git ${args[0]} failed`);return r.stdout;};
+if(git(['rev-parse','HEAD']).trim()!==sha)throw Error('Release must match the checked-out commit');
+git(['diff','--exit-code','HEAD','--']);
+const canonical=value=>value&&typeof value==='object'?Array.isArray(value)?value.map(canonical):Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])])):value;
+const same=(a,b)=>JSON.stringify(canonical(a))===JSON.stringify(canonical(b));
+const list=ref=>git(['ls-tree','-r','--name-only',ref]).trim().split(/\r?\n/);
+const manifests=list(apiBase).filter(p=>p==='package.json'||/^(apps|packages)\/[^/]+\/package\.json$/.test(p));
+const currentManifests=list(sha).filter(p=>p==='package.json'||/^(apps|packages)\/[^/]+\/package\.json$/.test(p));
+if(!same(manifests.sort(),currentManifests.sort()))throw Error('Workspace manifests changed');
+for(const path of manifests){const old=JSON.parse(git(['show',`${apiBase}:${path}`]));const current=JSON.parse(git(['show',`${sha}:${path}`]));delete old.scripts;delete current.scripts;if(!same(old,current))throw Error(`Non-script package metadata differs: ${path}`);}
+git(['diff','--exit-code',apiBase,sha,'--','package-lock.json','packages/database/migrations']);
+const stage=resolve(stageArgument);
+const manifest=JSON.parse(readFileSync(join(stage,'web/build-manifest.json'),'utf8'));
+if(manifest.commitSha!==sha)throw Error('Built web commit differs from release SHA');
+for(const name of ['api-dist/server.js','api-dist/worker.js','web/index.html','Dockerfile.api-overlay','Dockerfile.api-overlay.dockerignore','verify-web-parity.py'])if(!lstatSync(join(stage,name)).isFile())throw Error(`Missing artifact ${name}`);
+const hash=data=>createHash('sha256').update(data).digest('hex');
+const invariants={releaseSha:sha,apiBaseSha:apiBase,expectedWebSha:webBase,createdAt:new Date().toISOString(),dependenciesUnchanged:true,migrationsUnchanged:true,packageChangesLimitedToScripts:true,packageManifestCount:manifests.length,packageLockSha256:hash(git(['show',`${apiBase}:package-lock.json`])),expectedActiveRevision:{id:'c240a553-b7aa-426d-92aa-31909878c536',version:'admin-20261023T072437823Z-fc29d000'}};
+writeFileSync(join(stage,'source-invariants.json'),JSON.stringify(invariants,null,2)+'\n');
+const files={};
+const visit=dir=>{for(const entry of readdirSync(dir)){const path=join(dir,entry),stat=lstatSync(path);if(stat.isSymbolicLink())throw Error('Staged symlinks are not allowed');if(stat.isDirectory())visit(path);else if(stat.isFile())files[relative(stage,path).replace(/\\/g,'/')]=hash(readFileSync(path));else throw Error('Unexpected artifact type');}};
+visit(join(stage,'web'));visit(join(stage,'api-dist'));
+for(const name of ['Dockerfile.api-overlay','Dockerfile.api-overlay.dockerignore','verify-web-parity.py','source-invariants.json'])files[name]=hash(readFileSync(join(stage,name)));
+writeFileSync(join(stage,'artifact-manifest.json'),JSON.stringify({releaseSha:sha,files},null,2)+'\n');
+console.log(JSON.stringify({releaseSha:sha,files:Object.keys(files).length,invariants}));

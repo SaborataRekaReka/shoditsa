@@ -1,0 +1,6 @@
+ARG BASE_IMAGE=shoditsa-api:9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f
+FROM ${BASE_IMAGE}
+ARG GIT_SHA
+ENV GIT_SHA=${GIT_SHA}
+COPY --chown=shoditsa:shoditsa api-dist/ /app/apps/api/dist/
+RUN node --check /app/apps/api/dist/server.js && node --check /app/apps/api/dist/worker.js
