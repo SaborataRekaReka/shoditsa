@@ -273,6 +273,7 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: '4 группы', present: (payload) => Array.isArray(payload.groups) && payload.groups.length === 4 },
     { label: 'Подсказки', present: (payload) => Array.isArray(payload.groups) && payload.groups.every((group) => hasTextValue(asRecord(group).hint)) },
   ],
+  word: [{ label: 'Словарь', present: (payload) => hasContentValue(payload.semanticDatasetHash) }, { label: 'Слово', present: (payload) => hasContentValue(payload.semanticWordKey) }],
   territory: [
     { label: 'Вопрос', present: (payload) => hasTextValue(payload.prompt) },
     { label: '4 варианта', present: (payload) => Array.isArray(payload.options) && payload.options.length === 4 },

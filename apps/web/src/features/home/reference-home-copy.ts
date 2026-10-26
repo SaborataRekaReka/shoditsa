@@ -14,6 +14,7 @@ export const REFERENCE_HOME_CARD_COPY = {
   character: 'Герой по признакам',
   danetki: 'Загадка с вопросами',
   connections: 'Собери группы слов',
+  word: 'Угадай слово по ассоциациям',
 } satisfies Record<SeoGameMode, string>
 
 export const REFERENCE_HOME_INTRO = 'Угадывай по подсказкам, находи связи и раскрывай истории. Каждый день — новая загадка.'

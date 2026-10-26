@@ -1,2 +1,7 @@
 # Keep the user's editorial input byte-for-byte: its SHA-256 is provenance.
 data/music-editorial/music-artists-enriched.v0.2.0.json -text
+data/semantic/runtime/**/*.json text eol=lf
+data/semantic/runtime/**/*.u16 -text
+data/semantic/generated/*.json text eol=lf
+public/data/libraries/words/items.json text eol=lf
+scripts/deploy/patch-nginx-not-found.sh text eol=lf

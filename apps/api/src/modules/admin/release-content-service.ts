@@ -14,7 +14,7 @@ type LoadedRelease = Awaited<ReturnType<typeof loadReleaseLibraries>>
 
 const releaseCache = new Map<string, Promise<LoadedRelease>>()
 
-const loadRelease = (sourceRoot: string) => {
+const loadRelease = async (sourceRoot: string, modes?: readonly ContentMode[]) => {
   let pending = releaseCache.get(sourceRoot)
   if (!pending) {
     pending = loadReleaseLibraries(sourceRoot).catch((error) => {
@@ -23,7 +23,11 @@ const loadRelease = (sourceRoot: string) => {
     })
     releaseCache.set(sourceRoot, pending)
   }
-  return pending
+  const loaded = await pending
+  if (!modes) return loaded
+  const libraries = loaded.libraries.filter(library => modes.includes(library.mode))
+  if (libraries.length !== new Set(modes).size) throw new Error('Unknown release scope')
+  return { ...loaded, libraries, vignettes: modes.includes('diagnosis') ? loaded.vignettes : [], manifest: { ...loaded.manifest, totalItems: libraries.reduce((sum, library) => sum + library.items.length, 0), modes: Object.fromEntries(Object.entries(loaded.manifest.modes).filter(([mode]) => modes.includes(mode as ContentMode))) } }
 }
 
 const loadActiveContent = async (db: Database) => {
@@ -143,8 +147,8 @@ const insertContentVersions = async (tx: Parameters<Parameters<Database['transac
   return versionByItem
 }
 
-export const buildReleaseContentRevision = async (db: Database, actor: Actor, sourceRoot: string, gitSha: string, requestId: string) => {
-  const loaded = await loadRelease(sourceRoot)
+export const buildReleaseContentRevision = async (db: Database, actor: Actor, sourceRoot: string, gitSha: string, requestId: string, modes?: readonly ContentMode[]) => {
+  const loaded = await loadRelease(sourceRoot, modes)
   const { activeRevision, activeRows } = await loadActiveContent(db)
   const plan = buildReleaseMergePlan(activeRows, loaded.libraries)
   const finalChecksumSha256 = releaseMergeChecksum(plan.entries)

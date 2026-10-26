@@ -7,7 +7,7 @@ export const PERIOD_KEYS = ['all', 'from_1960', 'from_1980', 'from_1990', 'from_
 export const DIFFICULTY_KEYS = ['easy', 'medium', 'hard', 'expert'] as const
 
 export const ContentModeSchema = Type.Union(CONTENT_MODES.map((value) => Type.Literal(value)))
-export const PlayableModeSchema = Type.Union(PLAYABLE_MODES.map((value) => Type.Literal(value)))
+export const PlayableModeSchema = Type.Union([...PLAYABLE_MODES.map((value) => Type.Literal(value)), Type.Literal('word')])
 export const CatalogGuessModeSchema = Type.Union(CATALOG_GUESS_MODE_IDS.map((value) => Type.Literal(value)))
 export const PlayableCatalogGuessModeSchema = Type.Union(PLAYABLE_CATALOG_GUESS_MODE_IDS.map((value) => Type.Literal(value)))
 export const PeriodKeySchema = Type.Union(PERIOD_KEYS.map((value) => Type.Literal(value)))

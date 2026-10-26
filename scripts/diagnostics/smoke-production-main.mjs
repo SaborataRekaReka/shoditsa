@@ -111,6 +111,12 @@ for (const mode of manifest.playableModes) {
 }
 if (meta.features?.danetkiEnabled && (!Number.isInteger(modes.get('danetki')) || modes.get('danetki') <= 0)) throw new Error('API danetki content mode is empty or invalid')
 
+if (manifest.playableModes.includes('word')) {
+  if (modes.get('word') < 180) throw new Error('Semantic word answer pool is incomplete')
+  for (const path of ['/data/libraries/words/items.json', '/data/semantic/runtime/manifest.json']) {
+    if ((await fetchResponse(path)).status !== 404) throw new Error(`Private semantic content is public: ${path}`)
+  }
+}
 const leakedData = await fetchResponse(`/data/libraries/movies/items.json?smoke=${Date.now()}`)
 if (leakedData.status !== 404) throw new Error(`Legacy answer dataset is publicly reachable (HTTP ${leakedData.status})`)
 const leakedCityData = await fetchResponse(`/city-content/cities.json?smoke=${Date.now()}`)

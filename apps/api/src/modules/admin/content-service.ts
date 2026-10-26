@@ -16,6 +16,7 @@ import {
   validateConnectionsRound,
   validateTerritoryQuestion,
 } from '@shoditsa/game-core'
+import { readWordPack } from '../word/runtime.js'
 import { ApiError } from '../../lib/errors.js'
 
 type Actor = { id: string }
@@ -60,6 +61,13 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
       error('media', 'invalid_url', 'Медиа должно использовать HTTPS или разрешённый внутренний путь')
       break
     }
+  }
+  if (mode === 'word') {
+    if (!/^[а-яё]{3,24}$/.test(text(payload.titleRu))) error('titleRu', 'invalid_word', 'Нужно одно русское слово')
+    if (!/^[a-f0-9]{64}$/.test(text(payload.semanticDatasetHash))) error('semanticDatasetHash', 'invalid_pack', 'Нужен SHA256 подготовленного словаря')
+    if (!/^[а-я]{3,24}$/.test(text(payload.semanticWordKey)) || text(payload.semanticWordKey) !== text(payload.titleRu).toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')) error('semanticWordKey', 'invalid_word_key', 'Ключ должен совпадать с нормализованным словом')
+    if (payload.allowedInGame !== true || payload.contentStatus !== 'ready') error('contentStatus', 'word_not_ready', 'Слово должно пройти подготовку и проверку словаря')
+    return issues
   }
   if (mode === 'connections') {
     if (typeof payload.allowedInGame !== 'boolean') {
@@ -369,7 +377,7 @@ export const workspaceRevisionChecksum = (entries: Array<{
   contentStatus: string | null
 }>) => sha256({ kind: 'admin_workspace_materialization', materializationVersion: WORKSPACE_REVISION_MATERIALIZATION_VERSION, entries })
 export const contentVersionAllowedInGame = (mode: ContentMode, payload: Record<string, unknown>) => (
-  mode === 'connections'
+  (mode === 'word' || mode === 'connections')
     ? payload.allowedInGame === true && payload.contentStatus === 'ready'
     : mode === 'territory'
       ? payload.allowedInGame === true && payload.contentStatus === 'ready'
@@ -543,6 +551,15 @@ export const activateContentRevision = async (db: Database, actor: Actor, revisi
   const target = (await tx.select().from(contentRevisions).where(eq(contentRevisions.id, revisionId)).for('update').limit(1))[0]
   if (!target || !['ready', 'retired', 'active'].includes(target.status)) throw new ApiError(422, 'REVISION_NOT_ACTIVATABLE', 'Ревизия не готова к активации или откату')
   const current = (await tx.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).for('update').limit(1))[0]
+  const semanticWords = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(and(eq(contentItemVersions.revisionId, revisionId), eq(contentItemVersions.mode, 'word'), eq(contentItemVersions.allowedInGame, true)))
+  for (const row of semanticWords) {
+    const payload = asRecord(row.payload)
+    try {
+      const pack = await readWordPack(text(payload.semanticDatasetHash))
+      const word = pack.resolveWord(text(payload.titleRu))
+      if (!word || word.key !== text(payload.semanticWordKey) || pack.rank(word.key, word.index) !== 1) throw new Error('Unknown answer')
+    } catch { throw new ApiError(422, 'WORD_PACK_NOT_READY', 'Перед активацией нужно включить проверенный словарь в API-релиз') }
+  }
   const targetBaseRevisionId = text(asRecord(target.sourceManifest).baseRevisionId)
   if (target.status === 'ready' && targetBaseRevisionId && current?.id !== targetBaseRevisionId) {
     throw new ApiError(409, 'REVISION_BASE_CHANGED', 'После сборки активный контент изменился. Пересоберите ревизию на актуальной базе перед активацией.', {

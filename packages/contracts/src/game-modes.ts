@@ -1,19 +1,19 @@
 // Keep the persisted PostgreSQL enum order stable; presentation order is dailyOrder.
-export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book', 'character', 'territory'] as const
+export const CONTENT_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'danetki', 'connections', 'animal', 'book', 'character', 'territory', 'word'] as const
 // Every listed runtime is available in the player application. Full-house
 // participation remains a separate capability below.
 export const PLAYABLE_MODE_IDS = ['movie', 'series', 'anime', 'game', 'music', 'diagnosis', 'city', 'animal', 'book', 'character', 'connections', 'danetki'] as const
 
 export type ContentModeId = typeof CONTENT_MODE_IDS[number]
-export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number]
-export type GameEngine = 'catalog_guess' | 'danetki_chat' | 'connections_grid' | 'territory_duel'
+export type PlayableModeId = typeof PLAYABLE_MODE_IDS[number] | 'word'
+export type GameEngine = 'catalog_guess' | 'danetki_chat' | 'connections_grid' | 'territory_duel' | 'semantic_word'
 
 export type GameModeCapabilities = {
   engine: GameEngine
   label: string
   dailyLabel: string
   shareIcon: string
-  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'characters' | 'danetki' | 'connections' | 'territory'
+  dataDir: 'movies' | 'series' | 'animes' | 'games' | 'cities' | 'music' | 'diagnoses' | 'animals' | 'books' | 'characters' | 'danetki' | 'connections' | 'territory' | 'words'
   dailyOrder: number
   countsTowardFullHouse: boolean
   periodPolicy: 'year' | 'all'
@@ -91,6 +91,10 @@ export const GAME_MODE_MANIFEST = {
   },
   territory: {
     engine: 'territory_duel', label: 'Захват', dailyLabel: 'Захват', shareIcon: '⬡', dataDir: 'territory', dailyOrder: 0,
+    countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
+  },
+  word: {
+    engine: 'semantic_word', label: 'Слово по смыслу', dailyLabel: 'Слово', shareIcon: '🔎', dataDir: 'words', dailyOrder: 13,
     countsTowardFullHouse: false, periodPolicy: 'all', difficultyPolicy: 'none', freePlay: false, variants: [], runtimes: ['hosted'],
   },
 } as const satisfies Record<ContentModeId, GameModeCapabilities>

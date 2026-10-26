@@ -62,6 +62,8 @@ import { registerDanetkiAdminRoutes } from './modules/danetki/admin-routes.js'
 import { registerFriendsRoomRoutes } from './modules/friends-room/routes.js'
 import { registerTerritoryRoutes } from './modules/territory/routes.js'
 import { getConnectionsSession, startConnectionsSession } from './modules/connections/service.js'
+import { getWordSession, startWordSession } from './modules/word/service.js'
+import { registerWordRoutes } from './modules/word/routes.js'
 import { registerConnectionsRoutes } from './modules/connections/routes.js'
 import { registerConnectionsAdminRoutes } from './modules/connections/admin-routes.js'
 import { loadGrowthPolicy } from './modules/growth/service.js'
@@ -356,7 +358,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
     const rows = await db.select({ payload: contentItemVersions.payload }).from(contentItemVersions)
       .innerJoin(contentRevisions, eq(contentRevisions.id, contentItemVersions.revisionId))
       .where(and(eq(contentItemVersions.itemId, itemId), eq(contentRevisions.status, 'active'))).limit(1)
-    if (!rows[0]) throw new ApiError(404, 'CONTENT_ITEM_NOT_FOUND', 'Карточка не найдена')
+    if (!rows[0] || (rows[0].payload as {mode?: string}).mode === 'word') throw new ApiError(404, 'CONTENT_ITEM_NOT_FOUND', 'Карточка не найдена')
     return publicCard(rows[0].payload as never)
   })
 
@@ -375,6 +377,11 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
         itemId: body.itemId,
         idempotencyKey: requireIdempotencyKey(request),
       }, config) }
+    }
+    if (body.mode === 'word') {
+      if (body.kind !== 'daily' && body.kind !== 'archive') throw new ApiError(422, 'GAME_KIND_UNSUPPORTED', 'Для слов доступны ежедневная игра и архив')
+      requireIdempotencyKey(request)
+      return { session: await startWordSession(db, user!.id, { kind: body.kind, archiveDate: body.archiveDate }, user!.authSessionId, user!.role, config) }
     }
     if (body.mode === 'connections') {
       if (body.kind !== 'daily' && body.kind !== 'archive') {
@@ -417,7 +424,9 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       ? await getDanetkiSession(db, user!.id, sessionId)
       : rows[0]?.mode === 'connections'
         ? await getConnectionsSession(db, user!.id, sessionId, config)
-        : await getOwnedSession(db, user!.id, sessionId) }
+        : rows[0]?.mode === 'word'
+          ? await getWordSession(db, user!.id, sessionId)
+          : await getOwnedSession(db, user!.id, sessionId) }
   })
   app.post('/api/v1/games/:sessionId/attempts', { schema: { params: paramsId, headers: idempotencyHeaders, body: AttemptBodySchema }, config: { rateLimit: { max: 30, timeWindow: '1 minute' } } }, async (request) => {
     const user = await getRequestUser(request, auth, db, true, config)
@@ -538,6 +547,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   registerDanetkiRoutes(app, { db, auth, config, realtimeMetrics: danetkiRealtimeMetrics })
   registerDanetkiAdminRoutes(app, { db, auth, config })
   registerConnectionsRoutes(app, { db, auth, config })
+  registerWordRoutes(app, { db, auth, config })
   registerConnectionsAdminRoutes(app, { db, auth, config })
   registerFriendsRoomRoutes(app, { db, auth, config })
   registerTerritoryRoutes(app, { db, auth, config })

@@ -9,7 +9,8 @@ describe('campaign funnel SQL (isolated PostgreSQL fixture, rolled back)', () =>
   beforeAll(() => {
     const config = loadConfig()
     const target = new URL(config.databaseUrl)
-    if (config.production || !['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) || target.port !== '5435' || target.pathname !== '/shoditsa_growth_test') {
+    const ciFixture = process.env.CI === 'true' && ['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) && target.pathname === '/shoditsa'
+    if (config.production || !ciFixture && (!['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) || target.port !== '5435' || target.pathname !== '/shoditsa_growth_test')) {
       throw new Error('Campaign integration requires isolated local PostgreSQL :5435/shoditsa_growth_test')
     }
     database = createDatabase(config)

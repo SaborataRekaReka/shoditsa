@@ -13,6 +13,24 @@ if [ ! -f "$CONFIG_PATH" ]; then
   exit 1
 fi
 
+# Add only the new semantic title to the existing canonical game allowlist.
+ensure_word_seo_route() {
+  if grep -Eq 'location[[:space:]]+~[[:space:]]+\^/games/\([^)]*word[^)]*\)\$' "$CONFIG_PATH"; then return 0; fi
+  local word_temp_path
+  word_temp_path="$(mktemp "${CONFIG_PATH}.word-route.XXXXXX")"
+  if ! awk '
+    index($0, "location ~ ^/games/(") { sub(/\)\$/, "|word)$"); found=1 }
+    { print }
+    END { if (!found) exit 42 }
+  ' "$CONFIG_PATH" > "$word_temp_path"; then
+    rm -f "$word_temp_path"
+    echo "Canonical game route missing for the semantic title" >&2
+    return 1
+  fi
+  cp "$word_temp_path" "$CONFIG_PATH"
+  rm -f "$word_temp_path"
+}
+
 ensure_utility_seo_route() {
   if grep -Pzq "$UTILITY_ROUTE_BLOCK_PATTERN" "$CONFIG_PATH"; then
     return 0
@@ -193,6 +211,7 @@ if grep -Fq "$MARKER" "$CONFIG_PATH"; then
     echo "Explicit SPA route marker exists but the Shoditsa legacy catch-all fallback is still active" >&2
     exit 1
   fi
+  ensure_word_seo_route
   ensure_utility_seo_route
   ensure_danetki_catalog_route
   ensure_application_routes
@@ -275,6 +294,7 @@ END {
 }
 
 cp "$TEMP_PATH" "$CONFIG_PATH"
+ensure_word_seo_route
 ensure_utility_seo_route
 ensure_danetki_catalog_route
 ensure_application_routes

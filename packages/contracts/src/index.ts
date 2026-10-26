@@ -1,4 +1,5 @@
 export * from './game-modes.js'
+export * from './word.js'
 export * from './hint-copy.js'
 export * from './danetki.js'
 export * from './connections.js'

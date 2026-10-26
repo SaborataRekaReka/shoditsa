@@ -1,0 +1,23 @@
+{
+  "sourceForms": 300000,
+  "lemmas": 31614,
+  "aliases": 102808,
+  "ambiguousFormsNotMapped": 1528,
+  "rejected": {
+    "format_or_excluded": 14793,
+    "unknown_or_proper_or_part_of_speech": 120752,
+    "lemma_format_or_excluded": 148,
+    "rare": 31508
+  },
+  "policy": "Known common lemmas; noun/adjective/infinitive/adverb; no proper names. Explicit exclusion filter is not a claim of exhaustive moderation.",
+  "packages": {
+    "navec": "0.10.0",
+    "wordfreq": "3.1.1",
+    "pymorphy3": "2.0.6",
+    "pymorphy3-dicts-ru": "2.4.417150.4580142",
+    "numpy": "2.5.2"
+  },
+  "frequencySource": "https://github.com/rspeer/wordfreq",
+  "frequencyLicense": "CC-BY-SA-4.0",
+  "morphologySource": "https://github.com/pymorphy2-fork/pymorphy3-dicts-ru"
+}

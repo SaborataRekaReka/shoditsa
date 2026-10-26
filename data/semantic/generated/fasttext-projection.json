@@ -1,0 +1,21 @@
+{
+  "model": "fasttext",
+  "lexiconSha256": "8d48ac9f95cd15f38ca669408b760f2c51c6bed91c86eaa8323d505468d1ff50",
+  "count": 30995,
+  "missing": 619,
+  "dimensions": 300,
+  "source": {
+    "schemaVersion": 1,
+    "model": "fasttext",
+    "filename": "cc.ru.300.vec.gz",
+    "url": "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.ru.300.vec.gz",
+    "source": "https://fasttext.cc/docs/en/crawl-vectors.html",
+    "expectedBytes": 1306357571,
+    "license": "CC-BY-SA-3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "sha256": "02bd7a202103a6b90c8f97617144ed230e3b4d51a08c28d2e029e1f0027917fa",
+    "bytes": 1306357571,
+    "retrievedAt": "2026-10-26T11:11:59.391985+00:00",
+    "checksumMeaning": "Locally computed content hash; upstream does not publish a SHA256 here"
+  }
+}

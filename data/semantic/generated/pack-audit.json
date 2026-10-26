@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "model": "navec",
+  "vocabularyCount": 29558,
+  "targetCount": 180,
+  "aliases": 99090,
+  "manifestSha256": "ca38a59fd33d6b1dd6122e857055caac2e128510c7efdf04d92a94761a6b10ce",
+  "rankBytes": 10640880,
+  "noRuntimeModelInference": true,
+  "selfRank": 1,
+  "tieBreak": "lexical vocabulary order",
+  "rankUniverse": "This pack's filtered vocabulary; comparable only within this dataset version"
+}
