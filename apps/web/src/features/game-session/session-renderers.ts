@@ -7,4 +7,5 @@ const DanetkiGamePage = lazy(() => import('../danetki/DanetkiGamePage').then((mo
 export const SESSION_RENDERER_BY_ENGINE = {
   danetki_chat: DanetkiGamePage,
   connections_grid: ConnectionsGamePage,
+  semantic_word: lazy(() => import('../word/WordGamePage').then(module => ({ default: module.WordGamePage }))),
 } as const

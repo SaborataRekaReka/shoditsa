@@ -65,3 +65,5 @@ deploy-*.tar.gz
 [Tt]emp/
 [Oo]bj/
 [Ll]ogs/
+# Rebuildable intermediate lexicon; the immutable runtime dictionary is versioned.
+/data/semantic/generated/lexicon.json

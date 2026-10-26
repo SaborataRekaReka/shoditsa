@@ -1,4 +1,4 @@
-import { isCatalogGuessModeId } from '@shoditsa/contracts'
+import { isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { applicationSection } from '../features/application/routes'
 import { isSvoyakPath } from '../features/rooms/room-navigation'
 
@@ -11,7 +11,7 @@ export function applicationLink(href: string, origin: string): string | undefine
     const friends = url.pathname === '/games/together'
     const community = /^\/(?:support|blog(?:\/[^/]+)?)\/?$/.test(url.pathname)
     const special = /^\/specials(?:\/[^/]+)?\/?$/.test(url.pathname)
-    if (!applicationSection(url.pathname) && !friends && !community && !special && !isSvoyakPath(url.pathname) && !(mode && isCatalogGuessModeId(mode)) && !/^\/sessions\/[^/]+$/.test(url.pathname)) return undefined
+    if (!applicationSection(url.pathname) && !friends && !community && !special && !isSvoyakPath(url.pathname) && !(mode && (isCatalogGuessModeId(mode) || mode === 'word' && isPlayableModeId(mode))) && !/^\/sessions\/[^/]+$/.test(url.pathname)) return undefined
     if (url.hash && !(url.pathname === '/' && ['#games', '#home-games'].includes(url.hash))) return undefined
     return `${url.pathname}${url.search}${url.hash}`
   } catch { return undefined }

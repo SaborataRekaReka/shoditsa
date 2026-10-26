@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, inArray, isNull, lte } from 'drizzle-orm'
 import type { AppConfig } from '@shoditsa/config'
-import type { ArchiveCalendarQuery } from '@shoditsa/contracts'
+import { WORD_LAUNCH_DATE, type ArchiveCalendarQuery } from '@shoditsa/contracts'
 import { connectionsSchedule, dailyChallenges, gameSessions, type Database } from '@shoditsa/database'
 import { ApiError } from '../../lib/errors.js'
 import { getMoscowDate } from '../../lib/time.js'
@@ -68,7 +68,7 @@ export const archiveCalendar = async (db: Database, config: AppConfig, userId: s
     items: dates.map((date) => {
       const available = scheduledConnectionsDates
         ? scheduledConnectionsDates.has(date) && (!config.connectionsLaunchDate || date >= config.connectionsLaunchDate)
-        : true
+        : query.mode === 'word' ? date >= WORD_LAUNCH_DATE : true
       return {
         date,
         access: date < config.commerce.archiveFirstDate ? 'locked' as const : date >= freeFrom ? 'free' as const : clubActive ? 'club' as const : 'locked' as const,

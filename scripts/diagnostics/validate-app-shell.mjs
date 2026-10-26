@@ -46,6 +46,7 @@ const sourceChecks = [
       ['home guide integrated with hero ticket', /hub-hero-ticket[^]*<DailyProgressStub[^]*<HomeSeoContent/],
       ['city attempts keep their five-meter rank profile', /function CityRankProfile[^]*CITY_RANK_METRICS\.map[^]*city-rank-meter__track[^]*role="progressbar"[^]*<b style=\{\{ width:/],
       ['Connections sessions retain common application chrome', /<EngineSessionFrame mode="connections"[^>]*><ConnectionsRenderer\b/],
+      ['Word sessions retain common application chrome', /<EngineSessionFrame mode="word"[^>]*><WordRenderer\b/],
       ['Danetki sessions retain common application chrome', /<EngineSessionFrame mode="danetki"[^>]*><DanetkiRenderer\b/],
     ],
   },

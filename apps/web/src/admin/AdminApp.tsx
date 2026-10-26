@@ -1087,6 +1087,7 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Локаль', ['locale']],
       ['Статус', ['contentStatus']],
     ],
+    word: [['Словарь', ['semanticDatasetHash']], ['Ключ слова', ['semanticWordKey']]],
     territory: [
       ['Вопрос', ['prompt']],
       ['Категория', ['category.label', 'category.id']],
@@ -1248,8 +1249,8 @@ function ContentPreviewModal({
   if (!currentItem) return null
   const payload = detail.data?.draft?.afterPayload ?? detail.data?.active?.payload ?? {}
   const mode = detail.data ? asContentMode(detail.data.draft?.mode ?? detail.data.active?.mode, currentItem.mode) : currentItem.mode
-  const poster = [payload.posterUrl, payload.headerUrl, payload.backdropUrl, currentItem.posterUrl].map(previewValue).find(Boolean) ?? ''
-  const hint = [payload.plotHint, array(payload.facts)[0], payload.shortDescription, payload.description].map(previewValue).find(Boolean) ?? 'Подсказка не заполнена'
+  const poster = mode === 'word' ? publicAssetUrl('images/word-art.svg') : [payload.posterUrl, payload.headerUrl, payload.backdropUrl, currentItem.posterUrl].map(previewValue).find(Boolean) ?? ''
+  const hint = mode === 'word' ? `Слово из подготовленного словаря. Ключ: ${previewValue(payload.semanticWordKey)}. Версия: ${previewValue(payload.semanticDatasetHash).slice(0, 12)}. Ранги проверяются при активации.` : [payload.plotHint, array(payload.facts)[0], payload.shortDescription, payload.description].map(previewValue).find(Boolean) ?? 'Подсказка не заполнена'
   const originalTitle = previewValue(payload.titleOriginal) || currentItem.titleOriginal
   const year = previewValue(payload.year) || previewValue(currentItem.year)
   const country = previewValue(payload.country ?? payload.countries)
@@ -3137,6 +3138,7 @@ const NORMALIZATION_MODE_FIELDS: Record<ContentMode, string[]> = {
   character: ['characterSourceWork', 'characterSourceAuthor', 'characterFirstAppearanceYear', 'characterEra', 'characterEraOrder', 'characterSourceTypes', 'characterOriginCultures', 'characterNature', 'characterGender', 'characterAgeGroup', 'characterRoles', 'characterArchetypes', 'characterAbilities', 'characterSettings', 'iconicObjects', 'rightsStatus', 'characterSources'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['locale', 'difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'popularityScore'],
+  word: ['semanticDatasetHash', 'semanticWordKey'],
   territory: ['schemaVersion', 'locale', 'questionType', 'prompt', 'options', 'correctOptionId', 'explanation', 'category', 'difficulty', 'provenance', 'contentStatus', 'allowedInGame', 'popularityScore'],
 }
 const NORMALIZATION_FIELD_LABELS: Record<string, string> = {

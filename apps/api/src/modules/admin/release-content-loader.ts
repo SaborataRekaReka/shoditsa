@@ -30,6 +30,7 @@ const validateItem = (value: unknown, mode: ContentMode, seen: Set<string>, file
   if (mode === 'music' && typeof item.allowedInGame !== 'boolean') throw new Error(`${item.id}: music allowedInGame must be boolean`)
   if (mode === 'diagnosis' && !(item.icd10?.length || item.icdGroup)) throw new Error(`${item.id}: diagnosis ICD data is required`)
   if (mode === 'danetki' && (typeof item.condition !== 'string' || typeof item.solution !== 'string' || !Array.isArray(item.keyFacts) || !Array.isArray(item.hints))) throw new Error(`${item.id}: invalid danetki payload`)
+  if (mode === 'word' && (!/^[а-яё]{3,24}$/.test(item.titleRu) || !/^[а-я]{3,24}$/.test(String(item.semanticWordKey)) || !/^[a-f0-9]{64}$/.test(String(item.semanticDatasetHash)) || item.allowedInGame !== true || item.contentStatus !== 'ready')) throw new Error(`${item.id}: invalid semantic payload`)
   if (mode === 'connections') {
     const errors = validateConnectionsRound(item).filter((issue) => issue.severity === 'error')
     if (errors.length) throw new Error(`${item.id}: invalid connections payload (${errors.map((issue) => issue.code).join(', ')})`)

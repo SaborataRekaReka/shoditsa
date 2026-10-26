@@ -17,7 +17,7 @@ const label = (date: string) => new Intl.DateTimeFormat('ru', { day: 'numeric', 
 export function ApplicationArchiveCalendar({ games }: { games: ApplicationGame[] }) {
   const runtime = useServerRuntime()
   const today = getMoscowDate()
-  const [mode, setMode] = useState<SeoGameMode>('movie')
+  const [mode, setMode] = useState<SeoGameMode>(() => INDEXABLE_GAME_SEO.find(game => game.mode === new URLSearchParams(window.location.search).get('mode'))?.mode ?? 'movie')
   const [until, setUntil] = useState(today)
   const first = SERVER_RUNTIME ? runtime.meta?.commerce.archiveFirstDate ?? today : shift(today, -6)
   const end = until > today ? today : until < first ? first : until

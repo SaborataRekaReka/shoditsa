@@ -10,7 +10,7 @@ import type {
   PrivateGameOrderBody, PrivateGameOrderResponse,
   DanetkiMessage,
   FriendsRoomConfigBody, FriendsRoomCreateBody, FriendsRoomListResponse, FriendsRoomPreview, FriendsRoomResponse,
-  ConnectionsGuessResponse, ConnectionsHintResponse,
+  WordActionBody, WordActionResponse, ConnectionsGuessResponse, ConnectionsHintResponse,
   LeaderboardQuery, LeaderboardResponse,
 } from '@shoditsa/contracts'
 import { analyticsAcquisitionHeaders } from '../app/metrics'
@@ -165,6 +165,7 @@ export const api = {
     maxRateLimitRetryMs: 10_000,
   }),
   game: (id: string) => request<GameResponse>(`${API_BASE}/games/${id}`, { retries: 1 }),
+  wordAction: (id: string, body: WordActionBody, key: string) => request<WordActionResponse>(`${API_BASE}/word/sessions/${id}/actions`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify(body), retries: 1 }),
   connectionsBonus: (key: string) => request<GameResponse>(`${API_BASE}/connections/bonus/start`, { method: 'POST', headers: { 'Idempotency-Key': key }, retries: 1 }),
   connectionsGuess: (
     id: string,

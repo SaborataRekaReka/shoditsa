@@ -52,7 +52,8 @@ async function company() {
 describe('Svoyak production API and PostgreSQL',()=>{
  beforeAll(async()=>{
   const dbUrl=new URL(config.databaseUrl)
-  if(config.production||dbUrl.hostname!=='127.0.0.1'||dbUrl.pathname!=='/svoyak_test')throw Error('Requires the isolated loopback svoyak_test database')
+  const ciFixture=process.env.CI==='true'&&['localhost','127.0.0.1','[::1]'].includes(dbUrl.hostname)&&dbUrl.pathname==='/shoditsa'
+  if(config.production||!ciFixture&&(dbUrl.hostname!=='127.0.0.1'||dbUrl.pathname!=='/svoyak_test'))throw Error('Requires the isolated loopback svoyak_test database')
   await database.db.insert(user).values(actors.map((id,index)=>({id,email:`${id}@example.test`,name:`QA ${index}`,isAnonymous:index!==0})))
   await database.db.insert(userEntitlements).values({userId:actors[0],entitlementKey:'club',sourceType:'admin',sourceId:randomUUID(),startsAt:new Date(Date.now()-10000)})
   release=JSON.parse(await readFile('data/svoyak/release-v1.json','utf8'))

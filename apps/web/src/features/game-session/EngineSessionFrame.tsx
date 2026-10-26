@@ -6,12 +6,12 @@ import { QuestButton } from '../../components/ui/QuestPrimitives'
 import './EngineSessionFrame.css'
 
 /** Non-catalog engines keep their controllers inside the same product chrome. */
-export function EngineSessionFrame({ mode, onRules, children }: { mode?: 'connections' | 'danetki'; onRules: () => void; children: ReactNode }) {
+export function EngineSessionFrame({ mode, onRules, children }: { mode?: 'connections' | 'danetki' | 'word'; onRules: () => void; children: ReactNode }) {
   if (!APPLICATION_DESIGN) return children
   const connections = mode === 'connections'
   const guide = mode && <section className="qg-card engine-session-guide">
-    <div className="qg-side-head"><h2>{connections ? 'Найди общее' : 'Раскрой историю'}</h2><BookOpen size={25} aria-hidden="true" /></div>
-    <ol>{(connections ? [
+    <div className="qg-side-head"><h2>{mode === 'word' ? 'Найди слово по смыслу' : connections ? 'Найди общее' : 'Раскрой историю'}</h2><BookOpen size={25} aria-hidden="true" /></div>
+    <ol>{(mode === 'word' ? ['Введи русское слово и узнай его ранг.', 'Меньше номер — ближе ответ. Твоя цель — № 1.', 'Пробуй ассоциации. Количество попыток не ограничено.'] : connections ? [
       'Выбери четыре слова с одной общей связью.',
       'Проверь группу. Верная четвёрка останется на поле.',
       'Собери четыре группы. Четвёртая ошибка завершит раунд.',
@@ -20,7 +20,11 @@ export function EngineSessionFrame({ mode, onRules, children }: { mode?: 'connec
       'Спроси так, чтобы ответом было «да» или «нет».',
       'Когда всё сойдётся, предложи разгадку.',
     ]).map(step => <li key={step}>{step}</li>)}</ol>
-    <QuestButton kind="outline" onClick={onRules}>Правила игры</QuestButton>
+    <QuestButton kind="outline" onClick={() => {
+      if (mode !== 'word') { onRules(); return }
+      const rules = document.querySelector<HTMLDetailsElement>('.word-rules')
+      if (rules) { rules.open = true; rules.scrollIntoView({ block: 'start' }); rules.querySelector('summary')?.focus() }
+    }}>Правила игры</QuestButton>
   </section>
   return <ApplicationFrame pathname={typeof window === 'undefined' ? '/sessions' : window.location.pathname} aside={guide || undefined}>{children}</ApplicationFrame>
 }

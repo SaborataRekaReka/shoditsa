@@ -1,4 +1,5 @@
 import { sql } from 'drizzle-orm'
+import type { WordGuess } from '@shoditsa/contracts'
 import {
   CONTENT_MODE_IDS,
   type FriendsRoomPackSelection,
@@ -17,6 +18,21 @@ import {
 const now = () => timestamp({ withTimezone: true }).notNull().defaultNow()
 
 export const contentMode = pgEnum('content_mode', [...CONTENT_MODE_IDS])
+export const wordSessionState = pgTable('word_session_state', {
+  sessionId: uuid('session_id').primaryKey().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  guesses: jsonb().$type<WordGuess[]>().notNull().default([]),
+  hintsUsed: integer('hints_used').notNull().default(0),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => [check('word_hints_check', sql`${table.hintsUsed} between 0 and 3`)])
+export const wordActions = pgTable('word_actions', {
+  id: uuid().primaryKey().defaultRandom(),
+  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  idempotencyKey: uuid('idempotency_key').notNull(),
+  action: text().notNull(),
+  requestSignature: text('request_signature').notNull(),
+  responseSnapshot: jsonb('response_snapshot').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => [unique('word_action_idempotency_unique').on(table.sessionId, table.idempotencyKey), check('word_action_check', sql`${table.action} in ('guess','hint','give_up')`)])
 export const periodKey = pgEnum('period_key', ['all', 'from_1960', 'from_1980', 'from_1990', 'from_2000', 'from_2010', 'from_2020'])
 export const difficultyKey = pgEnum('difficulty_key', ['easy', 'medium', 'hard', 'expert'])
 export const danetkiRoomMode = pgEnum('danetki_room_mode', ['solo', 'group'])
@@ -466,7 +482,7 @@ export const gameSessions = pgTable('game_sessions', {
   answerItemVersionId: uuid('answer_item_version_id').notNull().references(() => contentItemVersions.id),
   status: text().notNull().default('playing'),
   completionType: text('completion_type'),
-  attemptsCount: smallint('attempts_count').notNull().default(0),
+  attemptsCount: integer('attempts_count').notNull().default(0),
   rulesVersion: integer('rules_version').notNull(),
   startIdempotencyKey: uuid('start_idempotency_key'),
   accessSource: text('access_source'),
@@ -489,7 +505,7 @@ export const gameSessions = pgTable('game_sessions', {
   check('game_session_status_check', sql`${table.status} in ('playing','final_choice','won','lost','expired')`),
   check('game_session_completion_check', sql`(${table.status} in ('playing','final_choice') and ${table.completionType} is null and ${table.completedAt} is null) or (${table.status} in ('won','lost','expired') and ${table.completionType} is not null and ${table.completedAt} is not null)`),
   check('game_session_completion_type_check', sql`${table.completionType} is null or ${table.completionType} in ('direct_win','final_choice_win','final_choice_loss','answer_revealed','attempts_exhausted','expired')`),
-  check('game_session_attempts_check', sql`${table.attemptsCount} between 0 and 10`),
+  check('game_session_attempts_check', sql`${table.attemptsCount} >= 0 and (${table.mode}::text = 'word' or ${table.attemptsCount} <= 10)`),
 ])
 
 // Original play episodes are independent of the deduplicated gameplay record.

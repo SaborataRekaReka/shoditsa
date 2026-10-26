@@ -4,6 +4,7 @@ import type { DanetkiGameState, DanetkiRoomMode } from './danetki.js'
 import type { CatalogGuessModeId } from './game-modes.js'
 import type { EconomyQuote, EconomyRuleSet } from './economy.js'
 import type { ConnectionsGameState, ConnectionsHintSnapshot } from './connections.js'
+import type { WordGameState } from './word.js'
 import type { GrowthFeatures, RegistrationBonusSummary } from './growth.js'
 
 export type ApiRole = 'player' | 'admin'
@@ -275,6 +276,13 @@ export type GameSessionSnapshot =
       connections?: never
     })
   | (GameSessionSnapshotBase & {
+      engine: 'semantic_word'
+      mode: 'word'
+      word: WordGameState
+      danetki?: never
+      connections?: never
+    })
+  | (GameSessionSnapshotBase & {
       engine: 'connections_grid'
       mode: 'connections'
       connections: ConnectionsGameState
@@ -283,6 +291,11 @@ export type GameSessionSnapshot =
 
 export type GameStartResponse = { session: GameSessionSnapshot }
 export type GameResponse = { session: GameSessionSnapshot }
+export type WordActionResponse = {
+  session: Extract<GameSessionSnapshot, { engine: 'semantic_word' }>
+  result: 'guess' | 'hint' | 'won' | 'given_up' | 'duplicate'
+  reward?: AttemptResponse['reward']
+}
 export type ConnectionsGuessResponse = {
   result: 'correct' | 'wrong' | 'one_away'
   session: Extract<GameSessionSnapshot, { engine: 'connections_grid' }>

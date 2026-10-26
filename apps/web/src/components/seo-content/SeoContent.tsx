@@ -22,6 +22,7 @@ const GUIDE_ICONS = {
   character: Drama,
   connections: Grid2X2,
   danetki: ScanSearch,
+  word: Lightbulb,
 } satisfies Record<SeoGameMode, LucideIcon>
 
 const INDEXABLE_GAME_CONTENT = INDEXABLE_GAME_SEO as readonly GameSeoContent[]
@@ -67,7 +68,7 @@ function ReferenceGameLanding({ mode }: { mode: SeoGameMode }) {
   const content: GameSeoContent = GAME_SEO[mode]
   const presentation = GAME_GUIDE_PRESENTATION[mode]
   const rules = mode === 'danetki' ? DANETKI_RULES : GAME_RULES[mode]
-  const comparable = mode !== 'danetki' && mode !== 'connections'
+  const comparable = mode !== 'danetki' && mode !== 'connections' && mode !== 'word'
   const instructions = [rules.searchInstruction, rules.comparisonInstruction, comparable
     ? 'Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.'
     : rules.directionInstruction]

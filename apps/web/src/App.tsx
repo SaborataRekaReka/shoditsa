@@ -3900,12 +3900,12 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
       if (event.key !== 'Escape') return
       if (isEditableTarget(event.target)) return
       event.preventDefault()
-      if (hintModalRound || leaderboardOpen) return
+      if (hintModalRound || leaderboardOpen || session?.engine === 'semantic_word') return
       onBack()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [hintModalRound, leaderboardOpen, onBack])
+  }, [hintModalRound, leaderboardOpen, onBack, session?.engine])
 
   useEffect(() => {
     if (session) onSessionLoaded(session)
@@ -3920,6 +3920,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
   if (session.engine === 'connections_grid' && session.connections) {
     const ConnectionsRenderer = SESSION_RENDERER_BY_ENGINE.connections_grid
     return <EngineSessionFrame mode="connections" onRules={onRules}><ConnectionsRenderer sessionId={sessionId} session={session} onHome={onHome} onBack={onBack} onArchive={onArchive} onStats={onStats} onRules={onRules} onReview={onReview} onPlayNext={onPlayNext} /></EngineSessionFrame>
+  }
+
+  if (session.engine === 'semantic_word') {
+    const WordRenderer = SESSION_RENDERER_BY_ENGINE.semantic_word
+    return <EngineSessionFrame mode="word" onRules={onRules}><WordRenderer sessionId={sessionId} session={session} /></EngineSessionFrame>
   }
 
   const isPromptSession = Boolean(session.promoPrompt)

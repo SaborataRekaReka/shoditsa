@@ -19,6 +19,7 @@ const MODE_FIELDS: Record<ContentMode, string[]> = {
   character: ['characterSourceWork', 'characterSourceAuthor', 'characterFirstAppearanceYear', 'characterEra', 'characterEraOrder', 'characterSourceTypes', 'characterOriginCultures', 'characterNature', 'characterGender', 'characterAgeGroup', 'characterRoles', 'characterArchetypes', 'characterAbilities', 'characterSettings', 'iconicObjects', 'rightsStatus', 'characterSources'],
   danetki: ['condition', 'solution', 'difficulty', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'popularityScore'],
   connections: ['difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'allowedInGame', 'popularityScore'],
+  word: ['semanticDatasetHash', 'semanticWordKey'],
   territory: ['schemaVersion', 'locale', 'questionType', 'prompt', 'options', 'correctOptionId', 'explanation', 'category', 'difficulty', 'provenance', 'contentStatus', 'allowedInGame', 'popularityScore'],
 }
 
@@ -35,6 +36,7 @@ const NORMALIZATION_CONTEXT_FIELDS: Record<ContentMode, string[]> = {
   character: ['characterSourceWork', 'characterSourceAuthor', 'characterFirstAppearanceYear', 'characterEra', 'characterSourceTypes', 'characterOriginCultures', 'characterNature', 'characterAgeGroup', 'characterRoles', 'characterArchetypes'],
   danetki: ['condition', 'solution', 'difficulty', 'genres', 'tags', 'keyFacts', 'hints', 'starterQuestions', 'answerRules', 'contentWarnings', 'contentStatus', 'allowedInGame'],
   connections: ['difficulty', 'tiles', 'groups', 'editorial', 'contentStatus', 'allowedInGame'],
+  word: ['semanticDatasetHash', 'semanticWordKey'],
   territory: ['prompt', 'options', 'correctOptionId', 'explanation', 'category', 'difficulty', 'provenance', 'contentStatus', 'allowedInGame'],
 }
 

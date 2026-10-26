@@ -1,0 +1,20 @@
+{
+  "model": "navec",
+  "lexiconSha256": "8d48ac9f95cd15f38ca669408b760f2c51c6bed91c86eaa8323d505468d1ff50",
+  "count": 29563,
+  "missing": 2051,
+  "dimensions": 300,
+  "source": {
+    "schemaVersion": 1,
+    "model": "navec",
+    "filename": "navec_hudlit_v1_12B_500K_300d_100q.tar",
+    "url": "https://storage.yandexcloud.net/natasha-navec/packs/navec_hudlit_v1_12B_500K_300d_100q.tar",
+    "source": "https://github.com/natasha/navec",
+    "expectedBytes": 53012480,
+    "license": "MIT (project); archive provenance recorded separately",
+    "sha256": "0a89ec8198d0ae9ee3bbb31bbf2c0115bf033e56a337b74d6ca1fe5623165446",
+    "bytes": 53012480,
+    "retrievedAt": "2026-10-26T11:10:45.044423+00:00",
+    "checksumMeaning": "Locally computed content hash; upstream does not publish a SHA256 here"
+  }
+}

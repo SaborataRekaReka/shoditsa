@@ -31,6 +31,10 @@ export function useApplicationGames(refreshKey?: string) {
     date: game.date, status: game.status, attempts: game.attempts.length,
     href: SERVER_RUNTIME && game.key.startsWith('server:') ? `/sessions/${encodeURIComponent(game.key.slice(7))}` : `/play/${game.mode}?game=${encodeURIComponent(game.key)}`,
   }))
+  for (const session of SERVER_RUNTIME ? archive.data?.items ?? [] : []) {
+    if (session.mode !== 'word' || games.some(game => game.id === `server:${session.id}`)) continue
+    games.push({ id: `server:${session.id}`, mode: 'word', title: 'Слово по смыслу', date: session.puzzleDate, status: session.status, attempts: session.attemptsCount, href: `/sessions/${encodeURIComponent(session.id)}` })
+  }
   for (const session of SERVER_RUNTIME ? dashboard?.activeSessions ?? [] : []) {
     if (games.some(game => game.id === `server:${session.id}`)) continue
     const mode = INDEXABLE_GAME_SEO.find(item => item.mode === session.mode)

@@ -7,6 +7,7 @@ export default defineConfig({
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
     'mailing': 'scripts/communications/mailing.ts',
     'content-bootstrap-danetki': 'scripts/content/bootstrap-danetki.ts',
+    'content-bootstrap-word': 'scripts/content/bootstrap-word.ts',
     'content-bootstrap-connections': 'scripts/content/bootstrap-connections.ts',
     'content-bootstrap-svoyak': 'scripts/content/bootstrap-svoyak.ts',
     'content-bootstrap-territory': 'scripts/content/bootstrap-territory.ts',

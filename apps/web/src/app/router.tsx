@@ -9,7 +9,7 @@ import {
   useRouter,
   useRouterState,
 } from '@tanstack/react-router'
-import { isCatalogGuessModeId } from '@shoditsa/contracts'
+import { isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { api, queryKeys } from '../api/client'
 import { SERVER_RUNTIME } from '../hooks/use-server-runtime'
@@ -32,6 +32,7 @@ import '../dev/quest-game/study-navigation.css'
 import { isSvoyakPath } from '../features/rooms/room-navigation'
 import { SVOYAK_ENABLED } from '../features/svoyak/SvoyakHomeCard'
 
+const WordTitlePage = preloadableScreen<{ onNavigate: (href: string) => Promise<void> }>(() => import('../features/word/WordTitlePage'))
 const App = preloadableScreen(() => import('../App'))
 const StudyApp = preloadableScreen(() => import('../dev/quest-game/StudyApp'))
 const RoomLobbyPage = preloadableScreen(() => import('../features/rooms/RoomLobbyPage'))
@@ -44,6 +45,7 @@ function NavigationProgress() {
 }
 
 async function preparePlayerPage(location: ApplicationLocation, queryClient?: QueryClient | null) {
+  if (location.pathname === '/games/word' && (isPlayableModeId('word') || import.meta.env.DEV)) { await WordTitlePage.preload(); return location }
   if (APPLICATION_DESIGN && location.pathname === '/lobby') { await RoomLobbyPage.preload(); return location }
   if (APPLICATION_DESIGN && SVOYAK_ENABLED && isSvoyakPath(location.pathname)) { await SvoyakPage.preload(); return location }
   if (APPLICATION_DESIGN && isApplicationShellPage(location, SERVER_RUNTIME)) {
@@ -143,6 +145,7 @@ const PlayerLayout = () => {
   // the app canonicalise that pending 404 to its home-screen fallback.
   if (referenceNotFound) return <Outlet />
   if (!location) return <RoutePending />
+  if (pathname === '/games/word' && (isPlayableModeId('word') || import.meta.env.DEV)) return <WordTitlePage onNavigate={href => router.navigate({ href })} />
   if (APPLICATION_DESIGN && (pathname === '/lobby' || pathname === '/games/together' && !new URLSearchParams(location.search).get('room'))) return <PlayerLocation.Provider value={location}><RoomLobbyPage /></PlayerLocation.Provider>
   if (APPLICATION_DESIGN && SVOYAK_ENABLED && isSvoyakPath(pathname)) return <SvoyakPage pathname={pathname} onNavigate={(href, replace) => router.navigate({ href, replace })} />
   if (APPLICATION_DESIGN && isApplicationShellPage(location, SERVER_RUNTIME)) return <StudyApp key={pathname + location.search} routed />
