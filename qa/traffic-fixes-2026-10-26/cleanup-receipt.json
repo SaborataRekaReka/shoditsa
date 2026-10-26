@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-10-26T12:08:08.355207+00:00",
+  "dfBefore": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/sda1         49691512 40398088   9235108      82% /",
+  "locksHeld": [
+    "/opt/shoditsa/.svoyak-release.lock",
+    "/opt/shoditsa/.web-release.lock",
+    "/opt/shoditsa/direct-release.lock"
+  ],
+  "protectedBefore": {
+    "fileCount": 15360,
+    "metadataSha256": "db0376684fe84a65276676f4780f987827ab8fa39e071d43d02e9c0453e53e1d",
+    "incomingDatabaseDumpBytes": 868817842,
+    "web": "/opt/shoditsa/releases/a3fcf6169b128aabf49883832f48a52326064dd5"
+  },
+  "containerImagesBefore": "repeto-nginx-1 nginx:1.27-alpine\nshoditsa-api-shoditsa-api-1 shoditsa-api:9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f\nshoditsa-api-shoditsa-worker-1 shoditsa-api:9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f\nshoditsa-api-shoditsa-postgres-1 public.ecr.aws/docker/library/postgres:18.4-alpine3.23",
+  "deleted": [
+    {
+      "path": "/opt/shoditsa/incoming/connections-245be7c5cfeb61d323e44bef3508d603f6cfef58/overlay",
+      "allocatedKiB": 21464,
+      "existsAfter": false
+    },
+    {
+      "path": "/opt/shoditsa/incoming/connections-9c3d977f5f5a00e235d77a55e1da36a920457dd0/overlay",
+      "allocatedKiB": 21464,
+      "existsAfter": false
+    },
+    {
+      "path": "/opt/shoditsa/incoming/mailings-9ffdec8439693a0c42f3275d11d9c40e3027d5e0/overlay",
+      "allocatedKiB": 13144,
+      "existsAfter": false
+    },
+    {
+      "path": "/opt/shoditsa/incoming/mailings-9ffdec8439693a0c42f3275d11d9c40e3027d5e0/preview-overlay",
+      "allocatedKiB": 12932,
+      "existsAfter": false
+    },
+    {
+      "path": "/opt/shoditsa/incoming/quiet-guide-linktest.uocL9C",
+      "allocatedKiB": 32,
+      "existsAfter": false
+    },
+    {
+      "path": "/opt/shoditsa/incoming/quiet-guide-linktest.7OEAlW",
+      "allocatedKiB": 32,
+      "existsAfter": false
+    }
+  ],
+  "builderPruneCommand": [
+    "docker",
+    "builder",
+    "prune",
+    "--filter",
+    "until=168h",
+    "--force"
+  ],
+  "builderPruneOutput": "ID\t\t\t\t\t\tRECLAIMABLE\tSIZE\t\tLAST ACCESSED\nag7cig1nthp1s0aqe25ldzigw               \ttrue \t\t5.955MB   \t12 days ago\n7hm7lx29ctzgp3py5x7gzuji8*              \ttrue \t8.192kB   \t12 days ago\nlgt2tn6ede6nhe4b61a00yozs*              \ttrue \t8.192kB   \t12 days ago\n2ulxrwtul0f51ct7oalm9xggq*              \ttrue \t3.846MB   \t12 days ago\ntbyyvcf4wf4ol8dj83n9iw5rz               \ttrue \t21.28kB   \t12 days ago\nq8csa9ija7ciqhjf0n2gdgx6h               \ttrue \t63.16kB   \t12 days ago\nycwdwo9uvo5p3r8ih398n5c4w               \ttrue \t392kB     \t12 days ago\nb57cmu48mua64s25sii1uovzl               \ttrue \t282.1MB   \t12 days ago\nTotal:\t292.4MB",
+  "dfAfter": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/sda1         49691512 40089200   9543996      81% /",
+  "protectedAfter": {
+    "fileCount": 15360,
+    "metadataSha256": "db0376684fe84a65276676f4780f987827ab8fa39e071d43d02e9c0453e53e1d",
+    "incomingDatabaseDumpBytes": 868817842,
+    "web": "/opt/shoditsa/releases/a3fcf6169b128aabf49883832f48a52326064dd5"
+  },
+  "containerImagesAfter": "repeto-nginx-1 nginx:1.27-alpine\nshoditsa-api-shoditsa-api-1 shoditsa-api:9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f\nshoditsa-api-shoditsa-worker-1 shoditsa-api:9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f\nshoditsa-api-shoditsa-postgres-1 public.ecr.aws/docker/library/postgres:18.4-alpine3.23",
+  "protectedUnchanged": true,
+  "runningContainerImagesUnchanged": true,
+  "completedAt": "2026-10-26T12:08:11.063227+00:00",
+  "originalReceiptSha256": "949721f2b4aa677758d33340dbf0bc774557c555a2ec2836f1944167db2af1a0",
+  "inventoryScope": "Only Shoditsa and its nginx container listed; unrelated container names omitted."
+}

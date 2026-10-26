@@ -1,0 +1,82 @@
+{
+  "capturedAt": "2026-10-26T12:24:30.115Z",
+  "sourceCommit": "bfe7c47a",
+  "scope": "Fresh Chromium, localhost fixture only, native motion enabled, no API writes or external requests.",
+  "routes": [
+    {
+      "label": "initial",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 1,
+      "skips": 0
+    },
+    {
+      "label": "round-1:/games/character",
+      "path": "/games/character",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": false,
+      "duplicateNames": [],
+      "nativeCalls": 1,
+      "skips": 0
+    },
+    {
+      "label": "round-1:/games/animal",
+      "path": "/games/animal",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": false,
+      "duplicateNames": [],
+      "nativeCalls": 1,
+      "skips": 0
+    },
+    {
+      "label": "round-1:/profile",
+      "path": "/profile",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": false,
+      "duplicateNames": [],
+      "nativeCalls": 1,
+      "skips": 0
+    },
+    {
+      "label": "round-1:/",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": false,
+      "duplicateNames": [],
+      "nativeCalls": 1,
+      "skips": 0
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_FAILED",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "blockedExternal": [
+    "https://fonts.googleapis.com/css2"
+  ],
+  "blockedWrites": [],
+  "clientErrors": [],
+  "fixture": {
+    "localOnly": true,
+    "apiForwarding": false,
+    "source": "working-tree"
+  },
+  "environment": {
+    "visibility": "visible",
+    "reducedMotion": false,
+    "nativeAvailable": true,
+    "sourcePath": "/"
+  },
+  "failure": "page.waitForFunction: Timeout 15000ms exceeded.\n    at C:\\Users\\brene\\.codex\\worktrees\\traffic-fixes-20261026\\seans_starter_pack\\qa\\traffic-fixes-2026-10-26\\native-transitions.mjs:68:18"
+}

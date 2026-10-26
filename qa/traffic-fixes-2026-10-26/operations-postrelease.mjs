@@ -1,0 +1,21 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+const root=new URL('./',import.meta.url),sha=process.argv[2];
+if(!/^[a-f0-9]{40}$/.test(sha??''))throw Error('Release SHA required');
+const ssh=(command,input)=>{const r=spawnSync('ssh',['-o','BatchMode=yes','root@72.56.240.222',command],{input,encoding:'utf8',timeout:45000,maxBuffer:5*1024*1024});if(r.status!==0)throw Error(`Read-only SSH failed: ${r.stderr.slice(0,300)}`);return r.stdout.trim();};
+const activatedAt=ssh(`cat /opt/shoditsa/backups/traffic-fixes-${sha}/activated-at`);
+if(!/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(activatedAt))throw Error('Invalid activation timestamp');
+const format='{"name":{{json .Name}},"image":{{json .Config.Image}},"state":{{json .State.Status}},"startedAt":{{json .State.StartedAt}},"restartCount":{{.RestartCount}},"health":{{if .State.Health}}{{json .State.Health.Status}}{{else}}null{{end}}}';
+const containers=ssh(`docker inspect --format '${format}' shoditsa-api-shoditsa-api-1 shoditsa-api-shoditsa-worker-1 repeto-nginx-1`).split(/\r?\n/).map(JSON.parse);
+const worker=containers.find(c=>c.name.endsWith('shoditsa-worker-1'));
+if(!worker||!/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(worker.startedAt))throw Error('Worker start time unavailable');
+const database=ssh(`docker exec -e PGOPTIONS="-c default_transaction_read_only=on" -i shoditsa-api-shoditsa-postgres-1 psql -X -qAt -v ON_ERROR_STOP=1 -v activated_at=${activatedAt} -v worker_started_at=${worker.startedAt} -v release_sha=${sha} -U shoditsa_app -d shoditsa`,readFileSync(new URL('operations-postrelease.sql',root))).split(/\r?\n/).map(JSON.parse);
+const publicHealth={};
+for(const path of ['/build-manifest.json','/api/v1/health/ready','/api/v1/meta']){const response=await fetch('https://shoditsa.ru'+path,{headers:{'cache-control':'no-cache'},signal:AbortSignal.timeout(20000)});const body=await response.json();publicHealth[path]={status:response.status,body};}
+const releasePath=ssh('readlink -f /opt/shoditsa/current');
+const versionsMatch=containers.filter(c=>c.name.includes('shoditsa-api')||c.name.includes('shoditsa-worker')).every(c=>c.image==='shoditsa-api:'+sha)&&publicHealth['/build-manifest.json'].body.commitSha===sha&&publicHealth['/api/v1/meta'].body.buildSha===sha&&releasePath==='/opt/shoditsa/releases/'+sha;
+const content=database.find(r=>r.kind==='content'),commerce=database.find(r=>r.kind==='commerceJobs'),window=database.find(r=>r.kind==='window');
+const contentUnchanged=content.active?.length===1&&content.active[0].id==='c240a553-b7aa-426d-92aa-31909878c536'&&content.active[0].version==='admin-20261023T072437823Z-fc29d000'&&content.counts.reduce((s,r)=>s+r.total,0)===8720&&content.counts.reduce((s,r)=>s+r.allowed,0)===6997&&content.revisionsCreatedAfterWorkerStart===0;
+const result={capturedAt:new Date().toISOString(),releaseSha:sha,activatedAt,containers,releasePath,publicHealth,database,assessment:{versionsMatch,contentUnchanged,scheduledCommerceCheck:commerce.newScheduledCompleted>0&&commerce.newScheduledFailed===0?'observed_completed':commerce.newScheduledFailed>0?'failure_observed':'pending_next_scheduled_poll',observedSeconds:window.secondsSinceWebActivation,collectorReadOnly:true,manualJobReplaysPerformed:0,limitation:'Short post-release smoke window only, not evidence of retention, traffic growth or long-term reliability.'},df:sha?ssh('df -Pk /'):null};
+writeFileSync(new URL('operations-postrelease.json',root),JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({activatedAt,assessment:result.assessment,commerceJobs:commerce,paymentState:database.find(r=>r.kind==='paymentState'),scope:database.find(r=>r.kind==='operationalScope')},null,2));
