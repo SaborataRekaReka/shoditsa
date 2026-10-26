@@ -217,18 +217,20 @@ function LegacyGameArtifactSeoDetails({ mode, preserveLiveLinks = false }: { mod
         <ol>
           <li><strong>01</strong><span>{rules.searchInstruction}</span></li>
           <li><strong>02</strong><span>{rules.comparisonInstruction}</span></li>
-          <li><strong>03</strong><span>{mode === 'danetki'
+          <li><strong>03</strong><span>{mode === 'word'
+            ? GAME_RULES.word.directionInstruction
+            : mode === 'danetki'
             ? DANETKI_RULES.directionInstruction
             : mode === 'connections'
               ? GAME_RULES.connections.directionInstruction
               : 'Перед пятой и восьмой попытками можно открыть по одной из трёх дополнительных подсказок.'}</span></li>
         </ol>
-        {mode !== 'danetki' && mode !== 'connections' && <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
+        {mode !== 'word' && mode !== 'danetki' && mode !== 'connections' && <div className="ticket-dossier__legend" aria-label="Значения цветов подсказок">
           <span><i className="match" /><b>Точно</b><small>значение совпало</small></span>
           <span><i className="close" /><b>Рядом</b><small>число близко или есть частичное совпадение</small></span>
           <span><i className="miss" /><b>Мимо</b><small>значение не совпало</small></span>
         </div>}
-        {mode !== 'danetki' && mode !== 'connections' && rules.directionInstruction && <p>{rules.directionInstruction}</p>}
+        {mode !== 'word' && mode !== 'danetki' && mode !== 'connections' && rules.directionInstruction && <p>{rules.directionInstruction}</p>}
         {rules.modeNote && <p className="ticket-dossier__mode-note">{rules.modeNote}</p>}
       </section>
 

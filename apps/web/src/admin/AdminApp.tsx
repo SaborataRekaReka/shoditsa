@@ -1090,7 +1090,7 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Локаль', ['locale']],
       ['Статус', ['contentStatus']],
     ],
-    word: [['Словарь', ['semanticDatasetHash']], ['Ключ слова', ['semanticWordKey']]],
+    word: [['Версия словаря', ['semanticDatasetHash']], ['Ключ слова', ['semanticWordKey']], ['Готовность', ['contentStatus']]],
     territory: [
       ['Вопрос', ['prompt']],
       ['Категория', ['category.label', 'category.id']],
@@ -1102,9 +1102,9 @@ const contentPreviewFields = (payload: Record<string, unknown>, mode: ContentMod
       ['Статус', ['contentStatus']],
     ],
   }
-  return [...shared, ...byMode[mode]].map(([label, paths]) => {
+  return [...(mode === 'word' ? [] : shared), ...byMode[mode]].map(([label, paths]) => {
     const value = paths.map((path) => previewValue(previewPath(payload, path))).find(Boolean) ?? ''
-    return { label, value }
+    return { label, value: mode === 'word' && label === 'Версия словаря' ? value.slice(0, 12) : value }
   }).filter((entry) => entry.value).slice(0, 9)
 }
 

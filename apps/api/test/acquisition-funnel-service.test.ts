@@ -347,7 +347,7 @@ describe('admin acquisition funnel', () => {
 
     const result = await loadAdminAcquisitionFunnel(db, 14, NOW)
 
-    expect(execute).toHaveBeenCalledTimes(3)
+    expect(execute).toHaveBeenCalledTimes(4)
     expect(result.periodDays).toBe(14)
     expect(result.summary).toMatchObject({ organicLandings: 1, signUps: 1 })
     expect(result.registrations).toEqual({

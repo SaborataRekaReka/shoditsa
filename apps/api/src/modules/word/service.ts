@@ -20,6 +20,7 @@ type ReadDatabase = Database | Transaction
 type Session = typeof gameSessions.$inferSelect
 type Payload = { mode: 'word'; semanticDatasetHash: string; semanticWordKey: string; titleRu: string }
 type WordSnapshot = Extract<GameSessionSnapshot, { engine: 'semantic_word' }>
+type StoredWordAction = { wordJournal: 1; guessCount: number; response: WordActionResponse }
 
 const ownedSession = async (db: ReadDatabase, userId: string, id: string, lock = false) => {
   const query = db.select().from(gameSessions).where(and(eq(gameSessions.id, id), eq(gameSessions.userId, userId), eq(gameSessions.mode, 'word'))).limit(1)
@@ -115,7 +116,13 @@ export async function applyWordAction(db: Database, userId: string, sessionId: s
     const replay = (await tx.select().from(wordActions).where(and(eq(wordActions.sessionId, sessionId), eq(wordActions.idempotencyKey, idempotencyKey))).limit(1))[0]
     if (replay) {
       if (replay.requestSignature !== signature) throw new ApiError(409, 'IDEMPOTENCY_KEY_REUSED', 'Повтори действие с новым запросом')
-      return replay.responseSnapshot as WordActionResponse
+      const stored = replay.responseSnapshot as StoredWordAction | WordActionResponse
+      if ('wordJournal' in stored && stored.wordJournal === 1) {
+        const [state] = await tx.select().from(wordSessionState).where(eq(wordSessionState.sessionId, sessionId)).limit(1)
+        if (!state || stored.guessCount > state.guesses.length) throw new ApiError(503, 'WORD_STATE_UNAVAILABLE', 'Прогресс сохранён. Обнови страницу.')
+        return { ...stored.response, session: { ...stored.response.session, word: { ...stored.response.session.word, guesses: state.guesses.slice(0, stored.guessCount) } } }
+      }
+      return stored as WordActionResponse
     }
     if (session.status !== 'playing') throw new ApiError(409, 'GAME_ALREADY_FINISHED', 'Партия уже завершена')
     const state = (await tx.select().from(wordSessionState).where(eq(wordSessionState.sessionId, sessionId)).limit(1))[0]
@@ -157,7 +164,10 @@ export async function applyWordAction(db: Database, userId: string, sessionId: s
     const [updated] = await tx.update(gameSessions).set({ attemptsCount, updatedAt: new Date(), ...(terminal ? { status: won ? 'won' : 'lost', completionType: won ? 'direct_win' : 'answer_revealed', completedAt: new Date() } : {}) }).where(eq(gameSessions.id, sessionId)).returning()
     const reward = terminal ? await completeGame(tx, { sessionId, userId, kind: session.kind, mode: 'word', difficulty: null, puzzleDate: session.puzzleDate, won, attemptsCount, rulesVersion: session.rulesVersion, completionType: won ? 'direct_win' : 'answer_revealed' }) : null
     const response: WordActionResponse = { result, session: await buildWordSnapshot(tx, updated), ...(reward ? { reward } : {}) }
-    await tx.insert(wordActions).values({ sessionId, idempotencyKey, action: body.action, requestSignature: signature, responseSnapshot: response })
+    // Keep one append-only guess history. Copying it into every idempotency
+    // response would make unlimited games consume quadratic permanent storage.
+    const stored: StoredWordAction = { wordJournal: 1, guessCount: guesses.length, response: { ...response, session: { ...response.session, word: { ...response.session.word, guesses: [] } } } }
+    await tx.insert(wordActions).values({ sessionId, idempotencyKey, action: body.action, requestSignature: signature, responseSnapshot: stored })
     return response
   })
 }

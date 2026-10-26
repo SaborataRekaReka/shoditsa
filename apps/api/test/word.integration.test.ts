@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { and, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
-import { contentItemVersions, createDatabase, gameSessions, wordSessionState } from '@shoditsa/database'
+import { contentItemVersions, createDatabase, gameSessions, wordActions, wordSessionState } from '@shoditsa/database'
 import { isPlayableModeId, type WordActionBody } from '@shoditsa/contracts'
 import { buildApp } from '../src/app.js'
 import { applyWordAction, getWordSession, startWordSession } from '../src/modules/word/service.js'
@@ -16,8 +16,10 @@ describe('semantic words with real immutable ranks and PostgreSQL', () => {
   let answer: string
   let guesses: string[]
   let snapshot: Awaited<ReturnType<typeof getWordSession>>
+  let firstKey: string
+  let firstResponse: Awaited<ReturnType<typeof applyWordAction>>
   const config = loadConfig()
-  const act = (body: WordActionBody, key = crypto.randomUUID()) => applyWordAction(database.db, userId, sessionId, body, key)
+  const act = (body: WordActionBody, key: string = crypto.randomUUID()) => applyWordAction(database.db, userId, sessionId, body, key)
   beforeAll(async () => {
     if (config.production || !['localhost', '127.0.0.1', '[::1]'].includes(new URL(config.databaseUrl).hostname)) throw new Error('Requires isolated local PostgreSQL')
     database = createDatabase(config)
@@ -53,6 +55,8 @@ describe('semantic words with real immutable ranks and PostgreSQL', () => {
   it('serializes concurrent retries and recognizes duplicate input', async () => {
     const key = crypto.randomUUID()
     const responses = await Promise.all([act({ action: 'guess', word: guesses[0] }, key), act({ action: 'guess', word: guesses[0] }, key)])
+    firstKey = key
+    firstResponse = responses[0]
     expect(responses[0]).toEqual(responses[1])
     expect(responses[0].session.attemptsCount).toBe(1)
     await expect(act({ action: 'guess', word: guesses[1] }, key)).rejects.toMatchObject({ code: 'IDEMPOTENCY_KEY_REUSED' })
@@ -86,6 +90,12 @@ describe('semantic words with real immutable ranks and PostgreSQL', () => {
     expect(response.session.word.answer).toBe(answer)
     expect(response.session.word.bestRank).toBe(1)
     expect(await act({ action: 'guess', word: answer.replaceAll('ё', 'е') }, key)).toEqual(response)
+    const oldReplay = await act({ action: 'guess', word: guesses[0] }, firstKey)
+    expect(oldReplay).toEqual(firstResponse)
+    expect(oldReplay.session.word.answer).toBeUndefined()
+    expect(oldReplay.session.word.guesses).toHaveLength(1)
+    const journal = await database.db.select({ snapshot: wordActions.responseSnapshot }).from(wordActions).where(eq(wordActions.sessionId, sessionId))
+    expect(journal.every(row => (row.snapshot as { response: { session: { word: { guesses: unknown[] } } } }).response.session.word.guesses.length === 0)).toBe(true)
     await expect(act({ action: 'give_up' })).rejects.toMatchObject({ code: 'GAME_ALREADY_FINISHED' })
     const resumed = await startWordSession(database.db, userId, { kind: 'daily' }, null, 'admin', config)
     expect(resumed.id).toBe(sessionId)

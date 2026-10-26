@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { studyLinkView, transitionStudyPage } from './study-navigation'
 import { finishRouteLoading, isRouteLoading } from '../../app/route-loading'
 
+vi.mock('../../app/client-events', () => ({ trackClientEvent: vi.fn() }))
+
 afterEach(() => { finishRouteLoading(); vi.unstubAllGlobals() })
 
 describe('application section transitions', () => {
@@ -84,10 +86,10 @@ describe('application section transitions', () => {
   })
   it('keeps the latest destination when navigation is clicked rapidly', async () => {
     const callbacks: Array<() => void> = []
-    const transitions: Array<{ skipTransition: ReturnType<typeof vi.fn>; ready: Promise<void>; finished: Promise<void> }> = []
+    const transitions: Array<{ skipTransition: ReturnType<typeof vi.fn>; ready: Promise<void>; finished: Promise<void>; updateCallbackDone: Promise<void> }> = []
     const startViewTransition = (update: () => void) => {
       callbacks.push(update)
-      const transition = { skipTransition: vi.fn(), ready: Promise.resolve(), finished: Promise.resolve() }
+      const transition = { skipTransition: vi.fn(), ready: Promise.resolve(), finished: Promise.resolve(), updateCallbackDone: Promise.resolve() }
       transitions.push(transition)
       return transition
     }

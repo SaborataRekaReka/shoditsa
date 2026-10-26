@@ -64,6 +64,7 @@ export const validateContentPayload = (payload: Record<string, unknown>, mode: C
   }
   if (mode === 'word') {
     if (!/^[а-яё]{3,24}$/.test(text(payload.titleRu))) error('titleRu', 'invalid_word', 'Нужно одно русское слово')
+    if (text(payload.id) !== `word:${text(payload.semanticWordKey)}`) error('id', 'invalid_word_id', 'ID должен совпадать с ключом слова')
     if (!/^[a-f0-9]{64}$/.test(text(payload.semanticDatasetHash))) error('semanticDatasetHash', 'invalid_pack', 'Нужен SHA256 подготовленного словаря')
     if (!/^[а-я]{3,24}$/.test(text(payload.semanticWordKey)) || text(payload.semanticWordKey) !== text(payload.titleRu).toLocaleLowerCase('ru-RU').replaceAll('ё', 'е')) error('semanticWordKey', 'invalid_word_key', 'Ключ должен совпадать с нормализованным словом')
     if (payload.allowedInGame !== true || payload.contentStatus !== 'ready') error('contentStatus', 'word_not_ready', 'Слово должно пройти подготовку и проверку словаря')
@@ -552,9 +553,13 @@ export const activateContentRevision = async (db: Database, actor: Actor, revisi
   if (!target || !['ready', 'retired', 'active'].includes(target.status)) throw new ApiError(422, 'REVISION_NOT_ACTIVATABLE', 'Ревизия не готова к активации или откату')
   const current = (await tx.select().from(contentRevisions).where(eq(contentRevisions.status, 'active')).for('update').limit(1))[0]
   const semanticWords = await tx.select({ payload: contentItemVersions.payload }).from(contentItemVersions).where(and(eq(contentItemVersions.revisionId, revisionId), eq(contentItemVersions.mode, 'word'), eq(contentItemVersions.allowedInGame, true)))
+  const semanticKeys = new Set<string>()
   for (const row of semanticWords) {
     const payload = asRecord(row.payload)
     try {
+      const key = text(payload.semanticWordKey)
+      if (semanticKeys.has(key)) throw new Error('Duplicate semantic answer')
+      semanticKeys.add(key)
       const pack = await readWordPack(text(payload.semanticDatasetHash))
       const word = pack.resolveWord(text(payload.titleRu))
       if (!word || word.key !== text(payload.semanticWordKey) || pack.rank(word.key, word.index) !== 1) throw new Error('Unknown answer')

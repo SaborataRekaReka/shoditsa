@@ -273,7 +273,7 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
     { label: '4 группы', present: (payload) => Array.isArray(payload.groups) && payload.groups.length === 4 },
     { label: 'Подсказки', present: (payload) => Array.isArray(payload.groups) && payload.groups.every((group) => hasTextValue(asRecord(group).hint)) },
   ],
-  word: [{ label: 'Словарь', present: (payload) => hasContentValue(payload.semanticDatasetHash) }, { label: 'Слово', present: (payload) => hasContentValue(payload.semanticWordKey) }],
+  word: [{ label: 'Слово', present: (payload) => hasTextValue(payload.titleRu) }, { label: 'Версия словаря', present: (payload) => /^[a-f0-9]{64}$/.test(String(payload.semanticDatasetHash ?? '')) }, { label: 'Ключ слова', present: (payload) => hasTextValue(payload.semanticWordKey) }, { label: 'Готовность', present: (payload) => payload.contentStatus === 'ready' }],
   territory: [
     { label: 'Вопрос', present: (payload) => hasTextValue(payload.prompt) },
     { label: '4 варианта', present: (payload) => Array.isArray(payload.options) && payload.options.length === 4 },
@@ -286,7 +286,7 @@ const COMPLETION_MODE_FIELDS: Record<ContentMode, CompletionField[]> = {
 
 const completionMeta = (payload: unknown, mode: ContentMode) => {
   const record = asRecord(payload)
-  const fields = mode === 'danetki' || mode === 'connections' || mode === 'territory'
+  const fields = mode === 'word' || mode === 'danetki' || mode === 'connections' || mode === 'territory'
     ? COMPLETION_MODE_FIELDS[mode]
     : [...COMPLETION_COMMON_FIELDS, ...COMPLETION_MODE_FIELDS[mode]]
   const missingFields = fields.filter((field) => !field.present(record)).map((field) => field.label)

@@ -2,7 +2,7 @@ import { writeFile } from 'node:fs/promises'
 import { test, expect } from '@playwright/test'
 import { and, eq } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
-import { createDatabase, playerProfiles, gameSessions, contentItemVersions } from '@shoditsa/database'
+import { createDatabase, playerProfiles, gameSessions, contentItemVersions, session as authSessions, user } from '@shoditsa/database'
 
 test('daily word, hints, reload, both themes, result and archive', async ({ page, request }, info) => {
   const config = loadConfig()
@@ -112,9 +112,16 @@ test('rules, cancellation, giving up, spoiler-free sharing and admin catalog', a
     await expect(page.getByRole('status').filter({ hasText: 'Результат скопирован без ответа' })).toBeVisible()
     expect(await page.evaluate(() => navigator.clipboard.readText())).not.toContain(answer)
     await page.screenshot({ path: info.outputPath('word-given-up.png'), animations: 'disabled' })
+    const adminId = '00000000-0000-4000-8000-000000000001'
+    await database.db.update(user).set({ email: 'breneize@yandex.ru', emailVerified: true, isAnonymous: false }).where(eq(user.id, adminId))
+    await database.db.update(authSessions).set({ userId: adminId }).where(eq(authSessions.userId, me.user.id))
+    const tokens = (await page.context().cookies()).filter(cookie => cookie.name.includes('session_token'))
+    await page.context().clearCookies()
+    await page.context().addCookies(tokens)
     await page.goto('/admin/content?mode=word')
-    await expect(page.getByRole('heading', { name: /Контент|Каталог/ }).first()).toBeVisible()
-    await expect(page.locator('select').filter({ has: page.locator('option[value="word"]') }).first()).toHaveValue('word')
+    await expect(page.getByRole('heading', { name: 'Карточки, Слово по смыслу', exact: true })).toBeVisible()
+    await expect(page.getByText('180 карточек', { exact: true })).toBeVisible()
+    await expect(page.getByRole('row').filter({ hasText: 'word:' }).first()).toContainText('100%')
     await page.screenshot({ path: info.outputPath('word-admin.png'), animations: 'disabled' })
   } finally { await database.client.end() }
 })
