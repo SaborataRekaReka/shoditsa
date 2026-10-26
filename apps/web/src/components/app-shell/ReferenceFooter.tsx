@@ -1,7 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { LOCAL_PRESENTATION, localPresentationLink } from '../../app/local-presentation'
 import { PUBLIC_GAME_LINKS } from '../../app/public-game-links'
-import { GAME_SEO } from '../../app/seo-content'
 import { DANETKI_DISCOVERY_LINKS } from '../../app/danetki-discovery-links'
 import { ControlButton } from '../ui/UiControls'
 import { BrandWordmark } from './BrandWordmark'
@@ -27,7 +26,7 @@ export function ReferenceFooter({ onHome, onArchive, onRules, onProfile }: Refer
         </div>
         <nav className="reference-footer__games" aria-label="Все игры">
           <h2>Во что сыграем?</h2>
-          <div>{games.map((game) => <a key={game.mode} href={localPresentationLink(game.href)}>{GAME_SEO[game.mode].shortName}</a>)}</div>
+          <div>{games.map((game) => <a key={game.mode} href={localPresentationLink(game.href)}>{game.shortName}</a>)}</div>
         </nav>
         <nav className="reference-footer__navigation" aria-label="Разделы сайта">
           <h2>Рядом с игрой</h2>

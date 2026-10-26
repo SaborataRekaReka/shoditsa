@@ -44,7 +44,7 @@ export default defineConfig(({ command, mode }) => {
           <link rel="stylesheet" href="/src/dev/quest-game/study-navigation.css" />
           <script type="module" blocking="render" src="/src/dev/quest-game/prepare-study-navigation.ts"></script>
         </head>`)
-        if (yandexBuild && !localRedesign) return html
+        if (yandexBuild && !localRedesign) return html.replace(/\s*<link rel="manifest"[^>]*>/, '').replace(/\s*<meta name="apple-mobile-web-app-[^"]*"[^>]*>/g, '')
         html = html.replace('<html lang="ru">', '<html lang="ru" data-quest-skin="shoditsa" data-public-theme="reference" data-quest-tone="light">')
           .replace('name="theme-color" content="#2b060a"', 'name="theme-color" content="#fdfcfd"')
         return html.replace(/\s*<!-- Yandex Games SDK \(required for moderation\) -->\s*<script src="\/sdk\.js"><\/script>/, '')

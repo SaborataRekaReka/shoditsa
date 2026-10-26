@@ -9,6 +9,9 @@ import { svoyakHref } from './contracts'
 import './svoyak-welcome.css'
 import { useRoomCreationAccess } from '../rooms/RoomCreationAccess'
 import { STUDY_CLUB_OFFER_HREF } from '../../dev/quest-game/account-routing'
+import { SvoyakSeoContent } from './SvoyakSeoContent'
+import '../../components/game-information/GameInformation.css'
+import './SvoyakSeoContent.css'
 
 const topics = [
   { image: 'movie', label: 'Кино' },
@@ -20,7 +23,7 @@ export function SvoyakWelcome({ navigate }: { navigate: (path: string) => void }
   const [code, setCode] = useState('')
   const access = useRoomCreationAccess()
 
-  return <div className="svoyak-welcome">
+  return <><div className="svoyak-welcome">
     <section className="svoyak-welcome__hero" aria-labelledby="svoyak-welcome-title">
       <div className="svoyak-welcome__copy">
         <p className="svoyak-welcome__eyebrow">Викторина для вашей компании</p>
@@ -66,5 +69,5 @@ export function SvoyakWelcome({ navigate }: { navigate: (path: string) => void }
         <li><span className="svoyak-welcome__step" aria-hidden="true">3</span><div><h3>Успейте ответить первым</h3><p>Жми кнопку, когда знаешь ответ. Верный ответ приносит очки, ошибка их отнимает. Решает ведущий.</p></div></li>
       </ol>
     </section>
-  </div>
+  </div><SvoyakSeoContent /></>
 }

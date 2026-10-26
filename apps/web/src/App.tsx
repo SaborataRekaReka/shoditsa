@@ -113,6 +113,7 @@ import { freePlayAnswerSalt, freePlayGameKey, freePlayLaunchFromGameKey } from '
 import { GameMatchStrip } from './features/game-session/GameMatchStrip'
 import { GameComposerHeader } from './features/game-session/GameComposerHeader'
 import { attemptProgressStats } from './game/attempt-progress'
+import { ComparisonAttemptCard, AttemptMetadata } from './features/game-session/ComparisonAttemptCard'
 import { matchesUsedSearchQuery, searchEmptyMessage, searchResultMeta } from './game/search-presentation'
 import { resultCardMeta, resultCardTags } from './game/result-presentation'
 import { commitSuggestionAttempt } from './game/suggestion-attempt'
@@ -639,16 +640,6 @@ const toConflictPairs = (reasons: string[], normalizedItem: MusicNormalizedEvide
   return out
 }
 
-function AttemptScore({ matchedCount, matchedFields, partialFields, totalFields, isCorrectAttempt }: { matchedCount: number; matchedFields: number; partialFields: number; totalFields: number; isCorrectAttempt: boolean }) {
-  const tone = matchedCount === 0 && partialFields === 0 ? 'miss' : isCorrectAttempt || matchedFields > 0 ? 'match' : 'partial'
-  const label = `Точных совпадений: ${matchedFields} из ${totalFields}; частичных: ${partialFields}`
-
-  return <div className={`dx-score dx-score--${tone}`} aria-label={label}>
-    <span>Сходится</span>
-    <div className="dx-score__bar">{Array.from({ length: totalFields }, (_, i) => <i key={i} className={i < matchedFields ? 'exact' : i < matchedFields + partialFields ? 'partial' : ''} />)}</div>
-    <strong className="dx-score__counts"><span className="dx-score__count dx-score__count--exact"><b>{matchedCount}</b> <small>точно</small></span>{partialFields > 0 && <span className="dx-score__count dx-score__count--partial"><b>{partialFields}</b> <small>частично</small></span>}</strong>
-  </div>
-}
 const alignSystemTooltip = (iconEl: HTMLElement | null) => {
   if (!iconEl || typeof window === 'undefined') return
 
@@ -2296,22 +2287,17 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
   const genres = (item.genres ?? []).filter(isKnownComparisonText)
   const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
-  const score = attemptProgressStats(attempt.hints)
   const yearHint = byKey.get('year')
   const ageHint = byKey.get('age')
   const yearText = item.year != null ? String(item.year) : null
   const ageText = ageHint ? isKnownComparisonText(item.ageRating) ? item.ageRating : 'Нет данных' : null
   const isSeriesAttempt = item.mode === 'series'
   const badge = ratingBadge(item)
-  return <article className={`attempt-card attempt-card--screen${isSeriesAttempt ? ' attempt-card--screen-series' : ''}`}>
-    <div className="attempt-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} />
-      <div className="attempt-card__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub">
-          <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className={`attempt-card--screen${isSeriesAttempt ? ' attempt-card--screen-series' : ''}`}
+    subtitle={<p>
+          <span>{item.titleOriginal || 'Оригинальное название не указано'}</span>
           {yearHint && yearText && <>
             
             <span className={`gm-year ${yearHint?.status ?? ''}`}>
@@ -2326,24 +2312,21 @@ function AttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Atte
               {ageHint?.direction === 'up' ? <ArrowUp /> : ageHint?.direction === 'down' ? <ArrowDown /> : ageHint?.status === 'match' ? <Check /> : null}
             </span>
           </>}
-        </p>
-        {!!displayedGenres.length && <div className="gm-genres">
+        </p>}
+    details={<>{!!displayedGenres.length && <div className="gm-genres">
           {visibleMatchedItems(displayedGenres, genreMatched, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
-        </div>}
-      </div>
-      <div className="rating-badge"><small>{badge.label}</small><strong>{badge.value}</strong></div>
-    </div>
-
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+        </div>}</>}
+    metadata={<AttemptMetadata label={badge.label}>{badge.value}</AttemptMetadata>}
+  >
 
     <div className="attempt-clue-grid">
       {metricClues.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
       {people.map((hint) => <PeopleGroup key={hint.key} hint={hint} />)}
     </div>
-  </article>
+  </ComparisonAttemptCard>
 }
 
 function GameStudioPlate({ label, names, hint }: { label: string; names: string[]; hint: Attempt['hints'][number] | undefined }) {
@@ -2369,7 +2352,6 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const genresHint = byKey.get('genres')
   const rankHint = byKey.get('rank')
   const yearHint = byKey.get('year')
-  const score = attemptProgressStats(attempt.hints)
   const genres = (item.genres ?? []).filter(isKnownComparisonText)
   const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
   const genreMatched = new Set((genresHint?.matchedValues ?? []).map(normalizeTextMatch))
@@ -2381,15 +2363,11 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
   const publishers = dedupeOrganizationNames(item.publishers ?? [])
   const rankText = item.topRank != null ? `#${item.topRank}` : '—'
 
-  return <article className="attempt-card attempt-card--game">
-    <div className="gm-head">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} className="gm-head__art" />
-      <div className="gm-head__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub">
-          <span className="gm-head__orig">{item.titleOriginal || 'Оригинальное название не указано'}</span>
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--game"
+    subtitle={<p>
+          <span>{item.titleOriginal || 'Оригинальное название не указано'}</span>
           {yearHint && item.year != null && <>
             
             <span className={`gm-year ${yearHint?.status ?? ''}`}>
@@ -2397,15 +2375,14 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
               {yearHint?.direction === 'up' ? <ArrowUp /> : yearHint?.direction === 'down' ? <ArrowDown /> : yearHint?.status === 'match' ? <Check /> : null}
             </span>
           </>}
-        </p>
-        {!!displayedGenres.length && <div className="gm-genres">
+        </p>}
+    details={<>{!!displayedGenres.length && <div className="gm-genres">
           {visibleMatchedItems(displayedGenres, genreMatched, 4).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
-        </div>}
-      </div>
-      {rankHint && <div className={`gm-rank ${rankHint.status}`}>
+        </div>}</>}
+    metadata={rankHint && <div className={`gm-rank ${rankHint.status}`}>
         <span className="gm-rank__ico" aria-hidden="true"><Trophy /></span>
         <div className="gm-rank__val">
           <strong>{rankText}</strong>
@@ -2413,9 +2390,7 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
         </div>
         <small>место</small>
       </div>}
-    </div>
-
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+  >
 
     {(byKey.has('developer') || byKey.has('publisher')) && <div className="gm-studios">
       <GameStudioPlate label="Разработчик" names={developers} hint={byKey.get('developer')} />
@@ -2427,12 +2402,11 @@ function GameAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
     {byKey.has('platforms') && <div className="dx-clouds">
       <DxChipCloud label="Платформы" hint={byKey.get('platforms')} items={platforms.length ? platforms : ['Нет данных']} limit={6} />
     </div>}
-  </article>
+  </ComparisonAttemptCard>
 }
 
 function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const score = attemptProgressStats(attempt.hints)
   const genresHint = byKey.get('genres')
   const genres = (item.genres ?? []).filter(isKnownComparisonText).map(canonicalMusicGenreLabel)
   const displayedGenres = genres.length ? genres : genresHint?.status === 'unknown' ? ['Нет данных'] : []
@@ -2446,15 +2420,11 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
     .filter(Boolean) as Attempt['hints']
   const similarArtistNames = (item.similarArtists ?? []).map((artist) => artist.name).filter(isKnownComparisonText)
 
-  return <article className="attempt-card attempt-card--music">
-    <div className="attempt-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} />
-      <div className="attempt-card__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub">
-          {hasDistinctOriginalName && <span className="gm-head__orig">{item.titleOriginal}</span>}
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--music"
+    subtitle={<p>
+          {hasDistinctOriginalName && <span>{item.titleOriginal}</span>}
           {activityStartHint && activityStartYear != null && <>
             
             <span className={`gm-year ${activityStartHint.status}`}>
@@ -2462,18 +2432,15 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
               {activityStartHint.direction === 'up' ? <ArrowUp /> : activityStartHint.direction === 'down' ? <ArrowDown /> : activityStartHint.status === 'match' ? <Check /> : null}
             </span>
           </>}
-        </p>
-        {!!displayedGenres.length && <div className="gm-genres">
+        </p>}
+    details={<>{!!displayedGenres.length && <div className="gm-genres">
           {visibleMatchedItems(displayedGenres, genreMatched, 6).map((genre) => {
             const isMatch = genreMatched.has(normalizeTextMatch(genre))
             return <span key={genre} className={`gm-genre ${isMatch ? 'match' : ''}`}>{genre}{isMatch && <Check />}</span>
           })}
-        </div>}
-      </div>
-      {listenersValue != null && <div className="rating-badge"><small>LFM</small><strong>{new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listenersValue)}</strong></div>}
-    </div>
-
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+        </div>}</>}
+    metadata={listenersValue != null && <AttemptMetadata label="LFM">{new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(listenersValue)}</AttemptMetadata>}
+  >
 
     {!!requestedHints.length && <div className="attempt-clue-grid music-attempt__clues">
       {requestedHints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
@@ -2483,7 +2450,7 @@ function MusicAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt:
       {byKey.has('music_languages') && <DxChipCloud label="Язык исполнения" hint={byKey.get('music_languages')} items={item.musicLanguages ?? []} limit={6} wrap />}
       <DxChipCloud label="Похожие артисты" hint={byKey.get('similar_artists')} items={similarArtistNames} limit={6} wrap />
     </div>
-  </article>
+  </ComparisonAttemptCard>
 }
 
 function KpopLabelMark({ label, logoUrl }: { label: string; logoUrl?: string | null }) {
@@ -2502,7 +2469,6 @@ function KpopLabelMark({ label, logoUrl }: { label: string; logoUrl?: string | n
 
 function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
-  const score = attemptProgressStats(attempt.hints)
   const generation = item.kpopGeneration ?? null
   const generationRange = KPOP_GENERATION_RANGES.find((entry) => entry.generation === generation)?.years ?? 'Годы не указаны'
   const generationHint = byKey.get('kpop_generation')
@@ -2523,26 +2489,20 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
     ? `/images/kpop/labels/by-artist/${encodeURIComponent(item.id.slice('kpop:'.length))}.webp`
     : item.kpopCurrentLabelLogoUrl
 
-  return <article className="attempt-card attempt-card--kpop">
-    <div className="kpop-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} className="kpop-card__portrait" />
-      <div className="kpop-card__identity">
-        <span className="attempt-label">K-pop, попытка {index + 1}</span>
-        <h2>{englishName}</h2>
-        <p>
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--kpop"
+    title={englishName}
+    subtitle={<p>
           {russianName && <span>{russianName}</span>}
           {item.kpopNameHangul && <b lang="ko">{item.kpopNameHangul}</b>}
-        </p>
-      </div>
-      {generationHint && <div className={`kpop-card__generation ${generationHint.status}`}>
+        </p>}
+    metadata={generationHint && <div className={`kpop-card__generation ${generationHint.status}`}>
         <Crown />
         <strong>{generation ? `${generation} GEN` : '—'}</strong>
         <small>{kpopGenerationLabel(generation)}</small>
       </div>}
-    </div>
-
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+  >
 
     {labelHint && <div className={`kpop-label-plate ${labelHint.status}`}>
       <KpopLabelMark label={item.kpopCurrentLabel || 'K-pop'} logoUrl={localLabelLogoUrl} />
@@ -2563,7 +2523,7 @@ function KpopAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: 
       <Lightbulb />
       <span><strong>{kpopGenerationLabel(generation)}</strong>{generationRange}</span>
     </footer>}
-  </article>
+  </ComparisonAttemptCard>
 }
 
 function DxChipCloud({ label, hint, items, limit = 6, iconKind, wrap = false }: { label: string; hint: Attempt['hints'][number] | undefined; items: string[]; limit?: number; iconKind?: 'steam-categories'; wrap?: boolean }) {
@@ -2601,21 +2561,14 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
   const attrs = ['disease_types', 'course', 'contagiousness', 'typical_age', 'localization']
     .map((key) => byKey.get(key))
     .filter(Boolean) as Attempt['hints']
-  const score = attemptProgressStats(attempt.hints)
   const icdValue = item.icd10?.[0] ?? item.icdGroup ?? '—'
 
-  return <article className="attempt-card attempt-card--dx">
-    <div className="dx-head">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <div className="dx-head__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p>{item.titleOriginal || 'Оригинальное название не указано'}</p>
-      </div>
-      <div className="dx-head__icd"><small>МКБ</small><strong>{icdValue}</strong></div>
-    </div>
-
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--dx"
+    subtitle={<p>{item.titleOriginal || 'Оригинальное название не указано'}</p>}
+    metadata={<AttemptMetadata label="МКБ">{icdValue}</AttemptMetadata>}
+  >
 
     {bodySystemsHint && <DxSystemIcons hint={bodySystemsHint} />}
     {!!attrs.length && <div className="dx-attrs">{attrs.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}</div>}
@@ -2625,7 +2578,7 @@ function DiagnosisAttemptCard({ attempt, item, index, isCorrectAttempt }: { atte
       <DxChipCloud label="Диагностика" hint={byKey.get('diagnostics')} items={item.diagnostics ?? []} limit={4} wrap />
       <DxChipCloud label="Факторы риска" hint={byKey.get('risk_factors')} items={item.riskFactors ?? []} limit={4} wrap />
     </div>
-  </article>
+  </ComparisonAttemptCard>
 }
 
 const CITY_RANK_METRICS: Array<{ key: keyof NonNullable<TitleItem['ranks']>; label: string }> = [
@@ -2683,80 +2636,59 @@ function CityRankProfile({ item, hints }: { item: TitleItem; hints: Attempt['hin
 }
 
 function CityAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
-  const score = attemptProgressStats(attempt.hints)
   const primaryHints = attempt.hints.filter((hint) => !CITY_RANK_HINT_KEYS.has(hint.key))
   const rankHints = attempt.hints.filter((hint) => CITY_RANK_HINT_KEYS.has(hint.key))
-  return <article className="attempt-card attempt-card--city">
-    <div className="attempt-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} />
-      <div className="attempt-card__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || item.country || 'Город'}</span></p>
-        <div className="gm-genres">
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--city"
+    subtitle={<p><span>{item.titleOriginal || item.country || 'Город'}</span></p>}
+    details={<><div className="gm-genres">
           {item.country && <span className="gm-genre">{item.country}</span>}
           {item.continent && <span className="gm-genre">{item.continent}</span>}
-        </div>
-      </div>
-    </div>
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+        </div></>}
+  >
     <div className="attempt-clue-grid city-attempt__clues">
       {primaryHints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
     <CityRankProfile item={item} hints={rankHints} />
-  </article>
+  </ComparisonAttemptCard>
 }
 
 function AnimalAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
-  const score = attemptProgressStats(attempt.hints)
-  return <article className="attempt-card attempt-card--animal">
-    <div className="attempt-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} />
-      <div className="attempt-card__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub"><span className="gm-head__orig">{item.scientificName || item.titleOriginal}</span></p>
-        <div className="gm-genres">
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--animal"
+    subtitle={<p><span>{item.scientificName || item.titleOriginal}</span></p>}
+    details={<><div className="gm-genres">
           {item.taxonomicClass && <span className="gm-genre">{item.taxonomicClass}</span>}
           {item.animalOrder && <span className="gm-genre">{item.animalOrder}</span>}
-        </div>
-      </div>
-    </div>
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+        </div></>}
+  >
     <div className="attempt-clue-grid animal-attempt__clues">
       {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
-  </article>
+  </ComparisonAttemptCard>
 }
 
 function BookAttemptCard({ attempt, item, index, isCorrectAttempt }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean }) {
-  const score = attemptProgressStats(attempt.hints)
   const published = item.bookPublicationYear == null
     ? 'Год не указан'
     : item.bookPublicationYear < 0
       ? `${Math.abs(item.bookPublicationYear)} до н. э.`
       : String(item.bookPublicationYear)
-  return <article className="attempt-card attempt-card--book">
-    <div className="attempt-card__header">
-      <span className="attempt-card__number">{String(index + 1).padStart(2, '0')}</span>
-      <Poster item={item} />
-      <div className="attempt-card__identity">
-        <span className="attempt-label">Попытка {index + 1}</span>
-        <h2>{item.titleRu}</h2>
-        <p className="gm-head__sub"><span className="gm-head__orig">{item.titleOriginal || (item.bookAuthors ?? []).join(', ')}</span></p>
-        <div className="gm-genres">
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt}
+    className="attempt-card--book"
+    subtitle={<p><span>{item.titleOriginal || (item.bookAuthors ?? []).join(', ')}</span></p>}
+    details={<><div className="gm-genres">
           {(item.bookAuthors ?? []).slice(0, 1).map((author) => <span className="gm-genre" key={author}>{author}</span>)}
           <span className="gm-genre">{published}</span>
-        </div>
-      </div>
-    </div>
-    <AttemptScore {...score} isCorrectAttempt={isCorrectAttempt} />
+        </div></>}
+  >
     <div className="attempt-clue-grid book-attempt__clues">
       {attempt.hints.map((hint, hintIndex) => <ClueTile key={hint.key} hint={hint} delay={hintIndex} />)}
     </div>
-  </article>
+  </ComparisonAttemptCard>
 }
 
 const characterSummaryTone = (hint: Attempt['hints'][number] | undefined) => {
@@ -2845,14 +2777,6 @@ function CharacterSummaryDetail({ hint }: { hint: Attempt['hints'][number] | und
   </div>
 }
 
-function CharacterSummaryScore({ attempt, isCorrectAttempt }: { attempt: Attempt; isCorrectAttempt: boolean }) {
-  const { matchedFields, partialFields, totalFields } = attemptProgressStats(attempt.hints)
-  const label = `Точных совпадений: ${matchedFields} из ${totalFields}; частичных: ${partialFields}`
-  return <div className={`character-summary__score${isCorrectAttempt ? ' is-correct' : ''}`} aria-label={label}>
-    {Array.from({ length: totalFields }, (_, index) => <i key={index} className={index < matchedFields ? 'exact' : index < matchedFields + partialFields ? 'partial' : ''} />)}
-  </div>
-}
-
 function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt, isAnswerReveal = false }: { attempt: Attempt; item: TitleItem; index: number; isCorrectAttempt: boolean; isAnswerReveal?: boolean }) {
   const byKey = new Map(attempt.hints.map((hint) => [hint.key, hint]))
   const natureHint = byKey.get('character_nature')
@@ -2860,16 +2784,10 @@ function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt, isAnswer
   const identityMatched = natureHint?.status === 'match' && genderHint?.status === 'match'
   const detailKeys = ['character_source_types', 'character_origin_cultures', 'character_age_group', 'character_archetypes', 'character_settings']
 
-  return <article className={`attempt-card attempt-card--character attempt-card--character-summary${isAnswerReveal ? ' attempt-card--answer' : ''}`} aria-label={`${isAnswerReveal ? 'Правильный ответ' : `Попытка ${index + 1}`}: ${item.titleRu}`}>
-    <aside className="character-summary__portrait">
-      <Poster item={item} className="character-summary__portrait-image" />
-      <span className="character-summary__number">{isAnswerReveal ? <Check aria-hidden="true" /> : String(index + 1).padStart(2, '0')}</span>
-    </aside>
-    <div className="character-summary__body">
-      <header className="character-summary__header">
-        <h2>{item.titleRu}</h2>
-        <CharacterSummaryScore attempt={attempt} isCorrectAttempt={isCorrectAttempt || isAnswerReveal} />
-      </header>
+  return <ComparisonAttemptCard
+    item={item} attempt={attempt} index={index} isCorrectAttempt={isCorrectAttempt} isAnswerReveal={isAnswerReveal}
+    className={`attempt-card--character${isAnswerReveal ? ' attempt-card--answer' : ''}`}
+  >
       <div className="character-summary__content">
         {(natureHint || genderHint) && <div className={`character-summary__row character-summary__row--identity${identityMatched ? ' is-match' : ''}`}>
           <label>{identityMatched ? 'Совпало' : 'Образ'}</label>
@@ -2885,8 +2803,7 @@ function CharacterAttemptCard({ attempt, item, index, isCorrectAttempt, isAnswer
           {detailKeys.map((key) => <CharacterSummaryDetail hint={byKey.get(key)} key={key} />)}
         </div>
       </div>
-    </div>
-  </article>
+  </ComparisonAttemptCard>
 }
 
 const ATTEMPT_CARD_BY_MODE: Record<TitleMode, typeof AttemptCard> = {

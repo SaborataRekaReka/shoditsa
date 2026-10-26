@@ -1,5 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentType, type KeyboardEvent } from 'react'
-import { ChevronDown, LogIn, ShieldCheck, UserRoundPlus } from 'lucide-react'
+import { ChevronDown, Download, LogIn, ShieldCheck, UserRoundPlus } from 'lucide-react'
+import { usePwaInstall } from '../../app/pwa'
+import { PwaInstallDialog } from '../../components/app-shell/PwaInstallDialog'
 import type { GlyphName } from './QuestArt'
 import { studyAccountHref, STUDY_CLUB_HREF } from './account-routing'
 import { StudyProfileIcon, StudySettingsIcon, StudySupportIcon } from './StudyProfileArt'
@@ -21,6 +23,7 @@ type Props = {
 }
 
 export function StudyAccountMenu({ Glyph, placement = 'header', profileHref = '/profile', onProfile, onSettings, onOpen }: Props) {
+  const pwa = usePwaInstall()
   const account = useStudyAccountCache<MeResponse>(queryKeys.me)
   const signedIn = !!account?.user && !account.user.isAnonymous
   const hasClub = useStudyClubActive() && signedIn
@@ -98,8 +101,10 @@ export function StudyAccountMenu({ Glyph, placement = 'header', profileHref = '/
       {onSettings ? <button role="menuitem" type="button" onClick={() => { setOpen(false); onSettings() }}><StudySettingsIcon />Настройки</button> : <a role="menuitem" href="/settings"><StudySettingsIcon />Настройки</a>}
       <a role="menuitem" href={STUDY_CLUB_HREF}><Glyph name="medal" size={23} />Клуб</a>
       <a role="menuitem" href="/support" onClick={() => setOpen(false)}><StudySupportIcon />Поддержка</a>
+      {pwa.available && <button role="menuitem" type="button" disabled={pwa.installing} onClick={() => { close(); void pwa.install() }}><Download size={22} />Установить приложение</button>}
       {signedIn && account.user.role === 'admin' && <a role="menuitem" href={studyAccountHref('admin')}><ShieldCheck size={21} /><span>Админ-панель<small>Для администраторов</small></span></a>}
       <div className="study-account-theme-row"><span>Тема</span><StudyThemeToggle menuItem /></div>
     </div>}
+    {pwa.instructions && <PwaInstallDialog onClose={pwa.closeInstructions} />}
   </div>
 }

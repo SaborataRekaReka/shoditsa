@@ -43,6 +43,7 @@ import { publicAssetUrl } from '../../app/public-asset'
 import { GameResult } from '../result/GameResult'
 import { DtfLeaderboard } from '../dtf-comments/DtfLeaderboard'
 import { FinalChoicePanel } from '../game-session/FinalChoicePanel'
+import { AttemptCardExamples } from './AttemptCardExamples'
 import { ConnectionsResult, type ConnectionsSession } from '../connections/ConnectionsGamePage'
 import './UiKitScreen.css'
 
@@ -84,6 +85,7 @@ const sections = [
   ['controls', 'Контролы'],
   ['forms', 'Поля'],
   ['tickets', 'Билеты'],
+  ['attempt-cards', 'Карточки попыток'],
   ['final-choice', 'Последний выбор'],
   ['connections', 'Связи'],
   ['result-actions', 'После игры'],
@@ -494,6 +496,11 @@ export default function UiKitScreen() {
           </section>
 
 
+
+          <section className="ui-kit-section" id="attempt-cards">
+            <SectionTitle index="—" title="Карточки попыток" description="Общий каркас для игр на сравнение признаков. Режим выбирает формат изображения и дополнительные сведения. Здесь можно проверить совпадения, длинное название и отсутствие обложки." component="ComparisonAttemptCard, AttemptMatchSummary" />
+            <AttemptCardExamples />
+          </section>
 
           <section className="ui-kit-section" id="final-choice">
             <SectionTitle index="08" title="Последний выбор" description="Финальная сверка использует общий паттерн выбора одной карточки, клавиатурную радиогруппу и отдельное подтверждение открытия ответа." component="FinalChoicePanel" />

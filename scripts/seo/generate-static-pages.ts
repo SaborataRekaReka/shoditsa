@@ -1,5 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { SvoyakSeoContent } from '../../apps/web/src/features/svoyak/SvoyakSeoContent'
 import {
   DEFAULT_SOCIAL_IMAGE_PATH,
   GAME_GUIDE_PRESENTATION,
@@ -8,6 +11,7 @@ import {
   INDEXABLE_ROBOTS,
   SITE_NAME,
   SITE_ORIGIN,
+  SVOYAK_SEO,
   type GameSeoContent,
   type SeoPageContent,
 } from '../../apps/web/src/app/seo-content'
@@ -84,7 +88,7 @@ const renderRelatedGameLinks = (content: GameSeoContent) => content.relatedModes
     }).join('')}</div></nav>`
   : ''
 const renderSearchSummary = (content: GameSeoContent) => content.searchSummary
-  ? `<section class="ticket-search-summary ticket-search-summary--${content.mode}" aria-labelledby="search-summary-${content.mode}"><span>Играть онлайн · без спойлеров</span><h2 id="search-summary-${content.mode}">${escapeHtml(content.searchSummary.heading)}</h2><div>${content.searchSummary.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${content.searchSummary.action ? `<a href="${escapeHtml(content.searchSummary.action.href)}">${escapeHtml(content.searchSummary.action.label)}<span aria-hidden="true">↗</span></a>` : ''}${renderRelatedGameLinks(content)}</section>`
+  ? `<section class="ticket-search-summary ticket-search-summary--${content.mode}" aria-labelledby="search-summary-${content.mode}"><span>Играть онлайн, без спойлеров</span><h2 id="search-summary-${content.mode}">${escapeHtml(content.searchSummary.heading)}</h2><div>${content.searchSummary.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div>${content.searchSummary.action ? `<a href="${escapeHtml(content.searchSummary.action.href)}">${escapeHtml(content.searchSummary.action.label)}<span aria-hidden="true">↗</span></a>` : ''}${renderRelatedGameLinks(content)}</section>`
   : ''
 const renderHubGuideSummary = () => `<summary class="hub-guide__summary public-static-disclosure"><strong>Как устроены ежедневные игры</strong><span aria-hidden="true">⌄</span></summary>`
 
@@ -111,9 +115,9 @@ const renderDanetkiCatalogFallback = (content: SeoPageContent) => {
   const playSearch = collection ? `?from=catalog&amp;collection=${collection.slug}` : '?from=catalog'
   const breadcrumbParent = collection ? '<a href="/danetki">Данетки</a><span>/</span>' : ''
   const factLabel = collection?.factLabel ?? 'Формат'
-  const factValue = collection?.factValue ?? 'Да · Нет'
+  const factValue = collection?.factValue ?? 'Да, Нет'
   const sectionHeading = collection?.sectionHeading ?? 'Все данетки'
-  const sectionLead = collection?.sectionLead(items.length) ?? `${items.length} историй · выбирайте по сложности и настроению.`
+  const sectionLead = collection?.sectionLead(items.length) ?? `${items.length} историй, выбирайте по сложности и настроению.`
   const copyHeading = collection?.contentHeading ?? 'Что такое данетки и как в них играть'
 return `<main class="danetki-catalog-main"><nav class="danetki-breadcrumbs" aria-label="Хлебные крошки"><a href="/">Сходится!</a><span>/</span>${breadcrumbParent}<span>${escapeHtml(content.heading)}</span></nav><header class="danetki-catalog-hero"><div class="danetki-catalog-hero__copy"><span class="danetki-catalog-eyebrow">${escapeHtml(collection?.eyebrow ?? 'Каталог логических историй')}</span><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead)}</p><div class="danetki-catalog-hero__actions"><a class="ui-button ui-button--primary" href="/games/danetki${playSearch}#game">Играть с ведущим</a><a class="ui-button ui-button--secondary" href="${escapeHtml(content.canonicalPath)}#stories">Смотреть истории</a></div></div><dl class="danetki-catalog-facts"><div><dt>${escapeHtml(collection?.countLabel ?? 'Историй сейчас')}</dt><dd>${items.length}</dd></div><div><dt>${escapeHtml(factLabel)}</dt><dd>${escapeHtml(factValue)}</dd></div><div><dt>Ответы</dt><dd>Под спойлером</dd></div></dl></header>${renderDanetkiCollectionLinks(content.canonicalPath)}<section class="danetki-catalog-list" id="stories"><div class="danetki-catalog-section-head"><div><span>Подборка редакции</span><h2>${escapeHtml(sectionHeading)}</h2></div><p>${escapeHtml(sectionLead)}</p></div><div class="danetki-catalog-grid">${items.map(renderDanetkiCard).join('')}</div></section><section class="danetki-catalog-copy"><span class="danetki-catalog-eyebrow">По существу</span><h2>${escapeHtml(copyHeading)}</h2><div>${renderParagraphs(content)}</div></section><section class="danetki-catalog-guide"><span class="danetki-catalog-eyebrow">Короткие правила</span><h2>${escapeHtml(collection?.guideHeading ?? 'Как решать данетки')}</h2><ol>${guideSteps.map((step, index) => `<li><strong>${String(index + 1).padStart(2, '0')}</strong><span>${escapeHtml(step)}</span></li>`).join('')}</ol></section>${renderDanetkiRecommendationsFallback()}</main>`
 }
@@ -193,8 +197,8 @@ const buildPage = (template: string, content: SeoPageContent, fallback: string) 
     `href="${canonicalUrl}"`,
     'type="application/ld+json"',
     '<h1',
-    danetkiPageFragment ?? (isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
-    danetkiPageFragment ?? (isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"'),
+    danetkiPageFragment ?? (route.mode === 'svoyak' ? 'class="svoyak-guide"' : isGamePage ? 'artifact-dossier ticket-dossier' : 'class="hub-guide"'),
+    danetkiPageFragment ?? (route.mode === 'svoyak' ? 'id="svoyak-faq-title"' : isGamePage ? 'class="ticket-dossier__drawer"' : 'class="hub-guide__drawer"'),
   ]
   for (const fragment of requiredFragments) {
     if (!html.includes(fragment)) throw new Error(`SEO page ${content.canonicalPath} is missing ${fragment}`)
@@ -225,6 +229,9 @@ for (const game of INDEXABLE_GAME_SEO) {
   const fallback = renderGameArtifactFallback(game)
   await writeFile(target, buildPage(template, game, fallback), 'utf8')
 }
+
+const svoyakFallback = `<main class="public-static-page"><a class="public-static-brand" href="/" aria-label="Сходится! — играть"><img src="/images/logo.svg" alt="" width="170" height="47"></a><header class="public-static-hero"><div><h1>Своя игра</h1><p>${escapeHtml(SVOYAK_SEO.lead)}</p><p>Клубный билет нужен ведущему. Друзья входят по коду бесплатно.</p><div class="public-static-actions"><a class="ui-button ui-button--primary" href="/lobby?mode=svoyak">Создать комнату</a><a class="ui-button ui-button--secondary" href="/games/svoyak#svoyak-join-title">Войти по коду</a></div></div><figure aria-hidden="true"><img class="public-static-art" src="/images/home-doodle/svoyak.webp" alt="" width="160" height="160"></figure></header><section aria-labelledby="svoyak-join-title"><h2 id="svoyak-join-title">Тебя уже ждут?</h2><p>Включите JavaScript, чтобы ввести код комнаты и присоединиться к друзьям.</p></section>${renderToStaticMarkup(createElement(SvoyakSeoContent))}</main>`
+await writeFile(resolve(distRoot, 'seo', 'games', 'svoyak.html'), buildPage(template, SVOYAK_SEO, svoyakFallback), 'utf8')
 
 const danetkiCatalogContent = seoRouteFromPathname('/danetki')
 await writeFile(resolve(distRoot, 'seo', 'danetki.html'), buildPage(template, danetkiCatalogContent, renderDanetkiCatalogFallback(danetkiCatalogContent)), 'utf8')

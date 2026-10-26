@@ -1,4 +1,4 @@
-import { HOME_SEO, INDEXABLE_GAME_SEO, SITE_ORIGIN } from './seo-content'
+import { HOME_SEO, PUBLIC_INDEXABLE_GAME_SEO, SITE_ORIGIN } from './seo-content'
 import { LEGAL_DOCUMENT_SLUGS } from '../features/legal/legal'
 import { DANETKI_CATALOG_ITEMS, danetkiStoryPath } from '../features/danetki/danetki-catalog'
 import { DANETKI_COLLECTION_DEFINITIONS } from '../features/danetki/danetki-collections'
@@ -7,7 +7,7 @@ export const INDEXABLE_UTILITY_PATHS = ['/partners', '/specials', '/club'] as co
 
 export const STATIC_INDEXABLE_PATHS = [
   HOME_SEO.canonicalPath,
-  ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath),
+  ...PUBLIC_INDEXABLE_GAME_SEO.map((game) => game.canonicalPath),
   '/danetki',
   ...DANETKI_COLLECTION_DEFINITIONS.map((collection) => collection.canonicalPath),
   ...DANETKI_CATALOG_ITEMS.map(danetkiStoryPath),

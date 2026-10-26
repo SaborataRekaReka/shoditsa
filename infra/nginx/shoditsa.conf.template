@@ -62,6 +62,25 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
+    location = /sw.js {
+        try_files $uri =404;
+        default_type application/javascript;
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        add_header Service-Worker-Allowed "/" always;
+    }
+
+    location = /manifest.webmanifest {
+        try_files $uri =404;
+        default_type application/manifest+json;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location = /offline.html {
+        try_files $uri =404;
+        add_header Cache-Control "no-cache" always;
+        add_header X-Robots-Tag "noindex, nofollow" always;
+    }
+
     # Search engines receive route-specific HTML (metadata, JSON-LD and useful
     # text) at the canonical browser-history URL. The /seo files themselves are
     # implementation details and cannot be opened as duplicate public pages.
@@ -80,7 +99,12 @@ server {
         add_header Cache-Control "no-cache" always;
     }
 
-    location ~ "^/(games/svoyak|svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?))/?$" {
+    location = /games/svoyak {
+        try_files /seo/games/svoyak.html =404;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location ~ "^/svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?)/?$" {
         try_files /index.html =404;
         add_header X-Robots-Tag "noindex, follow, noarchive" always;
         add_header Cache-Control "no-cache" always;

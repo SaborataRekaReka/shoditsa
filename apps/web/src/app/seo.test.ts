@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS } from './seo-content'
+import { GAME_SEO, HOME_SEO, INDEXABLE_GAME_SEO, INDEXABLE_PATHS, PUBLIC_INDEXABLE_GAME_SEO, SVOYAK_SEO } from './seo-content'
 import { normalizeSeoPathname, seoRouteForRuntime, seoRouteFromPathname, structuredDataForSeoRoute } from './seo'
 import { DANETKI_COLLECTION_DEFINITIONS, danetkiCollectionItems } from '../features/danetki/danetki-collections'
 import { DANETKI_CATALOG_ITEMS } from '../features/danetki/danetki-catalog'
@@ -23,9 +23,9 @@ describe('search index contract', () => {
     expect(config).toContain('return 301 https://shoditsa.ru$1$is_args$args;')
   })
   it('keeps public navigation aligned with every indexable game mode', () => {
-    expect(PUBLIC_GAME_LINKS).toHaveLength(INDEXABLE_GAME_SEO.length)
-    expect(PUBLIC_GAME_LINKS.map((game) => game.mode)).toEqual(INDEXABLE_GAME_SEO.map((game) => game.mode))
-    expect(PUBLIC_GAME_LINKS.map((game) => game.href)).toEqual(INDEXABLE_GAME_SEO.map((game) => game.canonicalPath))
+    expect(PUBLIC_GAME_LINKS).toHaveLength(PUBLIC_INDEXABLE_GAME_SEO.length)
+    expect(PUBLIC_GAME_LINKS.map((game) => game.mode)).toEqual(PUBLIC_INDEXABLE_GAME_SEO.map((game) => game.mode))
+    expect(PUBLIC_GAME_LINKS.map((game) => game.href)).toEqual(PUBLIC_INDEXABLE_GAME_SEO.map((game) => game.canonicalPath))
     expect(PUBLIC_GAME_LINKS).toContainEqual(expect.objectContaining({
       mode: 'character',
       href: '/games/character',
@@ -69,7 +69,7 @@ describe('search index contract', () => {
     const descriptions = new Set<string>()
     const paths = new Set<string>()
 
-    for (const content of INDEXABLE_GAME_SEO) {
+    for (const content of PUBLIC_INDEXABLE_GAME_SEO) {
       const mode = content.mode
       const route = seoRouteFromPathname(content.canonicalPath)
       expect(route.kind).toBe('game')
@@ -91,10 +91,10 @@ describe('search index contract', () => {
       paths.add(content.canonicalPath)
     }
 
-    expect(titles.size).toBe(INDEXABLE_GAME_SEO.length)
-    expect(descriptions.size).toBe(INDEXABLE_GAME_SEO.length)
-    expect(paths.size).toBe(INDEXABLE_GAME_SEO.length)
-    expect(INDEXABLE_PATHS).toEqual([HOME_SEO.canonicalPath, ...INDEXABLE_GAME_SEO.map((game) => game.canonicalPath)])
+    expect(titles.size).toBe(PUBLIC_INDEXABLE_GAME_SEO.length)
+    expect(descriptions.size).toBe(PUBLIC_INDEXABLE_GAME_SEO.length)
+    expect(paths.size).toBe(PUBLIC_INDEXABLE_GAME_SEO.length)
+    expect(INDEXABLE_PATHS).toEqual([HOME_SEO.canonicalPath, ...PUBLIC_INDEXABLE_GAME_SEO.map((game) => game.canonicalPath)])
     expect(GAME_SEO.game.collectionMethod.sources[0]?.url).toContain('playthatgame.co.uk')
     expect(GAME_SEO.movie.collectionMethod.sources[0]?.url).toContain('kinopoisk.ru')
     expect(GAME_SEO.city.collectionMethod.sources[0]?.url).toContain('oxfordeconomics.com')
@@ -105,6 +105,31 @@ describe('search index contract', () => {
       const route = seoRouteFromPathname(pathname)
       expect(route.indexable, pathname).toBe(false)
       expect(route.robots, pathname).toContain('noindex')
+    }
+  })
+
+  it('indexes only the Svoyak landing without advertising free room creation', () => {
+    const route = seoRouteFromPathname('/games/svoyak/')
+    expect(route.kind).toBe('game')
+    expect(route.mode).toBe('svoyak')
+    expect(route.indexable).toBe(true)
+    expect(route.canonicalPath).toBe('/games/svoyak')
+    expect(STATIC_INDEXABLE_PATHS).toContain('/games/svoyak')
+    expect(renderSitemap()).toContain('https://shoditsa.ru/games/svoyak</loc>')
+    expect(PUBLIC_GAME_LINKS).toContainEqual(expect.objectContaining({ mode: 'svoyak', href: '/games/svoyak' }))
+    expect(INDEXABLE_GAME_SEO.map(game => game.mode)).not.toContain('svoyak')
+    expect(SVOYAK_SEO.description).toContain('Клубный билет нужен ведущему')
+
+    const data = structuredDataForSeoRoute(route) as { '@graph': Array<Record<string, unknown>> }
+    const application = data['@graph'].find(entry => entry['@type'] === 'WebApplication')
+    expect(application?.isAccessibleForFree).toBe(false)
+    expect(application).not.toHaveProperty('offers')
+    expect(data['@graph'].some(entry => entry['@type'] === 'BreadcrumbList')).toBe(true)
+    for (const pathname of ['/svoyak/create', '/svoyak/join/ABC123', '/svoyak/rooms/ABC123', '/svoyak/rooms/ABC123/result']) {
+      const privateRoute = seoRouteFromPathname(pathname)
+      expect(privateRoute.indexable, pathname).toBe(false)
+      expect(privateRoute.robots, pathname).toBe('noindex,nofollow,noarchive')
+      expect(STATIC_INDEXABLE_PATHS).not.toContain(pathname)
     }
   })
 

@@ -123,17 +123,32 @@ ensure_application_routes() {
 }
 
 ensure_svoyak_routes() {
-  if grep -Fq 'location ~ "^/(games/svoyak|svoyak/' "$CONFIG_PATH"; then return 0; fi
-  local svoyak_temp_path
+  local svoyak_temp_path has_svoyak_landing=0 has_svoyak_rooms=0
+  if grep -Pzq 'location\s*=\s*/games/svoyak\s*\{[^}]*try_files\s+/seo/games/svoyak\.html\s+=404;[^}]*\}' "$CONFIG_PATH"; then has_svoyak_landing=1; fi
+  if grep -Fq 'location ~ "^/svoyak/' "$CONFIG_PATH"; then has_svoyak_rooms=1; fi
   svoyak_temp_path="$(mktemp "${CONFIG_PATH}.svoyak-routes.XXXXXX")"
-  if ! awk '
+  if ! awk -v has_landing="$has_svoyak_landing" -v has_rooms="$has_svoyak_rooms" '
+    index($0, "location ~ \"^/(games/svoyak|svoyak/") {
+      print "    location ~ \"^/svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?)/?$\" {"
+      has_rooms = 1
+      next
+    }
     /^[[:space:]]*location[[:space:]]*=[[:space:]]*\/games\/together[[:space:]]*\{/ && !injected {
-      print "    location ~ \"^/(games/svoyak|svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?))/?$\" {"
-      print "        try_files /index.html =404;"
-      print "        add_header X-Robots-Tag \"noindex, follow, noarchive\" always;"
-      print "        add_header Cache-Control \"no-cache\" always;"
-      print "    }"
-      print ""
+      if (!has_landing) {
+        print "    location = /games/svoyak {"
+        print "        try_files /seo/games/svoyak.html =404;"
+        print "        add_header Cache-Control \"no-cache\" always;"
+        print "    }"
+        print ""
+      }
+      if (!has_rooms) {
+        print "    location ~ \"^/svoyak/(create|(join|rooms)/[A-Fa-f0-9]{6}(/result)?)/?$\" {"
+        print "        try_files /index.html =404;"
+        print "        add_header X-Robots-Tag \"noindex, follow, noarchive\" always;"
+        print "        add_header Cache-Control \"no-cache\" always;"
+        print "    }"
+        print ""
+      }
       injected = 1
     }
     { print }

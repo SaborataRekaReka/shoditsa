@@ -1,4 +1,5 @@
 .svoyak-welcome { container: svoyak-welcome / inline-size; min-width: 0; }
+.svoyak-welcome + .svoyak-guide { margin-top: 40px; }
 .svoyak-welcome__hero { display: grid; grid-template-columns: minmax(0, 1fr) 240px; align-items: start; gap: 28px; padding: 8px 0 28px; }
 .svoyak-welcome__copy { min-width: 0; }
 .svoyak-welcome__copy > .svoyak-welcome__eyebrow { margin-bottom: 10px; color: var(--quest-muted); font-size: 12px; line-height: 1.5; }

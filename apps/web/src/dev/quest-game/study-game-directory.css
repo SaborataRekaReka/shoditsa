@@ -1,13 +1,1 @@
-.study-game-directory { display: grid; gap: 26px; margin-top: 26px; }
-.qg-app .study-game-directory h3 { font-size: 19px; line-height: 1.4; letter-spacing: -.2px; margin-bottom: 12px; }
-.qg-app .study-game-directory nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; margin: 0; padding: 0; border-top: 1px solid var(--quest-line); }
-.qg-app .study-game-directory nav a { display: flex; align-items: center; min-width: 0; min-height: 54px; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--quest-line); color: var(--quest-text); font-size: 13px; font-weight: 500; line-height: 1.5; text-decoration: none; }
-.study-game-directory a > img { flex: none; object-fit: contain; }
-.study-game-directory a > span { flex: 1; min-width: 0; }
-.study-game-directory a > svg { flex: none; color: var(--quest-dim); }
-.qg-app .study-game-directory nav a:hover { color: var(--quest-blue); }
-.study-game-directory a:focus-visible { outline: 3px solid var(--quest-blue); outline-offset: 2px; border-radius: 6px; }
-@media (max-width: 519px) {
-  .qg-app .study-game-directory nav { grid-template-columns: minmax(0, 1fr); }
-  .qg-app .study-game-directory nav a { font-size: 14px; }
-}
+.study-game-directory { display: grid; gap: 30px; margin-top: 32px; }

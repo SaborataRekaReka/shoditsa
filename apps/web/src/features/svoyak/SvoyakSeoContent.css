@@ -1,0 +1,21 @@
+.svoyak-guide { display: grid; gap: 36px; min-width: 0; color: var(--quest-text); }
+.svoyak-guide__intro h2,
+.svoyak-guide__comparison h2 { margin: 0 0 16px; font-family: var(--quest-heading); font-size: 20px; font-weight: 800; line-height: 1.35; letter-spacing: -.3px; }
+.svoyak-guide p { margin: 0; color: var(--quest-muted); font-size: 14px; line-height: 1.7; }
+.svoyak-guide__intro { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 36px; }
+.svoyak-guide__intro h2 { font-size: 26px; }
+.svoyak-guide .svoyak-guide__lead { color: var(--quest-text); font-size: 16px; }
+.svoyak-guide__story p + p { margin-top: 16px; }
+.svoyak-guide__comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px; }
+.svoyak-guide__comparison :is(ul, ol) { margin: 0; padding-left: 20px; color: var(--quest-muted); font-size: 14px; line-height: 1.7; }
+.svoyak-guide__comparison li + li { margin-top: 10px; }
+.svoyak-guide__method { padding: 20px 22px; border-radius: 14px; background: var(--quest-surface); }
+.svoyak-guide__method h3 { margin: 0 0 10px; color: var(--quest-text); font-family: var(--quest-heading); font-size: 15px; font-weight: 800; line-height: 1.45; }
+@media (max-width: 800px) {
+  .svoyak-guide__intro { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+@media (max-width: 600px) {
+  .svoyak-guide { gap: 28px; }
+  .svoyak-guide__comparison { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .svoyak-guide__method { padding: 18px; }
+}
