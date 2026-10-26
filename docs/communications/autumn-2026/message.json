@@ -1,0 +1,38 @@
+{
+  "campaignId": "autumn-2026-v1",
+  "subject": "Новый дизайн и две новые игры в «Сходится!»",
+  "preheader": "«Своя игра», «Захват территорий», два спецпоказа и рейтинг игроков.",
+  "from": {
+    "name": "Сходится!",
+    "address": "support@shoditsa.ru"
+  },
+  "replyTo": "breneize@yandex.ru",
+  "htmlFile": "email.smtp.html",
+  "textFile": "email.body.txt",
+  "headers": {
+    "List-Unsubscribe": "<mailto:breneize@yandex.ru?subject=unsubscribe%20shoditsa>"
+  },
+  "attachments": [
+    {
+      "filename": "logo.png",
+      "path": "assets/logo.png",
+      "cid": "shoditsa-logo",
+      "contentType": "image/png",
+      "contentDisposition": "inline"
+    },
+    {
+      "filename": "svoyak.png",
+      "path": "assets/svoyak.png",
+      "cid": "shoditsa-svoyak",
+      "contentType": "image/png",
+      "contentDisposition": "inline"
+    },
+    {
+      "filename": "territory.png",
+      "path": "assets/territory.png",
+      "cid": "shoditsa-territory",
+      "contentType": "image/png",
+      "contentDisposition": "inline"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "campaignId": "autumn-2026-v1",
+  "apiCodeSha": "9ffdec8439693a0c42f3275d11d9c40e3027d5e0",
+  "webCodeSha": "e17223ff13db7ce22719030c3aae517066471742",
+  "contentRevision": "0386f2574545274fd070b6348b3c34494ab3ee78",
+  "contentHash": "c719e02031d2a43ab1965bb5dd55ff4f51634e1d4fc0be5c878835d95b3d959b",
+  "testVerifiedAt": "2026-10-23T18:11:10.904Z",
+  "testRecipient": "breneize@yandex.ru",
+  "testSubject": "[Тест] Новый дизайн и две новые игры в «Сходится!»",
+  "testSmtpAccepted": 1,
+  "inboxDeliveryTracked": false,
+  "campaignStatus": "draft",
+  "audiencePrepared": false,
+  "campaignRecipientsQueued": 0,
+  "eligibleRegisteredAddresses": 53,
+  "consentScopeConfirmedByOwner": "All registered users, confirmed in this chat on 2026-10-23",
+  "latestUserRequest": "Send a test to the owner for review before sending to the user base",
+  "checks": {
+    "unitAndPostgresTestsPassed": 11,
+    "typecheck": true,
+    "apiBuild": true,
+    "uiCopy": true,
+    "productionSmoke": true,
+    "unsubscribeGetStatus": 200,
+    "unsubscribeGetReadOnly": true,
+    "unauthenticatedAdminStatus": 401,
+    "databaseBackupVerifiedOnAndOffHost": true
+  }
+}

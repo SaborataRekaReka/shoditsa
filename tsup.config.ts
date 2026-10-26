@@ -5,6 +5,7 @@ export default defineConfig({
     worker: 'apps/api/src/worker.ts',
     migrate: 'packages/database/src/migrate.ts',
     'admin-bootstrap': 'scripts/admin/bootstrap.ts',
+    'mailing': 'scripts/communications/mailing.ts',
     'content-bootstrap-danetki': 'scripts/content/bootstrap-danetki.ts',
     'content-bootstrap-connections': 'scripts/content/bootstrap-connections.ts',
     'content-bootstrap-svoyak': 'scripts/content/bootstrap-svoyak.ts',

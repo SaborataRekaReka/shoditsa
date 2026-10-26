@@ -8,6 +8,11 @@ test-results
 playwright-report
 archive
 docs
+!docs/
+docs/*
+!docs/communications/
+docs/communications/*
+!docs/communications/autumn-2026/
 public/*
 !public/data/
 public/data/*
