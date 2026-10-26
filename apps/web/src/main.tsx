@@ -14,6 +14,7 @@ import { APPLICATION_DESIGN } from './app/application-design'
 import { canonicalApplicationHref } from './features/application/routes'
 import { RoutePending } from './app/RoutePending'
 import { applyStudyTheme } from './dev/quest-game/study-theme'
+import { initViewTransitionObservers } from './app/view-transition'
 
 if (APPLICATION_DESIGN) {
   const canonical = canonicalApplicationHref(window.location)
@@ -23,6 +24,7 @@ if (APPLICATION_DESIGN) {
 }
 
 applyPublicPresentation(window.location.hash.startsWith('#/') ? window.location.hash.slice(1).split('?')[0] : window.location.pathname)
+initViewTransitionObservers()
 markAppBootStart()
 if (!PRESENTATION_PREVIEW) {
 captureAnalyticsEntry()

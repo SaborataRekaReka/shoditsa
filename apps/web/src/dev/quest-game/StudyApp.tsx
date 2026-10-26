@@ -3,6 +3,7 @@ import { Suspense, useCallback, useContext, useEffect, useId, useRef, useState, 
 import { preloadableScreen } from '../../app/preloadable-screen'
 import { RoutePending, RouteLoadingOverlay } from '../../app/RoutePending'
 import { navigateApplication } from '../../app/application-navigation'
+import { trackNavigationAction } from '../../app/navigation-analytics'
 import { QueryClient, QueryClientContext, QueryClientProvider } from '@tanstack/react-query'
 import { ClubScreen } from '../../features/commerce/ClubScreen'
 import { getMoscowDate, PERIODS } from '@shoditsa/game-core'
@@ -235,7 +236,9 @@ function StudyAppContent({ routed }: { routed: boolean }) {
   }
   const navigate = useCallback((next: View) => {
     if (routed) {
-      void navigateApplication(next === 'play' ? `/play/${isCatalogGuessModeId(titleMode) ? titleMode : 'anime'}` : next === 'games' ? homeGamesHref! : applicationHref(next))
+      const href = next === 'play' ? `/play/${isCatalogGuessModeId(titleMode) ? titleMode : 'anime'}` : next === 'games' ? homeGamesHref! : applicationHref(next)
+      trackNavigationAction(href, 'study_navigation')
+      void navigateApplication(href)
       return
     }
     if (isShoditsaStudy && next === 'play') { location.assign(`/play/${isCatalogGuessModeId(titleMode) ? titleMode : 'anime'}`); return }

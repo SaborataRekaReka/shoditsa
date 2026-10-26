@@ -18,10 +18,10 @@ export function CharacterFirstMove({ onExample, variant = 'intro', disabled = fa
     <div className="character-first-move__intro">
       {!emptySearch && <BookOpen className="character-first-move__icon" aria-hidden="true" />}
       <div>
-        <p className="character-first-move__title">{emptySearch ? 'Такого имени пока не нашли' : 'Начните со знакомого героя'}</p>
+        <p className="character-first-move__title">{emptySearch ? 'Такого имени пока не нашли' : 'Первый ход — любой знакомый герой'}</p>
         <p className="character-first-move__description">{emptySearch
           ? 'Возможно, этого героя ещё нет в подборке. Здесь — персонажи классической литературы, сказок и мифов. Попробуйте другое имя или один из примеров.'
-          : 'Здесь — персонажи классической литературы, сказок и мифов. Выберите героя, а сравнение признаков после ответа поможет найти загаданного.'}</p>
+          : 'Здесь — персонажи классической литературы, сказок и мифов. Не нужно угадывать сразу: первая версия покажет, какие признаки совпали.'}</p>
       </div>
     </div>
     <div className="character-first-move__examples" aria-label="Примеры персонажей для поиска">
@@ -33,6 +33,6 @@ export function CharacterFirstMove({ onExample, variant = 'intro', disabled = fa
         onClick={() => onExample(query)}
       >{query}</ControlButton>)}
     </div>
-    <p className="character-first-move__note">Пример подставит имя в поиск. Попытка начнётся, когда вы выберете героя из списка.</p>
+    <p className="character-first-move__note">Пример подставит имя в поиск. Нажмите на героя в результатах или Enter, чтобы сделать ход.</p>
   </div>
 }

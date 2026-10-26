@@ -45,7 +45,7 @@ import { MODE_CONFIG, MODE_TABS } from './app/mode-config'
 import { CATALOG_HINT_COPY, ECONOMY_RULE_SET, FREE_PLAY_MODE_IDS, FULL_HOUSE_MODE_IDS, GAME_MODE_MANIFEST, KPOP_ARTISTS_PACK_ID, PERIOD_UNLOCKABLE_MODE_IDS, isCatalogGuessModeId, isPlayableModeId } from '@shoditsa/contracts'
 import { trackDiagnosisGoal } from './app/diagnosis-analytics'
 import { trackConfirmedServerStart, trackGameCompleteOnce, trackGameStartOnce, trackNextGameClick, trackObservedServerStart, trackServerGameCompleteObserved } from './app/game-analytics'
-import { markAppFirstRender, markSearchDuration, trackMetrikaGoal, trackMetrikaScreen } from './app/metrics'
+import { markAppFirstRender, markSearchDuration, trackMetrikaGoal } from './app/metrics'
 import { applyRuntimeSeo } from './app/seo'
 import { publicAssetUrl } from './app/public-asset'
 import { ApiClientError, api, queryKeys } from './api/client'
@@ -3986,7 +3986,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
     setActiveSuggestionIndex(0)
     attemptKeyRef.current = null
     setMessage('')
-    window.requestAnimationFrame(() => characterSearchInputRef.current?.focus())
+    window.requestAnimationFrame(() => {
+      characterSearchInputRef.current?.focus({ preventScroll: true })
+      characterSearchInputRef.current?.scrollIntoView({ block: 'center', behavior: 'instant' })
+    })
   }
   const revealHint = (hintKey: AssistHintKey) => {
     if (!hintModalRound || hint.isPending || revealedHint) return
@@ -4227,9 +4230,10 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
         <ActionButton variant="secondary" onClick={() => setLeaderboardOpen(true)}><Trophy /> Открыть таблицу лидеров</ActionButton>
       </div>}
       {['won', 'lost', 'expired'].includes(session.status) && message && <InlineAlert tone="danger" className="specials-error">{message}</InlineAlert>}
-      {session.status === 'playing' && <section className="search-area search-area--sticky">
+      {session.status === 'playing' && session.mode === 'character' && !attempts.length && <CharacterFirstMove onExample={useCharacterExample} disabled={attempt.isPending} />}
+      {session.status === 'playing' && <section className={`search-area search-area--sticky${session.mode === 'character' ? ' search-area--character' : ''}`}>
         {APPLICATION_DESIGN && <GameComposerHeader attempts={session.attemptsCount} max={maxAttempts} pending={attempt.isPending} onHint={canUseHint && availableHintRound ? () => { setRevealedHint(null); setHintModalRound(availableHintRound) } : undefined} />}
-        {session.mode === 'character' && !attempts.length && !query.trim() && <CharacterFirstMove onExample={useCharacterExample} disabled={attempt.isPending} />}
+        {session.mode === 'character' && <p id="character-search-help" className="character-search-help">Введите имя и выберите героя из списка. Выбор станет вашей попыткой.</p>}
         {!APPLICATION_DESIGN && <div className="sticky-composer__status" role="status" aria-live="polite">
           <span>{attempt.isPending ? 'Проверяем ответ…' : `Попытка ${Math.min(session.attemptsCount + 1, maxAttempts)} из ${maxAttempts}`}</span>
         </div>}
@@ -4239,7 +4243,9 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
             id: 'movie-search',
             value: query,
             autoComplete: 'off',
-            placeholder: modeMeta(session.mode).searchPlaceholder,
+            placeholder: session.mode === 'character' ? 'Например, Шерлок Холмс' : modeMeta(session.mode).searchPlaceholder,
+            'aria-label': session.mode === 'character' ? 'Имя персонажа' : modeMeta(session.mode).searchPlaceholder,
+            'aria-describedby': session.mode === 'character' ? 'character-search-help' : undefined,
             onChange: (event) => { setQuery(event.target.value); setSelected(null); setActiveSuggestionIndex(0); attemptKeyRef.current = null; setMessage('') },
             onKeyDown: (event) => {
               if (event.key === 'ArrowDown') {
@@ -4257,7 +4263,11 @@ function ServerGame({ sessionId, onHome, onBack, onArchive, onStats, onRules, on
               if (event.key === 'Enter') {
                 event.preventDefault()
                 if (selected) submit(selected)
-                else if (suggestions.length) selectSuggestion(suggestions[activeSuggestionIndex] ?? suggestions[0])
+                else if (!searchPending && !search.isError && suggestions.length) {
+                  const candidate = suggestions[activeSuggestionIndex] ?? suggestions[0]
+                  if (session.mode === 'character') commitSuggestionAttempt(candidate, selectSuggestion, submit)
+                  else selectSuggestion(candidate)
+                }
               }
             },
             disabled: attempt.isPending,
@@ -4404,7 +4414,6 @@ function GameApp() {
   const transitionTimerRef = useRef<number | null>(null)
   const applyingRouteRef = useRef(false)
   const lastRoutePathRef = useRef(routeLocation.pathname)
-  const lastTrackedScreenRef = useRef<AppScreen | null>(null)
   const lastTrackedSeoLandingRef = useRef<string | null>(null)
   const adminDailySaltRef = useRef(0)
   const globalDailySaltRef = useRef(0)
@@ -4892,14 +4901,7 @@ function GameApp() {
 
   useEffect(() => {
     document.body.dataset.seansScreen = screen
-    if (lastTrackedScreenRef.current === screen) return
-    lastTrackedScreenRef.current = screen
-    trackMetrikaScreen(screen, {
-      mode,
-      period,
-      date,
-    })
-  }, [screen, mode, period, date])
+  }, [screen])
 
   useEffect(() => {
     const landingMode = routeLocation.pathname === '/games/game'

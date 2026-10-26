@@ -3,6 +3,7 @@ import { studyViewFromHash, type StudyView } from './navigation'
 import { isStudyRootHomeLocation } from './home-route'
 import { applicationSection } from '../../features/application/routes'
 import { beginRouteLoading, finishRouteLoading } from '../../app/route-loading'
+import { runViewTransition } from '../../app/view-transition'
 
 /** Only destinations implemented by the shared study app are soft navigations. */
 export function studyLinkView(href: string, origin: string): StudyView | undefined {
@@ -19,35 +20,19 @@ export function studyLinkView(href: string, origin: string): StudyView | undefin
   return undefined
 }
 
-let current: ViewTransition | undefined
 let generation = 0
 
 /** Keep the shared shell still while React commits the next section atomically. */
 export function transitionStudyPage(update: () => void, prepare?: () => Promise<unknown> | undefined) {
   const own = ++generation
-  current?.skipTransition()
   finishRouteLoading()
   const commit = (finish?: () => void) => {
     if (own !== generation) { finish?.(); return }
     const render = () => { finish?.(); update() }
-    if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      flushSync(render)
-      return
-    }
-    const transition = document.startViewTransition(() => {
+    runViewTransition(() => {
       if (own === generation) {
         flushSync(render)
         document.documentElement.dataset.studyTransition = 'same-document'
-      }
-    })
-    current = transition
-    document.documentElement.setAttribute('data-study-transitioning', '')
-    // Superseded transitions can reject ready; navigation itself still completes.
-    void transition.ready.catch(() => {})
-    void transition.finished.finally(() => {
-      if (current === transition) {
-        current = undefined
-        document.documentElement.removeAttribute('data-study-transitioning')
       }
     })
   }

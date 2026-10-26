@@ -8,6 +8,19 @@
   text-align: left;
 }
 
+.character-search-help {
+  margin: 0 0 10px;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.search-area--character .ui-search-combobox { position: relative; }
+.search-area--character .ui-search-combobox .suggestions {
+  top: calc(100% + 6px);
+  max-height: min(280px, 40dvh);
+}
+
 .character-first-move__intro {
   display: flex;
   align-items: flex-start;

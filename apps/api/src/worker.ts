@@ -24,6 +24,7 @@ import { ApiError } from './lib/errors.js'
 import { reconcileCommerceOrders } from './modules/commerce/service.js'
 import { handleDanetkiJob } from './modules/danetki/worker.js'
 import { runContentRetention, runGameLifecycleCleanup } from './modules/maintenance/service.js'
+import { runMailingWorker } from './modules/mailings/service.js'
 import { rollupClientEventRetention } from './modules/stats/analytics-rollup-service.js'
 import { contentDuplicateGroups, isAllowedInRegularGame } from '@shoditsa/game-core'
 import {
@@ -256,7 +257,7 @@ const mapMusicRecord = (raw: Json) => {
     countries: [...fieldStrings(primary(source.country)), ...fieldStrings(primary(source.area))], genres,
     popularityScore: Number(primary(record(source.popularityMetrics).listeners)) || 0,
     posterUrl: imageCandidates[0] ?? null, headerUrl: imageCandidates[1] ?? null, backdropUrl: imageCandidates[2] ?? null,
-    screenshots: imageCandidates.slice(0, 6), description: text(primary(source.biography)) || `Музыкальный исполнитель${genres.length ? ` · жанры: ${genres.slice(0, 3).join(', ')}` : ''}`,
+    screenshots: imageCandidates.slice(0, 6), description: text(primary(source.biography)) || `Музыкальный исполнитель${genres.length ? `, жанры: ${genres.slice(0, 3).join(', ')}` : ''}`,
     plotHint: hint || null, slogan: text(record(topTracks[0]).title) || null,
     facts: [...topTracks.slice(0, 3).map((entry) => `Трек: ${text(record(entry).title)}`).filter(Boolean), ...topAlbums.slice(0, 2).map((entry) => `Альбом: ${text(record(entry).title)}`).filter(Boolean)],
     aliases, artistType: primary(source.artistType) ?? null, activeState: primary(source.isActive) ?? null,
@@ -1348,5 +1349,8 @@ const work = async () => {
   }
 }
 
-for (const signal of ['SIGINT', 'SIGTERM'] as const) process.on(signal, () => { stopping = true })
-work().catch((error) => { console.error(error); process.exitCode = 1 }).finally(async () => database.client.end())
+const mailingAbort = new AbortController()
+for (const signal of ['SIGINT', 'SIGTERM'] as const) process.on(signal, () => { stopping = true; mailingAbort.abort() })
+Promise.all([work(), runMailingWorker(db, config, mailingAbort.signal)])
+  .catch((error) => { stopping = true; mailingAbort.abort(); console.error(error); process.exitCode = 1 })
+  .finally(async () => database.client.end())

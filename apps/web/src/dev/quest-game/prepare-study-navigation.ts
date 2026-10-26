@@ -5,6 +5,7 @@
 import { applyStudyTheme } from './study-theme'
 import { isStudyRootHomeLocation } from './home-route'
 import { applicationSection } from '../../features/application/routes'
+import { observeViewTransition } from '../../app/view-transition'
 
 if (isStudyRootHomeLocation(window.location) || applicationSection(window.location.pathname)) {
   document.documentElement.dataset.questSkin = 'shoditsa'
@@ -20,15 +21,14 @@ if (studyPage) {
   document.documentElement.dataset.studyDocument = String(performance.timeOrigin)
   window.addEventListener('pageswap', event => {
     const transition = (event as Event & { viewTransition?: ViewTransition }).viewTransition
-    if (transition) void transition.ready.catch(() => {})
+    if (transition) observeViewTransition(transition)
   })
   window.addEventListener('pagereveal', event => {
     const transition = (event as Event & { viewTransition?: ViewTransition }).viewTransition
     document.documentElement.dataset.studyTransition = transition ? 'cross-document' : 'initial'
     if (transition) {
       document.documentElement.setAttribute('data-study-transitioning', '')
-      void transition.ready.catch(() => {})
-      void transition.finished.finally(() => document.documentElement.removeAttribute('data-study-transitioning'))
+      observeViewTransition(transition, () => document.documentElement.removeAttribute('data-study-transitioning'))
     }
   })
   const shellReady = new Promise<void>(resolve => {

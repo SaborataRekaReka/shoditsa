@@ -1,0 +1,5 @@
+.admin-server-journeys p { margin: 9px 11px; color: var(--a-muted); font-size: 11px; line-height: 1.5; }
+.admin-server-journeys .admin-acquisition__danetki-group dt,
+.admin-server-journeys .admin-acquisition__danetki-group dd small { white-space: normal; overflow-wrap: anywhere; }
+.admin-server-journeys details { margin-top: 12px; }
+.admin-server-journeys summary { cursor: pointer; font-size: 12px; font-weight: 600; }

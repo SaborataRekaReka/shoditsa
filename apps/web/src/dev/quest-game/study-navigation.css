@@ -4,8 +4,9 @@ html { scrollbar-gutter: stable; }
 html[data-study-booting] #root { visibility: hidden; }
 html[data-study-js] [data-study-fallback] { display: none; }
 html[data-quest-skin='shoditsa'] { background: var(--color-entry-bg); }
-html[data-quest-skin='shoditsa'] .qg-rail { view-transition-name: study-navigation; }
-html[data-quest-skin='shoditsa'] .study-right-panel { view-transition-name: study-aside; }
+html[data-quest-skin='shoditsa'] .qg-app:not(.qg-app .qg-app) > .qg-rail { view-transition-name: study-navigation; }
+/* Supporting screens can nest sidebars. Let them animate with the root snapshot instead of
+   assigning the same unique transition name to multiple rendered elements. */
 /* Route focus is an accessible reading position, not an interactive control. */
 .qg-app main[tabindex='-1']:focus { outline: none; }
 /* The player controls move between the sidebar and header; keep them in normal painting. */
@@ -16,8 +17,6 @@ html[data-quest-skin='shoditsa'] .study-header { view-transition-name: none; }
 ::view-transition-new(root) { animation: study-page-in 180ms ease-out both; }
 ::view-transition-old(study-navigation) { animation: none; opacity: 0; }
 ::view-transition-new(study-navigation) { animation: none; }
-::view-transition-old(study-aside) { animation: study-page-out 120ms ease-out both; }
-::view-transition-new(study-aside) { animation: study-page-out 160ms ease-out reverse both; }
 .study-navigation-progress { position: fixed; z-index: 2001; inset: 0 0 auto; height: 3px; overflow: hidden; opacity: 0; pointer-events: none; animation: study-progress-reveal 1ms 220ms forwards; }
 .study-navigation-progress span { display: block; width: 35%; height: 100%; border-radius: 99px; background: var(--color-focus); animation: study-progress-travel 1.1s ease-in-out infinite; }
 @keyframes study-progress-reveal { to { opacity: 1; } }

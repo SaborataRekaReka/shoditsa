@@ -1,5 +1,5 @@
 import { ApplicationDialog } from '../application/ApplicationDialog'
-import { lazy, Suspense, useContext, useEffect, useState } from 'react'
+import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { MeResponse, MetaResponse } from '@shoditsa/contracts'
 import { ArrowRight, ChevronDown, History, KeyRound } from 'lucide-react'
@@ -28,6 +28,7 @@ import { loadSvoyakDirectory, svoyakDirectoryKey } from '../svoyak/room-director
 import { roomCredentials, svoyakClient } from '../svoyak/client'
 import { deterministicClientEventId, trackClientEvent } from '../../app/client-events'
 import { trackTerritoryEvent } from '../territory/territory-analytics'
+import { trackMetrikaGoal } from '../../app/metrics'
 import './room-lobby.css'
 
 const SvoyakRoomCreation = lazy(() => import('../svoyak/SvoyakPage').then(module => ({ default: module.SvoyakRoomCreation })))
@@ -63,6 +64,16 @@ export default function RoomLobbyPage() {
   const authenticationRequired = identity?.user.isAnonymous === true || access.status === 'auth-required' || rooms.error instanceof ApiClientError && rooms.error.status === 401
   const standardReady = !SERVER_RUNTIME || rooms.isSuccess || authenticationRequired
   const directoryReady = standardReady && (!SVOYAK_ENABLED || svoyakRooms.isSuccess)
+  const territoryLandingVisible = useRef(false)
+  const visibleSetupMode = useRef<SetupMode | null>(null)
+  useEffect(() => {
+    const setupVisible = directoryReady && !currentRoom && (mode !== 'territory' || meta?.features.territoryEnabled === true)
+    if (setupVisible && visibleSetupMode.current !== mode) trackClientEvent('mode_opened', { mode, source_surface: 'lobby', surface: 'room_setup' })
+    visibleSetupMode.current = setupVisible ? mode : null
+    const visible = directoryReady && !currentRoom && mode === 'territory' && meta?.features.territoryEnabled === true
+    if (visible && !territoryLandingVisible.current) trackTerritoryEvent('territory_landing_view', { sourceSurface: 'lobby' })
+    territoryLandingVisible.current = visible
+  }, [directoryReady, currentRoom, mode, meta?.features.territoryEnabled])
   useEffect(() => {
     try { sessionStorage.setItem(ROOM_DRAFT_KEY, JSON.stringify({ mode, setup })) } catch { /* Storage is optional. */ }
   }, [mode, setup])
@@ -127,7 +138,7 @@ export default function RoomLobbyPage() {
     {copyFallback && <div className="room-directory-feedback"><InlineAlert tone="warning">Не удалось скопировать автоматически. Выдели и скопируй ссылку:<code>{copyFallback}</code></InlineAlert></div>}
     {!authenticationRequired && (currentRoom || rooms.isSuccess) && directory.isError && <div className="room-directory-feedback"><InlineAlert tone="warning">Не удалось загрузить недавние комнаты.<QuestButton kind="text" onClick={() => void directory.refetch()}>Повторить</QuestButton></InlineAlert></div>}
     {!currentRoom && (!directoryReady ? <section className="room-lobby-config">{rooms.isError || svoyakRooms.isError ? <InlineAlert tone="warning">Не удалось проверить текущую комнату.<QuestButton kind="text" onClick={() => { void rooms.refetch(); if (SVOYAK_ENABLED) void svoyakRooms.refetch() }}>Повторить</QuestButton></InlineAlert> : <p role="status">Проверяем текущую комнату…</p>}</section> : <section className="room-lobby-config" id="room-lobby-create" tabIndex={-1} aria-label="Настройка игры">
-      <RoomModePicker value={mode} territoryEnabled={meta?.features?.territoryEnabled === true} svoyakEnabled={SVOYAK_ENABLED} disabled={busy} onChange={next => { setMode(next); setError(''); if (next !== 'svoyak') setSetup(current => ({ ...current, gameType: next })); void navigateApplication(`${LOBBY_HREF}?mode=${next}`, true) }} />
+      <RoomModePicker value={mode} territoryEnabled={meta?.features?.territoryEnabled === true} svoyakEnabled={SVOYAK_ENABLED} disabled={busy} onChange={next => { if (next !== mode) trackMetrikaGoal('select_mode', { mode: next, source_surface: 'lobby' }); setMode(next); setError(''); if (next !== 'svoyak') setSetup(current => ({ ...current, gameType: next })); void navigateApplication(`${LOBBY_HREF}?mode=${next}`, true) }} />
       {mode === 'svoyak' ? <Suspense fallback={<p role="status">Загружаем настройки…</p>}><SvoyakRoomCreation beforeCreate={canCreateRoom} onBusyChange={setBusy} initialName={identity?.user.name ?? ''} allowed={access.allowed && access.status === 'ready'} unavailableAction={authenticationRequired ? <a className="quest-button quest-button--primary" href="/login?returnUrl=%2Flobby%3Fmode%3Dsvoyak">Войти и создать комнату<ArrowRight size={19} /></a> : access.status !== 'ready' ? <QuestButton disabled>{access.status === 'loading' ? 'Проверяем доступ…' : 'Доступ не проверен'}</QuestButton> : undefined} /></Suspense> : <>
         <RoomSetup value={setup} onChange={setSetup} hideModePicker compact disabled={busy} />
         <RoomCreationFooter summary={mode === 'quiz' ? `${setup.packs.length} ${setup.packs.length === 1 ? 'категория' : setup.packs.length < 5 ? 'категории' : 'категорий'}, ${setup.roundsTotal} раундов` : mode === 'territory' ? 'Дуэль на двоих' : 'Расследование для компании'}>{authenticationRequired ? <a className="quest-button quest-button--primary" href="/login?returnUrl=%2Flobby">Войти и создать комнату<ArrowRight size={19} /></a> : access.status === 'ready' ? access.allowed ? <QuestButton onClick={() => void createRoom()} disabled={busy}>{busy ? 'Создаём комнату…' : 'Создать комнату'}<ArrowRight size={19} /></QuestButton> : <a className="quest-button quest-button--primary" href={STUDY_CLUB_OFFER_HREF}>Открыть с Клубом<ArrowRight size={19} /></a> : <QuestButton disabled>{access.status === 'loading' ? 'Проверяем доступ…' : 'Доступ не проверен'}</QuestButton>}</RoomCreationFooter>

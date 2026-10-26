@@ -22,5 +22,9 @@ export function StudyThemeToggle({ menuItem = false }: { menuItem?: boolean }) {
 }
 
 export function StudyFooter({ children }: { children?: ReactNode }) {
-  return <footer className="qg-footer study-footer" aria-label="Информация о сайте">{children ?? <><a href="/">Игры</a><a href="/club">Клуб</a><a href="/blog">Блог</a><a href="/support">Помощь</a><a href="/legal/terms">Оферта</a><a href="/legal/privacy">Конфиденциальность</a></>}<div className="study-footer-theme"><StudyThemeToggle /></div></footer>
+  return <footer className="qg-footer study-footer" aria-label="Информация о сайте">{children ?? <><a href="/">Игры</a><a href="/club">Клуб</a><a href="/blog">Блог</a><a href="/support">Помощь</a><a href="/legal/terms">Оферта</a><a href="/legal/privacy">Конфиденциальность</a></>}<StudyCookieSettings /><div className="study-footer-theme"><StudyThemeToggle /></div></footer>
+}
+
+export function StudyCookieSettings() {
+  return <QuestButton kind="footer" onClick={() => window.dispatchEvent(new Event('shoditsa:cookie-settings'))}>Настройки cookie</QuestButton>
 }

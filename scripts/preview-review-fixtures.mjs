@@ -56,7 +56,7 @@ const plugin = {
       if (url.pathname === '/__qa' || url.pathname === '/__qa/') {
         response.setHeader('Content-Type', 'text/html; charset=utf-8')
         response.end(qaIndex(scenario, { localSvoyak: false })
-          .replace('Изолированный QA · только localhost:5180', `Единый просмотр · 127.0.0.1:${port}`)
+          .replace('Изолированный QA, только localhost:5180', `Единый просмотр, 127.0.0.1:${port}`)
           .replace('Авторизация, платежи, сохранение профиля, игровые ответы и AI не выполняются.', 'Данные аккаунта и обычных игровых сеансов — примеры для просмотра. Авторизация, платежи и сохранение профиля не выполняются. Своя игра проверяется через подключённый просмотр и настоящий API.'))
         return
       }
@@ -69,7 +69,7 @@ const plugin = {
   },
   transformIndexHtml(html) {
     return html.replace('<head>', `<head><script>try { localStorage.setItem('shoditsa:analytics-consent:v1','rejected'); } catch {}</script><style>.review-state-switcher{position:fixed;right:12px;bottom:12px;z-index:2147483647;padding:4px 9px;border:1px solid #d8d0e8;border-radius:999px;background:#f4efff;color:#353039;font:11px/1.3 system-ui;text-decoration:none}@media(max-width:860px){.review-state-switcher{bottom:calc(82px + env(safe-area-inset-bottom))}}</style>`)
-      .replace('</body>', `<a class="review-state-switcher" href="/__qa" title="Один проект из текущих исходников. Данные аккаунта и обычных игр — локальные примеры.">Просмотр · состояния</a></body>`)
+      .replace('</body>', `<a class="review-state-switcher" href="/__qa" title="Один проект из текущих исходников. Данные аккаунта и обычных игр — локальные примеры.">Просмотр, состояния</a></body>`)
   },
 }
 

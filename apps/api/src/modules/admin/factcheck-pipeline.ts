@@ -75,7 +75,7 @@ const getPath = (target: Json, field: string): unknown => field.split('.').reduc
 )
 
 const warningForFinding = (finding: FactcheckFinding) => {
-  const prefix = [finding.severity, finding.status].filter(Boolean).join(' · ')
+  const prefix = [finding.severity, finding.status].filter(Boolean).join(', ')
   return `${prefix ? `${prefix}: ` : ''}${finding.message ?? finding.ruleId ?? 'Требуется проверка'}`
 }
 

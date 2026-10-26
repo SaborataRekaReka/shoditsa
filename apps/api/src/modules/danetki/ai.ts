@@ -1,5 +1,6 @@
 import { fetch as undiciFetch, ProxyAgent } from 'undici'
 import type { DanetkiAiAnswer, DanetkiGuessEvaluation, DanetkiPayload } from '@shoditsa/contracts'
+import { ApiError } from '../../lib/errors.js'
 
 type Json = Record<string, unknown>
 type Usage = { inputTokens: number | null; outputTokens: number | null }
@@ -43,29 +44,59 @@ const requestStructured = async <T>(options: {
       max_output_tokens: options.maxOutputTokens ?? 800,
       text: { format: { type: 'json_schema', name: options.schemaName, strict: true, schema: options.schema } },
     }
-    let response: Awaited<ReturnType<typeof undiciFetch>> | null = null
     const attempts = Math.max(1, Math.min(4, (options.retryCount ?? 1) + 1))
+    let payload: Json = {}
+    let parsed: Json | null = null
+    let inputTokens: number | null = null
+    let outputTokens: number | null = null
     for (let attempt = 0; attempt < attempts; attempt += 1) {
-      response = await undiciFetch('https://api.openai.com/v1/responses', {
+      const response = await undiciFetch('https://api.openai.com/v1/responses', {
         method: 'POST',
         headers: { Authorization: `Bearer ${options.apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
         signal: controller.signal,
         ...(dispatcher ? { dispatcher } : {}),
       })
-      if (response.ok || ![408, 409, 429, 500, 502, 503, 504].includes(response.status) || attempt === attempts - 1) break
-      await new Promise((resolve) => setTimeout(resolve, 300 + Math.floor(Math.random() * 500)))
+      if (!response.ok && [408, 409, 429, 500, 502, 503, 504].includes(response.status) && attempt < attempts - 1) {
+        await response.body?.cancel()
+        await new Promise((resolve) => setTimeout(resolve, 300 + Math.floor(Math.random() * 500)))
+        continue
+      }
+      try {
+        payload = record(await response.json())
+      } catch {
+        if (response.ok && attempt < attempts - 1) continue
+        throw new ApiError(502, 'OPENAI_RESPONSE_INVALID_JSON', 'OpenAI вернул некорректный JSON ответа', { providerStatus: response.status })
+      }
+      if (!response.ok) throw new Error(String(record(payload.error).message ?? `OpenAI HTTP ${response.status}`))
+      const usage = record(payload.usage)
+      if (typeof usage.input_tokens === 'number' && Number.isFinite(usage.input_tokens)) inputTokens = (inputTokens ?? 0) + usage.input_tokens
+      if (typeof usage.output_tokens === 'number' && Number.isFinite(usage.output_tokens)) outputTokens = (outputTokens ?? 0) + usage.output_tokens
+      const incomplete = payload.status === 'incomplete'
+      const tokenLimit = record(payload.incomplete_details).reason === 'max_output_tokens'
+      if (incomplete) {
+        if (tokenLimit && attempt < attempts - 1) {
+          // Retry within the existing attempt/time budget and the settings schema's 2,000-token ceiling.
+          body.max_output_tokens = Math.min(2_000, Math.max(body.max_output_tokens + 400, body.max_output_tokens * 2))
+          continue
+        }
+        throw new ApiError(502, 'OPENAI_RESPONSE_INCOMPLETE', 'OpenAI не завершил структурированный ответ', { reason: tokenLimit ? 'max_output_tokens' : 'other' })
+      }
+      try {
+        parsed = record(JSON.parse(responseText(payload)))
+        break
+      } catch {
+        if (attempt < attempts - 1) continue
+        throw new ApiError(502, 'OPENAI_STRUCTURED_OUTPUT_INVALID', 'OpenAI вернул незавершённый или некорректный структурированный ответ')
+      }
     }
-    const payload = record(await response!.json())
-    if (!response!.ok) throw new Error(String(record(payload.error).message ?? `OpenAI HTTP ${response!.status}`))
-    const parsed = record(JSON.parse(responseText(payload)))
-    const usage = record(payload.usage)
+    if (!parsed) throw new ApiError(502, 'OPENAI_STRUCTURED_OUTPUT_INVALID', 'OpenAI не вернул структурированный ответ')
     return {
       value: options.validate(parsed),
       responseId: typeof payload.id === 'string' ? payload.id : null,
       usage: {
-        inputTokens: Number.isFinite(Number(usage.input_tokens)) ? Number(usage.input_tokens) : null,
-        outputTokens: Number.isFinite(Number(usage.output_tokens)) ? Number(usage.output_tokens) : null,
+        inputTokens,
+        outputTokens,
       },
       latencyMs: Math.round(performance.now() - started),
     }

@@ -154,6 +154,60 @@ export type AdminDiagnosisRecommendations = {
   byMode: { mode: string; label: string; clicks: number; confirmedStarts: number }[]
 }
 
+export type AdminVerifiedDiagnosisJourney = {
+  completedSessions: number
+  sameGameStarts: number
+  sameGameSources: number
+  recommendationClicks: number
+  crossGameStarts: number
+  crossGameSources: number
+  crossGameCompletions: number
+  crossGameRate: number | null
+  linkedExistingTargets: number
+  byMode: { mode: 'animal' | 'character' | 'book'; starts: number; completions: number }[]
+}
+
+export type AdminCharacterMatureCohort = {
+  cohort: 'first' | 'repeat'
+  starts: number
+  completions48h: number
+  zeroAttempts48h: number
+  unknownAttempts: number
+  observedFirstAttempts: number
+  medianFirstAttemptSeconds: number | null
+  completionRate: number | null
+}
+
+export type AdminServerJourneyPeriod = {
+  window: { from: string; toExclusive: string }
+  factsCoverage: 'complete' | 'partial' | 'unavailable'
+  rawCoverage: 'complete' | 'partial' | 'unavailable'
+  diagnosis: { all: AdminVerifiedDiagnosisJourney; organic: AdminVerifiedDiagnosisJourney }
+  character: { matureBefore: string; notYetMature: number; cohorts: AdminCharacterMatureCohort[] }
+  retention: {
+    accounts: number
+    d1Eligible: number
+    d1Returned: number
+    d1Rate: number | null
+    d7Eligible: number
+    d7Returned: number
+    d7Rate: number | null
+  }
+}
+
+/** Additive server verification; existing client nextStarts retain their historical meaning. */
+export type AdminServerJourneyReport = {
+  method: 'server-journeys-v1'
+  status: 'available' | 'unavailable'
+  generatedAt: string
+  factsFullDaysFrom: string | null
+  rawObservedFrom: string | null
+  rawRetainedFrom: string | null
+  current: AdminServerJourneyPeriod | null
+  previous: AdminServerJourneyPeriod | null
+  limitations: string[]
+}
+
 export type AdminAcquisitionFunnelResponse = {
   periodDays: AdminAcquisitionFunnelPeriod
   generatedAt: string
@@ -208,6 +262,7 @@ export type AdminAcquisitionFunnelResponse = {
     all: AdminDiagnosisRecommendations
     organic: AdminDiagnosisRecommendations
   }
+  serverJourneys?: AdminServerJourneyReport
   danetki: {
     all: AdminDanetkiFunnel
     organic: AdminDanetkiFunnel

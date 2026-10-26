@@ -31,6 +31,9 @@ import { AppErrorBoundary } from '../components/app-shell/AppErrorBoundary'
 import '../dev/quest-game/study-navigation.css'
 import { isSvoyakPath } from '../features/rooms/room-navigation'
 import { SVOYAK_ENABLED } from '../features/svoyak/SvoyakHomeCard'
+import { ANALYTICS_CONSENT_EVENT } from './metrics'
+import { refreshNavigationConsent, trackNavigationAction, trackNavigationView } from './navigation-analytics'
+import { runViewTransition } from './view-transition'
 
 const App = preloadableScreen(() => import('../App'))
 const StudyApp = preloadableScreen(() => import('../dev/quest-game/StudyApp'))
@@ -77,11 +80,19 @@ const RootView = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const pathname = useRouterState({ select: state => state.matches.at(-1)?.pathname ?? state.location.pathname })
+  const resolvedLocation = useRouterState({ select: state => state.status === 'idle' ? state.resolvedLocation : undefined })
   useLayoutEffect(() => {
     applyPublicPresentation(pathname)
     if (APPLICATION_DESIGN && isApplicationShellPage({ pathname, search: window.location.search, hash: window.location.hash }, SERVER_RUNTIME)) applyApplicationPresentation()
   }, [pathname])
   useEffect(() => applyRuntimeSeo(pathname), [pathname])
+  useEffect(() => {
+    if (resolvedLocation) trackNavigationView({ pathname: resolvedLocation.pathname, search: resolvedLocation.searchStr })
+  }, [resolvedLocation])
+  useEffect(() => {
+    window.addEventListener(ANALYTICS_CONSENT_EVENT, refreshNavigationConsent)
+    return () => window.removeEventListener(ANALYTICS_CONSENT_EVENT, refreshNavigationConsent)
+  }, [])
   useEffect(() => {
     if (!APPLICATION_DESIGN) return
     const uninstall = installApplicationNavigator((href, replace) => {
@@ -99,6 +110,7 @@ const RootView = () => {
       const href = linkTarget(event)
       if (!href) return
       event.preventDefault()
+      trackNavigationAction(href, 'application_link')
       void router.navigate({ href })
     }
     const warm = (event: Event) => {
@@ -239,9 +251,19 @@ export const appRouter = createRouter({
   defaultPendingMs: APPLICATION_DESIGN ? Infinity : 1000,
   defaultPendingMinMs: 0,
   scrollRestoration: APPLICATION_DESIGN,
-  defaultViewTransition: APPLICATION_DESIGN ? { types: () => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : ['study-page'] } : false,
+  defaultViewTransition: APPLICATION_DESIGN,
   defaultNotFoundComponent: REFERENCE_PRESENTATION ? PublicNotFoundRoute : undefined,
 })
+
+if (APPLICATION_DESIGN) {
+  // This router version discards the native transition's promises. Keep its commit timing and
+  // per-navigation opt-out, but own all three promises so skipped animations cannot reject globally.
+  appRouter.startViewTransition = (update) => {
+    const animate = appRouter.shouldViewTransition ?? appRouter.options.defaultViewTransition
+    appRouter.shouldViewTransition = undefined
+    runViewTransition(update, Boolean(animate))
+  }
+}
 
 declare module '@tanstack/react-router' {
   interface Register {
