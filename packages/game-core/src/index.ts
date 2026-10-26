@@ -1364,7 +1364,7 @@ const compareKpopArtists = (guess: TitleItem, answer: TitleItem): Hint[] => {
   const guessActivityStatus = knownComparisonText(guess.kpopActivityStatus)
   const answerActivityStatus = knownComparisonText(answer.kpopActivityStatus)
   const generationValue = guess.kpopGeneration
-    ? `${kpopGenerationLabel(guess.kpopGeneration)} · ${KPOP_GENERATION_RANGES[guess.kpopGeneration - 1]?.years ?? ''}`
+    ? `${kpopGenerationLabel(guess.kpopGeneration)}, ${KPOP_GENERATION_RANGES[guess.kpopGeneration - 1]?.years ?? ''}`
     : 'Нет данных'
 
   return [
@@ -1863,7 +1863,7 @@ export const resultText = (mode: TitleMode, date: string, period: PeriodKey, hin
   const monthLabel = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'][month - 1]
   const dateLabel = year && monthLabel && day ? `${day} ${monthLabel} ${year}` : date
   const selectionLabel = modeDefinition.periodPolicy === 'year'
-    ? `${dateLabel} · ${PERIODS[period].label}`
+    ? `${dateLabel}, ${PERIODS[period].label}`
     : dateLabel
   return `Сеанс — ${dailyLabel}\n${selectionLabel}\n${icon} ${result}/${maxAttempts}\n${rows}`
 }

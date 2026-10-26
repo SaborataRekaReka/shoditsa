@@ -789,6 +789,24 @@ export const reconcileCommerceOrders = async (db: Database, config: AppConfig, n
         reconciled.push({ orderId: candidate.order.id, status: 'expired' })
         continue
       }
+      if (
+        error instanceof ApiError
+        && error.code === 'ORDER_NOT_FOUND'
+        && providers.get(candidate.order.provider)?.category === 'cloudpayments'
+        && candidate.order.providerStatus === 'widget_pending'
+        && candidate.order.providerPaymentId?.startsWith('invoice:')
+      ) {
+        // Opening the widget reserves a local invoice, not a provider transaction.
+        // Keep its original age so the existing 72-hour expiry still applies.
+        await db.update(paymentOrders).set({
+          metadata: sql`(${paymentOrders.metadata} - 'lastReconciliationError' - 'lastReconciliationFailedAt') || ${JSON.stringify({
+            lastReconciledAt: now.toISOString(),
+            lastReconciliationOutcome: 'awaiting_payment',
+          })}::jsonb`,
+        }).where(and(eq(paymentOrders.id, candidate.order.id), eq(paymentOrders.status, 'pending')))
+        reconciled.push({ orderId: candidate.order.id, status: 'pending' })
+        continue
+      }
       const safeMessage = safeProviderError(error)
       failures.push({
         orderId: candidate.order.id,

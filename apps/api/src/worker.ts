@@ -257,7 +257,7 @@ const mapMusicRecord = (raw: Json) => {
     countries: [...fieldStrings(primary(source.country)), ...fieldStrings(primary(source.area))], genres,
     popularityScore: Number(primary(record(source.popularityMetrics).listeners)) || 0,
     posterUrl: imageCandidates[0] ?? null, headerUrl: imageCandidates[1] ?? null, backdropUrl: imageCandidates[2] ?? null,
-    screenshots: imageCandidates.slice(0, 6), description: text(primary(source.biography)) || `Музыкальный исполнитель${genres.length ? ` · жанры: ${genres.slice(0, 3).join(', ')}` : ''}`,
+    screenshots: imageCandidates.slice(0, 6), description: text(primary(source.biography)) || `Музыкальный исполнитель${genres.length ? `, жанры: ${genres.slice(0, 3).join(', ')}` : ''}`,
     plotHint: hint || null, slogan: text(record(topTracks[0]).title) || null,
     facts: [...topTracks.slice(0, 3).map((entry) => `Трек: ${text(record(entry).title)}`).filter(Boolean), ...topAlbums.slice(0, 2).map((entry) => `Альбом: ${text(record(entry).title)}`).filter(Boolean)],
     aliases, artistType: primary(source.artistType) ?? null, activeState: primary(source.isActive) ?? null,

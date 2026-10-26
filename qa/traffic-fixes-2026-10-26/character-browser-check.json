@@ -1,0 +1,23 @@
+{
+  "scope": "isolated local fixtures, no production state",
+  "results": [
+    {
+      "width": 390,
+      "query": "Шерлок Холмс",
+      "introRemainsVisible": true,
+      "firstResultWidth": 306,
+      "attemptRequests": 1,
+      "horizontalOverflow": false,
+      "errors": []
+    },
+    {
+      "width": 1280,
+      "query": "Шерлок Холмс",
+      "introRemainsVisible": true,
+      "firstResultWidth": 546,
+      "attemptRequests": 1,
+      "horizontalOverflow": false,
+      "errors": []
+    }
+  ]
+}

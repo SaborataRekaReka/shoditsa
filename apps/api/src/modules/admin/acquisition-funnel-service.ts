@@ -9,6 +9,7 @@ import type {
   AdminRegistrationSummary,
 } from '@shoditsa/contracts'
 import type { Database } from '@shoditsa/database'
+import { loadAdminServerJourneys, unavailableServerJourneyReport } from './server-journey-service.js'
 import {
   ANALYTICS_ROLLUP_LAG_DAYS,
   completedUtcDay,
@@ -772,7 +773,7 @@ export const loadAdminAcquisitionFunnel = async (
   const reportFrom = window.reportFrom.toISOString()
   const reportTo = window.reportTo.toISOString()
   const archiveTo = window.archiveTo.toISOString()
-  const [clientResult, signUpResult, registrationAggregateResult, dailyResult] = await Promise.all([
+  const [clientResult, signUpResult, registrationAggregateResult, dailyResult, serverJourneys] = await Promise.all([
     db.execute(sql`
       select event_id "eventId", event_name "eventName", occurred_at "occurredAt", user_id "userId",
         game_session_id "gameSessionId", route, properties
@@ -841,6 +842,8 @@ export const loadAdminAcquisitionFunnel = async (
           order by case when event_name = '__raw_retention_38_started__' then 0 else 1 end, activity_date asc, event_name asc
           limit ${DAILY_ROW_LIMIT + 1}`)
       : Promise.resolve([]),
+    // This additive diagnostic must not hide the existing report if its source is unavailable.
+    loadAdminServerJourneys(db, periodDays, now).catch(() => unavailableServerJourneyReport(now)),
   ])
   const clientRows = rows<AcquisitionClientEventRow>(clientResult)
   const signUpRows = rows<AcquisitionSignUpRow>(signUpResult)
@@ -857,6 +860,7 @@ export const loadAdminAcquisitionFunnel = async (
     { from: window.rawFrom, to: window.reportTo },
     registrationAggregate,
   )
+  raw.serverJourneys = serverJourneys
   if (rawRowsTruncated || signUpsTruncated) {
     raw.coverage.limitations.push('Защитный лимит строк сработал; raw-срез неполон и не помечается как точный.')
     raw.dataSources.eventTotalsExact = false

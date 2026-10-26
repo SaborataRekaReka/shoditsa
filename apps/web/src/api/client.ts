@@ -16,6 +16,7 @@ import type {
 import { analyticsAcquisitionHeaders } from '../app/metrics'
 import type { SupportMessageBody, SupportMessageResponse } from '@shoditsa/contracts'
 import { trackClientEvent } from '../app/client-events'
+import { clientAppVersion } from '../app/app-version'
 
 const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/$/, '')
 const AUTH_BASE = String(import.meta.env.VITE_AUTH_BASE_URL || '/api/auth').replace(/\/$/, '')
@@ -256,7 +257,7 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({
       clientEventId: crypto.randomUUID(),
-      appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev'),
+      appVersion: clientAppVersion(),
       pageUrl: `${window.location.origin}${window.location.pathname}`,
       ...payload,
     }),

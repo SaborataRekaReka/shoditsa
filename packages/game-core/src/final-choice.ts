@@ -31,7 +31,7 @@ const compact = (values: Array<string | null | undefined>, limit = 2) => values
   .map((value) => String(value ?? '').replace(/\s+/g, ' ').trim())
   .filter(isKnownComparisonText)
   .slice(0, limit)
-  .join(' · ')
+  .join(', ')
 
 const compactNumber = (value: number) => new Intl.NumberFormat('ru-RU', {
   notation: value >= 1_000_000 ? 'compact' : 'standard',

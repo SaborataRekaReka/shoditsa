@@ -15,7 +15,8 @@ import { GeneratedShoditsaGlyph as Glyph } from '../quest-game/GeneratedShoditsa
 import { StudySidebar } from '../quest-game/StudySidebar'
 import { StudyHeader } from '../quest-game/StudyHeader'
 import { StudyRightSidebar } from '../quest-game/StudyRightSidebar'
-import { StudyFooter } from '../quest-game/StudyTheme'
+import { StudyCookieSettings, StudyFooter } from '../quest-game/StudyTheme'
+import { trackMetrikaGoal } from '../../app/metrics'
 import { StudyGameDirectory } from '../quest-game/StudyGameDirectory'
 import type { StudyView } from '../quest-game/navigation'
 import { StudyGuestPlayWidget } from '../quest-game/StudySidebarWidgets'
@@ -59,7 +60,10 @@ function Hero({ variant, onAbout }: { variant: HomeVariant; onAbout: () => void 
 function GameCard({ game, variant, availability }: { game: GameSeoContent; variant: HomeVariant; availability: GameAvailability }) {
   const showAvailability = variant === 'a' && availability !== 'online'
   const Heading = variant === 'c' ? 'h3' : 'h4'
-  return <a className={`hs-game hs-game--${game.mode}`} data-game={game.mode} href={game.canonicalPath} aria-label={`Играть: ${game.shortName}${showAvailability ? `. ${AVAILABILITY_PRESENTATION[availability].detail}` : ''}`}>
+  return <a className={`hs-game hs-game--${game.mode}`} data-game={game.mode} href={game.canonicalPath} aria-label={`Играть: ${game.shortName}${showAvailability ? `. ${AVAILABILITY_PRESENTATION[availability].detail}` : ''}`} onClick={() => {
+    const status = availability === 'in-progress' ? 'active' : availability === 'online' ? 'new' : availability
+    trackMetrikaGoal(status === 'active' ? 'category_ticket_resume' : status === 'completed' ? 'category_ticket_result' : 'category_ticket_play', { mode: game.mode, status, source_surface: 'home_catalogue', destination: 'title' })
+  }}>
     <span className="hs-game-art"><GameArtwork mode={game.mode} alt="" width="88" height="88" loading="lazy" /></span>
     <div className="hs-game-copy"><Heading>{game.shortName}</Heading><p>{REFERENCE_HOME_CARD_COPY[game.mode]}</p></div>{showAvailability ? <GameAvailabilityBadge state={availability} /> : variant !== 'a' && <ArrowRight className="hs-game-arrow" size={20} aria-hidden="true" />}
   </a>
@@ -96,7 +100,7 @@ export function HomeSourceContent({ open, onToggle }: { open: boolean; onToggle:
 }
 
 function HomeFooter() {
-  return <footer className="hs-footer" aria-label="Информация о сайте"><nav aria-label="Разделы сайта"><a href="/games/together">Игра с друзьями</a><a href="/specials">Спецпоказы</a><a href={STUDY_CLUB_HREF}>Клуб</a><a href="/partners">Для компаний</a><a href="/danetki">Данетки с ответами</a></nav><nav aria-label="Юридическая информация"><a href="/legal/terms">Оферта</a><a href="/legal/tariffs">Тарифы</a><a href="/legal/privacy">Конфиденциальность</a><a href="/legal/refunds">Возвраты</a><a href="/legal/contacts">Реквизиты</a></nav></footer>
+  return <footer className="hs-footer" aria-label="Информация о сайте"><nav aria-label="Разделы сайта"><a href="/games/together">Игра с друзьями</a><a href="/specials">Спецпоказы</a><a href={STUDY_CLUB_HREF}>Клуб</a><a href="/partners">Для компаний</a><a href="/danetki">Данетки с ответами</a></nav><nav aria-label="Юридическая информация"><a href="/legal/terms">Оферта</a><a href="/legal/tariffs">Тарифы</a><a href="/legal/privacy">Конфиденциальность</a><a href="/legal/refunds">Возвраты</a><a href="/legal/contacts">Реквизиты</a><StudyCookieSettings /></nav></footer>
 }
 
 export function HomeVariants({ variant, onNavigate, onSettings }: { variant: HomeVariant; clubPreview?: boolean; onNavigate?: (view: StudyView) => void; onSettings?: () => void }) {

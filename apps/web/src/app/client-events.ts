@@ -1,4 +1,5 @@
 import { PRESENTATION_PREVIEW } from './local-presentation'
+import { clientAppVersion } from './app-version'
 import { ANALYTICS_CONSENT_EVENT, canonicalAnalyticsPath, consentedAnalyticsEntryParams, storedAnalyticsConsent } from './metrics'
 
 export type EventName =
@@ -65,6 +66,7 @@ const API_BASE = String(import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(
 const ATTRIBUTION_PROPERTIES = new Set(['acquisition_id', 'entry_path', 'entry_source', 'entry_search_engine', 'entry_referrer_host', 'utm_source', 'utm_medium', 'utm_campaign'])
 const CLIENT_EVENT_SESSION_STARTED_AT = Date.now()
 let flushing = false
+let initialized = false
 
 const read = (): QueuedEvent[] => {
   try { const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); return Array.isArray(parsed) ? parsed.slice(-100) : [] } catch { return [] }
@@ -91,7 +93,7 @@ export const backfillQueuedClientEventAttribution = () => {
   if (!Object.keys(attribution).length) return
   write(read().map((event) => {
     const occurredAt = Date.parse(event.occurredAt)
-    if (!Number.isFinite(occurredAt) || occurredAt < CLIENT_EVENT_SESSION_STARTED_AT) return event
+    if (!Number.isFinite(occurredAt) || occurredAt < CLIENT_EVENT_SESSION_STARTED_AT || event.properties?.analytics_consent !== 'pending') return event
     return {
       ...event,
       properties: { ...(event.properties ?? {}), analytics_consent: 'accepted', ...attribution },
@@ -153,7 +155,7 @@ export const trackClientEvent = (eventName: EventName, properties: Record<string
   }))
   const event: QueuedEvent = {
     eventId: crypto.randomUUID(), eventName, occurredAt: new Date().toISOString(), route: canonicalAnalyticsPath(window.location.pathname),
-    appVersion: String(import.meta.env.VITE_APP_VERSION || 'dev').slice(0, 80), properties: safeProperties,
+    appVersion: clientAppVersion(), properties: safeProperties,
     ...context,
     ...(context.requestId ? { requestId: context.requestId.slice(0, 120) } : {}),
     ...(context.errorCode ? { errorCode: context.errorCode.slice(0, 120) } : {}),
@@ -194,13 +196,13 @@ export const trackConsentedLanding = () => {
 }
 
 export const initClientEvents = () => {
-  if (PRESENTATION_PREVIEW) return
-  trackClientEvent('page_view')
+  if (PRESENTATION_PREVIEW || initialized) return
+  initialized = true
   window.addEventListener(ANALYTICS_CONSENT_EVENT, (event) => {
     const consent = (event as CustomEvent<{ consent?: string }>).detail?.consent
     if (consent === 'accepted') {
       backfillQueuedClientEventAttribution()
-      trackConsentedLanding()
+      void flushClientEvents()
       return
     }
     if (consent === 'rejected') {

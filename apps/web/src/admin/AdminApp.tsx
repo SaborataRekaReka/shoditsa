@@ -75,6 +75,7 @@ import { GameBuilderPage } from './GameBuilderPage'
 import { ConnectionsAdminPage } from './connections/ConnectionsAdminPage'
 import { GrowthPanel } from './GrowthPanel'
 import { AdminCampaignFunnel } from './AdminCampaignFunnel'
+import { AdminServerJourneyPanel } from './AdminServerJourneyPanel'
 import './admin.css'
 
 type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'connections' | 'integrations' | 'system' | 'audit'
@@ -535,10 +536,11 @@ export function AcquisitionFunnelPanel({
         <article><span><Search /></span><small>Поисковые входы</small><strong>{data.summary.organicLandings.toLocaleString('ru-RU')}</strong><em>{data.summary.organicUsers == null ? 'уникальные не суммируются' : `${data.summary.organicUsers.toLocaleString('ru-RU')} пользователей`}</em></article>
         <article><span><Play /></span><small>Начали игру</small><strong>{data.summary.starts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToStartRate)} от входов, {data.summary.activity.sessionStarts} сессий</em></article>
         <article><span><BadgeCheck /></span><small>Завершили</small><strong>{data.summary.completions.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.startToCompleteRate)} от стартов, {data.summary.activity.sessionCompletions} сессий</em></article>
-        <article><span><ChevronRight /></span><small>Начали следующую</small><strong>{data.summary.nextStarts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.completeToNextStartRate)} от завершений, {data.summary.activity.nextStarts} переходов</em></article>
+        <article><span><ChevronRight /></span><small>Продолжили игру</small><strong>{data.summary.nextStarts.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.completeToNextStartRate)} когорт с завершением, {data.summary.activity.nextStarts} событий</em></article>
         <article><span><UserRound /></span><small>Регистрации</small><strong>{data.summary.signUps.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.summary.landingToSignUpRate)} от входов</em></article>
         <article className={`is-${coverageTone}`}><span><Database /></span><small>Покрытие consented</small><strong>{acquisitionRate(coverage)}</strong><em>{data.coverage.lifecycleEventsConsentedWithAcquisition} из {data.coverage.consentedLifecycleEvents}</em></article>
       </div>
+      <p>«Продолжили игру» — поисковые входные когорты с событиями старта, завершения и продолжения, включая ту же игру. Это не число подтверждённых переходов между разными играми.</p>
       <section className="admin-acquisition__activity">
         <header><div><span>Серверные агрегаты, без PII</span><h3>Аккаунты и авторизация</h3></div><small>Создание аккаунта отделено от последующих входов</small></header>
         <div>
@@ -552,24 +554,25 @@ export function AcquisitionFunnelPanel({
           <span><small>Из органики</small><strong>{data.registrations.signUpsAttributedToOrganic.toLocaleString('ru-RU')}</strong><em>{acquisitionRate(data.registrations.organicAttributionRate)} от sign_up</em></span>
         </div>
       </section>
-      {data.diagnosisRecommendations && <section className="admin-acquisition__danetki">
-        <header><div><span>После результата, SEO страницы не меняем</span><h3>Диагнозы → следующая игра</h3></div><small>Цель: 6–8 стартов за 7 дней либо ≥25% завершивших</small></header>
+      <AdminServerJourneyPanel report={data.serverJourneys} />
+      {data.diagnosisRecommendations && data.serverJourneys?.status !== 'available' && <section className="admin-acquisition__danetki">
+        <header><div><span>Историческая клиентская методика</span><h3>Диагнозы: события рекомендаций</h3></div><small>Без проверки новой партии по серверным фактам</small></header>
         <div className="admin-acquisition__danetki-columns">
           {([['all', 'Весь трафик'], ['organic', 'Органика']] as const).map(([scope, label]) => {
             const funnel = data.diagnosisRecommendations[scope]
             return <article key={scope}>
-              <header><strong>{label}</strong><small>Клик ≠ подтверждённый старт</small></header>
+              <header><strong>{label}</strong><small>Клик и связанный клиентский старт</small></header>
               <div className="admin-acquisition__danetki-group"><dl>
                 <div><dt>Завершили «Диагнозы»</dt><dd>{funnel.completedSessions}</dd></div>
                 <div><dt>Нажали рекомендацию</dt><dd>{funnel.clicks}</dd></div>
                 {funnel.byMode.map((row) => <div key={row.mode}><dt>{row.label}</dt><dd>{row.confirmedStarts}<small>{row.clicks} кликов → старт</small></dd></div>)}
-                <div><dt>Подтверждённые старты</dt><dd>{funnel.confirmedStarts}<small>{acquisitionRate(funnel.completeToNextRate)} завершивших с переходом</small></dd></div>
+                <div><dt>Связанные события старта</dt><dd>{funnel.confirmedStarts}<small>{acquisitionRate(funnel.completeToNextRate)} клиентских завершений</small></dd></div>
               </dl></div>
               {!!funnel.unlinkedClicks && <p>{funnel.unlinkedClicks} кликов без связи с завершением в этом окне. Конверсия неизвестна; старые события не дополнены предположениями.</p>}
             </article>
           })}
         </div>
-        <p>Связь перехода с завершённой игрой обновлена 4 сентября. Проверка 7 сентября — техническая; чистая неделя 5–11 сентября доступна 12 сентября. Неделя 1–7 сентября смешивает старые и новые события. Цель по числу стартов применима только к семидневному окну.</p>
+        <p>Клиентская связность записывается с 4 сентября. Эти значения не заменяют проверку новой партии по серверным фактам и не сравниваются с ней как одна методика.</p>
       </section>}
       <section className="admin-acquisition__danetki">
         <header><div><span>Отдельное измерение</span><h3>Данетки: контент и игра с ведущим</h3></div><small>Не менять до 4 сентября; затем минимум 20 органических стартов</small></header>
@@ -640,7 +643,7 @@ export function AcquisitionFunnelPanel({
           <span><small>Стартов сессий</small><strong>{data.dailyActivityArchive.sessionStarts.toLocaleString('ru-RU')}</strong></span>
           <span><small>Завершений</small><strong>{data.dailyActivityArchive.sessionCompletions.toLocaleString('ru-RU')}</strong></span>
           <span><small>Кликов «дальше»</small><strong>{data.dailyActivityArchive.nextClicks.toLocaleString('ru-RU')}</strong></span>
-          <span><small>Следующих игр</small><strong>{data.dailyActivityArchive.nextStarts.toLocaleString('ru-RU')}</strong></span>
+          <span><small>Событий продолжения</small><strong>{data.dailyActivityArchive.nextStarts.toLocaleString('ru-RU')}</strong></span>
         </div>
       </section>}
       <footer className="admin-acquisition__foot">

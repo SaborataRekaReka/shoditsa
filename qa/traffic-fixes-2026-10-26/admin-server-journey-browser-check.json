@@ -1,0 +1,89 @@
+{
+  "scope": "Source AdminServerJourneyPanel + admin CSS + read-only aggregate response, localhost-only isolated browser; no auth or production.",
+  "sourceSha256": "02237bcba8ad4c919de0feab5d2661fee3fd801f67ee41828c2650fceccf52d5",
+  "results": [
+    {
+      "width": 1280,
+      "days": 14,
+      "checks": {
+        "currentOrganicSixOf141": true,
+        "previousOrganicThreeOf107": true,
+        "characterCurrent8of29": true,
+        "characterPrevious9of29": true,
+        "currentD1": true,
+        "previousD1": true
+      },
+      "layout": {
+        "viewport": 1280,
+        "documentWidth": 1265,
+        "panelLeft": 264,
+        "panelRight": 1241,
+        "horizontalOverflow": false,
+        "escaping": []
+      },
+      "errors": [],
+      "screenshot": "admin-server-journey-14d-1280.png"
+    },
+    {
+      "width": 1280,
+      "days": 31,
+      "checks": {
+        "previousPartial": true,
+        "previousNullRatesVisible": true,
+        "diagnosticPartial": true
+      },
+      "layout": {
+        "viewport": 1280,
+        "documentWidth": 1265,
+        "panelLeft": 264,
+        "panelRight": 1241,
+        "horizontalOverflow": false,
+        "escaping": []
+      },
+      "errors": [],
+      "screenshot": "admin-server-journey-31d-1280.png"
+    },
+    {
+      "width": 390,
+      "days": 14,
+      "checks": {
+        "currentOrganicSixOf141": true,
+        "previousOrganicThreeOf107": true,
+        "characterCurrent8of29": true,
+        "characterPrevious9of29": true,
+        "currentD1": true,
+        "previousD1": true
+      },
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 375,
+        "panelLeft": 24,
+        "panelRight": 351,
+        "horizontalOverflow": false,
+        "escaping": []
+      },
+      "errors": [],
+      "screenshot": "admin-server-journey-14d-390.png"
+    },
+    {
+      "width": 390,
+      "days": 31,
+      "checks": {
+        "previousPartial": true,
+        "previousNullRatesVisible": true,
+        "diagnosticPartial": true
+      },
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 375,
+        "panelLeft": 24,
+        "panelRight": 351,
+        "horizontalOverflow": false,
+        "escaping": []
+      },
+      "errors": [],
+      "screenshot": "admin-server-journey-31d-390.png"
+    }
+  ],
+  "blocked": []
+}

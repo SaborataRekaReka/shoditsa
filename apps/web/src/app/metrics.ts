@@ -85,6 +85,8 @@ export const canonicalAnalyticsPath = (value: string) => {
   const path = value.startsWith('/') ? value : '/'
   if (/^\/sessions\/[^/]+/.test(path)) return '/sessions/:id'
   if (/^\/danetki\/join\/[^/]+/.test(path)) return '/danetki/join'
+  if (/^\/svoyak\/join\/[^/]+/.test(path)) return '/svoyak/join'
+  if (/^\/svoyak\/rooms\/[^/]+/.test(path)) return path.endsWith('/result') ? '/svoyak/rooms/:id/result' : '/svoyak/rooms/:id'
   if (/^\/specials\/[^/]+/.test(path)) return '/specials/:pack'
   if (/^\/auth(?:\/|$)/.test(path)) return '/auth'
   if (path.length > 160 || !/^\/[a-zA-Z0-9_~%./:@-]*$/.test(path)) return '/other'
@@ -225,8 +227,10 @@ export const analyticsAcquisitionHeaders = (): Record<string, string> => {
 
 export const storedAnalyticsConsent = (): AnalyticsConsent | null => {
   if (typeof window === 'undefined') return null
-  const value = window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)
-  return value === 'accepted' || value === 'rejected' ? value : null
+  try {
+    const value = window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)
+    return value === 'accepted' || value === 'rejected' ? value : null
+  } catch { return null }
 }
 
 export const initMetrika = () => {
@@ -264,6 +268,8 @@ export const initMetrika = () => {
     trackingUrl = parsed.toString()
   } catch { /* malformed optional storage must not block consent or gameplay */ }
   stub(METRIKA_COUNTER_ID, 'init', {
+    // SPA views have a single owner in RootView; init must not create a second landing hit.
+    defer: true,
     ssr: true,
     webvisor: false,
     clickmap: true,
@@ -304,6 +310,8 @@ export const setAnalyticsConsent = (consent: AnalyticsConsent) => {
   try { window.ym?.(METRIKA_COUNTER_ID, 'destruct') } catch { /* ignore cleanup errors */ }
   window.ym = undefined
   window.__SHODITSA_METRIKA_INITIALIZED__ = false
+  lastMetrikaView = undefined
+  previousMetrikaUrl = undefined
   document.getElementById(METRIKA_SCRIPT_ID)?.remove()
   const cookieNames = ['_ym_uid', '_ym_d', '_ym_isad', '_ym_visorc', '_ym_metrika_enabled', '_ym_fa', '_ym_ucs']
   const hostname = window.location.hostname
@@ -375,6 +383,34 @@ export const trackConfirmedAuthOutcome = (
   return confirmed.action
 }
 
+let lastMetrikaView: string | undefined
+let previousMetrikaUrl: string | undefined
+
+export const trackMetrikaPageView = (viewId: string, path: string, meta?: Record<string, unknown>) => {
+  if (PRESENTATION_PREVIEW || storedAnalyticsConsent() !== 'accepted') return
+  initMetrika()
+  if (!canUseMetrika() || lastMetrikaView === viewId) return
+  const first = previousMetrikaUrl === undefined
+  const entry = readAnalyticsEntry()
+  const params = normalizeMetrikaParams({ ...meta, analytics_consent: 'accepted', ...(first ? { landing_hit: true } : {}), ...consentedAnalyticsEntryParams() })
+  const url = new URL(path, window.location.origin)
+  if (first) for (const [queryKey, field] of CAMPAIGN_FIELDS) {
+    const value = safeCampaignSlug(entry?.[field])
+    if (value) url.searchParams.set(queryKey, value)
+  }
+  try {
+    window.ym?.(METRIKA_COUNTER_ID, 'hit', url.toString(), {
+      title: document.title,
+      referer: previousMetrikaUrl ?? entry?.referrer ?? safeReferrerUrl(document.referrer),
+      ...(params ? { params } : {}),
+    })
+    lastMetrikaView = viewId
+    previousMetrikaUrl = new URL(path, window.location.origin).toString()
+  } catch { return }
+  trackMetrikaGoal('screen_view', params)
+}
+
+/** Legacy standalone callers; routed application views are owned by RootView. */
 export const trackMetrikaScreen = (screen: string, meta?: Record<string, unknown>) => {
   if (PRESENTATION_PREVIEW) return
   if (!canUseMetrika()) return

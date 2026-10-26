@@ -21,7 +21,7 @@
     "dev:api": "tsx watch apps/api/src/server.ts",
     "dev:worker": "tsx watch apps/api/src/worker.ts",
     "worker": "node apps/api/dist/worker.js",
-    "validate:shell": "node scripts/diagnostics/validate-app-shell.mjs && node scripts/diagnostics/validate-ui-components.mjs && npm run validate:reference",
+    "validate:shell": "npm run validate:ui-copy && node scripts/diagnostics/validate-app-shell.mjs && node scripts/diagnostics/validate-ui-components.mjs && npm run validate:reference",
     "validate:reference": "node scripts/diagnostics/validate-reference-design.mjs",
     "test:reference-design": "node --test scripts/diagnostics/validate-reference-design.test.mjs",
     "validate:danetki": "node scripts/diagnostics/validate-danetki-library.mjs",
@@ -189,7 +189,8 @@
     "openapi:generate": "tsx scripts/diagnostics/export-openapi.ts",
     "smoke": "npm run build && npm run build:api && npm run data:validate && npm run data:audit:music",
     "load:test": "k6 run test/load/api.js",
-    "validate:word": "node scripts/diagnostics/validate-word-library.mjs"
+    "validate:word": "node scripts/diagnostics/validate-word-library.mjs",
+    "validate:ui-copy": "node scripts/diagnostics/validate-ui-copy.mjs"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "1.6.23",
