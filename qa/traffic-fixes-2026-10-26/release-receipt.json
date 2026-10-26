@@ -1,0 +1,118 @@
+{
+  "releaseSha": "8f74ca79a70e2d2c7768e2b5666a4d0077cd70ae",
+  "activatedAt": "2026-10-26T12:33:14Z",
+  "status": "deployed_technical_checks_passed",
+  "repositoryBranch": "main",
+  "previous": {
+    "web": "a3fcf6169b128aabf49883832f48a52326064dd5",
+    "api": "9a16e7e59e0fe7ab2f7c49e4faa7f161b626dd2f"
+  },
+  "changes": [
+    "single route analytics owner and consent-aware deduplication",
+    "real loaded build version on first-party events",
+    "native transition promise ownership and unique sidebar transition names",
+    "Character first-move search and Enter consistency",
+    "server-journeys-v1 strict cross-game, same-game repeats, mature Character cohorts and D1/D7",
+    "bounded retries for incomplete Danetki JSON",
+    "expected pending CloudPayments invoice handling",
+    "safe allowlist server temporary-file cleanup"
+  ],
+  "validation": {
+    "typecheck": true,
+    "uiCopy": true,
+    "appShell": true,
+    "uiComponents": true,
+    "referenceDesign": true,
+    "webCompilation": true,
+    "apiBuild": true,
+    "pwa": true,
+    "unitOrIntegrationSuitesRun": false,
+    "localDockerUsed": false,
+    "buildNote": "Final Vite build used emptyOutDir:false. All normal manifest, SEO and PWA stages completed. No alternate removal of the rejected generated-images path was attempted.",
+    "publicPages": 58,
+    "publicCheckPassed": true,
+    "seoParityPages": 58,
+    "oldWebUnchanged": true,
+    "isolatedBrowser": {
+      "characterWidths": [
+        390,
+        1280
+      ],
+      "adminWidths": [
+        390,
+        1280
+      ],
+      "adminPeriods": [
+        14,
+        31
+      ],
+      "analyticsPageViews": 9,
+      "analyticsDistinctEventIds": 9,
+      "nativeTransitions": 13,
+      "nativeSkips": 11,
+      "scope": "Fresh local fixture browsers only. No existing user profile, authorization or production writes."
+    }
+  },
+  "preserved": {
+    "activeContentRevision": "c240a553-b7aa-426d-92aa-31909878c536",
+    "migrationsUnchanged": true,
+    "dependenciesUnchanged": true,
+    "pwaStaticFiles": 5,
+    "seoTextAndMetadata": true
+  },
+  "limits": [
+    "Fresh Search Console, Metrika and Yandex Webmaster exports were not restored. User-browser automation was blocked by its safety check; no alternative access to that browser was used.",
+    "External delivery of new events to Yandex Metrika and authorized production admin interaction remain unverified. Local ym calls were captured in memory only.",
+    "Operational post-release observation is short and cannot establish traffic growth, retention uplift, AI reliability or payment conversion."
+  ],
+  "measurement": {
+    "firstFullDayUtc": "2026-10-27",
+    "technicalReview": [
+      "2026-10-28",
+      "2026-10-29"
+    ],
+    "firstWeek": [
+      "2026-10-27",
+      "2026-11-02"
+    ],
+    "first14Days": [
+      "2026-10-27",
+      "2026-11-09"
+    ],
+    "first14DayReview": "2026-11-10"
+  },
+  "evidence": [
+    "public-postrelease.json",
+    "web-parity.json",
+    "operations-postrelease.json",
+    "cleanup-receipt.json",
+    "analytics-isolated-review.md",
+    "native-transitions-review.md",
+    "admin-server-journey-browser-review.md",
+    "character-browser-check.json"
+  ],
+  "automaticReviewLimitation": {
+    "action": "Remove owned unfinished dist/images directory",
+    "result": "rejected before execution",
+    "reason": "blocked by policy; no detailed reason returned",
+    "resolution": "Deletion not retried. Storage later became available; build completed without emptying output."
+  },
+  "operationalSmoke": {
+    "capturedAt": "2026-10-26T12:41:57.592Z",
+    "versionsMatch": true,
+    "contentUnchanged": true,
+    "scheduledCommerceCheck": "observed_completed",
+    "observedSeconds": 521.966118,
+    "collectorReadOnly": true,
+    "manualJobReplaysPerformed": 0,
+    "limitation": "Short post-release smoke window only, not evidence of retention, traffic growth or long-term reliability.",
+    "paymentState": "pending / awaiting_payment; no payment or entitlements granted",
+    "externalAnalyticsEventsObserved": 0
+  },
+  "sourceRefreshConnectorProbe": {
+    "connector": "windsor_ai",
+    "operation": "get_connectors",
+    "status": "unavailable",
+    "error": "Unknown tool returned by connector backend; no account or data retrieved"
+  }
+}

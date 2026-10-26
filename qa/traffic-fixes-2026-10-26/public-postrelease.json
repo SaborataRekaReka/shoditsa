@@ -1,0 +1,563 @@
+{
+  "capturedAt": "2026-10-26T12:34:22.755Z",
+  "sha": "8f74ca79a70e2d2c7768e2b5666a4d0077cd70ae",
+  "meta": {
+    "serverTime": "2026-10-26T12:34:22.219Z",
+    "growth": {
+      "stage": "registration",
+      "campaign": "diagnosis-continuation-v1",
+      "replay": true,
+      "registration": true,
+      "club": false
+    },
+    "moscowDate": "2026-10-26",
+    "apiVersion": "v1",
+    "rulesVersion": 4,
+    "activeRevision": {
+      "id": "c240a553-b7aa-426d-92aa-31909878c536",
+      "version": "admin-20261023T072437823Z-fc29d000"
+    },
+    "modes": [
+      {
+        "mode": "movie",
+        "count": 1295
+      },
+      {
+        "mode": "series",
+        "count": 791
+      },
+      {
+        "mode": "anime",
+        "count": 1000
+      },
+      {
+        "mode": "game",
+        "count": 2304
+      },
+      {
+        "mode": "music",
+        "count": 775
+      },
+      {
+        "mode": "diagnosis",
+        "count": 320
+      },
+      {
+        "mode": "city",
+        "count": 980
+      },
+      {
+        "mode": "danetki",
+        "count": 30
+      },
+      {
+        "mode": "connections",
+        "count": 48
+      },
+      {
+        "mode": "animal",
+        "count": 300
+      },
+      {
+        "mode": "book",
+        "count": 277
+      },
+      {
+        "mode": "character",
+        "count": 400
+      }
+    ],
+    "minimumFrontendVersion": "0.1.0",
+    "buildSha": "8f74ca79a70e2d2c7768e2b5666a4d0077cd70ae",
+    "auth": {
+      "emailPassword": true,
+      "emailVerification": true,
+      "passwordReset": true,
+      "yandex": true
+    },
+    "commerce": {
+      "enabled": true,
+      "provider": "web",
+      "currency": "RUB",
+      "archiveFirstDate": "2026-07-01",
+      "freeArchiveDays": 7
+    },
+    "features": {
+      "danetkiEnabled": true,
+      "danetkiMultiplayerEnabled": true,
+      "finalChoiceEnabled": true,
+      "connectionsEnabled": true,
+      "connectionsHintsEnabled": true,
+      "connectionsLaunchDate": null,
+      "territoryEnabled": true,
+      "svoyakEnabled": true
+    }
+  },
+  "manifest": {
+    "commitSha": "8f74ca79a70e2d2c7768e2b5666a4d0077cd70ae",
+    "builtAt": "2026-10-26T12:28:04.390Z",
+    "playableModes": [
+      "movie",
+      "series",
+      "anime",
+      "game",
+      "music",
+      "diagnosis",
+      "city",
+      "animal",
+      "book",
+      "character",
+      "connections",
+      "danetki"
+    ],
+    "shell": {
+      "profile": true,
+      "footer": true,
+      "typedRoutes": true,
+      "canonicalModeManifest": true,
+      "yandexSdk": false,
+      "serverAuthoritative": true,
+      "noPublicAnswerData": true,
+      "seoStaticRoutes": true
+    }
+  },
+  "health": {
+    "status": "ok",
+    "checks": {
+      "database": true,
+      "activeContentRevision": true
+    }
+  },
+  "pages": [
+    {
+      "url": "https://shoditsa.ru/",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/"
+    },
+    {
+      "url": "https://shoditsa.ru/games/movie",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/movie"
+    },
+    {
+      "url": "https://shoditsa.ru/games/series",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/series"
+    },
+    {
+      "url": "https://shoditsa.ru/games/anime",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/anime"
+    },
+    {
+      "url": "https://shoditsa.ru/games/game",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/game"
+    },
+    {
+      "url": "https://shoditsa.ru/games/city",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/city"
+    },
+    {
+      "url": "https://shoditsa.ru/games/music",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/music"
+    },
+    {
+      "url": "https://shoditsa.ru/games/diagnosis",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/diagnosis"
+    },
+    {
+      "url": "https://shoditsa.ru/games/animal",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/animal"
+    },
+    {
+      "url": "https://shoditsa.ru/games/book",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/book"
+    },
+    {
+      "url": "https://shoditsa.ru/games/character",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/character"
+    },
+    {
+      "url": "https://shoditsa.ru/games/connections",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/connections"
+    },
+    {
+      "url": "https://shoditsa.ru/games/danetki",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/danetki"
+    },
+    {
+      "url": "https://shoditsa.ru/games/svoyak",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/games/svoyak"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/dlya-detey",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/dlya-detey"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/slozhnye",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/slozhnye"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/legkie",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/legkie"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/novye",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/novye"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/lichnaya-blagodarnost",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/lichnaya-blagodarnost"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/verevka",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/verevka"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/zakrytaya-komnata",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/zakrytaya-komnata"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/tselyy-otsek",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/tselyy-otsek"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/vhod",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/vhod"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/albatros",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/albatros"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/stakan-vody",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/stakan-vody"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/spichka-v-pustyne",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/spichka-v-pustyne"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/lift-do-sedmogo",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/lift-do-sedmogo"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/romeo-i-dzhuletta",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/romeo-i-dzhuletta"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/pyaterka-za-oshibku",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/pyaterka-za-oshibku"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/slomannyy-most",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/slomannyy-most"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/posledniy-v-zabege",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/posledniy-v-zabege"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/pustaya-kletka",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/pustaya-kletka"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/avtobus-bez-ostanovki",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/avtobus-bez-ostanovki"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/nochnoy-urok",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/nochnoy-urok"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/tihiy-kontsert",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/tihiy-kontsert"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/chuzhaya-sobaka",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/chuzhaya-sobaka"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/pismo-bez-slov",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/pismo-bez-slov"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/chistye-podoshvy",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/chistye-podoshvy"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/zakrytyy-balkon",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/zakrytyy-balkon"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/nevernoe-otrazhenie",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/nevernoe-otrazhenie"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/zvonok-iz-pustogo-doma",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/zvonok-iz-pustogo-doma"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/ofitsiant-i-pustaya-tarelka",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/ofitsiant-i-pustaya-tarelka"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/besplatnoe-taksi",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/besplatnoe-taksi"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/medlennyy-kurer",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/medlennyy-kurer"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/otmenennaya-svadba",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/otmenennaya-svadba"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/otverstie-v-plotine",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/otverstie-v-plotine"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/pustoy-vagon",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/pustoy-vagon"
+    },
+    {
+      "url": "https://shoditsa.ru/danetki/ogon-na-ldu",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/danetki/ogon-na-ldu"
+    },
+    {
+      "url": "https://shoditsa.ru/partners",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/partners"
+    },
+    {
+      "url": "https://shoditsa.ru/specials",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/specials"
+    },
+    {
+      "url": "https://shoditsa.ru/club",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/club"
+    },
+    {
+      "url": "https://shoditsa.ru/legal/terms",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/legal/terms"
+    },
+    {
+      "url": "https://shoditsa.ru/legal/tariffs",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/legal/tariffs"
+    },
+    {
+      "url": "https://shoditsa.ru/legal/privacy",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/legal/privacy"
+    },
+    {
+      "url": "https://shoditsa.ru/legal/personal-data-consent",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/legal/personal-data-consent"
+    },
+    {
+      "url": "https://shoditsa.ru/legal/refunds",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/legal/refunds"
+    },
+    {
+      "url": "https://shoditsa.ru/legal/contacts",
+      "status": 200,
+      "buildMatches": true,
+      "h1": 1,
+      "canonical": "https://shoditsa.ru/legal/contacts"
+    }
+  ],
+  "assetResults": [
+    {
+      "path": "/assets/index-D_zSVilg.js",
+      "status": 200
+    },
+    {
+      "path": "/assets/src-B1WKt2FM.js",
+      "status": 200
+    },
+    {
+      "path": "/assets/chevron-down-BDoC50s8.js",
+      "status": 200
+    },
+    {
+      "path": "/assets/public-asset-BXqV3iwj.js",
+      "status": 200
+    },
+    {
+      "path": "/assets/index-DAv1pFdb.css",
+      "status": 200
+    }
+  ],
+  "notfoundStatus": 404,
+  "passed": true
+}

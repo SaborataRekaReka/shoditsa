@@ -1,0 +1,135 @@
+[
+  {
+    "motion": "no-preference",
+    "errors": [],
+    "console": [
+      "Failed to load resource: net::ERR_FAILED",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "snapshots": [
+      {
+        "label": "initial-3s",
+        "path": "/",
+        "heading": "Все сойдется!",
+        "native": [
+          {
+            "startedAt": 762.3000000007451,
+            "stack": "Error\n    at document.startViewTransition (<anonymous>:7:63)\n    at runViewTransition (http://127.0.0.1:5197/src/app/view-transition.ts?t=1793016781399:72:25)\n    at appRouter.startViewTransition (http://127.0.0.1:5197/src/app/router.tsx?t=1793016797490:598:3)\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3578:15\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6623:4\n    at exports.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/react.js?v=9df3b1be:682:23)\n    at Transitioner.router.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6622:16)\n    at Object.onReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3577:14)\n    at triggerOnReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2002:25)\n    at loadMatches (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2589:23)",
+            "callbackEntered": true,
+            "callbackReturned": true
+          }
+        ],
+        "visibility": "visible",
+        "transitioning": false,
+        "router": {
+          "location": "/",
+          "status": "idle",
+          "loading": false,
+          "matches": []
+        }
+      },
+      {
+        "label": "initial-6s",
+        "path": "/",
+        "heading": "Все сойдется!",
+        "native": [
+          {
+            "startedAt": 762.3000000007451,
+            "stack": "Error\n    at document.startViewTransition (<anonymous>:7:63)\n    at runViewTransition (http://127.0.0.1:5197/src/app/view-transition.ts?t=1793016781399:72:25)\n    at appRouter.startViewTransition (http://127.0.0.1:5197/src/app/router.tsx?t=1793016797490:598:3)\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3578:15\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6623:4\n    at exports.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/react.js?v=9df3b1be:682:23)\n    at Transitioner.router.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6622:16)\n    at Object.onReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3577:14)\n    at triggerOnReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2002:25)\n    at loadMatches (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2589:23)",
+            "callbackEntered": true,
+            "callbackReturned": true
+          }
+        ],
+        "visibility": "visible",
+        "transitioning": false,
+        "router": {
+          "location": "/",
+          "status": "idle",
+          "loading": false,
+          "matches": []
+        }
+      },
+      {
+        "label": "character-3s",
+        "path": "/games/character",
+        "heading": "Угадай персонажа",
+        "native": [
+          {
+            "startedAt": 762.3000000007451,
+            "stack": "Error\n    at document.startViewTransition (<anonymous>:7:63)\n    at runViewTransition (http://127.0.0.1:5197/src/app/view-transition.ts?t=1793016781399:72:25)\n    at appRouter.startViewTransition (http://127.0.0.1:5197/src/app/router.tsx?t=1793016797490:598:3)\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3578:15\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6623:4\n    at exports.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/react.js?v=9df3b1be:682:23)\n    at Transitioner.router.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6622:16)\n    at Object.onReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3577:14)\n    at triggerOnReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2002:25)\n    at loadMatches (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2589:23)",
+            "callbackEntered": true,
+            "callbackReturned": true
+          },
+          {
+            "startedAt": 6777.10000000149,
+            "stack": "Error\n    at document.startViewTransition (<anonymous>:7:63)\n    at runViewTransition (http://127.0.0.1:5197/src/app/view-transition.ts?t=1793016781399:72:25)\n    at appRouter.startViewTransition (http://127.0.0.1:5197/src/app/router.tsx?t=1793016797490:598:3)\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3578:15\n    at http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6623:4\n    at exports.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/react.js?v=9df3b1be:682:23)\n    at Transitioner.router.startTransition (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:6622:16)\n    at Object.onReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:3577:14)\n    at triggerOnReady (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2002:25)\n    at loadMatches (http://127.0.0.1:5197/@fs/C:/Users/brene/.codex/worktrees/traffic-fixes-20261026/seans_starter_pack/.tmp/vite-unified-review/deps/@tanstack_react-router.js?v=75329e33:2589:23)",
+            "callbackEntered": true,
+            "callbackReturned": true
+          }
+        ],
+        "visibility": "visible",
+        "transitioning": false,
+        "router": {
+          "location": "/",
+          "status": "idle",
+          "loading": false,
+          "matches": []
+        }
+      }
+    ]
+  },
+  {
+    "motion": "reduce",
+    "errors": [],
+    "console": [
+      "Failed to load resource: net::ERR_FAILED",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "snapshots": [
+      {
+        "label": "initial-3s",
+        "path": "/",
+        "heading": "Все сойдется!",
+        "native": [],
+        "visibility": "visible",
+        "transitioning": false,
+        "router": {
+          "location": "/",
+          "status": "idle",
+          "loading": false,
+          "matches": []
+        }
+      },
+      {
+        "label": "initial-6s",
+        "path": "/",
+        "heading": "Все сойдется!",
+        "native": [],
+        "visibility": "visible",
+        "transitioning": false,
+        "router": {
+          "location": "/",
+          "status": "idle",
+          "loading": false,
+          "matches": []
+        }
+      },
+      {
+        "label": "character-3s",
+        "path": "/games/character",
+        "heading": "Угадай персонажа",
+        "native": [],
+        "visibility": "visible",
+        "transitioning": false,
+        "router": {
+          "location": "/",
+          "status": "idle",
+          "loading": false,
+          "matches": []
+        }
+      }
+    ]
+  }
+]

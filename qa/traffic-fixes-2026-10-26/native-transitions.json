@@ -1,0 +1,534 @@
+{
+  "capturedAt": "2026-10-26T12:33:47.014Z",
+  "sourceCommit": "8f74ca79a70e2d2c7768e2b5666a4d0077cd70ae",
+  "scope": "Fresh Chromium, localhost fixture only, native motion enabled, no API writes or external requests.",
+  "routes": [
+    {
+      "label": "initial",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": false,
+      "duplicateNames": [],
+      "nativeCalls": 1,
+      "skips": 0,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app hs-app hs-app--a"
+      }
+    },
+    {
+      "label": "round-1:/games/character",
+      "path": "/games/character",
+      "title": "Игра «Угадай персонажа» по признакам и подсказкам онлайн | Сходится!",
+      "heading": "Угадай персонажа",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 2,
+      "skips": 0,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app application-frame"
+      }
+    },
+    {
+      "label": "round-1:/games/animal",
+      "path": "/games/animal",
+      "title": "Игра «Угадай животное» по признакам онлайн | Сходится!",
+      "heading": "Угадай животное",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 3,
+      "skips": 1,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app application-frame"
+      }
+    },
+    {
+      "label": "round-1:/profile",
+      "path": "/profile",
+      "title": "Профиль — Сходится!",
+      "heading": "Полуночный сеанс",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 4,
+      "skips": 2,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app"
+      }
+    },
+    {
+      "label": "round-1:/",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 5,
+      "skips": 3,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app hs-app hs-app--a"
+      }
+    },
+    {
+      "label": "round-2:/games/character",
+      "path": "/games/character",
+      "title": "Игра «Угадай персонажа» по признакам и подсказкам онлайн | Сходится!",
+      "heading": "Угадай персонажа",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 6,
+      "skips": 4,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app application-frame"
+      }
+    },
+    {
+      "label": "round-2:/games/animal",
+      "path": "/games/animal",
+      "title": "Игра «Угадай животное» по признакам онлайн | Сходится!",
+      "heading": "Угадай животное",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 7,
+      "skips": 5,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app application-frame"
+      }
+    },
+    {
+      "label": "round-2:/profile",
+      "path": "/profile",
+      "title": "Профиль — Сходится!",
+      "heading": "Полуночный сеанс",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 8,
+      "skips": 6,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app"
+      }
+    },
+    {
+      "label": "round-2:/",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 9,
+      "skips": 7,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app hs-app hs-app--a"
+      }
+    },
+    {
+      "label": "round-3:/games/character",
+      "path": "/games/character",
+      "title": "Игра «Угадай персонажа» по признакам и подсказкам онлайн | Сходится!",
+      "heading": "Угадай персонажа",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 10,
+      "skips": 8,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app application-frame"
+      }
+    },
+    {
+      "label": "round-3:/games/animal",
+      "path": "/games/animal",
+      "title": "Игра «Угадай животное» по признакам онлайн | Сходится!",
+      "heading": "Угадай животное",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 11,
+      "skips": 9,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app application-frame"
+      }
+    },
+    {
+      "label": "round-3:/profile",
+      "path": "/profile",
+      "title": "Профиль — Сходится!",
+      "heading": "Полуночный сеанс",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 12,
+      "skips": 10,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app"
+      }
+    },
+    {
+      "label": "round-3:/",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": true,
+      "duplicateNames": [],
+      "nativeCalls": 13,
+      "skips": 11,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app hs-app hs-app--a"
+      }
+    },
+    {
+      "label": "settled",
+      "path": "/",
+      "title": "Сходится! — ежедневные игры на логику и знания онлайн",
+      "heading": "Все сойдется!",
+      "transitioning": false,
+      "duplicateNames": [],
+      "nativeCalls": 13,
+      "skips": 11,
+      "rail": {
+        "width": 250,
+        "cssWidth": "250px",
+        "variable": "250px",
+        "attributes": [
+          [
+            "class",
+            "qg-rail"
+          ],
+          [
+            "data-study-shell",
+            "true"
+          ],
+          [
+            "data-study-left",
+            "expanded"
+          ]
+        ],
+        "parentClass": "qg-app hs-app hs-app--a"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_FAILED",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "blockedExternal": [
+    "https://fonts.googleapis.com/css2"
+  ],
+  "blockedWrites": [],
+  "clientErrors": [],
+  "fixture": {
+    "localOnly": true,
+    "apiForwarding": false,
+    "source": "working-tree"
+  },
+  "environment": {
+    "visibility": "visible",
+    "reducedMotion": false,
+    "nativeAvailable": true,
+    "sourcePath": "/"
+  },
+  "motion": {
+    "nativeCalls": [
+      {
+        "path": "/",
+        "at": 644.6000000014901,
+        "visibility": "visible"
+      },
+      {
+        "path": "/games/character",
+        "at": 1429.199999999255,
+        "visibility": "visible"
+      },
+      {
+        "path": "/games/animal",
+        "at": 1782.800000000745,
+        "visibility": "visible"
+      },
+      {
+        "path": "/profile",
+        "at": 2059.39999999851,
+        "visibility": "visible"
+      },
+      {
+        "path": "/",
+        "at": 2357.89999999851,
+        "visibility": "visible"
+      },
+      {
+        "path": "/games/character",
+        "at": 2660.199999999255,
+        "visibility": "visible"
+      },
+      {
+        "path": "/games/animal",
+        "at": 3008.300000000745,
+        "visibility": "visible"
+      },
+      {
+        "path": "/profile",
+        "at": 3321.699999999255,
+        "visibility": "visible"
+      },
+      {
+        "path": "/",
+        "at": 3572.89999999851,
+        "visibility": "visible"
+      },
+      {
+        "path": "/games/character",
+        "at": 3984.10000000149,
+        "visibility": "visible"
+      },
+      {
+        "path": "/games/animal",
+        "at": 4327.89999999851,
+        "visibility": "visible"
+      },
+      {
+        "path": "/profile",
+        "at": 4570.199999999255,
+        "visibility": "visible"
+      },
+      {
+        "path": "/",
+        "at": 4790.60000000149,
+        "visibility": "visible"
+      }
+    ],
+    "skips": 11,
+    "unhandled": []
+  },
+  "finalUrl": "http://127.0.0.1:5197/",
+  "documentNavigations": [
+    {
+      "type": "navigate",
+      "name": "http://127.0.0.1:5197/?qa=club"
+    }
+  ],
+  "passed": true
+}
