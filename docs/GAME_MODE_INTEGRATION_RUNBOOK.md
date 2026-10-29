@@ -425,3 +425,8 @@ Rollback point:
 Полный релиз `bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24` активирован 29 октября 2026 в 05:32:54 UTC. SHA web/API/worker совпадают с main; API healthy. Сохранены active revision `a9a09614-00d7-4261-8e5b-933fb6836fd1`, 180 слов и 8 720 остальных записей. Пройдены 1 087 unit, 99 integration и 4 desktop/mobile E2E; отдельно подтверждены production input focus, немедленная подсказка, архив, reload, share, обе темы и экраны результата. Доказательства: `qa/word-ux-seo-2026-10-29/release.json` и снимки в той же папке.
 
 SEO выпущено после Wordstat и свежего baseline. Яндекс принял `/games/word` в очередь переобхода. Google дважды отклонил отправку из-за недоступности reCAPTCHA; индексация не заявляется. Эффект SEO ещё не измерен: первые полные окна 30.10–05.11 и 30.10–12.11, оценка после готовности данных. Отчёт: `docs/research/seo-2026-10-29/word-ux-seo/report.json`.
+
+
+### Word presentation polish 2026-10-29
+
+Полный релиз `32b4f12a6e74c9e94a0ce1c9236348ba4d689c37` активирован в 06:05:29 UTC: спокойные цвета рангов в тёмной теме, игровая колонка до 800 px, хедер с названием и датой слева, действиями справа и выравниванием панели аккаунта. Изменение ограничено представлением word и focused header. Все 58 SEO-наборов метаданных сохранены. Пройдены build, build:api, UI copy, shell/reference, typecheck и 4 существующих desktop/mobile E2E. SHA web/API/worker совпадают, API healthy, active revision и 180 слов сохранены. Production проверен без отправки новых игровых действий в пользовательскую партию; свидетельства в `qa/word-dark-polish-2026-10-29/release.json`.

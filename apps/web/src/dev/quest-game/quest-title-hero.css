@@ -49,8 +49,9 @@
 .qt-hero-topic { position: absolute; z-index: 2; right: -12px; bottom: -3px; display: grid; place-items: center; width: 88px; aspect-ratio: 1; padding: 9px; border: 1px solid var(--quest-line); border-radius: 24px; background: var(--quest-bg); box-shadow: 0 4px 0 color-mix(in srgb, var(--quest-line) 65%, transparent); transform: rotate(9deg); }
 .qt-hero-topic > img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .qt-hero-launch { display: grid; gap: 12px; padding: 22px 28px 24px; border-top: 1px solid var(--quest-line); border-radius: 0 0 25px 25px; background: color-mix(in srgb, var(--quest-surface) 48%, var(--quest-bg)); }
-.qt-hero-launch .qt-launch { grid-template-columns: minmax(0,220px) minmax(0,240px); gap: 12px; }
-.qt-hero-launch .qt-launch--single { grid-template-columns: minmax(0,220px); }
+.qt-hero-launch .qt-launch { grid-template-columns: max-content minmax(0,240px); gap: 12px; }
+.qt-hero-launch .qt-launch > .quest-button--primary { width: auto; min-width: 220px; }
+.qt-hero-launch .qt-launch--single { grid-template-columns: max-content; }
 .qt-hero-launch .qt-local-note { max-width: none; margin: 0; color: var(--quest-muted); font: 400 12px/1.65 var(--quest-font); }
 .qt-hero-launch .qt-connected-extra { font-size: 13px; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -65,9 +66,11 @@
   .qt-hero-topic { right: -5px; width: 74px; border-radius: 20px; }
   .qt-hero-launch { padding: 20px 22px 22px; }
 }
+@container quest-title (max-width: 520px) {
+  .qt-hero-launch .qt-launch { grid-template-columns: minmax(0,1fr); }
+  .qt-hero-launch .qt-launch > .quest-button--primary { width: 100%; min-width: 0; }
+}
 @container quest-title (max-width: 440px) {
-  .qt-hero-launch .qt-launch { grid-template-columns: minmax(0,240px); }
-  .qt-hero-launch .qt-launch > .quest-button--primary { width: min(100%,220px); }
   .qt-hero { border-radius: 22px; margin-bottom: 28px; }
   .qt-hero-stage { grid-template-columns: minmax(0, 1fr) 116px; align-items: start; gap: 0; min-height: 0; padding: 22px 20px 24px; }
   .qt-hero-copy { display: contents; }

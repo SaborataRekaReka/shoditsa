@@ -6,7 +6,7 @@ import { CategoryTicket } from '../../components/category-ticket/CategoryTicket'
 import { Mascot, type MascotPose } from '../../components/mascot/Mascot'
 import { ReferenceIcon } from '../../components/ui/ReferenceIcon'
 import { UserAvatar } from '../../components/ui/UserAvatar'
-import { QuestOptionGroup, QuestSwitch } from '../../components/ui/QuestPrimitives'
+import { QuestButton, QuestOptionGroup, QuestSwitch } from '../../components/ui/QuestPrimitives'
 import { APPLICATION_DESIGN } from '../../app/application-design'
 import { BottomSheet } from '../../components/ui/BottomSheet'
 import { StudyClubJoinDialog } from '../../dev/quest-game/StudyClubJoinDialog'
@@ -353,6 +353,16 @@ export default function UiKitScreen() {
             </div>
           </section>
 
+          <section className="ui-kit-section" id="action-labels" data-public-theme="quest-study">
+            <SectionTitle index="04" title="Подписи действий" description="Короткая подпись остаётся в одной строке, иконка сохраняет размер. Подробности располагаются рядом с кнопкой." component="QuestButton" />
+            <div className="ui-kit-button-row">
+              <QuestButton>Играть в слово дня<ArrowUpRight size={20} /></QuestButton>
+              <QuestButton disabled>Открываем загадку…<ArrowUpRight size={20} /></QuestButton>
+              <QuestButton kind="outline">Выйти из текущей комнаты</QuestButton>
+              <QuestButton kind="club">Войти и создать комнату<ArrowUpRight size={20} /></QuestButton>
+            </div>
+          </section>
+
           <section className="ui-kit-section" id="actions">
             <SectionTitle index="04" title="Действия" description="Одна основная кнопка на уровень. Текст действия начинается с глагола." component="ActionButton" />
             <div className="ui-kit-specimen ui-kit-specimen--dark">
@@ -367,7 +377,7 @@ export default function UiKitScreen() {
               <div className="ui-kit-button-row">
                 <ActionButton disabled><Play /> Недоступно</ActionButton>
                 <ActionButton disabled aria-busy="true"><LoaderCircle className="ui-kit-spinner" /> Сохраняем…</ActionButton>
-                <ActionButton variant="secondary">Продолжить незавершённую игру с длинным названием</ActionButton>
+                <ActionButton variant="secondary">Продолжить игру</ActionButton>
                 <IconButton label="Скопировать"><Copy /></IconButton>
                 <TextButton>Текстовое действие</TextButton>
                 <span className="ui-kit-annotation">Disabled объясняется соседним текстом, если причина неочевидна.</span>

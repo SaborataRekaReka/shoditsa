@@ -390,7 +390,7 @@ html:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-
 :is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-specimen__label,
 :is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-annotation { font-size: 13px; letter-spacing: 0; text-transform: none; }
 :is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-button-row { flex-wrap: wrap; }
-:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-button-row > button { max-width: 100%; white-space: normal; }
+:is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-button-row > button { max-width: 100%; }
 :is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-match-samples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 :is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-match-samples > div { padding: 18px; border: 1px solid var(--color-line); border-radius: var(--radius-md); display: grid; gap: 6px; }
 :is([data-public-theme='reference'], [data-public-theme='quest-study']) .ui-kit-match-samples strong { font-size: 15px; }

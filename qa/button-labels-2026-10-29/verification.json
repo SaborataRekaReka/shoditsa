@@ -1,0 +1,48 @@
+{
+  "scope": "Shared action label and icon sizing; shared game launch template",
+  "before": {
+    "wordLaunchWidth": 220,
+    "wordLaunchHeight": 64,
+    "labelLines": 2
+  },
+  "after": {
+    "wordLaunchWidth": 259.615,
+    "wordLaunchHeight": 48,
+    "labelLines": 1
+  },
+  "checks": {
+    "gameModes": 13,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "widths": [
+      320,
+      390,
+      768,
+      1092,
+      1440
+    ],
+    "deviceProfiles": [
+      "chromium",
+      "mobile"
+    ],
+    "launchCombinations": 260,
+    "newButtonE2E": 8,
+    "existingWordE2E": 4,
+    "uiCopy": "passed",
+    "typecheck": "passed"
+  },
+  "broaderUiKitSuite": {
+    "passed": 1,
+    "failed": 3,
+    "failures": [
+      "Gallery font is Reference Nunito; older contract expects Manrope",
+      "Legacy admission-ticket example is hidden in a disclosure",
+      "Stored screenshots differ from current gallery layout"
+    ],
+    "snapshotsOverwritten": false,
+    "note": "Focused button geometry tests pass; broader gallery failures remain recorded rather than replacing unrelated baselines."
+  },
+  "productionStatus": "pending"
+}

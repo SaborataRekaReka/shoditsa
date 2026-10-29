@@ -1,0 +1,108 @@
+{
+  "preparedAt": "2026-10-29T06:03:05.750175+00:00",
+  "sourceSha": "32b4f12a6e74c9e94a0ce1c9236348ba4d689c37",
+  "scope": [
+    "word game presentation",
+    "focused account header alignment"
+  ],
+  "changes": {
+    "maxDesktopWidth": 800,
+    "darkRankColors": [
+      "neutral mauve for distant guesses",
+      "muted amber for warm guesses",
+      "muted mint for close guesses"
+    ],
+    "header": [
+      "left-aligned game title and date",
+      "share and game menu on the right",
+      "attempt and hint counts above the input"
+    ],
+    "softerFocusAndLatestOutline": true
+  },
+  "checks": {
+    "productionSmoke": "passed",
+    "build": "passed",
+    "apiBuild": "passed",
+    "uiCopy": "passed",
+    "typecheck": "passed",
+    "existingDesktopMobileE2E": 4,
+    "seoMetadataPreservedPages": 58
+  },
+  "productionVerification": "passed",
+  "verifiedAt": "2026-10-29T06:07:19.827Z",
+  "webSha": "32b4f12a6e74c9e94a0ce1c9236348ba4d689c37",
+  "apiSha": "32b4f12a6e74c9e94a0ce1c9236348ba4d689c37",
+  "runtime": [
+    "/shoditsa-api-shoditsa-api-1 shoditsa-api:32b4f12a6e74c9e94a0ce1c9236348ba4d689c37 running healthy",
+    "/shoditsa-api-shoditsa-worker-1 shoditsa-api:32b4f12a6e74c9e94a0ce1c9236348ba4d689c37 running ",
+    "2026-10-29T06:05:29Z"
+  ],
+  "readiness": {
+    "status": "ok",
+    "checks": {
+      "database": true,
+      "activeContentRevision": true
+    }
+  },
+  "contentRevision": {
+    "id": "a9a09614-00d7-4261-8e5b-933fb6836fd1",
+    "version": "release-8f74ca79a70e-5a15302e"
+  },
+  "otherContentPreserved": {
+    "items": 8720,
+    "sha256": "6705be9b4be36981d688c40b76507695f0973103a26f17cc8ab31a5110160ffb"
+  },
+  "backup": {
+    "bytes": 879409024,
+    "sha256": "0b2eec276ddbf397c736a3e7b2aed5f766a062fecee66573d0769dfb7e2fce52",
+    "offHostVerified": true
+  },
+  "rollbackSha": "bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24",
+  "browser": {
+    "readOnlyProductionSession": "77976944-46f0-4b4a-ab48-4189d5cd9891",
+    "attemptsPreserved": 13,
+    "desktop": {
+      "viewport": 1280,
+      "gameWidth": 800,
+      "accountHeaderWidth": 800,
+      "theme": "dark",
+      "overflow": false
+    },
+    "responsive": [
+      {
+        "gameWidth": 348,
+        "height": 844,
+        "overflow": false,
+        "theme": "dark",
+        "viewport": 390
+      },
+      {
+        "gameWidth": 284,
+        "headerActionsRight": 297,
+        "height": 740,
+        "overflow": false,
+        "theme": "dark",
+        "viewport": 320
+      },
+      {
+        "gameWidth": 456,
+        "headerWidth": 456,
+        "height": 1024,
+        "overflow": false,
+        "theme": "light",
+        "viewport": 768
+      }
+    ],
+    "themesVerified": [
+      "light",
+      "dark"
+    ],
+    "menuVerified": true,
+    "productionGameActionsSent": 0,
+    "screenshots": [
+      "production-desktop-dark.png",
+      "production-mobile-light-header.png"
+    ],
+    "viewportOverrideReset": true
+  }
+}

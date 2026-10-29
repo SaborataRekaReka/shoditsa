@@ -1,4 +1,9 @@
 [data-public-theme='quest-study'] .quest-button { font-family: var(--quest-font); font-size: 15px; font-weight: 900; line-height: 1.2; letter-spacing: .65px; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 12px 20px; border: 2px solid transparent; border-radius: 14px; cursor: pointer; text-decoration: none; position: relative; }
+[data-public-theme='quest-study'] .quest-button:is(.quest-button--primary, .quest-button--outline, .quest-button--promo, .quest-button--club) { white-space: nowrap; max-width: 100%; }
+[data-public-theme='quest-study'] .quest-button svg { flex-shrink: 0; }
+@media (max-width: 359px) {
+  [data-public-theme='quest-study'] .quest-button:is(.quest-button--primary, .quest-button--outline, .quest-button--promo, .quest-button--club):not(.quest-button--buzzer) { font-size: 13px; letter-spacing: .25px; padding-inline: 14px; }
+}
 [data-public-theme='quest-study'] .quest-button--primary { color: var(--quest-on-fill); background: var(--quest-green); border-color: var(--quest-green); box-shadow: 0 4px 0 var(--quest-green-edge); }
 [data-public-theme='quest-study'] .quest-button--primary:hover { filter: brightness(1.08); }
 [data-public-theme='quest-study'] .quest-button--buzzer { width: 100%; min-height: 84px; gap: 15px; padding: 18px 20px; font-size: 22px; }
