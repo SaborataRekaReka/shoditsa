@@ -1,0 +1,521 @@
+- paragraph: "Данные о конверсиях из Директа за последние дни могут быть неполными: если посетитель перешел из Директа до 11 октября, а позже вернулся из других источников и совершил конверсию, она не будет отнесена к Директу."
+- link:
+- link "Обзор":
+  - generic: Обзор
+- generic: Дашборды
+- generic: Отчеты
+- generic: Поведение
+- generic: Посетители
+- link "Цели":
+  - generic: Цели
+- link "Конверсии":
+  - generic: Конверсии
+- link "Тег Менеджер":
+  - generic: Тег Менеджер
+- generic: Вариокуб
+- generic: Привлечение
+- link "Интеграции":
+  - generic: Интеграции
+- link "Инсайты":
+  - generic: Инсайты
+- generic: Настройки
+- generic: Свернуть
+- generic "shoditsa.ru":
+  - img "shoditsa.ru"
+  - generic: shoditsa.ru
+  - link "shoditsa.ru•":
+  - generic: "110517987"
+- link "Настройка аккаунта":
+- button "Помощь":
+  - generic "Помощь":
+    - generic: Помощь
+- button:
+- generic: "0"
+- button:
+- generic: Посещаемость
+- link:
+- generic: "Визиты за отчётный период: 324"
+- button "На дашборд":
+  - generic "На дашборд":
+    - generic: На дашборд
+- button:
+- button:
+- button:
+- button:
+- radiogroup:
+  - generic "Сегодня":
+    - radio "Сегодня"
+    - generic: Сегодня
+  - generic "Вчера":
+    - radio "Вчера"
+    - generic: Вчера
+  - generic "Неделя":
+    - radio "Неделя"
+    - generic: Неделя
+  - generic "Месяц":
+    - radio "Месяц" [checked]
+    - generic: Месяц
+  - generic "Квартал":
+    - radio "Квартал"
+    - generic: Квартал
+  - radio "30 сен — 29 окт"
+  - generic: 30 сен — 29 окт
+- button "Сегмент • Поисковый трафик":
+  - text: Сегмент
+  - text: •
+  - generic: Поисковый трафик
+- button "Сравнение":
+  - generic "Сравнение":
+    - generic: Сравнение
+- button "100 %":
+  - generic: 100 %
+- generic: Визиты
+- generic: и
+- generic: Источники
+- generic: ›
+- generic: Тип источника
+- generic: =
+- generic: Переходы из поисковых систем
+- generic: Последний значимый переход
+- generic: Кросс-девайс
+- generic: и
+- button:
+- generic: Люди
+- button:
+- button:
+- button:
+- button "Применить" [disabled]:
+  - generic "Применить":
+    - generic: Применить
+- button "Сохранить...":
+  - generic "Сохранить...":
+    - generic: Сохранить...
+- button "Отмена" [disabled]:
+  - generic "Отмена":
+    - generic: Отмена
+- button "Группировка • Интервал дат визита":
+  - text: Группировка
+  - text: •
+  - generic: Интервал дат визита
+- button "Разбить по • Дням":
+  - generic "Разбить по • Дням":
+    - generic: Разбить по • Дням
+- button "Метрики • Визиты , +6":
+  - text: Метрики
+  - text: •
+  - generic: Визиты
+  - text: ", +6"
+- button "Цель • Не выбрана":
+  - text: Цель
+  - generic: • Не выбрана
+- button "На графике • Визиты":
+  - generic: На графике • Визиты
+- button "По дням":
+  - generic "По дням":
+    - generic: По дням
+- button "Примечания 5":
+  - generic "Примечания":
+    - generic: Примечания
+  - generic: "5"
+- radiogroup:
+  - generic "Линейный график":
+    - radio
+  - generic "Линейный график • с накоплением":
+    - radio [disabled]
+  - generic "Столбчатый график":
+    - radio [checked]
+  - generic "Столбчатый график • с накоплением":
+    - radio [disabled]
+  - generic "Круговая диаграмма":
+    - radio [disabled]
+  - generic "Столбчатый график • по категориям":
+    - radio [disabled]
+- radiogroup:
+  - generic "160px":
+    - radio "S"
+    - generic: S
+  - generic "280px":
+    - radio "M" [checked]
+    - generic: M
+  - generic "420px":
+    - radio "L"
+    - generic: L
+- button:
+- generic: "30.09"
+- generic: "05.10"
+- generic: "12.10"
+- generic: "19.10"
+- generic: "26.10"
+- generic: "0"
+- generic: "5"
+- generic: "10"
+- generic: "15"
+- generic: "20"
+- generic: Всего
+- generic: "241"
+- button "Найти по названию" [disabled]:
+  - generic "Найти по названию":
+    - generic: Найти по названию
+- radiogroup:
+  - generic "Абсолютные значения":
+    - radio [checked]
+  - generic "Проценты":
+    - radio
+- generic: Интервал дат визита
+- generic: Визиты
+- generic: Посетители
+- generic: Просмотры
+- generic: Доля новых посетителей
+- generic: Отказы
+- generic: Глубина просмотра
+- generic: Время на сайте
+- generic: Итого и средние
+- generic: "241"
+- generic: 100,00 %
+- generic: "157"
+- generic: 100,00 %
+- generic: 1 987
+- generic: 100,00 %
+- generic: 95,54 %
+- generic: 7,05 %
+- generic: 8,24
+- generic: 13 м 24 c
+- generic: 29 октября
+- generic: "1"
+- generic: 0,41 %
+- generic: "1"
+- generic: 0,64 %
+- generic: "1"
+- generic: 0,05 %
+- generic: 100,00 %
+- generic: 100,00 %
+- generic: 1,00
+- generic: 6 c
+- generic: 28 октября
+- generic: "2"
+- generic: 0,83 %
+- generic: "2"
+- generic: 1,27 %
+- generic: "13"
+- generic: 0,65 %
+- generic: 100,00 %
+- generic: 50,00 %
+- generic: 6,50
+- generic: 3 м 46 c
+- generic: 27 октября
+- generic: "13"
+- generic: 5,39 %
+- generic: "9"
+- generic: 5,73 %
+- generic: "113"
+- generic: 5,69 %
+- generic: 77,78 %
+- generic: 0,00 %
+- generic: 8,69
+- generic: 18 м 9 c
+- generic: 26 октября
+- generic: "8"
+- generic: 3,32 %
+- generic: "8"
+- generic: 5,10 %
+- generic: "96"
+- generic: 4,83 %
+- generic: 87,50 %
+- generic: 0,00 %
+- generic: 12,00
+- generic: 16 м
+- generic: 25 октября
+- generic: "13"
+- generic: 5,39 %
+- generic: "12"
+- generic: 7,64 %
+- generic: "167"
+- generic: 8,40 %
+- generic: 91,67 %
+- generic: 15,38 %
+- generic: 12,85
+- generic: 14 м 22 c
+- generic: 24 октября
+- generic: "8"
+- generic: 3,32 %
+- generic: "8"
+- generic: 5,10 %
+- generic: "47"
+- generic: 2,37 %
+- generic: 75,00 %
+- generic: 12,50 %
+- generic: 5,88
+- generic: 9 м 35 c
+- generic: 23 октября
+- generic: "8"
+- generic: 3,32 %
+- generic: "7"
+- generic: 4,46 %
+- generic: "178"
+- generic: 8,96 %
+- generic: 85,71 %
+- generic: 0,00 %
+- generic: 22,25
+- generic: 30 м 3 c
+- generic: 22 октября
+- generic: "8"
+- generic: 3,32 %
+- generic: "7"
+- generic: 4,46 %
+- generic: "32"
+- generic: 1,61 %
+- generic: 57,14 %
+- generic: 0,00 %
+- generic: 4,00
+- generic: 3 м 1 c
+- generic: 21 октября
+- generic: "10"
+- generic: 4,15 %
+- generic: "7"
+- generic: 4,46 %
+- generic: "38"
+- generic: 1,91 %
+- generic: 71,43 %
+- generic: 0,00 %
+- generic: 3,80
+- generic: 4 м 28 c
+- generic: 20 октября
+- generic: "10"
+- generic: 4,15 %
+- generic: "8"
+- generic: 5,10 %
+- generic: "75"
+- generic: 3,77 %
+- generic: 50,00 %
+- generic: 0,00 %
+- generic: 7,50
+- generic: 15 м 21 c
+- generic: 19 октября
+- generic: "12"
+- generic: 4,98 %
+- generic: "9"
+- generic: 5,73 %
+- generic: "82"
+- generic: 4,13 %
+- generic: 77,78 %
+- generic: 8,33 %
+- generic: 6,83
+- generic: 14 м 12 c
+- generic: 18 октября
+- generic: "6"
+- generic: 2,49 %
+- generic: "5"
+- generic: 3,18 %
+- generic: "27"
+- generic: 1,36 %
+- generic: 80,00 %
+- generic: 0,00 %
+- generic: 4,50
+- generic: 5 м 3 c
+- generic: 17 октября
+- generic: "6"
+- generic: 2,49 %
+- generic: "6"
+- generic: 3,82 %
+- generic: "71"
+- generic: 3,57 %
+- generic: 66,67 %
+- generic: 16,67 %
+- generic: 11,83
+- generic: 19 м 40 c
+- generic: 16 октября
+- generic: "10"
+- generic: 4,15 %
+- generic: "9"
+- generic: 5,73 %
+- generic: "54"
+- generic: 2,72 %
+- generic: 88,89 %
+- generic: 20,00 %
+- generic: 5,40
+- generic: 3 м 17 c
+- generic: 15 октября
+- generic: "6"
+- generic: 2,49 %
+- generic: "4"
+- generic: 2,55 %
+- generic: "22"
+- generic: 1,11 %
+- generic: 50,00 %
+- generic: 0,00 %
+- generic: 3,67
+- generic: 10 м 44 c
+- generic: 14 октября
+- generic: "6"
+- generic: 2,49 %
+- generic: "6"
+- generic: 3,82 %
+- generic: "103"
+- generic: 5,18 %
+- generic: 66,67 %
+- generic: 0,00 %
+- generic: 17,17
+- generic: 31 м 36 c
+- generic: 13 октября
+- generic: "10"
+- generic: 4,15 %
+- generic: "10"
+- generic: 6,37 %
+- generic: "33"
+- generic: 1,66 %
+- generic: 80,00 %
+- generic: 40,00 %
+- generic: 3,30
+- generic: 7 м 16 c
+- generic: 12 октября
+- generic: "10"
+- generic: 4,15 %
+- generic: "9"
+- generic: 5,73 %
+- generic: "117"
+- generic: 5,89 %
+- generic: 88,89 %
+- generic: 0,00 %
+- generic: 11,70
+- generic: 19 м
+- generic: 11 октября
+- generic: "14"
+- generic: 5,81 %
+- generic: "12"
+- generic: 7,64 %
+- generic: "54"
+- generic: 2,72 %
+- generic: 91,67 %
+- generic: 0,00 %
+- generic: 3,86
+- generic: 8 м 9 c
+- generic: 10 октября
+- generic: "6"
+- generic: 2,49 %
+- generic: "6"
+- generic: 3,82 %
+- generic: "26"
+- generic: 1,31 %
+- generic: 66,67 %
+- generic: 0,00 %
+- generic: 4,33
+- generic: 8 м 22 c
+- generic: 9 октября
+- generic: "13"
+- generic: 5,39 %
+- generic: "9"
+- generic: 5,73 %
+- generic: "63"
+- generic: 3,17 %
+- generic: 33,33 %
+- generic: 0,00 %
+- generic: 4,85
+- generic: 8 м 28 c
+- generic: 8 октября
+- generic: "16"
+- generic: 6,64 %
+- generic: "14"
+- generic: 8,92 %
+- generic: "83"
+- generic: 4,18 %
+- generic: 64,29 %
+- generic: 6,25 %
+- generic: 5,19
+- generic: 10 м 12 c
+- generic: 7 октября
+- generic: "5"
+- generic: 2,07 %
+- generic: "5"
+- generic: 3,18 %
+- generic: "23"
+- generic: 1,16 %
+- generic: 80,00 %
+- generic: 0,00 %
+- generic: 4,60
+- generic: 12 м 45 c
+- generic: 6 октября
+- generic: "3"
+- generic: 1,24 %
+- generic: "3"
+- generic: 1,91 %
+- generic: "11"
+- generic: 0,55 %
+- generic: 66,67 %
+- generic: 33,33 %
+- generic: 3,67
+- generic: 9 м 28 c
+- generic: 5 октября
+- generic: "8"
+- generic: 3,32 %
+- generic: "7"
+- generic: 4,46 %
+- generic: "71"
+- generic: 3,57 %
+- generic: 71,43 %
+- generic: 0,00 %
+- generic: 8,88
+- generic: 9 м 55 c
+- generic: 4 октября
+- generic: "5"
+- generic: 2,07 %
+- generic: "5"
+- generic: 3,18 %
+- generic: "153"
+- generic: 7,70 %
+- generic: 60,00 %
+- generic: 0,00 %
+- generic: 30,60
+- generic: 34 м 37 c
+- generic: 3 октября
+- generic: "6"
+- generic: 2,49 %
+- generic: "6"
+- generic: 3,82 %
+- generic: "49"
+- generic: 2,47 %
+- generic: 100,00 %
+- generic: 16,67 %
+- generic: 8,17
+- generic: 10 м 17 c
+- generic: 2 октября
+- generic: "3"
+- generic: 1,24 %
+- generic: "3"
+- generic: 1,91 %
+- generic: "51"
+- generic: 2,57 %
+- generic: 33,33 %
+- generic: 0,00 %
+- generic: 17,00
+- generic: 46 м 37 c
+- generic: 1 октября
+- generic: "8"
+- generic: 3,32 %
+- generic: "6"
+- generic: 3,82 %
+- generic: "81"
+- generic: 4,08 %
+- generic: 33,33 %
+- generic: 12,50 %
+- generic: 10,13
+- generic: 28 м 41 c
+- generic: 30 сентября
+- generic: "7"
+- generic: 2,90 %
+- generic: "6"
+- generic: 3,82 %
+- generic: "53"
+- generic: 2,67 %
+- generic: 66,67 %
+- generic: 0,00 %
+- generic: 7,57
+- generic: 7 м 21 c
+- link "Пользовательское соглашение":
+- link "Политика конфиденциальности":
+- link "Справка":
+- link "Задать вопрос":
+- link "Предложить идею":
+- generic: Ru
+- text: © 2008–2026 OOO «
+- link "ЯНДЕКС":
+- text: »

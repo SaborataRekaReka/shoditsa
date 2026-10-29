@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "kind": "shoditsa-yandex-history",
+  "site": "https://shoditsa.ru",
+  "auditDate": "2026-10-29",
+  "capturedAt": "2026-10-29T04:53:51.695Z",
+  "mode": "live-read-only",
+  "requestedHistory": {
+    "from": "2026-07-01",
+    "to": "2026-10-28"
+  },
+  "status": "unavailable",
+  "definitions": {
+    "internalRawRetentionDays": 38,
+    "missingValues": "null-not-zero",
+    "distinctUsers": "period-API-totals-not-summed-daily",
+    "sourceCalendars": "independent-not-one-cross-source-funnel"
+  },
+  "sources": {
+    "webmaster": {
+      "status": "unavailable",
+      "reason": "credentials_unavailable",
+      "httpStatus": null,
+      "data": null,
+      "totals": null,
+      "timezone": "Yandex source calendar"
+    },
+    "metrika": {
+      "status": "unavailable",
+      "reason": "credentials_unavailable",
+      "httpStatus": null,
+      "data": null,
+      "totals": null,
+      "counterId": "110517987"
+    }
+  },
+  "limitations": [
+    "Google Search Console and production game statistics must be collected separately.",
+    "Webmaster trailing zero dates may be delayed or genuinely zero; excluded unless confirmed.",
+    "Metrica small landing groups can be privacy-suppressed; visible share is not tracking coverage."
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "capturedAt": "2026-10-29T05:17:24.788159+00:00",
+  "scope": "New word game UX and SEO foundation only; other game snippets unchanged.",
+  "comparisons": [
+    {
+      "source": "gsc",
+      "days": 7,
+      "currentRange": [
+        "2026-10-20",
+        "2026-10-26"
+      ],
+      "previousRange": [
+        "2026-10-13",
+        "2026-10-19"
+      ],
+      "complete": true,
+      "current": {
+        "clicks": 113,
+        "impressions": 1032,
+        "ctr": 0.10949612403100775
+      },
+      "previous": {
+        "clicks": 71,
+        "impressions": 901,
+        "ctr": 0.07880133185349611
+      }
+    },
+    {
+      "source": "gsc",
+      "days": 14,
+      "currentRange": [
+        "2026-10-13",
+        "2026-10-26"
+      ],
+      "previousRange": [
+        "2026-09-29",
+        "2026-10-12"
+      ],
+      "complete": true,
+      "current": {
+        "clicks": 184,
+        "impressions": 1933,
+        "ctr": 0.09518882565959648
+      },
+      "previous": {
+        "clicks": 161,
+        "impressions": 1625,
+        "ctr": 0.09907692307692308
+      }
+    },
+    {
+      "source": "metrika",
+      "days": 7,
+      "currentRange": [
+        "2026-10-22",
+        "2026-10-28"
+      ],
+      "previousRange": [
+        "2026-10-15",
+        "2026-10-21"
+      ],
+      "complete": true,
+      "current": {
+        "visits": 60
+      },
+      "previous": {
+        "visits": 60
+      }
+    },
+    {
+      "source": "metrika",
+      "days": 14,
+      "currentRange": [
+        "2026-10-15",
+        "2026-10-28"
+      ],
+      "previousRange": [
+        "2026-10-01",
+        "2026-10-14"
+      ],
+      "complete": true,
+      "current": {
+        "visits": 120
+      },
+      "previous": {
+        "visits": 113
+      }
+    }
+  ],
+  "limitations": [
+    "Wordstat mostly remains on 2026-09-08 through 2026-10-07; Yandex outage warning shown.",
+    "Webmaster overview is frozen through 2026-10-08 and contains Invalid date; current 7/7 and 14/14 unavailable, not zero.",
+    "Collector has no configured OAuth credentials; browser read-only evidence used.",
+    "Word mode publicly launched 2026-10-29; no complete mode-specific organic baseline exists.",
+    "Metrika daily distinct users are not summed. Human organic UI selection; totals are visits, not search clicks or server sessions."
+  ],
+  "targetIndexing": {
+    "gsc": "URL unknown to Google, not indexed, no referring sitemap reported",
+    "checkedDate": "2026-10-29",
+    "newPublicRelease": "2026-10-29T04:43:35Z"
+  }
+}

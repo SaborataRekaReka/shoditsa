@@ -1,0 +1,379 @@
+- banner:
+  - button "Главное меню":
+  - link "Google Search Console":
+  - search:
+    - textbox [disabled]: Проверка всех URL на ресурсе https://shoditsa.ru/
+    - combobox "Проверка всех URL на ресурсе https://shoditsa.ru/"
+    - button "Поиск":
+  - button "Справка":
+    - generic: help_outline
+  - tooltip: Справка
+  - button "Пользовательские настройки":
+    - generic: manage_accounts
+  - tooltip: Пользовательские настройки
+  - 'button "Непрочитанных сообщений: 17"':
+    - generic: notifications
+  - tooltip: Сообщения
+  - generic: "17"
+  - button "Приложения Google":
+- dialog "navigational drawer":
+  - navigation "Основной":
+    - button "Ресурс":
+      - img "значок сайта"
+      - combobox "https://shoditsa.ru/"
+      - generic: 
+    - link "Обзор":
+      - generic: home
+      - generic: Обзор
+    - link "Статистика":
+      - generic: lightbulb_2
+      - generic: Статистика
+    - link "Эффективность":
+      - generic: trending_up
+      - generic: Эффективность
+    - button "Раздел \"Эффективность\" в отчете":
+      - generic: keyboard_arrow_down
+    - button "Проверка URL":
+      - generic: search
+      - generic: Проверка URL
+    - generic: Индексирование
+    - button "Раздел \"Индексирование\" в отчете" [expanded]:
+      - generic: keyboard_arrow_up
+    - link "Страницы":
+      - generic: file_copy
+      - generic: Страницы
+    - link "Файлы Sitemap":
+      - generic: account_tree
+      - generic: Файлы Sitemap
+    - link "Удаления":
+      - generic: visibility_off
+      - generic: Удаления
+    - generic: Качество
+    - button "Раздел \"Качество\" в отчете" [expanded]:
+      - generic: keyboard_arrow_up
+    - link "Core Web Vitals":
+      - generic: speed
+      - generic: Core Web Vitals
+    - link "HTTPS":
+      - generic: lock
+      - generic: HTTPS
+    - generic: Улучшения
+    - button "Раздел \"Улучшения\" в отчете" [expanded]:
+      - generic: keyboard_arrow_up
+    - link "Строки навигации":
+      - generic: layers
+      - generic: Строки навигации
+    - generic: Проблемы безопасности и меры, принятые вручную
+    - button "Раздел \"Проблемы безопасности и меры, принятые вручную\" в отчете":
+      - generic: keyboard_arrow_down
+    - link "Отчет о ссылках":
+      - generic: link_2
+      - generic: Ссылки
+    - link "Достижения":
+      - generic: trophy
+      - generic: Достижения
+    - link "Настройки":
+      - generic: settings
+      - generic: Настройки
+    - button "Отправить отзыв":
+      - generic: feedback
+      - generic: Отправить отзыв
+    - button "Общие сведения о Search Console":
+      - generic: info
+      - generic: Общие сведения о Search Console
+    - link "Конфиденциальность":
+    - link "Условия использования":
+- navigation "Строки навигации":
+  - heading "Эффективность" [level=1]
+- button "ЭКСПОРТИРОВАТЬ":
+  - generic: 
+  - generic: ЭКСПОРТИРОВАТЬ
+- radiogroup "Select time range":
+  - radio "24 часа":
+    - generic: 24 часа
+  - radio "7 дней":
+    - generic: 7 дней
+  - radio "28 дней":
+    - generic: 28 дней
+  - radio "3 месяца":
+    - generic: 3 месяца
+- button "More time ranges":
+  - generic: Сравнить
+  - generic: arrow_drop_down
+- list:
+  - 'button "Тип поиска: Веб"':
+    - generic: "Тип поиска: Веб"
+    - generic: arrow_drop_down
+  - tooltip: "Тип поиска: Веб"
+  - button "Добавить фильтр":
+    - generic: add
+    - generic: Добавить фильтр
+  - tooltip: Добавить фильтр
+  - button "Настройте отчет об эффективности с помощью ИИ":
+    - generic: filter_list_spark
+  - tooltip: Настройте отчет об эффективности с помощью ИИ
+  - button "Сбросить фильтры":
+    - generic: Сбросить фильтры
+  - tooltip: Сбросить фильтры
+- generic: Обновлено 7,5 часа назад
+- main:
+  - button "Всего кликов 113 За последние 7 дней 71 Предыдущие 7 дней":
+    - generic "Всего кликов":
+      - generic: 
+      - generic: Всего кликов
+    - generic "113"
+    - generic "За последние 7 дней"
+    - generic "71"
+    - generic "Предыдущие 7 дней"
+  - button "null":
+    - generic: 
+  - button "Всего показов 1,03 тыс. За последние 7 дней 901 Предыдущие 7 дней":
+    - generic "Всего показов":
+      - generic: 
+      - generic: Всего показов
+    - generic "1 032": 1,03 тыс.
+    - generic "За последние 7 дней"
+    - generic "901"
+    - generic "Предыдущие 7 дней"
+  - button "null":
+    - generic: 
+  - button "Средний CTR 10,9 % За последние 7 дней 7,9 % Предыдущие 7 дней":
+    - generic "Средний CTR":
+      - generic: Средний CTR
+    - generic "10,9 %"
+    - generic "За последние 7 дней"
+    - generic "7,9 %"
+    - generic "Предыдущие 7 дней"
+  - button "null":
+    - generic: 
+  - button "Средняя позиция 7,1 За последние 7 дней 7,5 Предыдущие 7 дней":
+    - generic "Средняя позиция":
+      - generic: Средняя позиция
+    - generic "7,1"
+    - generic "За последние 7 дней"
+    - generic "7,5"
+    - generic "Предыдущие 7 дней"
+  - button "null":
+    - generic: 
+  - 'button "Выбранный уровень детализации: Ежедневно"':
+    - generic: Ежедневно
+  - generic: Kлики
+  - generic: Показы
+  - application "chart":
+    - generic: Диаграмма, показано количество (За последние 7 дней Kлики, Предыдущие 7 дней Kлики, За последние 7 дней Показы, Предыдущие 7 дней Показы, За последние 7 дней CTR, Предыдущие 7 дней CTR, За последние 7 дней Позиция и Предыдущие 7 дней Позиция) с Invalid Date по 1 января 1970 г.
+  - generic: info
+  - generic: Узнайте больше о положении вашего сайта в результатах функций на основе генеративного ИИ в Google Поиске.
+  - generic: Открыть отчет
+  - generic: chevron_forward
+  - link "Открыть отчет об эффективности функций на основе генеративного ИИ в Google Поиске.":
+  - tablist:
+    - tab "Запросы" [selected]:
+      - generic: Запросы
+    - tab "Страницы":
+      - generic: Страницы
+    - tab "Страны":
+      - generic: Страны
+    - tab "Устройства":
+      - generic: Устройства
+    - tab "Вид в поиске":
+      - generic: Вид в поиске
+    - tab "Дни":
+      - generic: Дни
+  - tabpanel:
+    - button "Фильтрация по строкам таблицы":
+      - generic: 
+    - table:
+      - rowgroup:
+        - row "Популярные запросы Упорядочить столбец \"Популярные запросы\" Упорядочить столбец \"Kлики За последние 7 дней \" Kлики За последние 7 дней Упорядочить столбец \"Kлики Предыдущие 7 дней \" Kлики Предыдущие 7 дней Упорядочить столбец \"Kлики Разница\" Kлики Разница Упорядочить столбец \"Показы За последние 7 дней \" Показы За последние 7 дней Упорядочить столбец \"Показы Предыдущие 7 дней \" Показы Предыдущие 7 дней Упорядочить столбец \"Показы Разница\" Показы Разница":
+          - columnheader "Популярные запросы Упорядочить столбец \"Популярные запросы\"":
+            - generic: Популярные запросы
+            - button "Упорядочить столбец \"Популярные запросы\"":
+          - columnheader "Упорядочить столбец \"Kлики За последние 7 дней \" Kлики За последние 7 дней":
+            - button "Упорядочить столбец \"Kлики За последние 7 дней \"":
+            - text: Kлики
+            - text: За последние 7 дней
+          - columnheader "Упорядочить столбец \"Kлики Предыдущие 7 дней \" Kлики Предыдущие 7 дней":
+            - button "Упорядочить столбец \"Kлики Предыдущие 7 дней \"":
+            - text: Kлики
+            - text: Предыдущие 7 дней
+          - columnheader "Упорядочить столбец \"Kлики Разница\" Kлики Разница":
+            - button "Упорядочить столбец \"Kлики Разница\"":
+            - text: Kлики
+            - text: Разница
+          - columnheader "Упорядочить столбец \"Показы За последние 7 дней \" Показы За последние 7 дней":
+            - button "Упорядочить столбец \"Показы За последние 7 дней \"":
+            - text: Показы
+            - text: За последние 7 дней
+          - columnheader "Упорядочить столбец \"Показы Предыдущие 7 дней \" Показы Предыдущие 7 дней":
+            - button "Упорядочить столбец \"Показы Предыдущие 7 дней \"":
+            - text: Показы
+            - text: Предыдущие 7 дней
+          - columnheader "Упорядочить столбец \"Показы Разница\" Показы Разница":
+            - button "Упорядочить столбец \"Показы Разница\"":
+            - text: Показы
+            - text: Разница
+      - rowgroup:
+        - row "угадай диагноз 9 8 1 11 16 -5":
+          - cell "угадай диагноз":
+            - generic: угадай диагноз
+          - cell "9":
+            - generic: "9"
+          - cell "8":
+            - generic: "8"
+          - cell "1":
+            - generic: "1"
+          - cell "11":
+            - generic: "11"
+          - cell "16":
+            - generic: "16"
+          - cell "-5":
+            - generic: "-5"
+        - row "данетки новые 5 1 4 7 5 2":
+          - cell "данетки новые":
+            - generic: данетки новые
+          - cell "5":
+            - generic: "5"
+          - cell "1":
+            - generic: "1"
+          - cell "4":
+            - generic: "4"
+          - cell "7":
+            - generic: "7"
+          - cell "5":
+            - generic: "5"
+          - cell "2":
+            - generic: "2"
+        - row "новые данетки 4 0 4 7 3 4":
+          - cell "новые данетки":
+            - generic: новые данетки
+          - cell "4":
+            - generic: "4"
+          - cell "0":
+            - generic: "0"
+          - cell "4":
+            - generic: "4"
+          - cell "7":
+            - generic: "7"
+          - cell "3":
+            - generic: "3"
+          - cell "4":
+            - generic: "4"
+        - row "угадай персонажа 3 1 2 44 24 20":
+          - cell "угадай персонажа":
+            - generic: угадай персонажа
+          - cell "3":
+            - generic: "3"
+          - cell "1":
+            - generic: "1"
+          - cell "2":
+            - generic: "2"
+          - cell "44":
+            - generic: "44"
+          - cell "24":
+            - generic: "24"
+          - cell "20":
+            - generic: "20"
+        - row "своя игра онлайн играть 2 0 2 12 0 12":
+          - cell "своя игра онлайн играть":
+            - generic: своя игра онлайн играть
+          - cell "2":
+            - generic: "2"
+          - cell "0":
+            - generic: "0"
+          - cell "2":
+            - generic: "2"
+          - cell "12":
+            - generic: "12"
+          - cell "0":
+            - generic: "0"
+          - cell "12":
+            - generic: "12"
+        - row "данетка альбатрос 2 0 2 5 6 -1":
+          - cell "данетка альбатрос":
+            - generic: данетка альбатрос
+          - cell "2":
+            - generic: "2"
+          - cell "0":
+            - generic: "0"
+          - cell "2":
+            - generic: "2"
+          - cell "5":
+            - generic: "5"
+          - cell "6":
+            - generic: "6"
+          - cell "-1":
+            - generic: "-1"
+        - row "данетки онлайн 1 0 1 31 2 29":
+          - cell "данетки онлайн":
+            - generic: данетки онлайн
+          - cell "1":
+            - generic: "1"
+          - cell "0":
+            - generic: "0"
+          - cell "1":
+            - generic: "1"
+          - cell "31":
+            - generic: "31"
+          - cell "2":
+            - generic: "2"
+          - cell "29":
+            - generic: "29"
+        - row "данетки сложные 1 0 1 11 2 9":
+          - cell "данетки сложные":
+            - generic: данетки сложные
+          - cell "1":
+            - generic: "1"
+          - cell "0":
+            - generic: "0"
+          - cell "1":
+            - generic: "1"
+          - cell "11":
+            - generic: "11"
+          - cell "2":
+            - generic: "2"
+          - cell "9":
+            - generic: "9"
+        - row "игра угадай персонажа по описанию 1 0 1 9 6 3":
+          - cell "игра угадай персонажа по описанию":
+            - generic: игра угадай персонажа по описанию
+          - cell "1":
+            - generic: "1"
+          - cell "0":
+            - generic: "0"
+          - cell "1":
+            - generic: "1"
+          - cell "9":
+            - generic: "9"
+          - cell "6":
+            - generic: "6"
+          - cell "3":
+            - generic: "3"
+        - row "угадай животное по описанию 1 0 1 7 6 1":
+          - cell "угадай животное по описанию":
+            - generic: угадай животное по описанию
+          - cell "1":
+            - generic: "1"
+          - cell "0":
+            - generic: "0"
+          - cell "1":
+            - generic: "1"
+          - cell "7":
+            - generic: "7"
+          - cell "6":
+            - generic: "6"
+          - cell "1":
+            - generic: "1"
+    - generic: "Строк на странице:"
+    - listbox "Количество строк на страницу":
+      - option "5"
+      - option "10" [selected]
+      - option "25"
+      - option "50"
+      - option "100"
+      - option "250"
+      - option "500"
+    - generic: 1–10 из 116
+    - button "Предыдущая страница" [disabled]:
+    - tooltip: Предыдущая страница
+    - button "Следующая страница":
+    - tooltip: Следующая страница

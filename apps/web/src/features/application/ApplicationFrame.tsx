@@ -18,7 +18,7 @@ import '../../dev/quest-game/shoditsa-game.css'
 import './ApplicationFrame.css'
 
 /** Shared product shell for supporting feature controllers. */
-export function ApplicationFrame({ pathname, children, aside }: { pathname: string; children: ReactNode; aside?: ReactNode }) {
+export function ApplicationFrame({ pathname, children, aside, focused = false }: { pathname: string; children: ReactNode; aside?: ReactNode; focused?: boolean }) {
   useStudyTheme()
   // Direct entry to supporting pages must populate the same account cache as
   // the home/game controllers; the header and sidebars only observe that cache.
@@ -31,12 +31,12 @@ export function ApplicationFrame({ pathname, children, aside }: { pathname: stri
     return () => { if (document.documentElement.dataset.localStudy === 'app') delete document.documentElement.dataset.localStudy }
   }, [])
   return <EmbeddedApplicationContext.Provider value>
-    <div className="qg-app application-frame" data-public-theme="quest-study" data-quest-skin="shoditsa">
+    <div className={`qg-app application-frame${focused ? ' application-frame--focused' : ''}`} data-public-theme="quest-study" data-quest-skin="shoditsa">
       <StudySidebar view={view as StudyView} shoditsa homeHref="/" Glyph={GeneratedShoditsaGlyph} />
       <div className="qg-layout study-layout">
         <StudyHeader Glyph={GeneratedShoditsaGlyph} />
         <div className="qg-main application-content">{children}</div>
-        <StudyRightSidebar label={view === 'lobby' ? 'Компания и приглашение' : 'Аккаунт и игры'} contextual={view === 'lobby'}>{view === 'lobby' ? <><div className="application-aside-slot" /><div className="application-aside-fallback">{aside}</div></> : aside ?? <StudySectionAside view={view as StudyView} homeHref="/" goalsDone={0} factsFound={0} onContinue={() => window.location.assign('/')} />}</StudyRightSidebar>
+        {!focused && <StudyRightSidebar label={view === 'lobby' ? 'Компания и приглашение' : 'Аккаунт и игры'} contextual={view === 'lobby'}>{view === 'lobby' ? <><div className="application-aside-slot" /><div className="application-aside-fallback">{aside}</div></> : aside ?? <StudySectionAside view={view as StudyView} homeHref="/" goalsDone={0} factsFound={0} onContinue={() => window.location.assign('/')} />}</StudyRightSidebar>}
       </div>
     </div>
   </EmbeddedApplicationContext.Provider>

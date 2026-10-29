@@ -1,0 +1,218 @@
+- link "Logo":
+- list:
+  - combobox "https://shoditsa.ru"
+  - link:
+  - textbox "Поиск"
+- list:
+  - button "Сводка":
+    - generic: Сводка
+  - button "Оптимизация сайта":
+    - generic: Оптимизация сайта
+  - button "Эффективность":
+    - generic: Эффективность
+  - button "Индексирование":
+    - generic: Индексирование
+  - button "Инструменты":
+    - generic: Инструменты
+  - button "Представление в поиске":
+    - generic: Представление в поиске
+  - button "Услуги и предложения в поиске":
+    - generic: Услуги и предложения в поиске
+  - button "Ссылки":
+    - generic: Ссылки
+  - link "Обучение":
+    - generic: Обучение
+  - button "Нейровебмастер" [disabled]:
+    - generic: Нейровебмастер
+- button
+- button "Ваш профиль":
+  - generic: 99+
+- button
+- link "99+":
+  - generic: 99+
+- button:
+- button:
+- heading "Информация о сайте https://shoditsa.ru" [level=2]
+- generic: Работаем, чтобы всё работало ❤️
+- generic: На «Сводке» данные временно не обновляются. Наши инженеры заботятся о том, чтобы скорее восстановить их работу.
+- link "Подробнее о ситуации":
+- link "Подробнее о ситуации":
+- link "Диагностика. Проблемы сайта":
+  - generic: Диагностика. Проблемы сайта
+- generic: Ошибок нет
+- link "2 рекомендации":
+  - generic: 2 рекомендации
+- link "Дубли заголовков и описаний":
+  - generic: Дубли заголовков и описаний
+- link "На сайте не найдено большого количества дублирующихся title и description.":
+  - generic: На сайте не найдено большого количества дублирующихся title и description.
+- link "Динамика ИКС":
+  - generic: Динамика ИКС
+- generic: Сравнение с конкурентами
+- generic: Invalid date
+- generic: Мой сайт
+- link "Клики в поиске":
+  - generic: Клики в поиске
+- generic: Invalid date
+- generic: "24"
+- generic: клика
+- generic: +242,85%
+- table:
+  - rowgroup:
+    - row "Избранные запросы Показы Клики":
+      - columnheader "Избранные запросы":
+        - link "Избранные запросы":
+          - generic: Избранные запросы
+      - columnheader "Показы":
+        - generic: Показы
+      - columnheader "Клики":
+        - generic: Клики
+  - rowgroup:
+    - row "угадай диагноз 138 128":
+      - cell "угадай диагноз"
+      - cell "138"
+      - cell "128"
+    - row "игра угадай диагноз 60 40":
+      - cell "игра угадай диагноз"
+      - cell "60"
+      - cell "40"
+    - row "угадай диагноз игра 42 26":
+      - cell "угадай диагноз игра"
+      - cell "42"
+      - cell "26"
+    - row "угадай диагноз по симптомам 30 24":
+      - cell "угадай диагноз по симптомам"
+      - cell "30"
+      - cell "24"
+    - row "connections игра на русском 12 6":
+      - cell "connections игра на русском"
+      - cell "12"
+      - cell "6"
+    - row "данетки онлайн 134 4":
+      - cell "данетки онлайн"
+      - cell "134"
+      - cell "4"
+    - row "угадай животное 32 2":
+      - cell "угадай животное"
+      - cell "32"
+      - cell "2"
+    - row "connections game на русском 4 2":
+      - cell "connections game на русском"
+      - cell "4"
+      - cell "2"
+    - row "угадай животное по описанию 2 0":
+      - cell "угадай животное по описанию"
+      - cell "2"
+      - cell "0"
+    - row "игра угадай животное 8 0":
+      - cell "игра угадай животное"
+      - cell "8"
+      - cell "0"
+- table:
+  - rowgroup:
+    - row "Популярные запросы Показы Клики":
+      - columnheader "Популярные запросы":
+        - link "Популярные запросы":
+          - generic: Популярные запросы
+      - columnheader "Показы":
+        - generic: Показы
+      - columnheader "Клики":
+        - generic: Клики
+  - rowgroup:
+    - row "угадай диагноз 69 64":
+      - cell "угадай диагноз"
+      - cell "69"
+      - cell "64"
+    - row "игра угадай диагноз 30 20":
+      - cell "игра угадай диагноз"
+      - cell "30"
+      - cell "20"
+    - row "угадай диагноз игра 21 13":
+      - cell "угадай диагноз игра"
+      - cell "21"
+      - cell "13"
+    - row "данетки для детей 134 12":
+      - cell "данетки для детей"
+      - cell "134"
+      - cell "12"
+    - row "угадай диагноз по симптомам 15 12":
+      - cell "угадай диагноз по симптомам"
+      - cell "15"
+      - cell "12"
+    - row "игра угадай болезнь 9 10":
+      - cell "игра угадай болезнь"
+      - cell "9"
+      - cell "10"
+    - row "тест угадай диагноз 11 9":
+      - cell "тест угадай диагноз"
+      - cell "11"
+      - cell "9"
+    - row "данетки новые 54 8":
+      - cell "данетки новые"
+      - cell "54"
+      - cell "8"
+    - row "квиз на тему осмотр детей 4 8":
+      - cell "квиз на тему осмотр детей"
+      - cell "4"
+      - cell "8"
+    - row "данетка игра онлайн 42 6":
+      - cell "данетка игра онлайн"
+      - cell "42"
+      - cell "6"
+- link "Обновления поиска до 8 октября":
+  - generic: Обновления поиска до 8 октября
+- table:
+  - rowgroup:
+    - row "Обновление 10 последних изменений":
+      - columnheader "Обновление"
+      - columnheader "10 последних изменений"
+  - rowgroup:
+    - row "8 октября 2026 22:00 + /games/diagnosis":
+      - cell "8 октября 2026 22:00"
+      - cell "+ /games/diagnosis":
+        - generic: +
+        - link "/games/diagnosis":
+    - row "7 октября 2026 12:00 – /legal/personal-data-consent – /register":
+      - cell "7 октября 2026 12:00"
+      - cell "– /legal/personal-data-consent – /register":
+        - generic: –
+        - link "/legal/personal-data-consent":
+        - generic: –
+        - link "/register":
+    - row "5 октября 2026 12:20 – /games/together":
+      - cell "5 октября 2026 12:20"
+      - cell "– /games/together":
+        - generic: –
+        - link "/games/together":
+    - row "4 октября 2026 4:00 + /danetki":
+      - cell "4 октября 2026 4:00"
+      - cell "+ /danetki":
+        - generic: +
+        - link "/danetki":
+    - row "26 сентября 2026 12:00 + /danetki/besplatnoe-taksi + /games/danetki?from=catalog&collection=novye + /games/together":
+      - cell "26 сентября 2026 12:00"
+      - cell "+ /danetki/besplatnoe-taksi + /games/danetki?from=catalog&collection=novye + /games/together":
+        - generic: +
+        - link "/danetki/besplatnoe-taksi":
+        - generic: +
+        - link "/games/danetki?from=catalog&collection=novye":
+        - generic: +
+        - link "/games/together":
+    - row "24 сентября 2026 12:00 + /danetki/otmenennaya-svadba + /games/danetki?from=story&story=nochnoy-urok":
+      - cell "24 сентября 2026 12:00"
+      - cell "+ /danetki/otmenennaya-svadba + /games/danetki?from=story&story=nochnoy-urok":
+        - generic: +
+        - link "/danetki/otmenennaya-svadba":
+        - generic: +
+        - link "/games/danetki?from=story&story=nochnoy-urok":
+- link "Блог":
+- link "Пользовательское соглашение":
+- link "Политика конфиденциальности":
+- link "Правила рекомендаций":
+- link "ru":
+  - generic: ru
+- link "en":
+  - generic: en
+- generic: © 2004–2026
+- link "ООО «Яндекс»":
+- iframe:

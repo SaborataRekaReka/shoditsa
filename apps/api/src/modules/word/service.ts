@@ -4,7 +4,7 @@ import {
   contentItemVersions, contentRevisions, dailyChallenges, gameSessions, wordActions, wordSessionState, type Database,
 } from '@shoditsa/database'
 import {
-  WORD_HINT_INTERVAL, WORD_LAUNCH_DATE, WORD_MAX_HINTS, isPlayableModeId, normalizeWord,
+  WORD_LAUNCH_DATE, WORD_MAX_HINTS, isPlayableModeId, normalizeWord,
   type WordActionBody, type WordActionResponse, type GameSessionSnapshot, type WordGameState,
 } from '@shoditsa/contracts'
 import type { AppConfig } from '@shoditsa/config'
@@ -48,12 +48,11 @@ export async function buildWordSnapshot(db: ReadDatabase, session: Session): Pro
   const { pack, payload } = await runtime(db, session)
   const bestRank = state.guesses.length ? Math.min(...state.guesses.map(guess => guess.rank)) : null
   const terminal = session.status !== 'playing'
-  const hintAt = (state.hintsUsed + 1) * WORD_HINT_INTERVAL
   const word: WordGameState = {
     guesses: state.guesses, vocabularySize: pack.vocabularySize, attemptsCount: session.attemptsCount,
     hintsUsed: state.hintsUsed, hintsRemaining: Math.max(0, WORD_MAX_HINTS - state.hintsUsed),
-    nextHintAt: terminal || state.hintsUsed >= WORD_MAX_HINTS || bestRank != null && bestRank <= 2 ? null : hintAt,
-    hintAvailable: !terminal && state.hintsUsed < WORD_MAX_HINTS && session.attemptsCount >= hintAt && bestRank != null && bestRank > 2,
+    nextHintAt: null,
+    hintAvailable: !terminal && state.hintsUsed < WORD_MAX_HINTS && (bestRank == null || bestRank > 2),
     bestRank, unlimitedAttempts: true,
     status: session.status === 'won' ? 'won' : terminal ? 'lost' : 'playing',
     ...(terminal ? { answer: payload.titleRu } : {}),
@@ -140,7 +139,7 @@ export async function applyWordAction(db: Database, userId: string, sessionId: s
         const snapshot = await buildWordSnapshot(tx, session)
         if (!snapshot.word.hintAvailable) throw new ApiError(409, 'WORD_HINT_UNAVAILABLE', 'Подсказка пока недоступна')
         const seen = new Set(guesses.map(guess => normalizeWord(guess.word)))
-        const start = Math.max(2, Math.min(500, Math.floor(snapshot.word.bestRank! / 2)))
+        const start = Math.max(2, Math.min(500, Math.floor((snapshot.word.bestRank ?? pack.vocabularySize) / 2)))
         for (let rank = start; rank >= 2; rank -= 1) {
           const word = pack.wordAtRank(payload.semanticWordKey, rank)
           if (word && !seen.has(normalizeWord(word))) { input = word; break }

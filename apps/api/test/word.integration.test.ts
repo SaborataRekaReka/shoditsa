@@ -46,11 +46,32 @@ describe('semantic words with real immutable ranks and PostgreSQL', () => {
     const card = await app.inject({ url: `/api/v1/catalog/items/${encodeURIComponent(`word:${answer.replaceAll('ё', 'е')}`)}`, headers: { cookie } })
     expect(card.statusCode).toBe(404)
   })
-  it('protects ownership, does not consume unknown input, and keeps hints locked', async () => {
+  it('protects ownership and does not consume unknown input', async () => {
     await expect(getWordSession(database.db, crypto.randomUUID(), sessionId)).rejects.toMatchObject({ statusCode: 404 })
     await expect(act({ action: 'guess', word: 'not-a-word' })).rejects.toMatchObject({ code: 'WORD_NOT_IN_DICTIONARY' })
-    await expect(act({ action: 'hint' })).rejects.toMatchObject({ code: 'WORD_HINT_UNAVAILABLE' })
+    expect((await getWordSession(database.db, userId, sessionId)).word.hintAvailable).toBe(true)
     expect((await getWordSession(database.db, userId, sessionId)).attemptsCount).toBe(0)
+  })
+  it('offers three immediate closer hints without attempts, answer leakage or retry charges', async () => {
+    const guest = await app.inject({ method: 'POST', url: '/api/v1/auth/guest' })
+    const hintCookie = [guest.headers['set-cookie']].flat().filter(Boolean).map(value => String(value).split(';')[0]).join('; ')
+    const hintUserId = (await app.inject({ url: '/api/v1/me', headers: { cookie: hintCookie } })).json().user.id
+    const fresh = await startWordSession(database.db, hintUserId, { kind: 'daily' }, null, 'admin', config)
+    expect(fresh.word.hintAvailable).toBe(true)
+    const key = crypto.randomUUID()
+    let hint = await applyWordAction(database.db, hintUserId, fresh.id, { action: 'hint' }, key)
+    expect(hint.session.word.guesses.at(-1)!.rank).toBe(500)
+    expect(await applyWordAction(database.db, hintUserId, fresh.id, { action: 'hint' }, key)).toEqual(hint)
+    for (let i = 0; i < 2; i += 1) {
+      const rank = hint.session.word.bestRank!
+      hint = await applyWordAction(database.db, hintUserId, fresh.id, { action: 'hint' }, crypto.randomUUID())
+      expect(hint.session.word.bestRank).toBeLessThan(rank)
+    }
+    expect(hint.session.attemptsCount).toBe(0)
+    expect(hint.session.word.hintsUsed).toBe(3)
+    expect(hint.session.word.answer).toBeUndefined()
+    expect(hint.session.word.hintAvailable).toBe(false)
+    await expect(applyWordAction(database.db, hintUserId, fresh.id, { action: 'hint' }, crypto.randomUUID())).rejects.toMatchObject({ code: 'WORD_HINT_UNAVAILABLE' })
   })
   it('serializes concurrent retries and recognizes duplicate input', async () => {
     const key = crypto.randomUUID()

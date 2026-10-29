@@ -1,0 +1,27 @@
+{
+  "status": "local_verified",
+  "date": "2026-10-29",
+  "unit": 1087,
+  "unitSkipped": 8,
+  "integration": 99,
+  "browserCases": 4,
+  "browserProjects": [
+    "chromium",
+    "mobile"
+  ],
+  "passed": [
+    "continuous_input",
+    "draft_survives_inflight_response",
+    "immediate_hints",
+    "reload",
+    "both_themes",
+    "win",
+    "give_up",
+    "cancel",
+    "spoiler_free_share",
+    "archive",
+    "admin_catalog",
+    "no_overflow"
+  ],
+  "research": "docs/research/seo-2026-10-29/word-ux-seo/report.json"
+}

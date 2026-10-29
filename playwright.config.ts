@@ -14,6 +14,8 @@ const apiEnv = {
   SMTP_FROM: process.env.SMTP_FROM ?? 'e2e@shoditsa.local',
   PORT: '3002',
   LOG_LEVEL: 'warn',
+  ADMIN_EMAILS: 'breneize@yandex.ru',
+  ADMIN_USER_IDS: '00000000-0000-4000-8000-000000000001',
 } as Record<string, string>
 
 export default defineConfig({

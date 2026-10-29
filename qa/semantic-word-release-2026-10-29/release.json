@@ -1,0 +1,163 @@
+{
+  "verifiedAt": "2026-10-29T04:50:00.422Z",
+  "productionUrl": "https://shoditsa.ru/games/word",
+  "sha": "d5ccf678c4eaace0cfbe466fb482e24a210e102d",
+  "webSha": "d5ccf678c4eaace0cfbe466fb482e24a210e102d",
+  "apiSha": "d5ccf678c4eaace0cfbe466fb482e24a210e102d",
+  "apiHealth": "healthy",
+  "apiReadiness": {
+    "database": true,
+    "activeContentRevision": true
+  },
+  "workerImage": "shoditsa-api:d5ccf678c4eaace0cfbe466fb482e24a210e102d",
+  "workerState": "running",
+  "activeRevision": {
+    "id": "a9a09614-00d7-4261-8e5b-933fb6836fd1",
+    "version": "release-8f74ca79a70e-5a15302e"
+  },
+  "playableModes": [
+    "movie",
+    "series",
+    "anime",
+    "game",
+    "music",
+    "diagnosis",
+    "city",
+    "animal",
+    "book",
+    "character",
+    "connections",
+    "danetki",
+    "word"
+  ],
+  "contentCounts": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 2304,
+    "music": 775,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 30,
+    "connections": 48,
+    "animal": 300,
+    "book": 277,
+    "character": 400,
+    "word": 180
+  },
+  "runtime": {
+    "vocabulary": 29558,
+    "sha256": "ca38a59fd33d6b1dd6122e857055caac2e128510c7efdf04d92a94761a6b10ce",
+    "aliases": 99090,
+    "answers": 180
+  },
+  "preservedOtherContent": {
+    "sameActiveRevision": true,
+    "sha256": "6705be9b4be36981d688c40b76507695f0973103a26f17cc8ab31a5110160ffb",
+    "items": 8720
+  },
+  "checks": {
+    "productionSmoke": "passed",
+    "apiBuild": "passed",
+    "typecheck": "passed",
+    "unit": {
+      "passed": 1080,
+      "files": 170,
+      "skipped": 8
+    },
+    "noPublicAnswerData": "passed",
+    "seoPages": 59,
+    "dictionaryInApiImage": "passed",
+    "integration": {
+      "files": 22,
+      "passed": 98
+    },
+    "uiCopy": "passed",
+    "webBuild": "passed"
+  },
+  "apiProof": {
+    "time": "2026-10-29T04:43:49.189Z",
+    "sha": "d5ccf678c4eaace0cfbe466fb482e24a210e102d",
+    "revision": {
+      "id": "a9a09614-00d7-4261-8e5b-933fb6836fd1",
+      "version": "release-8f74ca79a70e-5a15302e"
+    },
+    "wordCount": 180,
+    "sessions": [
+      "7e964b67-0a8e-4c6d-8181-c294fe30789b",
+      "e7bef1bc-cc37-4978-aa6f-6a2f057e98dd"
+    ],
+    "checks": [
+      "public_guest_start",
+      "hidden_answer",
+      "daily_resume",
+      "foreign_session_denied",
+      "hint_checkpoint",
+      "unknown_word",
+      "concurrent_retry",
+      "duplicate_word",
+      "closer_hint",
+      "reload",
+      "give_up",
+      "win",
+      "win_retry",
+      "historical_retry",
+      "archive",
+      "dashboard"
+    ]
+  },
+  "browser": {
+    "passed": [
+      "home_game_link",
+      "title",
+      "daily_start",
+      "archive_start",
+      "unknown_word",
+      "five_guesses",
+      "duplicate_without_cost",
+      "hint",
+      "reload_progress",
+      "cancel_give_up",
+      "give_up",
+      "win",
+      "reload_terminal",
+      "share_without_answer",
+      "archive_status",
+      "history",
+      "admin_180_ready_words",
+      "admin_preview",
+      "no_horizontal_overflow",
+      "theme_persistence"
+    ],
+    "testedViewports": [
+      {
+        "height": 1000,
+        "width": 1440
+      },
+      {
+        "height": 844,
+        "width": 390
+      }
+    ],
+    "nonBlockingObservation": "One native ViewTransition opt-in disabled console error during rapid theme/navigation in the embedded browser; subsequent direct loads, gameplay, reloads and both themes verified.",
+    "archiveGiveUpSession": "8f3fbf95-bf63-46fa-9faa-622c9b6a6ffe",
+    "archiveWinSession": "2bdf4533-efc1-471c-a5fc-5089042c19b8",
+    "dailySession": "77976944-46f0-4b4a-ab48-4189d5cd9891",
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "backup": {
+    "bytes": 879389616,
+    "offHostVerified": true,
+    "sha256": "dec57c614d659e1233f60a7e13b423af9f86b92bb530a1eec8691999733b3a5e",
+    "createdAt": "2026-10-29T04:41:09Z",
+    "readableArchive": true
+  },
+  "rollback": {
+    "sha": "0b3d5cf8275ed82846420bab002404d75c8edcfb",
+    "webImageAndConfigSnapshotsRetained": true,
+    "databaseRestoreRequired": false
+  }
+}
