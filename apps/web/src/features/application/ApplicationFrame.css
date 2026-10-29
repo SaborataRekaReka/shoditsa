@@ -1,6 +1,9 @@
 .application-content { min-width: 0; container: application-content / inline-size; }
 .application-frame { background: var(--color-entry-bg); }
 .application-frame--focused .study-layout { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 700px) {
+  .application-frame--focused .study-layout > .study-header { width: min(100%, 800px); margin-inline: auto; }
+}
 .application-aside-slot:empty, .application-aside-slot:not(:empty) + .application-aside-fallback { display: none; }
 .application-frame .application-content > .app { width: 100%; max-width: none; margin: 0; padding: 0; background: transparent; }
 .application-content :is(.profile-shell, .rewatch-shell, .game-screen-shell) { width: 100%; max-width: none; margin-inline: 0; }

@@ -61,5 +61,18 @@
       "review": "2026-11-13 or after source through 2026-11-12"
     }
   ],
-  "releaseStatus": "prepared; update release receipt after production verification"
+  "releaseStatus": {
+    "state": "deployed_and_verified",
+    "sha": "bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24",
+    "activatedAt": "2026-10-29T05:32:54Z",
+    "receipt": "qa/word-ux-seo-2026-10-29/release.json",
+    "contentRevisionPreserved": true,
+    "measurement": "pending_completed_7_and_14_day_windows"
+  },
+  "indexingAfter": {
+    "yandex": "queued, 2026-10-29 10:34 Asia/Qyzylorda",
+    "google": "Not accepted: two normal attempts, including reload, failed with reCAPTCHA connectivity error. No challenge bypassed. Retry later in Search Console.",
+    "indexed": false,
+    "googleAlreadyIndexed": false
+  }
 }

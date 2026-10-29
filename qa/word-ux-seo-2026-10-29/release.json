@@ -1,0 +1,167 @@
+{
+  "verifiedAt": "2026-10-29T05:36:22.744Z",
+  "productionUrl": "https://shoditsa.ru/games/word",
+  "sha": "bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24",
+  "webSha": "bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24",
+  "apiSha": "bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24",
+  "activeRevision": {
+    "id": "a9a09614-00d7-4261-8e5b-933fb6836fd1",
+    "version": "release-8f74ca79a70e-5a15302e"
+  },
+  "contentCounts": {
+    "movie": 1295,
+    "series": 791,
+    "anime": 1000,
+    "game": 2304,
+    "music": 775,
+    "diagnosis": 320,
+    "city": 980,
+    "danetki": 30,
+    "connections": 48,
+    "animal": 300,
+    "book": 277,
+    "character": 400,
+    "word": 180
+  },
+  "runtime": [
+    "/shoditsa-api-shoditsa-api-1 shoditsa-api:bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24 running healthy",
+    "/shoditsa-api-shoditsa-worker-1 shoditsa-api:bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24 running ",
+    "2026-10-29T05:32:54Z"
+  ],
+  "apiProof": {
+    "time": "2026-10-29T05:33:19.305Z",
+    "sha": "bf532ae77d801a99d8dadd9eb464d8e1e9ccbc24",
+    "revision": {
+      "id": "a9a09614-00d7-4261-8e5b-933fb6836fd1",
+      "version": "release-8f74ca79a70e-5a15302e"
+    },
+    "wordCount": 180,
+    "sessions": [
+      "66d493af-1416-4bb2-9013-96cc0cd10144",
+      "639bd489-45e7-48b6-9435-bf5e29a7f79c",
+      "5b98e6e8-3633-4379-a25e-5b5ca92d7426"
+    ],
+    "checks": [
+      "public_guest_start",
+      "hidden_answer",
+      "daily_resume",
+      "foreign_session_denied",
+      "three_immediate_hints",
+      "hint_retry",
+      "hint_quota",
+      "zero_attempt_hint",
+      "unknown_word",
+      "concurrent_retry",
+      "duplicate_word",
+      "closer_hint",
+      "reload",
+      "give_up",
+      "win",
+      "win_retry",
+      "historical_retry",
+      "archive",
+      "dashboard"
+    ]
+  },
+  "checks": {
+    "productionSmoke": "passed",
+    "uiCopy": "passed",
+    "typecheck": "passed",
+    "unit": {
+      "passed": 1087,
+      "skipped": 8,
+      "files": 171
+    },
+    "integration": {
+      "passed": 99,
+      "files": 22
+    },
+    "browserE2E": {
+      "passed": 4,
+      "projects": [
+        "chromium",
+        "mobile"
+      ]
+    },
+    "webBuild": "passed",
+    "apiBuild": "passed",
+    "canonical": true,
+    "h1Count": 1,
+    "structuredData": [
+      "WebSite",
+      "WebPage",
+      "WebApplication",
+      "BreadcrumbList"
+    ],
+    "sitemap": true,
+    "otherSeoPagesPreserved": 57
+  },
+  "backup": {
+    "bytes": 879403417,
+    "sha256": "93d48d8e543c9a5278d18f6ecd27600c74fd2f456560f02400a5f3e4adc134fe",
+    "offHostVerified": true,
+    "archiveVerified": true
+  },
+  "rollback": {
+    "sha": "d5ccf678c4eaace0cfbe466fb482e24a210e102d",
+    "webImageConfigRetained": true,
+    "databaseRestoreRequired": false
+  },
+  "seoEffect": "Not yet measured; full windows 2026-10-30 through 2026-11-05 and 2026-11-12",
+  "browser": {
+    "checks": [
+      "shared_title_layout",
+      "daily_progress_preserved",
+      "archive_start",
+      "immediate_hint_at_zero_attempts",
+      "continuous_enter_focus",
+      "input_clears",
+      "latest_guess",
+      "rank_sorted_bars",
+      "reload_progress",
+      "rules_dialog",
+      "give_up_cancel",
+      "archive_give_up",
+      "reload_terminal",
+      "winning_result",
+      "share_without_answer",
+      "desktop_mobile",
+      "light_dark",
+      "no_horizontal_overflow",
+      "focused_layout_without_right_sidebar"
+    ],
+    "archiveSession": "51fe9c09-ee40-40ca-8fc3-23a50e36ecaa",
+    "untouchedDailySession": "77976944-46f0-4b4a-ab48-4189d5cd9891",
+    "testedViewports": [
+      {
+        "width": 1440,
+        "height": 1000
+      },
+      {
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "indexing": {
+    "yandex": "queued, 2026-10-29 10:34 Asia/Qyzylorda",
+    "google": "Not accepted: two normal attempts, including reload, failed with reCAPTCHA connectivity error. No challenge bypassed. Retry later in Search Console.",
+    "indexed": false,
+    "googleAlreadyIndexed": false
+  },
+  "preservedOtherContent": {
+    "sameActiveRevision": true,
+    "sha256": "6705be9b4be36981d688c40b76507695f0973103a26f17cc8ab31a5110160ffb",
+    "items": 8720
+  },
+  "dictionary": {
+    "vocabulary": 29558,
+    "sha256": "ca38a59fd33d6b1dd6122e857055caac2e128510c7efdf04d92a94761a6b10ce",
+    "aliases": 99090,
+    "answers": 180
+  }
+}

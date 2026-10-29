@@ -1,0 +1,23 @@
+[
+  {
+    "actionsRight": 297,
+    "game": 284,
+    "header": 310,
+    "overflow": false,
+    "viewport": 320
+  },
+  {
+    "actionsRight": 732,
+    "game": 696,
+    "header": 696,
+    "overflow": false,
+    "viewport": 768
+  },
+  {
+    "actionsRight": 1131,
+    "game": 800,
+    "header": 800,
+    "overflow": false,
+    "viewport": 1440
+  }
+]
