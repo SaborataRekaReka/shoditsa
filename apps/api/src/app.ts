@@ -1,3 +1,4 @@
+import { registerSvoyakAdminRoutes } from './modules/svoyak/admin-routes.js'
 import { registerSvoyakRoutes } from './modules/svoyak/routes.js'
 import Fastify, { type FastifyReply } from 'fastify'
 import cors from '@fastify/cors'
@@ -124,6 +125,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
       directives: {
         defaultSrc: ["'self'"], imgSrc: ["'self'", 'data:', 'https:'], scriptSrc: ["'self'", 'https://mc.yandex.ru', 'https://yandex.ru', 'https://widget.cloudpayments.ru'],
         connectSrc: ["'self'", 'https://mc.yandex.ru', 'https://*.cloudpayments.ru'],
+        mediaSrc: ["'self'", 'https:'],
         frameSrc: ["'self'", 'https://*.cloudpayments.ru'],
         frameAncestors: ["'self'", 'https://*.yandex.ru'],
       },
@@ -155,6 +157,7 @@ export const buildApp = async ({ config, db: providedDb, auth: providedAuth }: B
   app.setErrorHandler((error, request, reply) => sendError(request, reply, error))
   registerLeaderboardRoutes(app, db, auth)
   registerSvoyakRoutes(app, { db, auth, config })
+  registerSvoyakAdminRoutes(app, { db, auth, config })
 
   app.get('/api/v1/health/live', { schema: { response: { 200: Type.Object({ status: Type.Literal('ok') }) } } }, async () => ({ status: 'ok' as const }))
   app.get('/api/v1/health/ready', async (_request, reply) => {

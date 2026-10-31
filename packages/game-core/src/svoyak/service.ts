@@ -271,6 +271,8 @@ export class RoomService {
     const member = token ? room.members.find(m => m.tokenHash === hash(token) && (!m.userId || m.userId === userId)) : null
     const current = member && room.current ? structuredClone(room.current) : null
     if (current) {
+      const media = room.themes.flatMap(t => t.questions).find(q => q.id === current.id)?.media
+      current.media = media?.filter(item => item.phase === 'question' || current.phase === 'resolved')
       delete current.answer
       if (current.phase === 'reading') current.remainingMs = Math.max(0, current.deadline! - this.now())
       if (current.phase === 'resolved' || member?.id === room.hostId && room.hostRevealed) {

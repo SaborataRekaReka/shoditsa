@@ -1,0 +1,253 @@
+.svoyak-admin {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.svoyak-admin__head,
+.svoyak-admin__actions,
+.svoyak-admin__status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.svoyak-admin__head {
+  justify-content: space-between;
+  position: sticky;
+  top: 64px;
+  z-index: 5;
+  padding: 12px 0;
+  background: var(--a-bg);
+}
+.svoyak-admin__head h1 {
+  margin: 5px 0;
+}
+.svoyak-admin__head p,
+.svoyak-admin__head > div > span {
+  color: #62646e;
+}
+.svoyak-admin__status {
+  padding: 14px 18px;
+  border: 1px solid #d4d7e2;
+  border-radius: 12px;
+  background: #f1f2fa;
+  font-size: 13px;
+}
+.svoyak-admin__error,
+.svoyak-admin__notice {
+  padding: 16px;
+  border-radius: 10px;
+  background: #fff0f0;
+  color: #9c2525;
+  white-space: pre-wrap;
+}
+.svoyak-admin__notice {
+  background: #eef8ee;
+  color: #225c2d;
+}
+.svoyak-admin__filters {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 18px;
+}
+.svoyak-admin__search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.svoyak-admin__search input {
+  min-width: 0;
+  width: 100%;
+}
+.svoyak-admin .admin-field {
+  min-width: 0;
+}
+.svoyak-admin .admin-field input,
+.svoyak-admin .admin-field select,
+.svoyak-admin .admin-field textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.svoyak-admin__workspace {
+  display: grid;
+  grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+}
+.svoyak-admin__list {
+  position: sticky;
+  top: 18px;
+  overflow: hidden;
+}
+.svoyak-admin__list h2 {
+  font-size: 16px;
+}
+.svoyak-admin__rows {
+  max-height: 76vh;
+  overflow: auto;
+}
+.svoyak-admin__rows > button {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid #e0e1e7;
+  background: white;
+  color: #292d38;
+  cursor: pointer;
+}
+.svoyak-admin__rows > button.is-selected {
+  background: #f0edff;
+  box-shadow: inset 4px 0 #6452ad;
+}
+.svoyak-admin__rows > button:hover {
+  background: #f4f3fa;
+}
+.svoyak-admin__rows > button > span {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+}
+.svoyak-admin__rows p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  line-height: 1.5;
+}
+.svoyak-admin__rows small {
+  color: #686878;
+  font-size: 11px;
+}
+.svoyak-admin__list footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+.svoyak-admin__detail {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.svoyak-admin__preview-panel {
+  padding: 18px;
+  overflow: hidden;
+}
+.svoyak-admin__preview-panel > header {
+  padding: 0 0 16px;
+}
+.svoyak-admin__player {
+  margin: 20px auto 0;
+  padding: 24px;
+  background: var(--quest-bg, #fff);
+  color: var(--quest-text, #292d38);
+  border: 2px solid #e2ddfe;
+  border-radius: 16px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.svoyak-admin__player.is-mobile {
+  width: 390px;
+  padding: 16px;
+}
+.svoyak-admin__player.is-mobile .svoyak-question__text {
+  font-size: 25px;
+}
+.svoyak-admin__player .svoyak-stage__head {
+  flex-wrap: wrap;
+}
+.svoyak-admin__player .svoyak-stage__head > span {
+  font-size: 12px;
+}
+.svoyak-admin__editor {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  margin: 0;
+  min-width: 0;
+  border: 1px solid #dcdee4;
+}
+.svoyak-admin__editor legend {
+  padding: 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.svoyak-admin__field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.svoyak-admin__hint,
+.svoyak-admin__media > p {
+  color: #62646e;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.svoyak-admin__media {
+  display: grid;
+  gap: 14px;
+}
+.svoyak-admin__media-item {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #dcdee4;
+  border-radius: 12px;
+}
+.svoyak-admin__file {
+  width: 200px;
+  font-size: 11px;
+}
+.svoyak-admin__id {
+  overflow-wrap: anywhere;
+  color: #62646e;
+}
+.svoyak-admin__history {
+  padding: 18px;
+  overflow-wrap: anywhere;
+}
+.svoyak-admin__history summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.svoyak-admin__history p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+@media (max-width: 1200px) {
+  .svoyak-admin__filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .svoyak-admin__workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .svoyak-admin__list {
+    position: static;
+  }
+  .svoyak-admin__rows {
+    max-height: 270px;
+  }
+  .svoyak-admin__filters,
+  .svoyak-admin__field-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .svoyak-admin__player {
+    padding: 12px;
+  }
+  .svoyak-admin__player .svoyak-question__text {
+    font-size: 24px;
+  }
+}

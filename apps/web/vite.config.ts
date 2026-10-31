@@ -109,6 +109,7 @@ export default defineConfig(({ command, mode }) => {
     proxy: {
       ...(localRedesign ? { '/api/v1/leaderboard': process.env.VITE_LEADERBOARD_API_PROXY_TARGET || 'http://127.0.0.1:3003' } : {}),
       '/api': process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:3001',
+        '/media': process.env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:3001',
     },
   },
   // Yandex Games requires relative paths inside the ZIP. The hosted SPA must use

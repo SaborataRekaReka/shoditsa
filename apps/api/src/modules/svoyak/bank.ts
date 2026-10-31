@@ -12,7 +12,8 @@ export class PostgresQuestionBank implements QuestionBank {
       const revision = revisions[0]
       if (!revision) throw new RoomError('BANK_UNAVAILABLE', 'База вопросов обновляется. Попробуй через минуту.', 503)
       const rows = await tx.execute(sql`select payload from svoyak_questions where revision_id=${String(revision.id)} and approved=true order by id`)
-      return { catalog: revision.catalog as Bank['catalog'], questions: rows.map(row => row.payload as BankQuestion) }
+      const catalog = revision.catalog as Bank['catalog']
+      return { catalog: { ...catalog, packs: catalog.packs.filter(p => p.playable > 0), topics: catalog.topics.filter(t => t.playable > 0) }, questions: rows.map(row => row.payload as BankQuestion) }
     }, { isolationLevel: 'repeatable read', accessMode: 'read only' })
   }
   async validate(questions: BankQuestion[]) {

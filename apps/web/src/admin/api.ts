@@ -53,7 +53,7 @@ const fileBase64 = (file: File) => new Promise<string>((resolve, reject) => {
   reader.readAsDataURL(file)
 })
 
-const request = async <T>(path: string, init: RequestInit & { timeoutMs?: number } = {}) => {
+export const request = async <T>(path: string, init: RequestInit & { timeoutMs?: number } = {}) => {
   const controller = new AbortController(); const timeout = window.setTimeout(() => controller.abort(), init.timeoutMs ?? 30_000)
   const externalSignal = init.signal
   const abortFromCaller = () => controller.abort()

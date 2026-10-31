@@ -1,3 +1,4 @@
+import { SvoyakAdminPage } from './svoyak/SvoyakAdminPage'
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -78,7 +79,7 @@ import { AdminCampaignFunnel } from './AdminCampaignFunnel'
 import { AdminServerJourneyPanel } from './AdminServerJourneyPanel'
 import './admin.css'
 
-type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'connections' | 'integrations' | 'system' | 'audit'
+type Section = 'dashboard' | 'content' | 'builder' | 'reports' | 'pipelines' | 'users' | 'events' | 'quality' | 'economy' | 'commerce' | 'private-orders' | 'danetki' | 'connections' | 'svoyak' | 'integrations' | 'system' | 'audit'
 type Notice = { id: string; tone: 'success' | 'error' | 'info'; text: string }
 const adminLogoUrl = publicAssetUrl('images/logo.svg')
 
@@ -385,7 +386,7 @@ const asContentMode = (value: unknown, fallback: ContentMode): ContentMode => ty
 const sectionFromPath = (): { section: Section; id: string | null; search: string } => {
   const parts = window.location.pathname.replace(/^\/admin\/?/, '').split('/').filter(Boolean)
   const candidate = (parts[0] || 'dashboard') as Section
-  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'danetki', 'connections', 'integrations', 'system', 'audit']
+  const allowed: Section[] = ['dashboard', 'content', 'builder', 'reports', 'pipelines', 'users', 'events', 'quality', 'economy', 'commerce', 'private-orders', 'danetki', 'connections', 'svoyak', 'integrations', 'system', 'audit']
   return {
     section: allowed.includes(candidate) ? candidate : 'dashboard',
     id: parts[1] ? decodeURIComponent(parts.slice(1).join('/')) : null,
@@ -5901,6 +5902,7 @@ const MENU: Array<{ id: Section; label: string; icon: typeof LayoutDashboard }> 
   { id: 'private-orders', label: 'Корпоративные заявки', icon: BriefcaseBusiness },
   { id: 'danetki', label: 'Данетки', icon: Bot },
   { id: 'connections', label: 'Связи', icon: Grid2X2 },
+  { id: 'svoyak', label: 'Своя игра', icon: Clapperboard },
   { id: 'integrations', label: 'API-интеграции', icon: KeyRound }, { id: 'system', label: 'Система', icon: Settings2 }, { id: 'audit', label: 'Журнал администратора', icon: FileClock },
 ]
 
@@ -5929,6 +5931,7 @@ export default function AdminApp() {
     {route.section === 'private-orders' && <PrivateOrdersPage notify={notify} />}
     {route.section === 'danetki' && <DanetkiAdminPage notify={notify} />}
     {route.section === 'connections' && <ConnectionsAdminPage notify={notify} onEdit={(itemId) => route.navigate('content', itemId)} />}
+    {route.section === 'svoyak' && <SvoyakAdminPage />}
     {route.section === 'integrations' && <IntegrationsPage notify={notify} />}
     {route.section === 'system' && <SystemPage notify={notify} />}
     {route.section === 'audit' && <AuditPage />}

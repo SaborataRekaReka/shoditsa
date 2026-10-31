@@ -27,8 +27,17 @@ export type ActiveQuestion = {
   id: string; theme: string; points: number; prompt: string
   phase: 'reading' | 'buzzed' | 'timeout' | 'resolved'; deadline: number | null; durationMs: number; remainingMs: number
   answeringId: string | null; rejectedIds: string[]; result: 'correct' | 'skipped' | null
+  media?: QuestionMedia[]
   answer?: { text: string; aliases: string[]; note: string; source: string; packTitle: string }
 }
+export type QuestionMedia = { kind: 'image' | 'audio' | 'video'; url: string; caption: string; phase: 'question' | 'answer' }
+export type EditableQuestion = {
+  id: string; hash: string; themeId: string; theme: string; topic: string; packId: number; packTitle: string
+  prompt: string; answer: string; aliases: string[]; note: string; source: string; difficulty: number; age: number
+  duplicateIds: string[]; media?: QuestionMedia[]; enabled: boolean
+}
+export type SvoyakWorkspace = { version: number; baseRevision: string; catalog: Catalog; questions: EditableQuestion[] }
+export type SvoyakAdminState = { activeRevision: string; draft: boolean; workspace: SvoyakWorkspace; revisions: { id: string; status: string; createdAt: string; count: number }[] }
 export type RoomView = {
   apiVersion: 1; code: string; revision: number; stage: 'lobby' | 'playing' | 'result' | 'closed'
   hostId: string; settings: RoomSettings; members: Member[]; me: Member | null; plan: MixPlan | null

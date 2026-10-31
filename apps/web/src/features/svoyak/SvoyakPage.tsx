@@ -1,8 +1,9 @@
+import { SvoyakQuestionContent } from './SvoyakQuestionContent'
 import { ApplicationDialog } from '../application/ApplicationDialog'
 import { ThemedArtwork } from '../../components/ui/ThemedArtwork'
 import { PageHeading } from '../../components/ui/PageHeading'
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
-import { ArrowRight, BellRing, Check, Copy, Eye, LockKeyhole, LogOut, RefreshCw, SlidersHorizontal, X } from 'lucide-react'
+import { ArrowRight, BellRing, Check, Copy, Eye, LogOut, RefreshCw, SlidersHorizontal, X } from 'lucide-react'
 import { PageBackline } from '../../components/ui/PageBackline'
 import { ApplicationFrame } from '../application/ApplicationFrame'
 import { ApplicationAside } from '../application/ApplicationAside'
@@ -166,9 +167,9 @@ function useTime(room: RoomView) {
 function Game({ room, busy, command }: { room: RoomView; busy: boolean; command: (command: Command) => Promise<boolean> }) {
   const current = room.current, remaining = useTime(room), host = room.me?.role === 'host'
   const [confirmFinish, setConfirmFinish] = useState(false)
-  const heading = useRef<HTMLHeadingElement>(null)
+  const heading = useRef<HTMLDivElement>(null)
   const currentId = current?.id
-  useEffect(() => { if (currentId) heading.current?.focus({ preventScroll: true }) }, [currentId])
+  useEffect(() => { if (currentId) heading.current?.querySelector('h2')?.focus({ preventScroll: true }) }, [currentId])
   const canBuzz = !host && !!room.me && current?.phase === 'reading' && remaining > 0 && !current.rejectedIds.includes(room.me.id)
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
@@ -190,7 +191,7 @@ function Game({ room, busy, command }: { room: RoomView; busy: boolean; command:
     <header className="svoyak-room__head"><div className="svoyak-room__title"><ThemedArtwork src={publicAssetUrl('images/home-doodle/svoyak.webp')} width="48" height="48" alt="" /><div><h1>Своя игра</h1><p>Пак вашей компании</p></div></div><span className="svoyak-role">{host ? 'Ты ведущий' : 'Ты игрок'}</span></header>
     <div className="svoyak-stage"><div className="svoyak-stage__head"><div>{current ? <><span>{current.theme}</span><strong>{current.points} очков</strong></> : <h2>Раунд {round}</h2>}</div>{!current && <span className="svoyak-progress">{room.played} / {room.total}</span>}</div>
       {current && current.phase !== 'resolved' && <div className="svoyak-countdown"><QuestCountdown remainingMs={remaining} durationMs={current.durationMs} paused={current.phase === 'buzzed'} /></div>}
-      {current ? <section className="svoyak-question" aria-labelledby="svoyak-live-question"><h2 id="svoyak-live-question" className="svoyak-question__text" ref={heading} tabIndex={-1}>{current.prompt}</h2>{current.answer && <div className={`svoyak-answer${current.phase !== 'resolved' ? ' svoyak-answer--private' : ''}`}><span>{current.phase !== 'resolved' && <LockKeyhole size={14} />}{current.phase === 'resolved' ? 'Правильный ответ' : 'Ответ для ведущего'}</span><strong><span>{current.answer.text}</span></strong>{host && (current.answer.aliases.length > 0 || current.answer.note) && <details className="svoyak-answer__variants"><summary>Зачёт и примечание</summary><p>{current.answer.aliases.join(', ')}</p>{current.answer.note && <p>{current.answer.note}</p>}</details>}</div>}</section>
+      {current ? <div ref={heading}><SvoyakQuestionContent current={current} host={host} /></div>
       : <div className="svoyak-board" aria-label="Темы и стоимость вопросов">{room.board.filter(t => t.round === round).map((theme, index) => <div className={`svoyak-board__row svoyak-board__row--${index % 3}`} key={theme.id}><div className="svoyak-board__theme"><h2>{theme.name}</h2></div>{theme.questions.map(q => <QuestionPriceButton price={q.points} played={q.played} disabled={!choose || busy} key={q.id} aria-label={`${theme.name}, ${q.points} очков${q.played ? ', разыгран' : ''}`} onClick={() => void command({ type: 'choose', questionId: q.id })} />)}</div>)}</div>}
     </div>
     {showActions && <div className={`svoyak-actionbar${canBuzz ? ' svoyak-actionbar--buzzer' : ''}`}>{status && <div className={`svoyak-turn${current?.result === 'correct' ? ' svoyak-turn--correct' : ''}`} role="status"><strong>{status}</strong></div>}<div className="svoyak-actions">

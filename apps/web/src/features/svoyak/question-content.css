@@ -1,0 +1,30 @@
+.svoyak-question-media {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+.svoyak-question-media img,
+.svoyak-question-media video {
+  display: block;
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.svoyak-question-media audio {
+  width: min(100%, 500px);
+}
+.svoyak-question-media figcaption {
+  font-size: 14px;
+  color: var(--quest-muted);
+  text-align: center;
+  white-space: pre-wrap;
+}
+.svoyak-question-media p {
+  color: var(--quest-text);
+}
+.svoyak-question__text {
+  white-space: pre-wrap;
+}
