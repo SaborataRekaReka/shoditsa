@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto'
 import type { Bank, BankQuestion } from './bank.js'
 import type { Member, MixPlan, RoomSettings, ThemeInfo } from '@shoditsa/contracts/svoyak'
+import { themeGroups, promptIdentity } from './groups.js'
+export { themeGroups } from './groups.js'
 
 export type SelectedTheme = ThemeInfo & { questions: (BankQuestion & { points: number })[] }
 export const normalized = (value: string) => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
@@ -11,12 +13,7 @@ const matches = (member: Member, topic: string) => !member.preferences.topics.le
 /** Full database pool, normalized participant votes and whole-theme weighted allocation. */
 export function buildMix(bank: Bank, players: Member[], settings: RoomSettings, seed: string): { plan: MixPlan; themes: SelectedTheme[] } {
   const candidates = bank.questions.filter(q => q.age <= settings.age)
-  const groups = new Map<string, BankQuestion[]>()
-  for (const q of candidates) {
-    const id = `${q.themeId}:${q.topic}`
-    groups.set(id, [...(groups.get(id) ?? []), q])
-  }
-  const complete = [...groups].filter(([, list]) => list.length >= 5).map(([id, questions]) => ({ id, questions }))
+  const complete = themeGroups(candidates)
   const availableTopics = [...new Set(complete.map(group => group.questions[0].topic))]
   const weights = new Map<string, number>()
   for (const player of players) {
@@ -39,23 +36,25 @@ export function buildMix(bank: Bank, players: Member[], settings: RoomSettings, 
     available.sort((a, b) => uncovered(b) - uncovered(a) || score(b) - score(a) || tie(seed, a.id).localeCompare(tie(seed, b.id)))
     const group = available.shift()!
     const chosen: BankQuestion[] = []
-    for (const q of group.questions.sort((a, b) => a.difficulty - b.difficulty || tie(seed, a.id).localeCompare(tie(seed, b.id)))) {
+    for (const q of [...group.questions].sort((a, b) => tie(seed, a.id).localeCompare(tie(seed, b.id)))) {
       const other = [...themes.flatMap(t => t.questions), ...chosen]
       if (usedIds.has(q.id) || other.some(x => x.duplicateIds.includes(q.id) || q.duplicateIds.includes(x.id))) continue
       const answers = [q.answer, ...q.aliases].map(normalized).filter(Boolean)
       if (answers.some(a => usedAnswers.has(a) || chosen.some(c => [c.answer, ...c.aliases].map(normalized).includes(a)))) continue
-      if (usedPrompts.has(normalized(q.prompt)) || chosen.some(c => normalized(c.prompt) === normalized(q.prompt))) continue
+      if (usedPrompts.has(promptIdentity(q, normalized)) || chosen.some(c => promptIdentity(c, normalized) === promptIdentity(q, normalized))) continue
       chosen.push(q)
       if (chosen.length === 5) break
     }
     if (chosen.length < 5) continue
+    chosen.sort((a, b) => a.difficulty - b.difficulty || tie(seed, a.id).localeCompare(tie(seed, b.id)))
     const first = chosen[0]
-    const theme: SelectedTheme = { id: group.id, name: first.theme, topic: first.topic,
-      packTitle: first.packTitle, round: Math.floor(themes.length / settings.themesPerRound) + 1,
+    const label = bank.catalog.topics.find(t => t.id === first.topic)?.label ?? first.topic
+    const theme: SelectedTheme = { id: group.id, name: group.mixed ? `${label}: сборная тема` : first.theme, topic: first.topic,
+      packTitle: group.mixed ? 'Смешанная подборка' : first.packTitle, round: Math.floor(themes.length / settings.themesPerRound) + 1,
       questions: chosen.map((q, i) => ({ ...q, points: (i + 1) * 100 * (Math.floor(themes.length / settings.themesPerRound) + 1) })),
     }
     themes.push(theme)
-    for (const q of chosen) { usedIds.add(q.id); usedPrompts.add(normalized(q.prompt)); for (const a of [q.answer, ...q.aliases]) usedAnswers.add(normalized(a)) }
+    for (const q of chosen) { usedIds.add(q.id); usedPrompts.add(promptIdentity(q, normalized)); for (const a of [q.answer, ...q.aliases]) usedAnswers.add(normalized(a)) }
     for (const player of players) if (matches(player, theme.topic)) coverage.set(player.id, coverage.get(player.id)! + 1)
   }
   if (themes.length < wanted) throw new Error(`По выбранным интересам в базе доступно ${themes.length} полных тем по 5 вопросов, нужно ${wanted}. Добавьте интересы или уменьшите число тем и раундов.`)

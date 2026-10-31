@@ -12,6 +12,7 @@ export default defineConfig({
     'content-bootstrap-svoyak': 'scripts/content/bootstrap-svoyak.ts',
     'svoyak-import-editor-library': 'scripts/content/import-svoyak-editor-library.ts',
     'svoyak-record-media-recovery': 'scripts/content/record-svoyak-media-recovery.ts',
+    'svoyak-publish-reviewed': 'scripts/content/publish-svoyak-reviewed.ts',
     'content-bootstrap-territory': 'scripts/content/bootstrap-territory.ts',
     'content-import-dtf-comments': 'scripts/content/import-dtf-comment-pack.ts',
     'content-import-game-hints': 'scripts/content/import-game-plot-hints.ts',

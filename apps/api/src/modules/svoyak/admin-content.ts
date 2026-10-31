@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import type { Catalog, EditableQuestion, SvoyakWorkspace } from '@shoditsa/contracts/svoyak'
 import { ApiError } from '../../lib/errors.js'
+import { themeGroups } from '@shoditsa/game-core/svoyak-mix'
 
 export function normalizeWorkspace(input: SvoyakWorkspace): SvoyakWorkspace {
   const value = structuredClone(input)
@@ -57,12 +58,7 @@ export function normalizeWorkspace(input: SvoyakWorkspace): SvoyakWorkspace {
 }
 
 export function playableQuestionIds(questions: EditableQuestion[]) {
-  const groups = new Map<string, EditableQuestion[]>()
-  for (const q of questions) {
-    const key = `${q.themeId}:${q.topic}`
-    groups.set(key, [...(groups.get(key) ?? []), q])
-  }
-  return new Set([...groups.values()].filter((g) => g.length >= 5).flatMap((g) => g.map((q) => q.id)))
+  return new Set(themeGroups(questions).flatMap(g => g.questions.map(q => q.id)))
 }
 
 export const revisionCatalog = (workspace: SvoyakWorkspace, revision: string): Catalog => ({
