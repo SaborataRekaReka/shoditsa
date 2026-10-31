@@ -1,3 +1,4 @@
+import { questionSourceId, SvoyakSourcePanel, SvoyakAdmissionReview } from './SvoyakSourcePanel'
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight, Plus, Save, Search, Upload, Trash2, Copy, Rocket, RefreshCw } from 'lucide-react'
 import type {
@@ -26,6 +27,8 @@ export function SvoyakAdminPage() {
   const [status, setStatus] = useState(''),
     [mediaFilter, setMediaFilter] = useState(''),
     [page, setPage] = useState(0)
+  const [reviewFilter, setReviewFilter] = useState(''),
+    [original, setOriginal] = useState(false)
   const [view, setView] = useState<'question' | 'answer' | 'host'>('question'),
     [mobile, setMobile] = useState(false)
   const [busy, setBusy] = useState(false),
@@ -86,7 +89,21 @@ export function SvoyakAdminPage() {
     setNotice('')
   }
   const update = (id: string, values: Partial<EditableQuestion>) =>
-    change((w) => ({ ...w, questions: w.questions.map((q) => (q.id === id ? { ...q, ...values } : q)) }))
+    change((w) => ({
+      ...w,
+      questions: w.questions.map((q) =>
+        q.id === id
+          ? {
+              ...q,
+              ...(state?.sources?.[questionSourceId(w.questions.find((q) => q.id === id)?.sourceQuestionId ?? id)] &&
+              Object.keys(values).some((k) => !['review', 'enabled', 'packId', 'packTitle', 'source'].includes(k))
+                ? { enabled: false, review: undefined }
+                : {}),
+              ...values,
+            }
+          : q
+      ),
+    }))
   const filtered = useMemo(
     () =>
       work?.questions.filter(
@@ -94,20 +111,37 @@ export function SvoyakAdminPage() {
           (!pack || q.packId === Number(pack)) &&
           (!topic || q.topic === topic) &&
           (!status || (status === 'enabled') === q.enabled) &&
-          (!mediaFilter || (mediaFilter === 'media') === Boolean(q.media?.length)) &&
+          (!mediaFilter ||
+            (mediaFilter === 'media') ===
+              Boolean(
+                q.media?.length || state?.sources?.[questionSourceId(q.sourceQuestionId ?? q.id)]?.media.length
+              )) &&
+          (!reviewFilter ||
+            state?.sources?.[questionSourceId(q.sourceQuestionId ?? q.id)]?.reviewStatus === reviewFilter) &&
           (!query ||
-            [q.id, q.prompt, q.answer, q.theme, q.packTitle, ...q.aliases]
+            [
+              q.id,
+              q.prompt,
+              q.answer,
+              q.theme,
+              q.packTitle,
+              state?.sources?.[questionSourceId(q.sourceQuestionId ?? q.id)]?.originalPrompt ?? '',
+              state?.sources?.[questionSourceId(q.sourceQuestionId ?? q.id)]?.originalAnswer ?? '',
+              ...q.aliases,
+            ]
               .join(' ')
               .toLocaleLowerCase('ru')
               .includes(query.toLocaleLowerCase('ru')))
       ) ?? [],
-    [work, pack, topic, status, mediaFilter, query]
+    [work, pack, topic, status, mediaFilter, query, reviewFilter, state?.sources]
   )
   const current = work?.questions.find((q) => q.id === selected) ?? filtered[0],
     index = filtered.findIndex((q) => q.id === current?.id)
-  useEffect(() => setPage(0), [pack, topic, status, mediaFilter, query])
+  const source = current ? state?.sources?.[questionSourceId(current.sourceQuestionId ?? current.id)] : undefined
+  useEffect(() => setPage(0), [pack, topic, status, mediaFilter, query, reviewFilter])
   useEffect(() => {
     setView('question')
+    setOriginal(false)
   }, [current?.id])
   const pages = Math.max(1, Math.ceil(filtered.length / 60)),
     safePage = Math.min(page, pages - 1)
@@ -168,7 +202,15 @@ export function SvoyakAdminPage() {
     }
     const id = 'manual:' + crypto.randomUUID()
     const q: EditableQuestion = copy
-      ? { ...structuredClone(copy), id, enabled: false, hash: '' }
+      ? {
+          ...structuredClone(copy),
+          id,
+          enabled: false,
+          review: undefined,
+          sourceQuestionId:
+            copy.sourceQuestionId ?? (state?.sources?.[questionSourceId(copy.id)] ? copy.id : undefined),
+          hash: '',
+        }
       : {
           id,
           hash: '',
@@ -191,6 +233,7 @@ export function SvoyakAdminPage() {
     change((w) => ({ ...w, questions: [q, ...w.questions] }))
     setSelected(id)
     setQuery('')
+    setReviewFilter('')
     setStatus('')
     setMediaFilter('')
     setTopic('')
@@ -280,7 +323,7 @@ export function SvoyakAdminPage() {
         id: current.id,
         theme: current.theme,
         points: current.difficulty * 100,
-        prompt: current.prompt,
+        prompt: original && source ? source.originalPrompt || 'В исходнике нет текстового условия.' : current.prompt,
         phase: view === 'answer' ? 'resolved' : 'reading',
         durationMs: 30000,
         remainingMs: 30000,
@@ -288,11 +331,14 @@ export function SvoyakAdminPage() {
         answeringId: null,
         rejectedIds: [],
         result: null,
-        media: current.media?.filter((m) => m.phase === 'question' || view === 'answer'),
+        media: (original && source
+          ? source.originalMedia.filter((m) => m.url).map((m) => ({ ...m, url: m.url! }))
+          : current.media
+        )?.filter((m) => m.phase === 'question' || view === 'answer'),
         ...(view !== 'question'
           ? {
               answer: {
-                text: current.answer,
+                text: original && source ? source.originalAnswer : current.answer,
                 aliases: current.aliases,
                 note: current.note,
                 source: current.source,
@@ -307,7 +353,7 @@ export function SvoyakAdminPage() {
     <div className="svoyak-admin">
       <header className="svoyak-admin__head">
         <div>
-          <span>Вопросы и паки</span>
+          <span>Вся библиотека вопросов и паков</span>
           <h1>Своя игра</h1>
           <p>
             {work.questions.length.toLocaleString('ru')} вопросов, {work.catalog.packs.length} паков. Допущено:{' '}
@@ -339,7 +385,7 @@ export function SvoyakAdminPage() {
       </header>
       <div className="svoyak-admin__status">
         <strong>
-          {dirty ? 'Есть несохранённые правки' : state.draft ? 'Сохранён черновик' : 'Опубликованная база'}
+          {dirty ? 'Есть несохранённые правки' : state.draft ? 'Сохранён черновик' : 'Библиотека загружена'}
         </strong>
         <span>Изменения вступают в силу после публикации. Начатые партии сохраняют свою версию.</span>
         {state.draft && (
@@ -360,6 +406,13 @@ export function SvoyakAdminPage() {
       {notice && (
         <p className="svoyak-admin__notice" role="status">
           {notice}
+        </p>
+      )}
+      {state.library && (
+        <p className="svoyak-admin__library-note">
+          Вся исходная библиотека: {state.library.summary.total.toLocaleString('ru')} вопросов,{' '}
+          {state.library.summary.packs} паков, {state.library.summary.withMedia} вопросов с медиа. Недопущенные вопросы
+          видны только администратору.
         </p>
       )}
       <section className="admin-panel svoyak-admin__filters" aria-label="Поиск и фильтры">
@@ -423,7 +476,7 @@ export function SvoyakAdminPage() {
           >
             <option value="">Все вопросы</option>
             <option value="enabled">В игре</option>
-            <option value="disabled">Снятые с игры</option>
+            <option value="disabled">Не допущены к игре</option>
           </select>
         </label>
         <label className="admin-field">
@@ -438,6 +491,22 @@ export function SvoyakAdminPage() {
             <option value="">Любые</option>
             <option value="media">С медиа</option>
             <option value="text">Только текст</option>
+          </select>
+        </label>
+        <label className="admin-field">
+          <span>Исходная проверка</span>
+          <select
+            value={reviewFilter}
+            onChange={(e) => {
+              setReviewFilter(e.target.value)
+              setSelected('')
+            }}
+          >
+            <option value="">Все статусы</option>
+            <option value="approved">Принят в исходной редакции</option>
+            <option value="needs_review">Нужна проверка</option>
+            <option value="unreviewed">Не проверен</option>
+            <option value="rejected">Отклонён</option>
           </select>
         </label>
       </section>
@@ -524,11 +593,13 @@ export function SvoyakAdminPage() {
                 <span>
                   <strong>{q.theme}</strong>
                   <small>
-                    {q.enabled ? 'В игре' : 'Снят'}
-                    {q.media?.length ? `, медиа: ${q.media.length}` : ''}
+                    {q.enabled ? 'В игре' : 'Не допущен'}
+                    {q.media?.length || state.sources?.[questionSourceId(q.sourceQuestionId ?? q.id)]?.media.length
+                      ? ', есть медиа'
+                      : ''}
                   </small>
                 </span>
-                <p>{q.prompt}</p>
+                <p>{q.prompt || 'Вопрос задан медиа'}</p>
                 <small>{q.packTitle}</small>
               </button>
             ))}
@@ -603,6 +674,12 @@ export function SvoyakAdminPage() {
                     {label}
                   </button>
                 ))}
+                {source && (
+                  <label>
+                    <input type="checkbox" checked={original} onChange={(e) => setOriginal(e.target.checked)} />
+                    Оригинал
+                  </label>
+                )}
                 <label>
                   <input type="checkbox" checked={mobile} onChange={(e) => setMobile(e.target.checked)} /> Телефон
                 </label>
@@ -621,10 +698,17 @@ export function SvoyakAdminPage() {
                     </div>
                     <span>Предпросмотр</span>
                   </div>
-                  <SvoyakQuestionContent key={`${current.id}:${view}`} current={preview} host={view === 'host'} />
+                  <SvoyakQuestionContent
+                    key={`${current.id}:${view}:${original}`}
+                    current={preview}
+                    host={view === 'host'}
+                  />
                 </div>
               </div>
             </section>
+            {source && (
+              <SvoyakSourcePanel key={current.id} source={source} id={current.sourceQuestionId ?? current.id} />
+            )}
             <fieldset className="admin-panel svoyak-admin__editor" disabled={busy}>
               <legend>Редактирование вопроса</legend>
               <div className="svoyak-admin__actions">
@@ -640,18 +724,20 @@ export function SvoyakAdminPage() {
                   <Copy size={16} />
                   Дублировать
                 </button>
-                <button
-                  className="admin-btn admin-btn--secondary"
-                  onClick={() => {
-                    if (confirm('Удалить вопрос из черновика? Опубликованная версия сохранится.')) {
-                      change((w) => ({ ...w, questions: w.questions.filter((q) => q.id !== current.id) }))
-                      setSelected('')
-                    }
-                  }}
-                >
-                  <Trash2 size={16} />
-                  Удалить
-                </button>
+                {!source && (
+                  <button
+                    className="admin-btn admin-btn--secondary"
+                    onClick={() => {
+                      if (confirm('Удалить вопрос из черновика? Опубликованная версия сохранится.')) {
+                        change((w) => ({ ...w, questions: w.questions.filter((q) => q.id !== current.id) }))
+                        setSelected('')
+                      }
+                    }}
+                  >
+                    <Trash2 size={16} />
+                    Удалить
+                  </button>
+                )}
               </div>
               <label className="admin-field">
                 <span>Вопрос</span>
@@ -858,9 +944,13 @@ export function SvoyakAdminPage() {
                   </button>
                 </div>
               </section>
+              {source && (
+                <SvoyakAdmissionReview question={current} onChange={(review) => update(current.id, { review })} />
+              )}
               <small className="svoyak-admin__id">ID: {current.id}</small>
               <button className="admin-btn admin-btn--primary" disabled={busy || !dirty} onClick={save}>
-                <Save size={18} />Сохранить все правки
+                <Save size={18} />
+                Сохранить все правки
               </button>
             </fieldset>
           </div>

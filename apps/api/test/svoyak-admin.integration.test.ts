@@ -1,13 +1,14 @@
+import { sourceIdentity, REVIEW_CHECKS } from '../src/modules/svoyak/editor-library.js'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import Fastify from 'fastify'
-import { randomUUID } from 'node:crypto'
-import { readFile } from 'node:fs/promises'
+import { randomUUID, createHash } from 'node:crypto'
+import { readFile, mkdir, writeFile } from 'node:fs/promises'
 import sharp from 'sharp'
 import { sql } from 'drizzle-orm'
 import { loadConfig } from '@shoditsa/config'
 import { createDatabase, user, playerProfiles } from '@shoditsa/database'
 import type { Auth } from '../src/modules/auth/auth.js'
-import type { SvoyakAdminState } from '@shoditsa/contracts/svoyak'
+import type { SvoyakAdminState, SvoyakLibrarySnapshot, EditableQuestion } from '@shoditsa/contracts/svoyak'
 import type { Bank } from '@shoditsa/game-core/svoyak-bank'
 import { RoomService } from '@shoditsa/game-core/svoyak'
 import { registerSvoyakAdminRoutes } from '../src/modules/svoyak/admin-routes.js'
@@ -19,6 +20,7 @@ const origin = 'http://localhost:5193',
   outsider = randomUUID()
 const config = {
   ...loadConfig(),
+  databasePoolMax: 1,
   adminUserIds: [actor],
   adminEmails: ['breneize@yandex.ru'],
   trustedOrigins: [origin],
@@ -53,7 +55,9 @@ describe('Svoyak editor with isolated PostgreSQL', () => {
     if (config.production || url.hostname !== '127.0.0.1' || url.pathname !== '/svoyak_editor_test')
       throw Error('Only isolated svoyak_editor_test is allowed')
     await db.execute(sql`truncate svoyak_content_revisions cascade`)
-    await db.execute(sql`delete from app_settings where key='svoyak.editor.workspace.v1'`)
+    await db.execute(
+      sql`delete from app_settings where key in ('svoyak.editor.workspace.v1','svoyak.editor.library.v1')`
+    )
     await db
       .insert(user)
       .values([actor, outsider].map((id) => ({ id, email: id + '@example.test', name: 'Editor QA' })))
@@ -266,5 +270,130 @@ describe('Svoyak editor with isolated PostgreSQL', () => {
     } finally {
       service.dispose()
     }
+  })
+
+  it('merges all source questions without activation and serves protected media with ranges', async () => {
+    const before = await state(),
+      image = await sharp({ create: { width: 320, height: 180, channels: 3, background: '#88bbaa' } })
+        .png()
+        .toBuffer()
+    const sha = createHash('sha256').update(image).digest('hex'),
+      path = sha.slice(0, 2) + '/' + sha + '.png'
+    await mkdir('.tmp/svoyak-library/assets/' + sha.slice(0, 2), { recursive: true })
+    await writeFile('.tmp/svoyak-library/assets/' + path, image)
+    const question: EditableQuestion = {
+      ...before.workspace.questions[0],
+      id: '15161:aaaaaaaaaaaa:r99:t1:q1',
+      hash: 'source-hash',
+      prompt: 'Исходный вопрос с медиа',
+      answer: 'Исходный ответ',
+      enabled: false,
+      media: [{ kind: 'image', phase: 'question', url: '/api/v1/admin/svoyak/library/media/' + sha, caption: '' }],
+    }
+    const library: SvoyakLibrarySnapshot = {
+      version: 1,
+      importedAt: new Date().toISOString(),
+      summary: { total: 1, packs: 1, withMedia: 1, unavailableMedia: 0, assets: 1, bytes: image.length },
+      questions: [question],
+      packs: before.workspace.catalog.packs,
+      topics: before.workspace.catalog.topics,
+      assets: { [sha]: { path, mime: 'image/png', bytes: image.length } },
+      sources: {
+        [sourceIdentity(question.id)]: {
+          id: question.id,
+          originalPrompt: question.prompt,
+          originalAnswer: question.answer,
+          originalHash: 'source-hash',
+          reviewStatus: 'needs_review',
+          blockers: ['review_required'],
+          checks: {},
+          evidence: [{ note: 'Источники сохранены' }],
+          revision: 1,
+          genre: 'humour',
+          mediaPolicy: 'all',
+          format: 'standard',
+          media: [
+            { ...question.media![0], reference: 'source.png', status: 'available', issues: [], review: 'pending' },
+          ],
+          originalMedia: [],
+          originalAtoms: [],
+          history: [{ action: 'source-review' }],
+          edition: null,
+          reviewNote: 'Авторская подача сохраняется',
+        },
+      },
+    }
+    library.sources[sourceIdentity(question.id)].originalMedia = library.sources[sourceIdentity(question.id)].media
+    await db.execute(
+      sql`insert into app_settings(key,value,version) values('svoyak.editor.library.v1',${JSON.stringify(library)}::jsonb,1)`
+    )
+    const after = await state()
+    expect(after.workspace.questions).toHaveLength(before.workspace.questions.length + 1)
+    expect(after.workspace.questions.find((q) => q.id === question.id)?.enabled).toBe(false)
+    expect(after.activeRevision).toBe(before.activeRevision)
+    expect(after.sources?.[sourceIdentity(question.id)].history).toEqual([])
+    const detail = await app.inject({
+      url: '/api/v1/admin/svoyak/library/source/' + encodeURIComponent(question.id),
+      headers,
+    })
+    expect(detail.statusCode).toBe(200)
+    expect(detail.json().history).toHaveLength(1)
+    const url = question.media![0].url
+    expect((await app.inject({ url })).statusCode).toBe(401)
+    const full = await app.inject({ url, headers })
+    expect(full.statusCode).toBe(200)
+    expect(full.rawPayload.equals(image)).toBe(true)
+    const range = await app.inject({ url, headers: { ...headers, range: 'bytes=0-9' } })
+    expect(range.statusCode).toBe(206)
+    expect(range.rawPayload.equals(image.subarray(0, 10))).toBe(true)
+    expect(range.headers['content-range']).toBe(`bytes 0-9/${image.length}`)
+    expect((await app.inject({ method: 'HEAD', url, headers: { cookie: actor } })).statusCode).toBe(200)
+    expect((await app.inject({ url, headers: { ...headers, range: 'bytes=999999-' } })).statusCode).toBe(416)
+  })
+  it('keeps incomplete disabled cards and requires eight checks before public media admission', async () => {
+    const before = await state(),
+      work = structuredClone(before.workspace),
+      question = work.questions.find((q) => q.id.includes(':r99:'))!
+    question.prompt = ''
+    question.answer = ''
+    let saved = await save(work)
+    expect(saved.statusCode, saved.body).toBe(200)
+    const incomplete = saved.json() as SvoyakAdminState,
+      edited = incomplete.workspace.questions.find((q) => q.id === question.id)!
+    edited.prompt = 'Проверенный вопрос с изображением'
+    edited.answer = 'Проверенный ответ'
+    edited.enabled = true
+    saved = await save(incomplete.workspace)
+    expect(saved.statusCode, saved.body).toBe(200)
+    let publish = await app.inject({
+      method: 'POST',
+      url: '/api/v1/admin/svoyak/publish',
+      headers,
+      payload: { version: saved.json().workspace.version },
+    })
+    expect(publish.statusCode, publish.body).toBe(422)
+    expect(publish.json().error.code).toBe('REVIEW_REQUIRED')
+    expect((await state()).activeRevision).toBe(before.activeRevision)
+    const reviewed = saved.json() as SvoyakAdminState
+    reviewed.workspace.questions.find((q) => q.id === question.id)!.review = {
+      checks: Object.fromEntries(REVIEW_CHECKS.map((key) => [key, true])),
+      textOnlyAdaptation: false,
+      missingMediaResolved: false,
+    }
+    saved = await save(reviewed.workspace)
+    expect(saved.statusCode, saved.body).toBe(200)
+    publish = await app.inject({
+      method: 'POST',
+      url: '/api/v1/admin/svoyak/publish',
+      headers,
+      payload: { version: saved.json().workspace.version },
+    })
+    expect(publish.statusCode, publish.body).toBe(200)
+    const published = (publish.json() as SvoyakAdminState).workspace.questions.find((q) => q.id === question.id)!
+    expect(published.media?.[0].url).toMatch(/\/svoyak\/released\//)
+    const active = await db.execute(
+      sql`select payload from svoyak_questions where revision_id=${publish.json().activeRevision} and id=${question.id}`
+    )
+    expect((active[0].payload as EditableQuestion).media?.[0].url).not.toContain('/admin/')
   })
 })

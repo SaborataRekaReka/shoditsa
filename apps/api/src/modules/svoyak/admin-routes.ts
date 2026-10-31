@@ -1,3 +1,11 @@
+import {
+  loadEditorLibrary,
+  mergeEditorLibrary,
+  serveLibraryAsset,
+  publishLibraryMedia,
+  validateNewAdmissions,
+  sourceIdentity,
+} from './editor-library.js'
 import { randomUUID, createHash } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -44,7 +52,18 @@ const question = Type.Object(
     age: Type.Union([0, 6, 12, 16, 18].map((v) => Type.Literal(v))),
     duplicateIds: Type.Array(text(160), { maxItems: 100 }),
     enabled: Type.Boolean(),
-    media: Type.Optional(Type.Array(media, { maxItems: 12 })),
+    sourceQuestionId: Type.Optional(text(160)),
+    review: Type.Optional(
+      Type.Object(
+        {
+          checks: Type.Record(Type.String(), Type.Boolean()),
+          textOnlyAdaptation: Type.Boolean(),
+          missingMediaResolved: Type.Boolean(),
+        },
+        { additionalProperties: false }
+      )
+    ),
+    media: Type.Optional(Type.Array(media, { maxItems: 64 })),
   },
   { additionalProperties: false }
 )
@@ -62,7 +81,7 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
       reply.header('Cache-Control', 'no-store')
       await requireAdmin(request, deps.auth, deps.db, deps.config)
       if (
-        request.method !== 'GET' &&
+        !['GET', 'HEAD'].includes(request.method) &&
         (!request.headers.origin || !deps.config.trustedOrigins.includes(request.headers.origin))
       )
         throw new ApiError(403, 'ORIGIN_REJECTED', 'Откройте редактор на сайте')
@@ -79,30 +98,23 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
           const rows = await tx.execute(sql`select value,version from app_settings where key=${key}`)
           const saved = rows[0]?.value as SvoyakWorkspace | null
           const version = Number(rows[0]?.version ?? 0)
-          const questions = saved
+          const library = await loadEditorLibrary(tx, deps.db)
+          const versioned = saved
             ? saved.questions
             : (
                 await tx.execute(
                   sql`select payload,approved from svoyak_questions where revision_id=${current.id} order by id`
                 )
               ).map((r) => ({ ...(r.payload as EditableQuestion), enabled: Boolean(r.approved) }))
-          // Some imported questions belong to incomplete topics absent from the lobby catalog.
-          const extraPacks = [
-            ...new Map(
-              questions
-                .filter((q) => !current.catalog.packs.some((p) => p.id === q.packId))
-                .map((q) => [
-                  q.packId,
-                  {
-                    id: q.packId,
-                    title: q.packTitle,
-                    total: questions.filter((other) => other.packId === q.packId).length,
-                    playable: 0,
-                    topics: [] as string[],
-                  },
-                ])
-            ).values(),
-          ]
+          const questions = mergeEditorLibrary(library, versioned)
+          const baseCatalog = saved?.catalog ?? current.catalog
+          const packs = new Map((library?.packs ?? []).map((p) => [p.id, p]))
+          for (const p of baseCatalog.packs) packs.set(p.id, p)
+          for (const q of questions)
+            if (!packs.has(q.packId))
+              packs.set(q.packId, { id: q.packId, title: q.packTitle, total: 0, playable: 0, topics: [] })
+          const topics = new Map((library?.topics ?? []).map((t) => [t.id, t]))
+          for (const t of baseCatalog.topics) topics.set(t.id, t)
           const labels: Record<string, string> = {
             games: 'Игры',
             anime: 'Аниме',
@@ -110,15 +122,14 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
             art: 'Искусство',
             people: 'Люди',
           }
+          for (const q of questions)
+            if (!topics.has(q.topic))
+              topics.set(q.topic, { id: q.topic, label: labels[q.topic] ?? q.topic, playable: 0 })
           const catalog = {
-            ...current.catalog,
-            packs: [...current.catalog.packs, ...extraPacks],
-            topics: [
-              ...current.catalog.topics,
-              ...[...new Set(questions.map((q) => q.topic))]
-                .filter((id) => !current.catalog.topics.some((t) => t.id === id))
-                .map((id) => ({ id, label: labels[id] ?? id, playable: 0 })),
-            ],
+            ...baseCatalog,
+            total: questions.length,
+            packs: [...packs.values()],
+            topics: [...topics.values()],
           }
           const revisions = await tx.execute(
             sql`select id,status,created_at,catalog->>'total' as count from svoyak_content_revisions order by created_at desc limit 30`
@@ -126,7 +137,16 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
           return {
             activeRevision: current.id,
             draft: Boolean(saved),
-            workspace: saved ? { ...saved, version } : { version, baseRevision: current.id, catalog, questions },
+            workspace: { version, baseRevision: saved?.baseRevision ?? current.id, catalog, questions },
+            sources: library
+              ? Object.fromEntries(
+                  Object.entries(library.sources).map(([id, s]) => [
+                    id,
+                    { ...s, history: [], evidence: [], edition: null, originalAtoms: [] },
+                  ])
+                )
+              : undefined,
+            library: library ? { summary: library.summary, importedAt: library.importedAt } : undefined,
             revisions: revisions.map((r) => ({
               id: String(r.id),
               status: String(r.status),
@@ -166,6 +186,24 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
       )
     }
     scope.get('/api/v1/admin/svoyak', state)
+    scope.get('/api/v1/admin/svoyak/library/source/:id', async (request) => {
+      const library = await loadEditorLibrary(deps.db),
+        source = library?.sources[sourceIdentity((request.params as { id: string }).id)]
+      if (!source) throw new ApiError(404, 'SOURCE_NOT_FOUND', 'Исходник не найден')
+      return source
+    })
+    scope.get(
+      '/api/v1/admin/svoyak/library/media/:sha',
+      { schema: { params: Type.Object({ sha: Type.String({ pattern: '^[a-f0-9]{64}$' }) }) } },
+      async (request, reply) =>
+        serveLibraryAsset(
+          request,
+          reply,
+          await loadEditorLibrary(deps.db),
+          (request.params as { sha: string }).sha,
+          deps.config
+        )
+    )
     scope.put(
       '/api/v1/admin/svoyak/workspace',
       {
@@ -257,6 +295,17 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
             error instanceof Error ? error.message : 'Недостаточно полных тем'
           )
         }
+        const library = await loadEditorLibrary(tx)
+        const approved = await tx.execute(
+          sql`select payload from svoyak_questions where revision_id=${draft.baseRevision} and approved=true`
+        )
+        validateNewAdmissions(
+          value.questions,
+          approved.map((r) => r.payload as EditableQuestion),
+          library
+        )
+        await publishLibraryMedia(value.questions, library, deps.config)
+        value.questions = normalizeWorkspace(value).questions
         const catalog = revisionCatalog(value, id)
         await tx.execute(
           sql`insert into svoyak_content_revisions(id,status,catalog,provenance) values(${id},'ready',${JSON.stringify(catalog)}::jsonb,${JSON.stringify({ source: 'admin', actorId: actor.id, baseRevision: draft.baseRevision })}::jsonb)`

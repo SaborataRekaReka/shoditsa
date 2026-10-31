@@ -35,9 +35,24 @@ export type EditableQuestion = {
   id: string; hash: string; themeId: string; theme: string; topic: string; packId: number; packTitle: string
   prompt: string; answer: string; aliases: string[]; note: string; source: string; difficulty: number; age: number
   duplicateIds: string[]; media?: QuestionMedia[]; enabled: boolean
+  sourceQuestionId?: string
+  review?: { checks: Record<string, boolean>; textOnlyAdaptation: boolean; missingMediaResolved: boolean }
+}
+export type SvoyakSourceMedia = Omit<QuestionMedia, 'url'> & { url: string | null; reference: string; status: string; issues: string[]; review: string }
+export type SvoyakSourceQuestion = {
+  id: string; originalPrompt: string; originalAnswer: string; originalHash: string
+  reviewStatus: string; blockers: string[]; checks: Record<string, boolean>; evidence: unknown[]; revision: number
+  genre: string; mediaPolicy: string; format: string; media: SvoyakSourceMedia[]; originalMedia: SvoyakSourceMedia[]
+  originalAtoms: unknown[]; history: unknown[]; edition: unknown; reviewNote: string
+}
+export type SvoyakLibrarySnapshot = {
+  version: 1; importedAt: string; summary: { total: number; packs: number; withMedia: number; unavailableMedia: number; assets: number; bytes: number }
+  questions: EditableQuestion[]; sources: Record<string, SvoyakSourceQuestion>
+  assets: Record<string, { path: string; mime: string; bytes: number }>
+  packs: Catalog['packs']; topics: Catalog['topics']
 }
 export type SvoyakWorkspace = { version: number; baseRevision: string; catalog: Catalog; questions: EditableQuestion[] }
-export type SvoyakAdminState = { activeRevision: string; draft: boolean; workspace: SvoyakWorkspace; revisions: { id: string; status: string; createdAt: string; count: number }[] }
+export type SvoyakAdminState = { activeRevision: string; draft: boolean; workspace: SvoyakWorkspace; sources?: Record<string, SvoyakSourceQuestion>; library?: Pick<SvoyakLibrarySnapshot, 'summary' | 'importedAt'>; revisions: { id: string; status: string; createdAt: string; count: number }[] }
 export type RoomView = {
   apiVersion: 1; code: string; revision: number; stage: 'lobby' | 'playing' | 'result' | 'closed'
   hostId: string; settings: RoomSettings; members: Member[]; me: Member | null; plan: MixPlan | null

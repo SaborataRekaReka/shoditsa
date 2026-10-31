@@ -15,13 +15,14 @@ export function normalizeWorkspace(input: SvoyakWorkspace): SvoyakWorkspace {
     ids.add(q.id)
     const pack = packs.get(q.packId)
     if (!pack) throw new ApiError(422, 'PACK_REQUIRED', 'Выберите пак для вопроса ' + q.id)
-    if (!q.prompt.trim() || !q.answer.trim() || !q.theme.trim() || !q.themeId.trim())
+    if (q.enabled && (!q.prompt.trim() || !q.answer.trim() || !q.theme.trim() || !q.themeId.trim()))
       throw new ApiError(422, 'QUESTION_INCOMPLETE', 'Заполните тему, вопрос и ответ: ' + q.id)
     if (!value.catalog.topics.some((t) => t.id === q.topic))
       throw new ApiError(422, 'TOPIC_REQUIRED', 'Выберите интерес для вопроса ' + q.id)
     q.packTitle = pack.title.trim()
     q.media = (q.media ?? []).map((m) => {
       let safe = /^\/media\/[a-zA-Z0-9/_.-]+$/.test(m.url) && !m.url.includes('..')
+      safe ||= /^\/api\/v1\/admin\/svoyak\/library\/media\/[a-f0-9]{64}$/.test(m.url)
       try {
         const u = new URL(m.url)
         safe = u.protocol === 'https:' && !u.username && !u.password
@@ -31,7 +32,7 @@ export function normalizeWorkspace(input: SvoyakWorkspace): SvoyakWorkspace {
       if (!safe) throw new ApiError(422, 'MEDIA_URL_INVALID', 'Медиа: используйте HTTPS или файл из хранилища сайта')
       return m
     })
-    const { hash: _, enabled: _enabled, ...content } = q
+    const { hash: _, enabled: _enabled, review: _review, ...content } = q
     q.hash = createHash('sha256').update(JSON.stringify(content)).digest('hex')
   }
   const enabled = value.questions.filter((q) => q.enabled)

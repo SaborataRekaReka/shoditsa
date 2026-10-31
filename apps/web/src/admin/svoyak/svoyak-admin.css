@@ -210,6 +210,21 @@
   overflow-wrap: anywhere;
   color: #62646e;
 }
+.svoyak-admin__library-note { margin: 0; font-size: 14px; line-height: 1.6; color: #55596b; }
+.svoyak-admin__source { padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.svoyak-admin__source > p { display: flex; gap: 14px; flex-wrap: wrap; }
+.svoyak-admin__source details { min-width: 0; }
+.svoyak-admin__source summary { cursor: pointer; font-weight: 700; padding: 10px 0; }
+.svoyak-admin__source h3 { margin: 12px 0 5px; }
+.svoyak-admin__source pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; max-height: 380px; font-size: 12px; padding: 14px; background: #f3f3f8; }
+.svoyak-admin__original-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.svoyak-admin__warning { padding: 14px; border-radius: 10px; background: #fff4d9; color: #67501b; line-height: 1.6; }
+.svoyak-admin__source-media { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid #e0e1e7; }
+.svoyak-admin__source-media code { overflow-wrap: anywhere; font-size: 12px; }
+.svoyak-admin__review { display: grid; gap: 14px; padding: 18px; border: 1px solid #dad8e5; border-radius: 12px; }
+.svoyak-admin__review p { font-size: 13px; line-height: 1.6; }
+.svoyak-admin__review label { display: flex; gap: 9px; align-items: start; font-size: 13px; }
+.svoyak-admin__review input { margin-top: 2px; }
 .svoyak-admin__history {
   padding: 18px;
   overflow-wrap: anywhere;
