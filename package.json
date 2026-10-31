@@ -38,7 +38,7 @@
     "test:ui-contract": "playwright test --config playwright.ui-kit.config.ts",
     "test:responsive-visual": "playwright test --config playwright.responsive-ui.config.ts --grep \"stable visual layout|visual composition\"",
     "build": "npm run validate:word && npm run validate:shell && npm run validate:danetki && npm run validate:territory && npm run typecheck && npm run build:web",
-    "build:web": "vite build apps/web && tsx scripts/diagnostics/write-build-manifest.ts && tsx scripts/seo/generate-static-pages.ts && node scripts/diagnostics/validate-pwa.mjs",
+    "build:web": "vite build apps/web && tsx scripts/diagnostics/write-build-manifest.ts && tsx scripts/seo/generate-static-pages.ts && node scripts/diagnostics/validate-static-assets.mjs && node scripts/diagnostics/validate-pwa.mjs",
     "build:api": "tsup --config tsup.config.ts",
     "yandex:build": "npm run validate:shell && npm run typecheck && vite build apps/web --mode yandex",
     "yandex:pack": "node scripts/deploy/package-yandex-archive.mjs",

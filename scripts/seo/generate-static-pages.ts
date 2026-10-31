@@ -156,7 +156,8 @@ const renderLaunchControls = (content: GameSeoContent) => {
 
 const renderGameArtifactFallback = (content: GameSeoContent) => {
   const file = content.mode === 'connections' ? 'associations' : content.mode === 'danetki' ? 'yes-no' : content.mode
-  const art = `<figure aria-hidden="true"><img class="public-static-art public-static-art--light" src="/images/home-doodle/${file}.webp" alt="" width="160" height="160"><img class="public-static-art public-static-art--dark" src="/images/home-doodle/dark/${file}-v1.webp" alt="" width="160" height="160"></figure>`
+  const nightFile = file === 'word' ? `${file}.webp` : `dark/${file}-v1.webp`
+  const art = `<figure aria-hidden="true"><img class="public-static-art public-static-art--light" src="/images/home-doodle/${file}.webp" alt="" width="160" height="160"><img class="public-static-art public-static-art--dark" src="/images/home-doodle/${nightFile}" alt="" width="160" height="160"></figure>`
   return `<main class="public-static-page"><a class="public-static-brand" href="/" aria-label="Сходится! — играть"><img src="/images/logo.svg" alt="" width="170" height="47"></a><header class="public-static-hero"><div><h1>${escapeHtml(content.heading)}</h1><p>${escapeHtml(content.lead)}</p></div>${art}${renderLaunchControls(content)}</header>${renderArtifactDossier(content)}</main>`
 }
 

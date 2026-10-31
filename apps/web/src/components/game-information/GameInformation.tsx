@@ -33,10 +33,12 @@ export function GameDiscovery({ title, label = title, links, heading: Heading = 
     <header className="game-information-heading"><Heading>{title}</Heading></header>
     <nav className="game-discovery__links" aria-label={label}>{links.map(link => {
       const art = link.mode === 'danetki' ? 'yes-no' : link.mode
+      // Word uses the same artwork in both themes, as in ThemedArtwork.
+      const nightArt = art === 'word' ? art : `dark-v2/${art}`
       return <a className={`game-discovery__link${art ? '' : ' game-discovery__link--text'}`} key={link.id} href={link.href}>
         {art && <span className="game-discovery__art" aria-hidden="true">
           <img className="game-discovery__day" src={`${base}images/home-doodle/${art}.webp`} alt="" width="32" height="32" loading="lazy" />
-          <img className="game-discovery__night" src={`${base}images/home-doodle/dark-v2/${art}.webp`} alt="" width="32" height="32" loading="lazy" />
+          <img className="game-discovery__night" src={`${base}images/home-doodle/${nightArt}.webp`} alt="" width="32" height="32" loading="lazy" />
         </span>}
         <span>{link.label}</span>
       </a>
