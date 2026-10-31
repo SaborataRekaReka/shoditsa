@@ -1,3 +1,4 @@
+import { SvoyakMediaRecoveryPanel } from './SvoyakMediaRecoveryPanel'
 import { questionSourceId, SvoyakSourcePanel, SvoyakAdmissionReview } from './SvoyakSourcePanel'
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight, Plus, Save, Search, Upload, Trash2, Copy, Rocket, RefreshCw } from 'lucide-react'
@@ -415,6 +416,26 @@ export function SvoyakAdminPage() {
           видны только администратору.
         </p>
       )}
+      <SvoyakMediaRecoveryPanel
+        onOpenQuestion={(id) => {
+          const question = work.questions.find((q) => questionSourceId(q.id) === questionSourceId(id))
+          if (!question) return
+          setPack('')
+          setTopic('')
+          setStatus('')
+          setMediaFilter('')
+          setReviewFilter('')
+          setQuery('')
+          setSelected(question.id)
+          setPage(Math.floor(work.questions.findIndex((q) => q.id === question.id) / 60))
+          setView('question')
+          requestAnimationFrame(() =>
+            document
+              .querySelector('.svoyak-admin__preview-panel')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          )
+        }}
+      />
       <section className="admin-panel svoyak-admin__filters" aria-label="Поиск и фильтры">
         <label className="admin-field">
           <span>Поиск по вопросу, ответу, теме или ID</span>

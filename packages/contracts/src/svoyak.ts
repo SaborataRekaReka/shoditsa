@@ -31,6 +31,20 @@ export type ActiveQuestion = {
   answer?: { text: string; aliases: string[]; note: string; source: string; packTitle: string }
 }
 export type QuestionMedia = { kind: 'image' | 'audio' | 'video'; url: string; caption: string; phase: 'question' | 'answer' }
+export type SvoyakMediaRecoveryItem = {
+  id: string; questionId: string; identity: string; mediaIndex: number; packId: number; packTitle: string
+  theme: string; prompt: string; kind: QuestionMedia['kind']; phase: QuestionMedia['phase']; reference: string
+  status: 'recovered' | 'unresolved'; checkedAt: string; attempts: number; httpStatus?: number; reason: string
+  context?: {
+    inferenceOnly: true; exactOriginalKnown: false; expectedContent: string; confidence: 'high' | 'medium' | 'low'
+    answerKey: string; basis: string; unknowns: string; replacementBrief: string
+  }
+}
+export type SvoyakMediaRecoveryReport = {
+  version: 1; checkedAt: string; summary: { total: number; recovered: number; unresolved: number }
+  contextualizedAt?: string
+  items: SvoyakMediaRecoveryItem[]
+}
 export type EditableQuestion = {
   id: string; hash: string; themeId: string; theme: string; topic: string; packId: number; packTitle: string
   prompt: string; answer: string; aliases: string[]; note: string; source: string; difficulty: number; age: number

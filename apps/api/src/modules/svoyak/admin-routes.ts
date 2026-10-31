@@ -186,6 +186,12 @@ export function registerSvoyakAdminRoutes(app: FastifyInstance, deps: Deps) {
       )
     }
     scope.get('/api/v1/admin/svoyak', state)
+    scope.get('/api/v1/admin/svoyak/library/media-recovery', async () => {
+      const rows = await deps.db.execute(
+        sql`select value from app_settings where key='svoyak.editor.media-recovery.v1'`
+      )
+      return rows[0]?.value ?? null
+    })
     scope.get('/api/v1/admin/svoyak/library/source/:id', async (request) => {
       const library = await loadEditorLibrary(deps.db),
         source = library?.sources[sourceIdentity((request.params as { id: string }).id)]

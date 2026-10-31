@@ -56,7 +56,7 @@ describe('Svoyak editor with isolated PostgreSQL', () => {
       throw Error('Only isolated svoyak_editor_test is allowed')
     await db.execute(sql`truncate svoyak_content_revisions cascade`)
     await db.execute(
-      sql`delete from app_settings where key in ('svoyak.editor.workspace.v1','svoyak.editor.library.v1')`
+      sql`delete from app_settings where key in ('svoyak.editor.workspace.v1','svoyak.editor.library.v1','svoyak.editor.media-recovery.v1')`
     )
     await db
       .insert(user)
@@ -395,5 +395,37 @@ describe('Svoyak editor with isolated PostgreSQL', () => {
       sql`select payload from svoyak_questions where revision_id=${publish.json().activeRevision} and id=${question.id}`
     )
     expect((active[0].payload as EditableQuestion).media?.[0].url).not.toContain('/admin/')
+  })
+
+  it('keeps recovery reports admin-only without changing source or game revisions', async () => {
+    const before = await state(),
+      report = {
+        version: 1,
+        checkedAt: new Date().toISOString(),
+        summary: { total: 1, recovered: 0, unresolved: 1 },
+        items: [
+          {
+            id: 'missing',
+            questionId: before.workspace.questions[0].id,
+            reference: 'https://example.test/missing.webp',
+            httpStatus: 404,
+            status: 'unresolved',
+            reason: 'HTTP 404',
+          },
+        ],
+      }
+    await db.execute(
+      sql`insert into app_settings(key,value,version) values('svoyak.editor.media-recovery.v1',${JSON.stringify(report)}::jsonb,1) on conflict(key) do update set value=excluded.value`
+    )
+    const url = '/api/v1/admin/svoyak/library/media-recovery'
+    expect((await app.inject({ url })).statusCode).toBe(401)
+    expect((await app.inject({ url, headers: { ...headers, cookie: outsider } })).statusCode).toBe(403)
+    const response = await app.inject({ url, headers })
+    expect(response.statusCode, response.body).toBe(200)
+    expect(response.json().summary.unresolved).toBe(1)
+    expect(response.json().items[0].httpStatus).toBe(404)
+    const after = await state()
+    expect(after.activeRevision).toBe(before.activeRevision)
+    expect(after.workspace.questions.length).toBe(before.workspace.questions.length)
   })
 })
